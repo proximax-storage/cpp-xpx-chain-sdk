@@ -1,0 +1,17 @@
+
+#pragma once
+
+#include <cstdint>
+
+namespace nem2_sdk { namespace internal { namespace json {
+	
+	class Uint64 {
+	public:
+		Uint64(uint64_t value);
+		operator uint64_t&();
+		operator const uint64_t&() const;
+		
+	private:
+		uint64_t value_;
+	};
+}}}
