@@ -1,8 +1,8 @@
 
 #include "sdk/model/transaction/create_transaction.h"
 #include "sdk/model/transaction/transaction_utils.h"
-#include "infrastructure/binary/transaction_dto.h"
 #include "infrastructure/binary/parser.h"
+#include "infrastructure/binary/dto/transaction_dto.h"
 
 #include <algorithm>
 #include <cassert>

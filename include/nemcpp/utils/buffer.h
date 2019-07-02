@@ -1,33 +1,14 @@
 
 #pragma once
 
-#include <nemcpp/exceptions.h>
+#include <nemcpp/types.h>
 
-#include <cstdint>
 #include <iterator>
-#include <type_traits>
 #include <utility>
 
 namespace nem2_sdk {
 	
 	template<typename TElement, template<typename, typename> class TConversionTrait> class Buffer;
-	
-	/// Determines whether \c T represents some container (type that has methods \c data and \c size).
-	template<typename T>
-	struct is_container {
-		template<
-			typename U,
-			typename = typename std::enable_if<std::is_pointer_v<decltype(std::declval<U*>()->data())>>::type,
-			typename = decltype(std::declval<U*>()->size())>
-		static std::true_type test(int);
-		
-		template<typename U> static std::false_type test(...);
-		
-		static constexpr bool value = decltype(test<typename std::decay<T>::type>(0))::value;
-	};
-	
-	template<typename T>
-	constexpr bool is_container_v = is_container<T>::value;
 	
 	/// Allows implicit conversion only when source and destination types are the same.
 	template<typename TSource, typename TDest>

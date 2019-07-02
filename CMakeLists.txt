@@ -7,7 +7,6 @@ project(nem2-sdk-cpp VERSION 1.0.0)
 
 option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
 option(NEM2_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
-set(RAPIDJSON_GIT_TAG "" CACHE STRING "RapidJSON repository tag to be used for SDK build (master if empty).")
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
@@ -27,7 +26,7 @@ endif()
 set(rapidjson_dir ${CMAKE_BINARY_DIR}/download/rapidjson)
 configure_file(cmake/CMakeLists-rapidjson.txt.in "${rapidjson_dir}/CMakeLists.txt")
 
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}"
+execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
 	WORKING_DIRECTORY "${rapidjson_dir}")
 execute_process(COMMAND "${CMAKE_COMMAND}" --build .
 	WORKING_DIRECTORY "${rapidjson_dir}")
@@ -95,12 +94,13 @@ set(sources
 	src/infrastructure/binary/offsets.h
 	src/infrastructure/binary/parser.cpp
 	src/infrastructure/binary/parser.h
-	src/infrastructure/binary/transaction_dto.h
+	src/infrastructure/binary/dto/transaction_dto.h
 	src/infrastructure/json/descriptors.h
 	src/infrastructure/json/parser.cpp
 	src/infrastructure/json/parser.h
 	src/infrastructure/json/uint64.cpp
 	src/infrastructure/json/uint64.h
+	src/infrastructure/json/dto/mosaic_dto.h
 	src/infrastructure/utils/byte_stream.cpp
 	src/infrastructure/utils/byte_stream.h
 	src/infrastructure/utils/variadic_struct.h

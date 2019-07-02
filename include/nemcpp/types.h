@@ -2,11 +2,11 @@
 #pragma once
 
 #include <nemcpp/exceptions.h>
+#include <nemcpp/traits.h>
 #include <nemcpp/utils/hashable_array.h>
 
 #include <cstdint>
 #include <functional>
-#include <type_traits>
 
 namespace nem2_sdk {
 	
@@ -48,10 +48,4 @@ namespace nem2_sdk {
 	
 	template<typename T>
 	using supplier = std::function<T ()>;
-	
-	template<typename TEnum>
-	constexpr typename std::underlying_type<TEnum>::type to_underlying_type(TEnum value)
-	{
-		return static_cast<std::underlying_type_t<TEnum>>(value);
-	}
 }
