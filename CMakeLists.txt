@@ -30,13 +30,17 @@ check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 #-----------------------------------------------------------------------------
 # dependencies
 #-----------------------------------------------------------------------------
-set(rapidjson_dir ${CMAKE_BINARY_DIR}/download/rapidjson)
-configure_file(cmake/CMakeLists-rapidjson.txt.in "${rapidjson_dir}/CMakeLists.txt")
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+	message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.14/conan.cmake"
+		"${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
 
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-	WORKING_DIRECTORY "${rapidjson_dir}")
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-	WORKING_DIRECTORY "${rapidjson_dir}")
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES rapidjson/1.1.0@bincrafters/stable
+	BASIC_SETUP
+	BUILD missing)
 
 #-----------------------------------------------------------------------------
 # sources
@@ -119,7 +123,7 @@ target_include_directories(nemcpp
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src
-		"${rapidjson_dir}/src/include")
+		CONAN_PKG::rapidjson)
 
 # adding alias for target (required to consistent use of SDK when
 # it is built as subproject)
