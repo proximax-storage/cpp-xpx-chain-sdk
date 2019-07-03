@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(nem2-sdk-cpp VERSION 1.0.0)
 
+# CMP0068: fallback to older policies for macOS
+cmake_policy(SET CMP0068 OLD)
+
 #-----------------------------------------------------------------------------
 # options and features
 #-----------------------------------------------------------------------------
