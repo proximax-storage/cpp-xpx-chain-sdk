@@ -414,14 +414,14 @@ namespace nem2_sdk { namespace internal { namespace json {
 				result = Impl<typename TTraits::ValueType>::Write(
 					obj.template value<TTraits::Id()>(), memberValue, fieldPtr.c_str(), document);
 				
-				if (result) {
+				if (result.first) {
 					jsonValue.AddMember(memberName.Move(), memberValue.Move(), document.GetAllocator());
 				}
 			} else if constexpr (!std::is_same_v<typename TTraits::DescriptorType, desc::Optional>) {
 				result = { false, fieldPtr };
 			}
 			
-			return result;
+			return ParseResult(result.first, result.second);
 		}
 	};
 	

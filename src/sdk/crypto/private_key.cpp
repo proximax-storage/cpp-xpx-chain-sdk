@@ -19,10 +19,10 @@ namespace nem2_sdk {
 	
 	PrivateKey::PrivateKey(const supplier<uint8_t>& generator)
 	{
-		std::generate_n(key_.begin(), key_.end() - key_.begin(), generator);
+		std::generate_n(key_.begin(), (long int) key_.end(), generator);
 	}
 	
-	PrivateKey::PrivateKey(PrivateKey&& rhs) noexcept: PrivateKey(rhs.key_.data(), rhs.key_.size())
+	PrivateKey::PrivateKey(PrivateKey&& rhs): PrivateKey(rhs.key_.data(), rhs.key_.size())
 	{ }
 	
 	PrivateKey::~PrivateKey()
@@ -30,7 +30,7 @@ namespace nem2_sdk {
 		SecureZero(key_);
 	}
 	
-	PrivateKey& PrivateKey::operator=(PrivateKey&& rhs) noexcept
+	PrivateKey& PrivateKey::operator=(PrivateKey&& rhs)
 	{
 		SecureZeroGuard guard(rhs.key_);
 		key_ = rhs.key_;
