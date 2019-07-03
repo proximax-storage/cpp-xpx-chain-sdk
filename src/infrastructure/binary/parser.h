@@ -118,7 +118,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		template<typename TStruct, size_t... Idx>
 		static size_t CalculateStructSize(const TStruct& obj, std::index_sequence<Idx...>)
 		{
-			if constexpr (struct_size<TStruct>::value) {
+			if constexpr (struct_size<TStruct>::value != 0) {
 				return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::CalculateSize(obj.template value<Field_Id<Idx, TStruct>>()) + ...);
 			} else {
 				return 0;
