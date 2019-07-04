@@ -14,10 +14,10 @@ namespace nem2_sdk {
 		explicit KeyPair(PrivateKey&& privateKey);
 		
 		/// Moves key pair from \a rhs.
-		KeyPair(KeyPair&& rhs);
+		KeyPair(KeyPair&& rhs) noexcept;
 		
 		/// Moves key pair from \a rhs.
-		KeyPair& operator=(KeyPair&& rhs);
+		KeyPair& operator=(KeyPair&& rhs) noexcept;
 		
 		/// Returns a private key of a key pair.
 		const PrivateKey& privateKey() const;

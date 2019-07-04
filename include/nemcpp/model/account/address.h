@@ -31,7 +31,7 @@ namespace nem2_sdk {
 		Address(const Address& rhs);
 		
 		/// Move constructor.
-		Address(Address&& rhs);
+		Address(Address&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		Address& operator=(const Address&) = default;

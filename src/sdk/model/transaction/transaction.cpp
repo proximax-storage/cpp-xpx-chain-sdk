@@ -40,7 +40,7 @@ namespace nem2_sdk {
 		hash_ = rhs.hash_;
 	}
 	
-	Transaction::Transaction(Transaction&& rhs):
+	Transaction::Transaction(Transaction&& rhs) noexcept:
 		BasicTransaction(std::move(rhs)),
 		signature_(this),
 		maxFee_(rhs.maxFee_),
@@ -96,7 +96,7 @@ namespace nem2_sdk {
 	Amount Transaction::GetDefaultFee(size_t transactionSize)
 	{
 		const auto& config = GetConfig();
-		return transactionSize * config.BlockAvgFeeMultiplier * config.TransactionFeeMultiplier;
+		return static_cast<Amount>(transactionSize * config.BlockAvgFeeMultiplier * config.TransactionFeeMultiplier);
 	}
 	
 	NetworkDuration Transaction::GetDefaultDeadline()

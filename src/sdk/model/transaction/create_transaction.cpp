@@ -14,7 +14,7 @@ using namespace nem2_sdk::internal;
 using namespace nem2_sdk::internal::binary;
 
 namespace nem2_sdk { namespace internal {
-	
+
 	namespace {
 		
 		template<typename TDto>
@@ -840,6 +840,7 @@ namespace nem2_sdk { namespace internal {
 		InitAggregateTransactionDTO(
 			dto, isComplete, embeddedTransactions, cosignatures, maxFee, deadline, networkId, signer, signature);
 		
+
 		return CreateTransaction<AggregateTransactionImpl>(
 			dto, signer, signature, info,
 			isComplete, embeddedTransactions, cosignatures, dto.value<"payloadSize"_>());
@@ -954,7 +955,7 @@ namespace nem2_sdk {
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateAddressAliasTransaction(action, aliasNamespaceId, aliasedAddress, maxFee, deadline, networkId);
+		return CreateAddressAliasTransactionImpl(action, aliasNamespaceId, aliasedAddress, maxFee, deadline, networkId);
 	}
 	
 	std::unique_ptr<EmbeddedAddressAliasTransaction>

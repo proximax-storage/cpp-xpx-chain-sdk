@@ -6,6 +6,11 @@
 #include <type_traits>
 #include <utility>
 
+#ifdef WIN32
+#pragma warning(push)
+#pragma warning(disable:4307) // disable integral constant overflow warning in FnvHash
+#endif
+
 namespace nem2_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
@@ -21,9 +26,9 @@ namespace nem2_sdk { namespace internal {
 	// Compile-time FNV-1a hash.
 	constexpr uint64_t FnvHash(const char *str, uint64_t hash = 14695981039346656037ull)
 	{
-		return *str ? FnvHash(str + 1, (hash ^ *str) * 109951162821ull) : hash;
+		return *str ? FnvHash(str + 1, static_cast<uint64_t>((hash ^ *str) * static_cast<uint64_t>(109951162821ull))) : hash;
 	}
-	
+
 	// Compile-time string literal (used as variadic struct field name).
 	template<char... chars>
 	struct StringLiteral {
@@ -154,9 +159,12 @@ namespace nem2_sdk { namespace internal {
 				                     sizeof(Type) > sizeof(TValue)) {
 					static_assert(sizeof(TArg) == 0, "dangerous argument conversion to field value");
 				}
+				
+				value_ = result ? static_cast<TValue>(value) : TValue{};
+			} else {
+				value_ = std::forward<TArg>(value);
 			}
 			
-			value_ = result ? std::forward<TArg>(value) : TValue{};
 			isSet_ = result;
 			return result;
 		}

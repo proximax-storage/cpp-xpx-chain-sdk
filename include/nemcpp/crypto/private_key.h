@@ -20,13 +20,13 @@ namespace nem2_sdk {
 		explicit PrivateKey(const supplier<uint8_t>& generator);
 		
 		/// Moves private key from \a rhs.
-		PrivateKey(PrivateKey&& rhs);
+		PrivateKey(PrivateKey&& rhs) noexcept;
 		
 		/// Destroys the private key and securely cleares memory.
 		~PrivateKey();
 		
 		/// Moves private key from \a rhs.
-		PrivateKey& operator=(PrivateKey&& rhs);
+		PrivateKey& operator=(PrivateKey&& rhs) noexcept;
 		
 		/// Returns private key data.
 		const uint8_t* data() const;

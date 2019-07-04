@@ -26,7 +26,7 @@ namespace nem2_sdk {
 		BasicTransaction(const BasicTransaction& rhs);
 		
 		/// Move constructor.
-		BasicTransaction(BasicTransaction&& rhs);
+		BasicTransaction(BasicTransaction&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		BasicTransaction& operator=(const BasicTransaction&) = default;

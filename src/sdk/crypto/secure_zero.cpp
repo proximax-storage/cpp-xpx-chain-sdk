@@ -12,7 +12,7 @@ namespace nem2_sdk {
 	void SecureZero(MutableRawBuffer buffer)
 	{
 #ifdef WIN32
-		SecureZeroMemory(buffer.data(), biffer.size());
+		SecureZeroMemory(buffer.data(), buffer.size());
 #elif defined(__APPLE__) || defined(__STDC_LIB_EXT1__)
 		memset_s(buffer.data(), buffer.size(), 0, buffer.size())
 #else

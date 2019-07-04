@@ -21,7 +21,7 @@ namespace nem2_sdk {
 		PublicAccount(const PublicAccount& rhs);
 		
 		/// Move constructor.
-		PublicAccount(PublicAccount&& rhs);
+		PublicAccount(PublicAccount&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		PublicAccount& operator=(const PublicAccount&) = default;

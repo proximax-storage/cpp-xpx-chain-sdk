@@ -53,7 +53,7 @@ namespace nem2_sdk {
 		pretty_ = rhs.pretty_;
 	}
 	
-	Address::Address(Address&& rhs):
+	Address::Address(Address&& rhs) noexcept:
 		data_(std::move(rhs.data_)),
 		encoded_(this),
 		pretty_(this)

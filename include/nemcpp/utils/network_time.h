@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <cstdint>
+#include <ctime>
 
 namespace nem2_sdk {
 	

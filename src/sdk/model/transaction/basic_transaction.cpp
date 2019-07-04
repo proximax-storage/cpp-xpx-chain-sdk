@@ -22,7 +22,7 @@ namespace nem2_sdk {
 		signer_ = rhs.signer_;
 	}
 	
-	BasicTransaction::BasicTransaction(BasicTransaction&& rhs):
+	BasicTransaction::BasicTransaction(BasicTransaction&& rhs) noexcept:
 		signer_(this),
 		version_(rhs.version_),
 		networkId_(rhs.networkId_),

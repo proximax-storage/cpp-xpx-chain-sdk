@@ -43,7 +43,6 @@ namespace nem2_sdk {
 	private:
 		int8_t minRemovalDelta_;
 		int8_t minApprovalDelta_;
-		uint8_t cosignatoryModificationsCount_;
 		CosignatoryModifications cosignatoryModifications_;
 	};
 	
