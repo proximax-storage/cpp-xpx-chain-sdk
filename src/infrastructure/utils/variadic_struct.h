@@ -6,11 +6,6 @@
 #include <type_traits>
 #include <utility>
 
-#ifdef WIN32
-#pragma warning(push)
-#pragma warning(disable:4307) // disable integral constant overflow warning in FnvHash
-#endif
-
 namespace nem2_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
@@ -22,11 +17,11 @@ namespace nem2_sdk { namespace internal {
 	template<size_t I, typename TStruct> struct struct_field_by_index;
 	template<uint64_t Id, typename TStruct> struct struct_field_by_id;
 	template<typename TLiteral, typename TStruct> struct struct_field_by_name;
-	
+
 	// Compile-time FNV-1a hash.
 	constexpr uint64_t FnvHash(const char *str, uint64_t hash = 14695981039346656037ull)
 	{
-		return *str ? FnvHash(str + 1, static_cast<uint64_t>((hash ^ *str) * static_cast<uint64_t>(109951162821ull))) : hash;
+		return *str ? FnvHash(str + 1, (hash ^ *str) * 109951162821ull) : hash;
 	}
 
 	// Compile-time string literal (used as variadic struct field name).
@@ -35,14 +30,15 @@ namespace nem2_sdk { namespace internal {
 		static constexpr const char Value[sizeof...(chars) + 1] = {chars..., '\0'};
 	};
 	
-	// Macros for defining compile-time string literal from c-style string literal.
-#ifdef HAS_EXT_STRING_LITERAL_SUPPORT
+	// Macros for defining compile-time string literal type from c-style string literal.
+#if NEM2_USE_STRING_LITERAL_OPERATOR_TEMPLATE
+
 	template<typename T, T... chars>
 	constexpr StringLiteral<chars...> operator""_sl()
 	{
 		return {};
 	}
-	
+
 #define STR_LITERAL(STR) decltype(STR##_sl)
 #else
 #define EXTRACT_CHAR(STR, IDX) (IDX < sizeof(STR)) ? STR[IDX] : '\0'

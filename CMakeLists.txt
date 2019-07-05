@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(nem2-sdk-cpp VERSION 1.0.0)
 
 #-----------------------------------------------------------------------------
-# options
+# options and features
 #-----------------------------------------------------------------------------
 
 option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
@@ -19,6 +19,13 @@ if (MSVC)
 else()
 	add_compile_options(-Wall)
 endif()
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(cmake/CheckFeatures.cmake)
+check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
 #-----------------------------------------------------------------------------
 # dependencies
@@ -164,13 +171,23 @@ file(GLOB_RECURSE sha256_sources
 	"src/third-party/sha256/*.h")
 
 if (MSVC)
-	set_source_files_properties(${ref10_sources} ${ripemd160_sources} ${sha3_sources} ${sha256_sources}
-		PROPERTIES
-			COMPILE_FLAGS "/wd4244 /wd4146")
+	# disable silly warning 'integral constant overflow' which is not easily fixed for 64bit types in constexpr
+	set_source_files_properties(${sources} PROPERTIES
+		COMPILE_FLAGS "/wd4307")
+
+	# disable warnings from third-party sources
+	set_source_files_properties(${ref10_sources} ${ripemd160_sources} ${sha3_sources} ${sha256_sources} PROPERTIES
+		COMPILE_FLAGS "/wd4244 /wd4146")
 else()
-	set_source_files_properties(${ref10_sources} ${ripemd160_sources} ${sha3_sources} ${sha256_sources}
-		PROPERTIES
-			COMPILE_FLAGS "-w")
+	# disable clang warning about using non-standard string literal operator template (N3599 proposal)
+	if (HAVE_STRING_LITERAL_OPERATOR_TEMPLATE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		set_source_files_properties(${sources} PROPERTIES
+			COMPILE_FLAGS "-Wno-gnu-string-literal-operator-template")
+	endif()
+
+	# disable all warnings from third-party sources
+	set_source_files_properties(${ref10_sources} ${ripemd160_sources} ${sha3_sources} ${sha256_sources} PROPERTIES
+		COMPILE_FLAGS "-w")
 endif()
 
 list(APPEND sources ${ref10_sources} ${ripemd160_sources} ${sha3_sources} ${sha256_sources})
@@ -189,7 +206,7 @@ else()
 	set_target_properties(nemcpp PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
-	
+
 	if (MSVC)
 		set_target_properties(nemcpp PROPERTIES
 			WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -199,8 +216,9 @@ endif()
 include(GNUInstallDirs)
 
 target_sources(nemcpp PRIVATE ${sources})
-target_compile_features(nemcpp PUBLIC cxx_std_17)
-set_target_properties(nemcpp PROPERTIES CXX_EXTENSIONS OFF)
+
+target_compile_definitions(nemcpp PRIVATE
+	NEM2_USE_STRING_LITERAL_OPERATOR_TEMPLATE=${HAVE_STRING_LITERAL_OPERATOR_TEMPLATE})
 
 target_include_directories(nemcpp
 	PUBLIC
