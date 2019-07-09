@@ -1,10 +1,13 @@
 #include <string>
 
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <boost/beast.hpp>
+#include <boost/beast/ssl.hpp>
 
 namespace asio = boost::asio;
 namespace ip = boost::asio::ip;
+namespace ssl = boost::asio::ssl;
 namespace beast = boost::beast;
 namespace http = boost::beast::http;
 
@@ -58,6 +61,7 @@ std::string _performHTTPRequest_internal(
 
 std::string _performHTTPRequest(
 		HTTPRequestMethod method,
+		bool secure,
 		const std::string& host,
 		const std::string& port,
 		const std::string& path,
@@ -68,9 +72,21 @@ std::string _performHTTPRequest(
 	ip::tcp::resolver resolver(ioc);
 	auto const endpoint = resolver.resolve(host, port);
 
-	beast::tcp_stream stream(ioc);
-	stream.connect(endpoint);
-	auto response = _performHTTPRequest_internal(stream, method, host, port, path, request_body);
-	stream.socket().shutdown(ip::tcp::socket::shutdown_both);
-	return response;
+	if (secure) {
+		ssl::context ctx(ssl::context::tls_client);
+		ctx.set_default_verify_paths();
+		ctx.set_verify_mode(ssl::verify_peer);
+		beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
+		beast::get_lowest_layer(stream).connect(endpoint);
+		stream.handshake(ssl::stream_base::client);
+		auto response = _performHTTPRequest_internal(stream, method, host, port, path, request_body);
+		stream.shutdown();
+		return response;
+	} else {
+		beast::tcp_stream stream(ioc);
+		stream.connect(endpoint);
+		auto response = _performHTTPRequest_internal(stream, method, host, port, path, request_body);
+		stream.socket().shutdown(ip::tcp::socket::shutdown_both);
+		return response;
+	}
 }

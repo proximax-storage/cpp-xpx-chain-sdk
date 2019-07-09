@@ -41,9 +41,14 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES rapidjson/1.1.0@bincrafters/stable
+conan_cmake_run(REQUIRES
+		rapidjson/1.1.0@bincrafters/stable
+		boost/1.70.0@conan/stable
+        OpenSSL/1.1.1c@conan/stable
 	BASIC_SETUP
 	BUILD missing)
+
+find_package(OpenSSL)
 
 #-----------------------------------------------------------------------------
 # sources
@@ -126,11 +131,11 @@ target_include_directories(nemcpp
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src
-		CONAN_PKG::rapidjson)
+		CONAN_PKG::rapidjson
+		CONAN_PKG::boost
+		CONAN_PKG::OpenSSL)
 
-# adding alias for target (required to consistent use of SDK when
-# it is built as subproject)
-add_library("NEM2::nemcpp" ALIAS nemcpp)
+target_link_libraries(nemcpp ${OPENSSL_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # install
