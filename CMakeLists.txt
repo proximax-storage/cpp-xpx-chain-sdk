@@ -106,7 +106,7 @@ if (NEM2_SDK_BUILD_STATIC)
 	set_target_properties(nemcpp PROPERTIES
 		OUTPUT_NAME "nemcpp-static")
 else()
-	add_library(nemcpp SHARED "")
+	add_library(nemcpp SHARED "" src/infrastructure/network/context.h src/infrastructure/network/websocket.h)
 	set_target_properties(nemcpp PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
