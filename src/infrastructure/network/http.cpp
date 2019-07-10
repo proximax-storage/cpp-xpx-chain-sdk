@@ -29,6 +29,26 @@ struct RequestParams {
 	std::string& request_body;
 };
 
+class Context {
+public:
+	Context():
+		_ctx(ssl::context::tls_client)
+	{
+		_ctx.set_default_verify_paths();
+		_ctx.set_verify_mode(ssl::verify_peer);
+	}
+
+	Context(Context const&) = delete;
+	Context& operator=(Context const&) = delete;
+
+	ssl::context& get_ssl_context() {
+		return _ctx;
+	}
+
+private:
+	ssl::context _ctx;
+};
+
 template <class TStream>
 std::string _performHTTPRequest_internal(
 		TStream& stream,
@@ -69,6 +89,7 @@ std::string _performHTTPRequest_internal(
 }
 
 std::string _performHTTPRequest(
+		Context& context,
 		HTTPRequestMethod method,
 		bool secure,
 		const std::string& host,
@@ -82,9 +103,7 @@ std::string _performHTTPRequest(
 	auto const endpoint = resolver.resolve(host, port);
 
 	if (secure) {
-		ssl::context ctx(ssl::context::tls_client);
-		ctx.set_default_verify_paths();
-		ctx.set_verify_mode(ssl::verify_peer);
+		auto& ctx = context.get_ssl_context();
 		beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
 		beast::get_lowest_layer(stream).connect(endpoint);
 		stream.handshake(ssl::stream_base::client);
@@ -100,7 +119,7 @@ std::string _performHTTPRequest(
 	}
 }
 
-std::string _performHTTPRequest(const RequestParams& requestParams) {
+std::string _performHTTPRequest(Context& context, const RequestParams& requestParams) {
 	std::string port;
 	if (requestParams.port.empty()) {
 		if (requestParams.secure) {
@@ -120,6 +139,7 @@ std::string _performHTTPRequest(const RequestParams& requestParams) {
 	}
 
 	return _performHTTPRequest(
+			context,
 			requestParams.method,
 			requestParams.secure,
 			requestParams.host,
