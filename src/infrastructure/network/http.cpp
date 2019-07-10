@@ -1,9 +1,13 @@
+#include "http.h"
+
 #include <string>
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
+
+using namespace nem2_sdk::internal::network;
 
 namespace asio = boost::asio;
 namespace ip = boost::asio::ip;
@@ -13,41 +17,6 @@ namespace http = boost::beast::http;
 
 // HTTP 1.1
 const auto HTTP_VERSION = 11;
-
-enum class HTTPRequestMethod {
-	GET,
-	POST,
-	PUT,
-};
-
-struct RequestParams {
-	HTTPRequestMethod method;
-	bool secure;
-	std::string& host;
-	std::string& port;
-	std::string& path;
-	std::string& request_body;
-};
-
-class Context {
-public:
-	Context():
-		_ctx(ssl::context::tls_client)
-	{
-		_ctx.set_default_verify_paths();
-		_ctx.set_verify_mode(ssl::verify_peer);
-	}
-
-	Context(Context const&) = delete;
-	Context& operator=(Context const&) = delete;
-
-	ssl::context& get_ssl_context() {
-		return _ctx;
-	}
-
-private:
-	ssl::context _ctx;
-};
 
 template <class TStream>
 std::string _performHTTPRequest_internal(
@@ -119,7 +88,7 @@ std::string _performHTTPRequest(
 	}
 }
 
-std::string _performHTTPRequest(Context& context, const RequestParams& requestParams) {
+std::string performHTTPRequest(Context& context, const RequestParams& requestParams) {
 	std::string port;
 	if (requestParams.port.empty()) {
 		if (requestParams.secure) {
