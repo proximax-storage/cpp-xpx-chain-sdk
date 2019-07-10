@@ -20,6 +20,15 @@ enum class HTTPRequestMethod {
 	PUT,
 };
 
+struct RequestParams {
+	HTTPRequestMethod method;
+	bool secure;
+	std::string& host;
+	std::string& port;
+	std::string& path;
+	std::string& request_body;
+};
+
 template <class TStream>
 std::string _performHTTPRequest_internal(
 		TStream& stream,
@@ -89,4 +98,33 @@ std::string _performHTTPRequest(
 		stream.socket().shutdown(ip::tcp::socket::shutdown_both);
 		return response;
 	}
+}
+
+std::string _performHTTPRequest(const RequestParams& requestParams) {
+	std::string port;
+	if (requestParams.port.empty()) {
+		if (requestParams.secure) {
+			port = "443";
+		} else {
+			port = "80";
+		}
+	} else {
+		port = requestParams.port;
+	}
+
+	std::string path;
+	if (requestParams.path.empty()) {
+		path = "/";
+	} else {
+		path = requestParams.path;
+	}
+
+	return _performHTTPRequest(
+			requestParams.method,
+			requestParams.secure,
+			requestParams.host,
+			port,
+			path,
+			requestParams.request_body
+	);
 }
