@@ -46,9 +46,8 @@ conan_cmake_run(REQUIRES
 		boost/1.70.0@conan/stable
         OpenSSL/1.1.1c@conan/stable
 	BASIC_SETUP
+	CMAKE_TARGETS
 	BUILD missing)
-
-find_package(OpenSSL)
 
 #-----------------------------------------------------------------------------
 # sources
@@ -130,12 +129,12 @@ target_include_directories(nemcpp
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
-		${CMAKE_CURRENT_SOURCE_DIR}/src
+		${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_link_libraries(nemcpp
 		CONAN_PKG::rapidjson
 		CONAN_PKG::boost
 		CONAN_PKG::OpenSSL)
-
-target_link_libraries(nemcpp ${OPENSSL_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # install
