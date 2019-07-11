@@ -18,20 +18,20 @@ namespace nem2_sdk {
 	class Lazy {
 	public:
 		/// User-defined type.
-		using Type = TType;
+		using ClassType = TType;
 		
 		/// User-defined type data member type.
 		using MemberType = TMemberType;
 		
 	public:
 		/// Creates wrapper for lazy-initialized data member of \a obj using \a value as initial value.
-		explicit Lazy(Type* obj, const std::optional<MemberType>& value = std::nullopt):
+		explicit Lazy(ClassType* obj, const std::optional<MemberType>& value = std::nullopt):
 			initialize_(std::bind(initialize, obj, std::placeholders::_1)),
 			value_(value)
 		{ }
 		
 		/// Creates wrapper for lazy-initialized data member of \a obj using \a value as initial value.
-		explicit Lazy(Type* obj, std::optional<MemberType>&& value):
+		explicit Lazy(ClassType* obj, std::optional<MemberType>&& value):
 			initialize_(std::bind(initialize, obj, std::placeholders::_1)),
 			value_(std::move(value))
 		{ }

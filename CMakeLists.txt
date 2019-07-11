@@ -104,6 +104,7 @@ set(sources
 	src/infrastructure/binary/parser.h
 	src/infrastructure/binary/dto/transaction_dto.h
 	src/infrastructure/json/descriptors.h
+	src/infrastructure/json/hex.h
 	src/infrastructure/json/parser.cpp
 	src/infrastructure/json/parser.h
 	src/infrastructure/json/uint64.cpp

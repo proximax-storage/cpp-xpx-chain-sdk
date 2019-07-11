@@ -2,6 +2,7 @@
 #pragma once
 
 #include "infrastructure/json/descriptors.h"
+#include "infrastructure/json/hex.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/utils/variadic_struct.h"
 
