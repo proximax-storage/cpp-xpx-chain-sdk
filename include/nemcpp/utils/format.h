@@ -21,7 +21,10 @@ namespace nem2_sdk {
 			stream_ << arg;
 			return *this;
 		}
-		
+
+		/// Returns builded string
+		std::string str() const;
+
 		/// Returns builded string.
 		operator std::string() const;
 		

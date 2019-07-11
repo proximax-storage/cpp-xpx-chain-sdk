@@ -3,7 +3,7 @@
 
 namespace nem2_sdk {
 	
-	ReadResult::ReadResult(ReadResultCode code, size_t consumed, const std::string& description):
+	ReadResult::ReadResult(ReadResultCode code, size_t consumed, std::string_view description):
 		code_(code),
 		description_(description),
 		consumed_(consumed)

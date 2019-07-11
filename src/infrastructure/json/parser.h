@@ -331,7 +331,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                        const char* jsonPtr,
 		                        std::index_sequence<Idx...>)
 		{
-			ParseResult result = { true, "" };
+			ParseResult result = true;
 			
 			( ( result = ReadField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr),
 			    result ) && ... );
@@ -390,7 +390,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                              rapidjson::Document& document)
 		{
 			std::string fieldPtr = MakeString{} << jsonPtr << "/" << TTraits::Name();
-			std::pair<bool, std::string> result = { true, "" };
+			ParseResult result = true;
 			
 			if (obj.template isSet<TTraits::Id()>()) {
 				rapidjson::Value memberName(TTraits::Name(), document.GetAllocator());

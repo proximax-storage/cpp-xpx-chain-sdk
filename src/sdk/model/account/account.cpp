@@ -37,7 +37,7 @@ namespace nem2_sdk {
 	const PublicAccount& Account::publicAccount() const
 	{
 		if (!publicAccount_) {
-			requestPrivateKey(PrivateKeySupplierReason::Public_Account_Init);
+			[[maybe_unused]] auto privateKey = requestPrivateKey(PrivateKeySupplierReason::Public_Account_Init);
 		}
 		
 		return publicAccount_.value();

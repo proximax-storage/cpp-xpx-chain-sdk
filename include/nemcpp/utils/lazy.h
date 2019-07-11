@@ -57,7 +57,7 @@ namespace nem2_sdk {
 		/// Sets wrapped value.
 		template<
 			typename T,
-			typename = typename std::enable_if<std::is_constructible_v<MemberType, T&&>>::type>
+			typename = typename std::enable_if<std::is_assignable_v<MemberType, T&&>>::type>
 		Lazy& operator=(T&& value)
 		{
 			value_ = std::forward<T>(value);
@@ -73,7 +73,7 @@ namespace nem2_sdk {
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		MemberType& value()
+		MemberType& value() &
 		{
 			if (!value_) {
 				initialize_(value_);
@@ -83,7 +83,7 @@ namespace nem2_sdk {
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		const MemberType& value() const
+		const MemberType& value() const&
 		{
 			if (!value_) {
 				initialize_(value_);
@@ -91,19 +91,51 @@ namespace nem2_sdk {
 			
 			return *value_;
 		}
-		
+
 		/// Returns wrapped value initializing it if necessary.
-		MemberType& operator*()
+		MemberType&& value() &&
+		{
+			if (!value_) {
+				initialize_(value_);
+			}
+
+			return *std::move(value_);
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		const MemberType&& value() const&&
+		{
+			if (!value_) {
+				initialize_(value_);
+			}
+
+			return *std::move(value_);
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		MemberType& operator*() &
 		{
 			return value();
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		const MemberType& operator*() const
+		const MemberType& operator*() const&
 		{
 			return value();
 		}
-		
+
+		/// Returns wrapped value initializing it if necessary.
+		MemberType&& operator*() &&
+		{
+			return std::move(*this).value();
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		const MemberType&& operator*() const&&
+		{
+			return std::move(*this).value();
+		}
+
 		/// Returns wrapped value initializing it if necessary.
 		MemberType* operator->()
 		{

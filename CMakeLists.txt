@@ -92,6 +92,7 @@ set(sources
 	include/nemcpp/utils/bitwise_enum.h
 	include/nemcpp/utils/buffer.h
 	include/nemcpp/utils/comparator.h
+	include/nemcpp/utils/format.h
 	include/nemcpp/utils/hashable_array.h
 	include/nemcpp/utils/hasher.h
 	include/nemcpp/utils/lazy.h
