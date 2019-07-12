@@ -133,7 +133,18 @@ namespace nem2_sdk { namespace internal { namespace json {
 					return true;
 				}
 				
-				if constexpr (std::is_integral_v<TField>) {
+				if constexpr (std::is_enum_v<TField>) {
+					using Type = std::underlying_type_t<TField>;
+					Type rawValue = Type{};
+
+					auto result = Impl<Type>::Read(rawValue, jsonValue, jsonPtr);
+
+					if (result) {
+						value = static_cast<TField>(rawValue);
+					}
+					
+					return result;
+				} else if constexpr (std::is_integral_v<TField>) {
 					if constexpr (std::is_same_v<TField, bool>) {
 						if (jsonValue->IsBool()) {
 							value = jsonValue->GetBool();
@@ -180,7 +191,10 @@ namespace nem2_sdk { namespace internal { namespace json {
 			                         const char* jsonPtr,
 			                         rapidjson::Document& document)
 			{
-				if constexpr (std::is_integral_v<TField>) {
+				if constexpr (std::is_enum_v<TField>) {
+					using Type = std::underlying_type_t<TField>;
+					return Impl<Type>::Write(static_cast<Type>(value), jsonValue, jsonPtr, document);
+				} else if constexpr (std::is_integral_v<TField>) {
 					if constexpr (std::is_same_v<TField, bool>) {
 						jsonValue.SetBool(value);
 					} else if constexpr (std::is_unsigned_v<TField>) {
