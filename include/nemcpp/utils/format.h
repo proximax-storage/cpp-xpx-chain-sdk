@@ -136,7 +136,7 @@ namespace nem2_sdk {
 	template<typename T>
 	bool FromHex(std::string_view hexStr, std::vector<T>& data)
 	{
-			data.clear();
+		data.clear();
 		size_t itemLen = sizeof(T) * 2;
 		
 		if (hexStr.empty()) {

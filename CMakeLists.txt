@@ -46,6 +46,7 @@ set(sources
 	include/nemcpp/config.h
 	include/nemcpp/exceptions.h
 	include/nemcpp/sdk.h
+	include/nemcpp/traits.h
 	include/nemcpp/types.h
 	include/nemcpp/crypto/hash.h
 	include/nemcpp/crypto/key_pair.h

@@ -19,11 +19,11 @@ namespace nem2_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:
 	//
-	// 1. arithmetic (int, double, etc) and enums
-	// 2. std::array or nem2_sdk::HashableArray which have fixed size
-	// 3. std::string which requires size descriptor and treats it as string length
-	// 4. std::vector which requires size descriptor and treats it as elements count
-	// 5. other binary DTOs
+	// 1. other DTOs with null (void) descriptor and fields of types 1-5
+	// 2. integral (int, short, etc) and enums with null (void) descriptor
+	// 3. std::array or nem2_sdk::HashableArray with elements of type 1-3 and null (void) descriptor
+	// 4. std::vector with elements of type 1-3 and VariableSize or TrailingSize descriptor used for vector size calculation
+	// 5. std::string with VariableSize or TrailingSize descriptor used for string size calculation
 	
 	class ParseResult {
 	public:
@@ -88,9 +88,48 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		}
 		
 	private:
+		template<typename TName, typename TStruct, typename TField, typename TDescriptor, bool IsItem = false>
+		static constexpr void CheckField()
+		{
+			if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField> || is_array_v<TField> || is_variadic_struct_v<TField>) {
+				if constexpr (!std::is_same_v<TDescriptor, void>) {
+					static_assert(sizeof(TField) == 0, "invalid field descriptor (should be void)");
+				}
+
+				if constexpr (is_array_v<TField>) {
+					CheckField<TName, TStruct, typename TField::value_type, void, true>();
+				}
+			} else if constexpr (!IsItem && (is_specialization_v<TField, std::vector> || std::is_same_v<TField, std::string>)) {
+				if constexpr (desc::is_variable_size_v<TDescriptor> || desc::is_trailing_size_v<TDescriptor>) {
+					if constexpr (!has_field_by_name<typename TDescriptor::SizeFieldName, TStruct>::value) {
+						static_assert(sizeof(TField) == 0, "unknown size field name");
+					} else if constexpr (!std::is_integral_v<typename struct_field_by_name<typename TDescriptor::SizeFieldName, TStruct>::ValueType>) {
+						static_assert(sizeof(TField) == 0, "invalid size field type (should be integral)");
+					}
+				} else {
+					static_assert(sizeof(TField) == 0, "invalid container field descriptor (should be 'VariableSize' or 'TrailingSize')");
+				}
+
+				if constexpr (is_specialization_v<TField, std::vector>) {
+					return CheckField<TName, TStruct, typename TField::value_type, void, true>();
+				}
+			} else {
+				if constexpr (IsItem) {
+					static_assert(sizeof(TField) == 0, "invalid container field item type");
+				} else {
+					static_assert(sizeof(TField) == 0, "invalid field type");
+				}
+			}
+		}
+
 		template<typename TStruct, size_t... Idx>
 		static bool ReadStruct(TStruct& obj, ReadOnlyByteStream& bs, std::index_sequence<Idx...>)
 		{
+			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
+			            TStruct,
+			            typename struct_field_by_index<Idx, TStruct>::ValueType,
+			            typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+
 			auto result =
 				(Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::template Read<typename struct_field_by_index<Idx, TStruct>::DescriptorType>(
 				     obj, obj.template value<Field_Id<Idx, TStruct>>(), bs)
@@ -106,6 +145,11 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		template<typename TStruct, size_t... Idx>
 		static bool WriteStruct(const TStruct& obj, ByteStream& bs, std::index_sequence<Idx...>)
 		{
+			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
+				TStruct,
+				typename struct_field_by_index<Idx, TStruct>::ValueType,
+				typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+
 			bool isAllSet = (obj.template isSet<Field_Id<Idx, TStruct>>() && ...);
 			
 			if (!isAllSet) {
@@ -118,6 +162,11 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		template<typename TStruct, size_t... Idx>
 		static size_t CalculateStructSize(const TStruct& obj, std::index_sequence<Idx...>)
 		{
+			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
+				TStruct,
+				typename struct_field_by_index<Idx, TStruct>::ValueType,
+				typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+
 			if constexpr (struct_size<TStruct>::value) {
 				return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::CalculateSize(obj.template value<Field_Id<Idx, TStruct>>()) + ...);
 			} else {
@@ -160,13 +209,23 @@ namespace nem2_sdk { namespace internal { namespace binary {
 			template<typename TSizeDescriptor, typename TStruct>
 			static bool Read(TStruct&, TField& field, ReadOnlyByteStream& bs)
 			{
-				bs >> field;
-				return static_cast<bool>(bs);
-			}
+				if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField>) {
+					bs >> field;
+				} else {
+					static_assert(sizeof(TField) == 0, "field type is not supported by binary parser");
+				}
+
+				return static_cast<bool>(bs);			}
 			
+			template<typename TUnused = void> // without this some of 'CheckField' asserts can be skipped
 			static bool Write(const TField& field, ByteStream& bs)
 			{
-				bs << field;
+				if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField>) {
+					bs << field;
+				} else {
+					static_assert(sizeof(TField) == 0, "field type is not supported by binary parser");
+				}
+
 				return true;
 			}
 			
@@ -243,7 +302,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 					field.push_back(item);
 				}
 			} else {
-				static_assert(sizeof(TSizeDescriptor) == 0, "invalid binary field size descriptor");
+				static_assert(sizeof(TStruct) == 0, "binary parser unable to determine container field size");
 			}
 			
 			return static_cast<bool>(bs);
@@ -277,7 +336,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 				field.resize(size);
 				bs >> field;
 			} else {
-				static_assert(sizeof(TSizeDescriptor) == 0, "invalid binary field size descriptor");
+				static_assert(sizeof(TStruct) == 0, "binary parser unable to determine container field size");
 			}
 			
 			return static_cast<bool>(bs);

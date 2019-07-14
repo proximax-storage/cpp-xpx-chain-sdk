@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <nemcpp/utils/hashable_array.h>
+
 #include <type_traits>
 #include <utility>
 
@@ -13,6 +15,16 @@ namespace nem2_sdk {
 		return static_cast<std::underlying_type_t<TEnum>>(value);
 	}
 	
+	/// Determines whether \c T is specialization of template type \c U.
+	template<typename T, template<typename...> typename U>
+	struct is_specialization: std::false_type { };
+
+	template<template<typename...> typename U, typename... TArgs>
+	struct is_specialization<U<TArgs...>, U>: std::true_type { };
+
+	template<typename T, template<typename...> typename U>
+	constexpr bool is_specialization_v = is_specialization<T, U>::value;
+
 	/// Determines whether \c T represents some container (type that has methods \c data and \c size).
 	template<typename T>
 	struct is_container {
@@ -46,4 +58,17 @@ namespace nem2_sdk {
 	
 	template<typename T>
 	constexpr bool is_iterable_v = is_iterable<T>::value;
+
+	/// Determines whether \c T is an \c std::array or \c HashableArray.
+	template<typename T>
+	struct is_array: public std::false_type { };
+
+	template<typename TItem, size_t N>
+	struct is_array<std::array<TItem, N>>: public std::true_type { };
+
+	template<typename TItem, size_t N>
+	struct is_array<HashableArray<TItem, N>>: public std::true_type { };
+
+	template<typename T>
+	constexpr bool is_array_v = is_array<T>::value;
 }

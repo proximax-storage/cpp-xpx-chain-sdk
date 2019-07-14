@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <any>
 #include <cstdint>
 #include <tuple>
 #include <type_traits>
@@ -14,6 +15,8 @@ namespace nem2_sdk { namespace internal {
 	template<typename> struct is_variadic_struct;
 	template<typename TStruct> struct struct_size;
 	template<typename TStruct> struct struct_parent;
+	template<uint64_t Id, typename TStruct> struct has_field_by_id;;
+	template<typename TLiteral, typename TStruct> struct has_field_by_name;
 	template<size_t I, typename TStruct> struct struct_field_by_index;
 	template<uint64_t Id, typename TStruct> struct struct_field_by_id;
 	template<typename TLiteral, typename TStruct> struct struct_field_by_name;
@@ -138,7 +141,7 @@ namespace nem2_sdk { namespace internal {
 		constexpr bool set(TArg&& value)
 		{
 			if constexpr (!std::is_convertible_v<TArg, TValue>) {
-				static_assert(sizeof(TArg) == 0, "argument can't be converted to field value");
+				static_assert(sizeof(TArg) == 0, "argument can't be converted to variadic struct field value");
 			}
 			
 			using Type = typename std::decay<TArg>::type;
@@ -153,7 +156,7 @@ namespace nem2_sdk { namespace internal {
 					}
 				} else if constexpr (std::is_floating_point_v<Type> != std::is_floating_point_v<TValue> ||
 				                     sizeof(Type) > sizeof(TValue)) {
-					static_assert(sizeof(TArg) == 0, "dangerous argument conversion to field value");
+					static_assert(sizeof(TArg) == 0, "dangerous argument conversion to variadic struct field value");
 				}
 				
 				value_ = result ? static_cast<TValue>(value) : TValue{};
@@ -213,6 +216,22 @@ namespace nem2_sdk { namespace internal {
 		using TFields::set...;
 		using TFields::isSet...;
 		
+		// Overloads for readable compiler error when none of inherited methods fit.
+		// Note that we use '...' as methods parameter because such overloads are picked last.
+		// Also we declare them as 'const' to trigger them for both const and non-const lvalue and rvalue objects.
+
+		template<uint64_t FieldId>
+		std::any& value(...) const
+		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+
+		template<uint64_t FieldId>
+		bool set(...) const
+		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+
+		template<uint64_t FieldId>
+		std::any& isSet(...) const
+		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+
 	public:
 		VariadicStruct() = default;
 		
@@ -348,6 +367,29 @@ namespace nem2_sdk { namespace internal {
 		using type = typename VariadicStruct<TFields...>::ParentType;
 	};
 	
+	template<uint64_t Id, typename TName, typename TValue, typename TDescriptor, typename... TFields>
+	struct has_field_by_id<Id, VariadicStruct<Field<TName, TValue, TDescriptor>, TFields...>>:
+		public std::conditional<Id == FnvHash(TName::Value),
+		                        std::true_type,
+		                        has_field_by_id<Id, VariadicStruct<TFields...>>>::type
+	{ };
+
+	template<uint64_t Id, typename... TParentFields, typename... TFields>
+	struct has_field_by_id<Id, VariadicStruct<VariadicStruct<TParentFields...>, TFields...>>:
+		public std::conditional<has_field_by_id<Id, VariadicStruct<TParentFields...>>::value,
+		                        has_field_by_id<Id, VariadicStruct<TParentFields...>>,
+		                        has_field_by_id<Id, VariadicStruct<TFields...>>>::type
+	{ };
+
+	template<uint64_t Id>
+	struct has_field_by_id<Id, NullStruct>: public std::false_type
+	{ };
+
+	template<char... chars, typename... TFields>
+	struct has_field_by_name<StringLiteral<chars...>, VariadicStruct<TFields...>>:
+		public has_field_by_id<FnvHash(StringLiteral<chars...>::Value), VariadicStruct<TFields...>>
+	{ };
+
 	template<size_t I, typename TName, typename TValue, typename TDescriptor, typename... TFields>
 	struct struct_field_by_index<I, VariadicStruct<Field<TName, TValue, TDescriptor>, TFields...>>:
 		public struct_field_by_index<I - 1, VariadicStruct<TFields...>>
@@ -367,7 +409,7 @@ namespace nem2_sdk { namespace internal {
 	{ };
 	
 	template<size_t I> struct struct_field_by_index<I, NullStruct> {
-		static_assert(sizeof(I) == 0, "variadic struct field index is out of range");
+		static_assert(I < 0, "variadic struct field index is out of range");
 	};
 	
 	template<uint64_t Id, typename TName, typename TValue, typename TDescriptor, typename... TFields>
@@ -379,13 +421,15 @@ namespace nem2_sdk { namespace internal {
 	
 	template<uint64_t Id, typename... TParentFields, typename... TFields>
 	struct struct_field_by_id<Id, VariadicStruct<VariadicStruct<TParentFields...>, TFields...>>:
-		public struct_field_by_id<Id, VariadicStruct<TParentFields...>>,
-		public struct_field_by_id<Id, VariadicStruct<TFields...>>
+		public std::conditional<has_field_by_id<Id, VariadicStruct<TParentFields...>>::value,
+		                        struct_field_by_id<Id, VariadicStruct<TParentFields...>>,
+		                        struct_field_by_id<Id, VariadicStruct<TFields...>>>::type
 	{ };
 	
 	template<uint64_t Id>
-	struct struct_field_by_id<Id, NullStruct>
-	{ };
+	struct struct_field_by_id<Id, NullStruct> {
+		static_assert(Id < 0, "variadic struct field id is not found");
+	};
 	
 	template<char... chars, typename... TFields>
 	struct struct_field_by_name<StringLiteral<chars...>, VariadicStruct<TFields...>>:

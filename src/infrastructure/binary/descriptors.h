@@ -13,31 +13,25 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		
 		template<typename TName>
 		struct VariableSize {
+			using SizeFieldName = TName;
+
 			template<typename... TFields>
 			static size_t GetSize(const VariadicStruct<TFields...>& obj)
 			{
-				using Traits = struct_field_by_name<TName, VariadicStruct<TFields...>>;
-				
-				if constexpr (std::is_integral_v<typename Traits::ValueType>) {
-					return static_cast<size_t>(obj.template value<Traits::Id()>());
-				} else {
-					static_assert(sizeof(TName) == 0, "invalid size field type");
-				}
+				using Traits = struct_field_by_name<SizeFieldName, VariadicStruct<TFields...>>;
+				return static_cast<size_t>(obj.template value<Traits::Id()>());
 			}
 		};
 		
 		template<typename TName>
 		struct TrailingSize {
+			using SizeFieldName = TName;
+
 			template<typename... TFields>
 			static size_t GetTotalSize(const VariadicStruct<TFields...>& obj)
 			{
-				using Traits = struct_field_by_name<TName, VariadicStruct<TFields...>>;
-				
-				if constexpr (std::is_integral_v<typename Traits::ValueType>) {
-					return static_cast<size_t>(obj.template value<Traits::Id()>());
-				} else {
-					static_assert(sizeof(TName) == 0, "invalid total size field type");
-				}
+				using Traits = struct_field_by_name<SizeFieldName, VariadicStruct<TFields...>>;
+				return static_cast<size_t>(obj.template value<Traits::Id()>());
 			}
 		};
 		
