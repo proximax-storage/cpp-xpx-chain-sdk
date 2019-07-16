@@ -5,6 +5,7 @@
 #include <string>
 
 namespace nem2_sdk::internal::network {
+
 	enum class HTTPRequestMethod {
 		GET,
 		POST,
@@ -14,14 +15,14 @@ namespace nem2_sdk::internal::network {
 	struct RequestParams {
 		HTTPRequestMethod method;
 		bool secure;
-		std::string& host;
-		std::string& port;
-		std::string& path;
-		std::string& request_body;
+		std::string host;
+		std::string port;
+		std::string path;
+		std::string request_body;
 	};
 
 	std::string performHTTPRequest(
-			Context& context,
-			const RequestParams& requestParams
+			std::shared_ptr<Context> context,
+			const RequestParams &requestParams
 	);
 }

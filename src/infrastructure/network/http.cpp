@@ -1,4 +1,5 @@
 #include "http.h"
+#include <nemcpp/client.h>
 
 #include <string>
 
@@ -54,11 +55,15 @@ std::string _performHTTPRequest_internal(
 	http::response<http::string_body> response;
 	http::read(stream, buffer, response);
 
+	if (response.result() != http::status::ok) {
+		throw nem2_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
+	}
+
 	return response.body();
 }
 
 std::string _performHTTPRequest(
-		Context& context,
+		std::shared_ptr<Context> context,
 		HTTPRequestMethod method,
 		bool secure,
 		const std::string& host,
@@ -72,7 +77,7 @@ std::string _performHTTPRequest(
 	auto const endpoint = resolver.resolve(host, port);
 
 	if (secure) {
-		auto& ctx = context.get_ssl_context();
+		auto& ctx = context->get_ssl_context();
 		beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
 		beast::get_lowest_layer(stream).connect(endpoint);
 		stream.handshake(ssl::stream_base::client);
@@ -88,32 +93,34 @@ std::string _performHTTPRequest(
 	}
 }
 
-std::string performHTTPRequest(Context& context, const RequestParams& requestParams) {
-	std::string port;
-	if (requestParams.port.empty()) {
-		if (requestParams.secure) {
-			port = "443";
+namespace nem2_sdk::internal::network {
+	std::string performHTTPRequest(std::shared_ptr<Context> context, const RequestParams &requestParams) {
+		std::string port;
+		if (requestParams.port.empty()) {
+			if (requestParams.secure) {
+				port = "443";
+			} else {
+				port = "80";
+			}
 		} else {
-			port = "80";
+			port = requestParams.port;
 		}
-	} else {
-		port = requestParams.port;
-	}
 
-	std::string path;
-	if (requestParams.path.empty()) {
-		path = "/";
-	} else {
-		path = requestParams.path;
-	}
+		std::string path;
+		if (requestParams.path.empty()) {
+			path = "/";
+		} else {
+			path = requestParams.path;
+		}
 
-	return _performHTTPRequest(
-			context,
-			requestParams.method,
-			requestParams.secure,
-			requestParams.host,
-			port,
-			path,
-			requestParams.request_body
-	);
+		return _performHTTPRequest(
+				context,
+				requestParams.method,
+				requestParams.secure,
+				requestParams.host,
+				port,
+				path,
+				requestParams.request_body
+		);
+	}
 }

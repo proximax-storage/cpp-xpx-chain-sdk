@@ -1,7 +1,7 @@
-
 #pragma once
 
 #include <nemcpp/config.h>
+#include <nemcpp/client.h>
 #include <nemcpp/crypto/hash.h>
 #include <nemcpp/crypto/signer.h>
 #include <nemcpp/model/account/account.h>

@@ -10,6 +10,7 @@ cmake_policy(SET CMP0068 OLD)
 
 option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
 option(NEM2_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
+option(NEM2_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
@@ -186,4 +187,13 @@ if (NEM2_SDK_BUILD_TESTS)
 	include(CTest)
 	enable_testing()
 	add_subdirectory(tests)
+endif()
+
+if (NEM2_SDK_BUILD_EXAMPLES)
+	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
+	target_link_libraries(get_block
+			nemcpp
+			CONAN_PKG::rapidjson
+			CONAN_PKG::boost
+			CONAN_PKG::OpenSSL)
 endif()
