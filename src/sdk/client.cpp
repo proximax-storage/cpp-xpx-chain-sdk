@@ -1,4 +1,5 @@
 #include "infrastructure/network/context.h"
+#include "infrastructure/network/http.h"
 #include <nemcpp/client.h>
 #include <sdk/client/blockchain_impl.h>
 
@@ -8,7 +9,13 @@ class Client : public IClient {
 public:
 	explicit Client(std::shared_ptr<Config> config) : _config(config) {
 		_context = std::make_shared<internal::network::Context>();
-		_blockchain = std::make_shared<Blockchain>(config, _context);
+		_builder = _builder
+			.setBasePath(_config->basePath)
+			.setHost(_config->nodeAddress)
+			.setPort(_config->port)
+			.setSecurity(_config->useSSL);
+
+		_blockchain = std::make_shared<Blockchain>(config, _context, _builder);
 	}
 
 	std::shared_ptr<IBlockchain> blockchain() const override {
@@ -17,6 +24,7 @@ public:
 
 private:
 	std::shared_ptr<Config> _config;
+	internal::network::RequestParamsBuilder _builder;
 	std::shared_ptr<internal::network::Context> _context;
 	std::shared_ptr<Blockchain> _blockchain;
 };

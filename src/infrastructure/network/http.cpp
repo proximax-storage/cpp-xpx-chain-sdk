@@ -93,6 +93,60 @@ std::string _performHTTPRequest(
 	}
 }
 
+RequestParamsBuilder::RequestParamsBuilder() :
+	_method(HTTPRequestMethod::GET),
+	_secure(false),
+	_host("localhost"),
+	_port("3000"),
+	_basePath("/")
+{}
+
+RequestParamsBuilder& RequestParamsBuilder::setMethod(HTTPRequestMethod method) {
+	_method = method;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setSecurity(bool secure) {
+	_secure = secure;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setHost(const std::string& host) {
+	_host = host;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setPort(const std::string& port) {
+	_port = port;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setBasePath(const std::string& basePath) {
+	_basePath = basePath;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setPath(const std::string& path) {
+	_path = path;
+	return *this;
+}
+
+RequestParamsBuilder& RequestParamsBuilder::setRequestBody(const std::string& requestBody) {
+	_request_body;
+	return *this;
+}
+
+RequestParams RequestParamsBuilder::getRequestParams() {
+	return RequestParams{
+		_method,
+		_secure,
+		_host,
+		_port,
+		_basePath + _path,
+		_request_body
+	};
+}
+
 namespace nem2_sdk::internal::network {
 	std::string performHTTPRequest(std::shared_ptr<Context> context, const RequestParams &requestParams) {
 		std::string port;
