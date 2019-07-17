@@ -9,5 +9,9 @@ int main() {
 
 	nem2_sdk::Client client(std::make_shared<nem2_sdk::Config>(config));
 
-	std::cout << client.blockchain()->getBlockchainHeight() << std::endl;
+	auto height = client.blockchain()->getBlockchainHeight();
+	std::cout << "Block number: " << height << std::endl;
+
+	auto block = client.blockchain()->getBlockByHeight(height);
+	std::cout << "Block signature: " << block.block.signature << std::endl;
 }

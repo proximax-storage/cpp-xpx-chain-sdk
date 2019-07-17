@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nemcpp/config.h>
-#include <nemcpp/client/block.h>
+#include <nemcpp/client/blockchain.h>
 
 namespace nem2_sdk {
 	class InvalidRequest : public std::runtime_error {

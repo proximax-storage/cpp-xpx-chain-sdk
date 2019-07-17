@@ -1,5 +1,5 @@
 #include <nemcpp/client.h>
-#include <nemcpp/client/block.h>
+#include <nemcpp/client/blockchain.h>
 
 using namespace nem2_sdk;
 

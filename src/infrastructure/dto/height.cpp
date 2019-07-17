@@ -1,4 +1,5 @@
 #include "lower_higher.h"
+#include "height.h"
 #include <nemcpp/client.h>
 
 #include <boost/property_tree/ptree.hpp>
@@ -6,18 +7,16 @@
 
 using namespace nem2_sdk::internal::dto;
 
-LowerHigherDto LowerHigherDto::from_json(std::istream& json) {
+HeightDto HeightDto::from_json(std::istream& json) {
 	boost::property_tree::ptree pTree;
 	boost::property_tree::read_json(json, pTree);
 
-	return LowerHigherDto::from_ptree(pTree);
+	return HeightDto::from_ptree(pTree);
 }
 
-LowerHigherDto LowerHigherDto::from_ptree(boost::property_tree::ptree &pTree) {
+HeightDto HeightDto::from_ptree(boost::property_tree::ptree &pTree) {
 	try {
-		auto lower = pTree.back().second.get_value<uint64_t>();
-		auto higher = pTree.front().second.get_value<uint64_t>();
-		LowerHigherDto dto{lower, higher};
+		HeightDto dto{LowerHigherDto::from_ptree(pTree.get_child("height")).higher};
 		return dto;
 	} catch (boost::property_tree::ptree_bad_path& e) {
 		throw InvalidJSON(e);
