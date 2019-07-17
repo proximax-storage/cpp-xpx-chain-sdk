@@ -17,13 +17,11 @@ namespace nem2_sdk {
 		explicit InvalidJSON(const runtime_error &error);
 	};
 
-	class Client {
+	class IClient {
 	public:
-		explicit Client(std::shared_ptr<Config> config);
-		std::shared_ptr<Blockchain> blockchain() const;
-
-	private:
-		std::shared_ptr<Config> _config;
-		std::shared_ptr<Blockchain> _blockchain;
+		virtual std::shared_ptr<IBlockchain> blockchain() const = 0;
+		virtual ~IClient() = default;
 	};
+
+	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config);
 }

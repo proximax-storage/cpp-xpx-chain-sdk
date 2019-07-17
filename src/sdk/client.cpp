@@ -1,14 +1,30 @@
+#include "infrastructure/network/context.h"
 #include <nemcpp/client.h>
-#include <nemcpp/client/blockchain.h>
+#include <sdk/client/blockchain_impl.h>
 
 using namespace nem2_sdk;
 
-Client::Client(std::shared_ptr<Config> config) : _config(config) {
-	_blockchain = std::make_shared<Blockchain>(config);
-}
+class Client : public IClient {
+public:
+	explicit Client(std::shared_ptr<Config> config) : _config(config) {
+		_context = std::make_shared<internal::network::Context>();
+		_blockchain = std::make_shared<Blockchain>(config, _context);
+	}
 
-std::shared_ptr<Blockchain> Client::blockchain() const {
-	return _blockchain;
+	std::shared_ptr<IBlockchain> blockchain() const override {
+		return _blockchain;
+	}
+
+private:
+	std::shared_ptr<Config> _config;
+	std::shared_ptr<internal::network::Context> _context;
+	std::shared_ptr<Blockchain> _blockchain;
+};
+
+namespace nem2_sdk {
+	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config) {
+		return std::make_shared<Client>(config);
+	}
 }
 
 InvalidRequest::InvalidRequest(uint16_t code) :

@@ -1,5 +1,5 @@
 #include <nemcpp/client.h>
-#include <nemcpp/client/blockchain.h>
+#include <sdk/client/blockchain_impl.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
 #include <infrastructure/dto/block_dto.h>
@@ -8,9 +8,11 @@
 using namespace nem2_sdk;
 
 Blockchain::Blockchain(
-	std::shared_ptr<Config> config
+	std::shared_ptr<Config> config,
+	std::shared_ptr<internal::network::Context> context
 ) :
-	_config(config)
+	_config(config),
+	_context(context)
 {};
 
 uint64_t Blockchain::getBlockchainHeight() {
@@ -21,8 +23,7 @@ uint64_t Blockchain::getBlockchainHeight() {
 	requestParams.port = _config->port;
 	requestParams.method = internal::network::HTTPRequestMethod::GET;
 
-	auto context = std::make_shared<internal::network::Context>();
-	auto result = internal::network::performHTTPRequest(context, requestParams);
+	auto result = internal::network::performHTTPRequest(_context, requestParams);
 
 	std::istringstream resultStream(result);
 	auto dto = nem2_sdk::internal::dto::HeightDto::from_json(resultStream);
@@ -40,8 +41,7 @@ Block Blockchain::getBlockByHeight(uint64_t height) {
 	requestParams.port = _config->port;
 	requestParams.method = internal::network::HTTPRequestMethod::GET;
 
-	auto context = std::make_shared<internal::network::Context>();
-	auto result = internal::network::performHTTPRequest(context, requestParams);
+	auto result = internal::network::performHTTPRequest(_context, requestParams);
 
 	std::istringstream resultStream(result);
 	return nem2_sdk::internal::dto::BlockDto::from_json(resultStream);
