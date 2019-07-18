@@ -72,16 +72,26 @@ namespace nem2_sdk {
 		return data_;
 	}
 	
-	const std::string& Address::encoded() const
+	const std::string& Address::encoded() const&
 	{
 		return *encoded_;
 	}
-	
-	const std::string& Address::pretty() const
+
+	std::string&& Address::encoded() &&
+	{
+		return *std::move(encoded_);
+	}
+
+	const std::string& Address::pretty() const&
 	{
 		return *pretty_;
 	}
-	
+
+	std::string&& Address::pretty() &&
+	{
+		return *std::move(pretty_);
+	}
+
 	const uint8_t* Address::data() const
 	{
 		return data_.data();

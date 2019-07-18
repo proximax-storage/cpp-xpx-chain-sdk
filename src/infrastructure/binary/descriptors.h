@@ -13,44 +13,44 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		
 		template<typename TName>
 		struct VariableSize {
+			using SizeFieldName = TName;
+
 			template<typename... TFields>
 			static size_t GetSize(const VariadicStruct<TFields...>& obj)
 			{
-				using Traits = struct_field_by_name<TName, VariadicStruct<TFields...>>;
-				
-				if constexpr (std::is_integral_v<typename Traits::ValueType>) {
-					return static_cast<size_t>(obj.template value<Traits::Id()>());
-				} else {
-					static_assert(sizeof(TName) == 0, "invalid size field type");
-				}
+				using Traits = struct_field_by_name<SizeFieldName, VariadicStruct<TFields...>>;
+				return static_cast<size_t>(obj.template value<Traits::Id()>());
 			}
 		};
 		
 		template<typename TName>
 		struct TrailingSize {
+			using SizeFieldName = TName;
+
 			template<typename... TFields>
 			static size_t GetTotalSize(const VariadicStruct<TFields...>& obj)
 			{
-				using Traits = struct_field_by_name<TName, VariadicStruct<TFields...>>;
-				
-				if constexpr (std::is_integral_v<typename Traits::ValueType>) {
-					return static_cast<size_t>(obj.template value<Traits::Id()>());
-				} else {
-					static_assert(sizeof(TName) == 0, "invalid total size field type");
-				}
+				using Traits = struct_field_by_name<SizeFieldName, VariadicStruct<TFields...>>;
+				return static_cast<size_t>(obj.template value<Traits::Id()>());
 			}
 		};
-		
-		template<typename>
-		constexpr bool is_variable_size_v = false;
-		
-		template<typename TName>
-		constexpr bool is_variable_size_v<VariableSize<TName>> = true;
-		
-		template<typename>
-		constexpr bool is_trailing_size_v = false;
+
+		template<typename T>
+		struct is_variable_size: public std::false_type { };
 		
 		template<typename TName>
-		constexpr bool is_trailing_size_v<TrailingSize<TName>> = true;
+		struct is_variable_size<VariableSize<TName>>: public std::true_type { };
+
+		template<typename T>
+		constexpr bool is_variable_size_v = is_variable_size<T>::value;
+
+		template<typename T>
+		struct is_trailing_size: public std::false_type { };
+
+		template<typename TName>
+		struct is_trailing_size<TrailingSize<TName>>: public std::true_type { };
+
+		template<typename T>
+		constexpr bool is_trailing_size_v = is_trailing_size<T>::value;
 	}
 }}}

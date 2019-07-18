@@ -46,6 +46,7 @@ set(sources
 	include/nemcpp/config.h
 	include/nemcpp/exceptions.h
 	include/nemcpp/sdk.h
+	include/nemcpp/traits.h
 	include/nemcpp/types.h
 	include/nemcpp/crypto/hash.h
 	include/nemcpp/crypto/key_pair.h
@@ -92,6 +93,7 @@ set(sources
 	include/nemcpp/utils/bitwise_enum.h
 	include/nemcpp/utils/buffer.h
 	include/nemcpp/utils/comparator.h
+	include/nemcpp/utils/format.h
 	include/nemcpp/utils/hashable_array.h
 	include/nemcpp/utils/hasher.h
 	include/nemcpp/utils/lazy.h
@@ -103,6 +105,7 @@ set(sources
 	src/infrastructure/binary/parser.h
 	src/infrastructure/binary/dto/transaction_dto.h
 	src/infrastructure/json/descriptors.h
+	src/infrastructure/json/hex.h
 	src/infrastructure/json/parser.cpp
 	src/infrastructure/json/parser.h
 	src/infrastructure/json/uint64.cpp

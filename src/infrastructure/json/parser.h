@@ -2,6 +2,7 @@
 #pragma once
 
 #include "infrastructure/json/descriptors.h"
+#include "infrastructure/json/hex.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/utils/variadic_struct.h"
 
@@ -22,7 +23,17 @@
 #include <vector>
 
 namespace nem2_sdk { namespace internal { namespace json {
-	
+
+	// Json DTOs should contain only following types:
+	//
+	// 1. other DTOs
+	// 2. arithmetic (int, double (but no float!) etc), enums and special type Uint64 which is represented
+	//    in json as 2 item array holding low and high 32bit parts of 64bit value
+	// 3. std::vector, std::array or nem2_sdk::HashableArray with elements of any supported type
+	// 4. std::string
+	// 5. special template type 'Hex<T>' which marks wrapped type as hex-formatted in json; type T can be
+	//    integral, enum or any of the container type from 3 if their value type is integral or enum.
+
 	enum class OutputMode: uint8_t {
 		Default = 0,
 		Pretty
@@ -120,6 +131,41 @@ namespace nem2_sdk { namespace internal { namespace json {
 			
 			return result;
 		}
+
+	private:
+		template<typename TName, typename TStruct, typename TField, typename TDescriptor = void>
+		static constexpr bool IsValidField() // bool return value to force compiler to instantiate this function template early
+		{
+			if constexpr (!desc::is_field_flags_v<TDescriptor> && !std::is_same_v<TDescriptor, void>) {
+				static_assert(sizeof(TField) == 0, "invalid field descriptor (should be void or 'Flags')");
+			}
+
+			if constexpr ( (std::is_arithmetic_v<TField> && !std::is_same_v<TField, float>) ||
+			               std::is_enum_v<TField> ||
+			               std::is_same_v<TField, std::string> ||
+			               std::is_same_v<TField, Uint64> ||
+			               is_variadic_struct_v<TField>) {
+				//do nothing
+			} else if constexpr (is_specialization_v<TField, std::vector> || is_array_ext_v<TField>) {
+				return IsValidField<TName, TStruct, typename TField::value_type>();
+			} else if constexpr (is_specialization_v<TField, Hex>) {
+				if constexpr (std::is_integral_v<typename TField::WrappedType> || std::is_enum_v<typename TField::WrappedType>) {
+					//do nothing
+				} else if constexpr (is_specialization_v<typename TField::WrappedType, std::vector> ||
+				                     is_array_ext_v<typename TField::WrappedType>) {
+					if constexpr  (!std::is_integral_v<typename TField::WrappedType::value_type> &&
+					               !std::is_enum_v<typename TField::WrappedType::value_type>) {
+						static_assert(sizeof(TField) == 0, "invalid wrapped type for hex-formatted field");
+					}
+				} else {
+					static_assert(sizeof(TField) == 0, "invalid wrapped type for hex-formatted field");
+				}
+			} else {
+				static_assert(sizeof(TField) == 0, "invalid field type");
+			}
+
+			return true;
+		}
 		
 	private:
 		template<typename TField>
@@ -132,7 +178,16 @@ namespace nem2_sdk { namespace internal { namespace json {
 					return true;
 				}
 				
-				if constexpr (std::is_integral_v<TField>) {
+				if constexpr (std::is_enum_v<TField>) {
+					std::underlying_type_t<TField> rawValue{};
+					auto result = Impl<std::underlying_type_t<TField>>::Read(rawValue, jsonValue, jsonPtr);
+
+					if (result) {
+						value = static_cast<TField>(rawValue);
+					}
+					
+					return result;
+				} else if constexpr (std::is_integral_v<TField>) {
 					if constexpr (std::is_same_v<TField, bool>) {
 						if (jsonValue->IsBool()) {
 							value = jsonValue->GetBool();
@@ -168,7 +223,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 						return true;
 					}
 				} else {
-					static_assert(sizeof(TField) == 0, "type is not supported by json parser");
+					static_assert(sizeof(TField) == 0, "field type is not supported by json parser");
 				}
 				
 				return { false, jsonPtr };
@@ -179,7 +234,9 @@ namespace nem2_sdk { namespace internal { namespace json {
 			                         const char* jsonPtr,
 			                         rapidjson::Document& document)
 			{
-				if constexpr (std::is_integral_v<TField>) {
+				if constexpr (std::is_enum_v<TField>) {
+					return Impl<std::underlying_type_t<TField>>::Write(to_underlying_type(value), jsonValue, jsonPtr, document);
+				} else if constexpr (std::is_integral_v<TField>) {
 					if constexpr (std::is_same_v<TField, bool>) {
 						jsonValue.SetBool(value);
 					} else if constexpr (std::is_unsigned_v<TField>) {
@@ -192,7 +249,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 				} else if constexpr (std::is_same_v<TField, std::string>) {
 					jsonValue.SetString(value.c_str(), document.GetAllocator());
 				} else {
-					static_assert(sizeof(TField) == 0, "type is not supported by json parser");
+					static_assert(sizeof(TField) == 0, "field type is not supported by json parser");
 				}
 				
 				return true;
@@ -204,7 +261,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 	};
 	
 	// Implementation specializations for complex types
-	
+
 	template<typename TItem>
 	class Parser::Impl<std::vector<TItem>> {
 	public:
@@ -222,7 +279,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 			
 			for (decltype(size) i = 0; i < size; ++i) {
 				std::string itemPtr = MakeString{} << jsonPtr << "/" << i;
-				TItem item;
+				TItem item{};
 				
 				auto result = Impl<TItem>::Read(item, &(*jsonValue)[i], itemPtr.c_str());
 				
@@ -273,7 +330,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 			}
 			
 			std::vector<TItem> data;
-			auto result = Impl<decltype(data)>::Read(data, jsonValue, jsonPtr);
+			auto result = Impl<std::vector<TItem>>::Read(data, jsonValue, jsonPtr);
 			
 			if (result) {
 				std::copy(data.begin(), data.end(), value.begin());
@@ -289,13 +346,43 @@ namespace nem2_sdk { namespace internal { namespace json {
 		{
 			std::vector<TItem> data;
 			std::copy(value.begin(), value.end(), std::back_inserter(data));
-			return Impl<decltype(data)>::Write(data, jsonValue, jsonPtr, document);
+			return Impl<std::vector<TItem>>::Write(data, jsonValue, jsonPtr, document);
 		}
 	};
 	
 	template<typename TItem, size_t N>
 	class Parser::Impl<HashableArray<TItem, N>>: public Parser::Impl<std::array<TItem, N>> { };
 	
+	template<typename TWrappedType>
+	class Parser::Impl<Hex<TWrappedType>> {
+	public:
+		static ParseResult Read(Hex<TWrappedType>& value, const rapidjson::Value* jsonValue, const char* jsonPtr)
+		{
+			if (!jsonValue || jsonValue->IsNull()) {
+				value = TWrappedType{};
+				return true;
+			}
+
+			std::string hexData;
+			auto result = Impl<std::string>::Read(hexData, jsonValue, jsonPtr);
+
+			if (result && !FromHex(hexData, value.unwrap())) {
+				result = { false, jsonPtr };
+			}
+
+			return result;
+		}
+
+		static ParseResult Write(const Hex<TWrappedType>& value,
+		                         rapidjson::Value& jsonValue,
+		                         const char* jsonPtr,
+		                         rapidjson::Document& document)
+		{
+			std::string hexData = ToHex(value.unwrap());
+			return Impl<std::string>::Write(hexData, jsonValue, jsonPtr, document);
+		}
+	};
+
 	template<typename... TFields>
 	class Parser::Impl<VariadicStruct<TFields...>> {
 	public:
@@ -331,12 +418,21 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                        const char* jsonPtr,
 		                        std::index_sequence<Idx...>)
 		{
-			ParseResult result = { true, "" };
-			
-			( ( result = ReadField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr),
-			    result ) && ... );
-			
-			return result;
+			constexpr bool isValidStruct = (IsValidField<typename struct_field_by_index<Idx, StructType>::NameType,
+			                                             StructType,
+			                                             typename struct_field_by_index<Idx, StructType>::ValueType,
+			                                             typename struct_field_by_index<Idx, StructType>::DescriptorType>() && ...);
+
+			if constexpr (isValidStruct) {
+				ParseResult result = true;
+
+				( ( result = ReadField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr),
+				    result ) && ... );
+
+				return result;
+			} else {
+				static_assert(sizeof...(Idx) < 0, "variadic struct is not supported by json parser");
+			}
 		}
 		
 		template<size_t... Idx>
@@ -346,12 +442,20 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                         rapidjson::Document& document,
 		                         std::index_sequence<Idx...>)
 		{
-			ParseResult result = true;
-			
-			( ( result = WriteField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr, document),
-			    result ) && ... );
-			
-			return result;
+			constexpr bool isValidStruct = (IsValidField<typename struct_field_by_index<Idx, StructType>::NameType,
+			                                             StructType,
+			                                             typename struct_field_by_index<Idx, StructType>::ValueType,
+			                                             typename struct_field_by_index<Idx, StructType>::DescriptorType>() && ...);
+
+			if constexpr (isValidStruct) {
+				ParseResult result = true;
+
+				( ( result = WriteField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr, document),
+				    result ) && ... );
+				return result;
+			} else {
+				static_assert(sizeof...(Idx) < 0, "variadic struct is not supported by json parser");
+			}
 		}
 		
 		template<typename TTraits, typename TStruct>
@@ -371,7 +475,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 			if (result) {
 				bool isSet = it != jsonValue->MemberEnd() && !(it->value.IsNull());
 				
-				if constexpr (!std::is_same_v<typename TTraits::DescriptorType, desc::Optional>) {
+				if constexpr (!desc::Is_Optional<typename TTraits::DescriptorType>) {
 					if (!isSet) {
 						return { false, fieldPtr };
 					}
@@ -390,7 +494,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                              rapidjson::Document& document)
 		{
 			std::string fieldPtr = MakeString{} << jsonPtr << "/" << TTraits::Name();
-			std::pair<bool, std::string> result = { true, "" };
+			ParseResult result = true;
 			
 			if (obj.template isSet<TTraits::Id()>()) {
 				rapidjson::Value memberName(TTraits::Name(), document.GetAllocator());
@@ -402,7 +506,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 				if (result) {
 					jsonValue.AddMember(memberName.Move(), memberValue.Move(), document.GetAllocator());
 				}
-			} else if constexpr (!std::is_same_v<typename TTraits::DescriptorType, desc::Optional>) {
+			} else if constexpr (!desc::Is_Optional<typename TTraits::DescriptorType>) {
 				result = { false, fieldPtr };
 			}
 			
@@ -415,8 +519,8 @@ namespace nem2_sdk { namespace internal { namespace json {
 	public:
 		static ParseResult Read(Uint64& value, const rapidjson::Value* jsonValue, const char* jsonPtr)
 		{
-			std::array<uint32_t, 2> data;
-			auto result = Impl<decltype(data)>::Read(data, jsonValue, jsonPtr);
+			std::array<uint32_t, 2> data{};
+			auto result = Impl<std::array<uint32_t, 2>>::Read(data, jsonValue, jsonPtr);
 			
 			if (result) {
 				value = data[0];
@@ -432,10 +536,10 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                         const char* jsonPtr,
 		                         rapidjson::Document& document)
 		{
-			std::array<uint32_t, 2> arr;
+			std::array<uint32_t, 2> arr{};
 			arr[0] = static_cast<uint32_t>(value >> 32);
 			arr[1] = static_cast<uint32_t>(value);
-			return Impl<decltype(arr)>::Write(arr, jsonValue, jsonPtr, document);
+			return Impl<std::array<uint32_t, 2>>::Write(arr, jsonValue, jsonPtr, document);
 		}
 	};
 }}}

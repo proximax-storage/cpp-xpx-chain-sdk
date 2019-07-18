@@ -22,13 +22,7 @@
 
 namespace nem2_sdk { namespace internal { namespace binary {
 	
-	// Binary DTOs should contain only following types:
-	//
-	// 1. arithmetic (int, double, etc) and enums
-	// 2. std::array which has fixed size
-	// 3. std::string which requires size descriptor and treats it as string length
-	// 4. std::vector which requires size descriptor and treats it as elements count
-	// 5. other binary DTOs
+	// See ../parser.h for description of supported variadic struct field types and descriptors.
 	
 	// Common DTOs
 	//==========================================================================

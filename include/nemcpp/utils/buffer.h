@@ -180,7 +180,7 @@ namespace nem2_sdk {
 		constexpr ElementType* convertData(TSomeElement* data)
 		{
 			static_assert(is_convertible_v<std::remove_cv_t<TSomeElement>, std::remove_cv_t<ElementType>>,
-			              "can't perform implicit conversion");
+			              "can't perform implicit conversion to buffer element type");
 			
 			if constexpr (std::is_same_v<ElementType, TSomeElement>) {
 				// reinterpret_cast is not allowed in constexpr function, avoiding it if possible
@@ -195,7 +195,7 @@ namespace nem2_sdk {
 		constexpr size_t convertSize(size_t size)
 		{
 			static_assert(is_convertible_v<std::remove_cv_t<TSomeElement>, std::remove_cv_t<ElementType>>,
-			              "can't perform implicit conversion");
+			              "can't perform implicit conversion to buffer element type");
 			return size * (sizeof(TSomeElement) / sizeof(ElementType));
 		}
 		

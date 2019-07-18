@@ -476,7 +476,6 @@ namespace nem2_sdk {
 	}
 	
 	
-	
 	std::vector<uint8_t> TransactionToBinary(const Transaction* transaction)
 	{
 		return transaction->binary();
@@ -508,7 +507,7 @@ namespace nem2_sdk {
 		description << "'" << GetTransactionName(header.value<"type"_>()) << "': ";
 		
 		if (ExtractTransactionVersion(header.value<"version"_>()) != GetTransactionVersion(header.value<"type"_>())) {
-			return { ReadResultCode::Failure, header.value<"size"_>(), description << "incorrect version" };
+			return { ReadResultCode::Failure, header.value<"size"_>(), (description << "incorrect version").str() };
 		}
 		
 		switch (header.value<"type"_>()) {
@@ -704,7 +703,7 @@ namespace nem2_sdk {
 		if (transaction) {
 			return { ReadResultCode::Success, header.value<"size"_>() };
 		} else {
-			return { ReadResultCode::Failure, header.value<"size"_>(), description << "incorrect data" };
+			return { ReadResultCode::Failure, header.value<"size"_>(), (description << "incorrect data").str() };
 		}
 	}
 }

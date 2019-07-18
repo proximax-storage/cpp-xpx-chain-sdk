@@ -46,11 +46,17 @@ namespace nem2_sdk {
 		const AddressData& binary() const;
 		
 		/// Returns base32-encoded address.
-		const std::string& encoded() const;
-		
+		const std::string& encoded() const&;
+
+		/// Returns base32-encoded address.
+		std::string&& encoded() &&;
+
 		/// Returns pretty-print address.
-		const std::string& pretty() const;
-		
+		const std::string& pretty() const&;
+
+		/// Returns pretty-print address.
+		std::string&& pretty() &&;
+
 		/// Returns binary address.
 		const uint8_t* data() const;
 		
