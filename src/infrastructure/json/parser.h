@@ -23,7 +23,17 @@
 #include <vector>
 
 namespace nem2_sdk { namespace internal { namespace json {
-	
+
+	// Json DTOs should contain only following types:
+	//
+	// 1. other DTOs
+	// 2. arithmetic (int, double (but no float!) etc), enums and special type Uint64 which is represented
+	//    in json as 2 item array holding low and high 32bit parts of 64bit value
+	// 3. std::vector, std::array or nem2_sdk::HashableArray with elements of any supported type
+	// 4. std::string
+	// 5. special template type 'Hex<T>' which marks wrapped type as hex-formatted in json; type T can be
+	//    integral, enum or any of the container type from 3 if their value type is integral or enum.
+
 	enum class OutputMode: uint8_t {
 		Default = 0,
 		Pretty
