@@ -14,4 +14,9 @@ int main() {
 
 	auto block = client->blockchain()->getBlockByHeight(height);
 	std::cout << "Block signature: " << block.block.signature << std::endl;
+
+	auto blocks = client->blockchain()->getBlocksByHeightWithLimit(height - 1, 25);
+	for (auto& block: blocks) {
+		std::cout << "Block signature: " << block.block.signature << std::endl;
+	}
 }

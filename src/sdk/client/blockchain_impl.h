@@ -18,6 +18,7 @@ namespace nem2_sdk {
 
 		uint64_t getBlockchainHeight() override;
 		Block getBlockByHeight(uint64_t height) override;
+		std::vector<Block> getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) override;
 
 	private:
 		std::shared_ptr<Config> _config;

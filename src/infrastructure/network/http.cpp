@@ -55,7 +55,10 @@ std::string _performHTTPRequest_internal(
 	http::response<http::string_body> response;
 	http::read(stream, buffer, response);
 
-	if (response.result() != http::status::ok) {
+	if (response.result() == http::status::found) {
+		auto path = response.at("Location").to_string();
+		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
+	} else if (response.result() != http::status::ok) {
 		throw nem2_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
 	}
 
