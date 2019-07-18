@@ -89,15 +89,15 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		
 	private:
 		template<typename TName, typename TStruct, typename TField, typename TDescriptor, bool IsItem = false>
-		static constexpr void CheckField()
+		static constexpr bool IsValidField() // bool return value to force compiler to instantiate this function template early
 		{
-			if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField> || is_array_v<TField> || is_variadic_struct_v<TField>) {
+			if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField> || is_array_ext_v<TField> || is_variadic_struct_v<TField>) {
 				if constexpr (!std::is_same_v<TDescriptor, void>) {
 					static_assert(sizeof(TField) == 0, "invalid field descriptor (should be void)");
 				}
 
-				if constexpr (is_array_v<TField>) {
-					CheckField<TName, TStruct, typename TField::value_type, void, true>();
+				if constexpr (is_array_ext_v<TField>) {
+					return IsValidField<TName, TStruct, typename TField::value_type, void, true>();
 				}
 			} else if constexpr (!IsItem && (is_specialization_v<TField, std::vector> || std::is_same_v<TField, std::string>)) {
 				if constexpr (desc::is_variable_size_v<TDescriptor> || desc::is_trailing_size_v<TDescriptor>) {
@@ -107,70 +107,80 @@ namespace nem2_sdk { namespace internal { namespace binary {
 						static_assert(sizeof(TField) == 0, "invalid size field type (should be integral)");
 					}
 				} else {
-					static_assert(sizeof(TField) == 0, "invalid container field descriptor (should be 'VariableSize' or 'TrailingSize')");
+					static_assert(sizeof(TField) == 0, "invalid field descriptor (should be 'VariableSize' or 'TrailingSize')");
 				}
 
 				if constexpr (is_specialization_v<TField, std::vector>) {
-					return CheckField<TName, TStruct, typename TField::value_type, void, true>();
+					return IsValidField<TName, TStruct, typename TField::value_type, void, true>();
 				}
 			} else {
-				if constexpr (IsItem) {
-					static_assert(sizeof(TField) == 0, "invalid container field item type");
-				} else {
-					static_assert(sizeof(TField) == 0, "invalid field type");
-				}
+				static_assert(sizeof(TField) == 0, "invalid field type");
 			}
+
+			return true;
 		}
 
 		template<typename TStruct, size_t... Idx>
 		static bool ReadStruct(TStruct& obj, ReadOnlyByteStream& bs, std::index_sequence<Idx...>)
 		{
-			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
-			            TStruct,
-			            typename struct_field_by_index<Idx, TStruct>::ValueType,
-			            typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+			constexpr bool isValidStruct = (IsValidField<typename struct_field_by_index<Idx, TStruct>::NameType,
+			                                             TStruct,
+			                                             typename struct_field_by_index<Idx, TStruct>::ValueType,
+			                                             typename struct_field_by_index<Idx, TStruct>::DescriptorType>() && ...);
 
-			auto result =
-				(Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::template Read<typename struct_field_by_index<Idx, TStruct>::DescriptorType>(
-				     obj, obj.template value<Field_Id<Idx, TStruct>>(), bs)
-			     && ...);
-			
-			if (result) {
-				(obj.template isSet<Field_Id<Idx, TStruct>>() = ... = true);
+			if constexpr (isValidStruct) {
+				auto result =
+					(Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::template Read<typename struct_field_by_index<Idx, TStruct>::DescriptorType>(
+					     obj, obj.template value<Field_Id<Idx, TStruct>>(), bs)
+				     && ...);
+
+				if (result) {
+					(obj.template isSet<Field_Id<Idx, TStruct>>() = ... = true);
+				}
+
+				return result;
+			} else {
+				static_assert(sizeof(TStruct) == 0, "variadic struct is not supported by json parser");
 			}
-			
-			return result;
 		}
 		
 		template<typename TStruct, size_t... Idx>
 		static bool WriteStruct(const TStruct& obj, ByteStream& bs, std::index_sequence<Idx...>)
 		{
-			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
-				TStruct,
-				typename struct_field_by_index<Idx, TStruct>::ValueType,
-				typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+			constexpr bool isValidStruct = (IsValidField<typename struct_field_by_index<Idx, TStruct>::NameType,
+			                                             TStruct,
+			                                             typename struct_field_by_index<Idx, TStruct>::ValueType,
+			                                             typename struct_field_by_index<Idx, TStruct>::DescriptorType>() && ...);
 
-			bool isAllSet = (obj.template isSet<Field_Id<Idx, TStruct>>() && ...);
-			
-			if (!isAllSet) {
-				return false;
+			if constexpr (isValidStruct) {
+				bool isAllSet = (obj.template isSet<Field_Id<Idx, TStruct>>() && ...);
+
+				if (!isAllSet) {
+					return false;
+				}
+
+				return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::Write(obj.template value<Field_Id<Idx, TStruct>>(), bs) && ...);
+			} else {
+				static_assert(sizeof(TStruct) == 0, "variadic struct is not supported by json parser");
 			}
-			
-			return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::Write(obj.template value<Field_Id<Idx, TStruct>>(), bs) && ...);
 		}
 		
 		template<typename TStruct, size_t... Idx>
 		static size_t CalculateStructSize(const TStruct& obj, std::index_sequence<Idx...>)
 		{
-			(CheckField<typename struct_field_by_index<Idx, TStruct>::NameType,
-				TStruct,
-				typename struct_field_by_index<Idx, TStruct>::ValueType,
-				typename struct_field_by_index<Idx, TStruct>::DescriptorType>(), ...);
+			constexpr bool isValidStruct = (IsValidField<typename struct_field_by_index<Idx, TStruct>::NameType,
+			                                             TStruct,
+			                                             typename struct_field_by_index<Idx, TStruct>::ValueType,
+			                                             typename struct_field_by_index<Idx, TStruct>::DescriptorType>() && ...);
 
-			if constexpr (struct_size<TStruct>::value) {
-				return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::CalculateSize(obj.template value<Field_Id<Idx, TStruct>>()) + ...);
+			if constexpr (isValidStruct) {
+				if constexpr (struct_size<TStruct>::value) {
+					return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::CalculateSize(obj.template value<Field_Id<Idx, TStruct>>()) + ...);
+				} else {
+					return 0;
+				}
 			} else {
-				return 0;
+				static_assert(sizeof(TStruct) == 0, "variadic struct is not supported by json parser");
 			}
 		}
 		
@@ -217,7 +227,6 @@ namespace nem2_sdk { namespace internal { namespace binary {
 
 				return static_cast<bool>(bs);			}
 			
-			template<typename TUnused = void> // without this some of 'CheckField' asserts can be skipped
 			static bool Write(const TField& field, ByteStream& bs)
 			{
 				if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField>) {

@@ -30,13 +30,13 @@ namespace nem2_sdk {
 	struct is_container {
 		template<
 			typename U,
-			typename = typename std::enable_if<std::is_pointer_v<decltype(std::declval<U*>()->data())>>::type,
-			typename = decltype(std::declval<U*>()->size())>
+			typename = typename std::enable_if<std::is_pointer_v<decltype(std::declval<U&>().data())>>::type,
+			typename = decltype(std::declval<U&>().size())>
 		static std::true_type test(int);
 		
 		template<typename U> static std::false_type test(...);
 		
-		static constexpr bool value = decltype(test<typename std::decay<T>::type>(0))::value;
+		static constexpr bool value = decltype(test<std::decay_t<T>>(0))::value;
 	};
 	
 	template<typename T>
@@ -47,28 +47,28 @@ namespace nem2_sdk {
 	struct is_iterable {
 		template<
 			typename U,
-			typename = decltype(std::declval<U*>()->begin()),
-			typename = decltype(std::declval<U*>()->end())>
-		static std::true_type test(int);
-		
+			typename = decltype(std::begin(std::declval<U&>())),
+			typename = decltype(std::end(std::declval<U&>()))>
+			static std::true_type test(int);
+
 		template<typename U> static std::false_type test(...);
-		
-		static constexpr bool value = decltype(test<typename std::decay<T>::type>(0))::value;
+
+		static constexpr bool value = decltype(test<std::remove_cv_t<std::remove_reference_t<T>>>(0))::value;
 	};
-	
+
 	template<typename T>
 	constexpr bool is_iterable_v = is_iterable<T>::value;
 
 	/// Determines whether \c T is an \c std::array or \c HashableArray.
 	template<typename T>
-	struct is_array: public std::false_type { };
+	struct is_array_ext: public std::false_type { };
 
 	template<typename TItem, size_t N>
-	struct is_array<std::array<TItem, N>>: public std::true_type { };
+	struct is_array_ext<std::array<TItem, N>>: public std::true_type { };
 
 	template<typename TItem, size_t N>
-	struct is_array<HashableArray<TItem, N>>: public std::true_type { };
+	struct is_array_ext<HashableArray<TItem, N>>: public std::true_type { };
 
 	template<typename T>
-	constexpr bool is_array_v = is_array<T>::value;
+	constexpr bool is_array_ext_v = is_array_ext<T>::value;
 }

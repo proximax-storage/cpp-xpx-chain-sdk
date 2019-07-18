@@ -12,7 +12,7 @@ namespace nem2_sdk { namespace internal {
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
 	template<typename... TArgs> class VariadicStruct;
 	
-	template<typename> struct is_variadic_struct;
+	template<typename T> struct is_variadic_struct;
 	template<typename TStruct> struct struct_size;
 	template<typename TStruct> struct struct_parent;
 	template<uint64_t Id, typename TStruct> struct has_field_by_id;;
@@ -144,7 +144,7 @@ namespace nem2_sdk { namespace internal {
 				static_assert(sizeof(TArg) == 0, "argument can't be converted to variadic struct field value");
 			}
 			
-			using Type = typename std::decay<TArg>::type;
+			using Type = std::decay_t<TArg>;
 			bool result = true;
 			
 			if constexpr (std::is_arithmetic_v<Type> && std::is_arithmetic_v<TValue>) {
@@ -242,7 +242,7 @@ namespace nem2_sdk { namespace internal {
 			typename... TArgs,
 			typename = typename std::enable_if<sizeof...(TArgs) <= sizeof...(TFields)>::type,
 			typename = typename std::enable_if<sizeof...(TArgs) != 1 || // should not hide default copy and move!
-			                                   !(std::is_same_v<typename std::decay<TArgs>::type, SelfType> && ...)>::type>
+			                                   !(std::is_same_v<std::decay_t<TArgs>, SelfType> && ...)>::type>
 		constexpr VariadicStruct(TArgs&&... args):
 			VariadicStruct(std::tuple_cat(std::forward_as_tuple(std::forward<TArgs>(args)...),
 			                              make_tail(std::make_index_sequence<sizeof...(TFields) - sizeof...(TArgs)>{})),
@@ -294,7 +294,7 @@ namespace nem2_sdk { namespace internal {
 			typename... TArgs,
 			typename = typename std::enable_if<sizeof...(TArgs) <= struct_size<ParentType>::value + sizeof...(TFields)>::type,
 			typename = typename std::enable_if<sizeof...(TArgs) != 1 || // should not hide default copy and move!
-			                                   !(std::is_same_v<typename std::decay<TArgs>::type, SelfType> && ...)>::type>
+			                                   !(std::is_same_v<std::decay_t<TArgs>, SelfType> && ...)>::type>
 		constexpr VariadicStruct(TArgs&&... args):
 			VariadicStruct(std::tuple_cat(std::forward_as_tuple(std::forward<TArgs>(args)...),
 			                              make_tail(std::make_index_sequence<struct_size<ParentType>::value +
@@ -344,7 +344,7 @@ namespace nem2_sdk { namespace internal {
 	// Variadic struct traits.
 	//==========================================================================
 	
-	template<typename>
+	template<typename T>
 	struct is_variadic_struct: public std::false_type { };
 	
 	template<typename... TArgs>

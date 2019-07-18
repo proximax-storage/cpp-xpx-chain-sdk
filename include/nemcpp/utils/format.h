@@ -3,6 +3,8 @@
 
 #include <nemcpp/traits.h>
 
+#include <algorithm>
+#include <array>
 #include <cstdio>
 #include <sstream>
 #include <string>
@@ -134,7 +136,7 @@ namespace nem2_sdk {
 	
 	/// Converts hex-formatted string to binary vector \a data and returns \c true on success.
 	template<typename T>
-	bool FromHex(std::string_view hexStr, std::vector<T>& data)
+	auto FromHex(std::string_view hexStr, std::vector<T>& data)	-> std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>, bool>
 	{
 		data.clear();
 		size_t itemLen = sizeof(T) * 2;
@@ -154,6 +156,20 @@ namespace nem2_sdk {
 			}
 		}
 		
+		return true;
+	}
+
+	/// Converts hex-formatted string to an array \a data and returns \c true on success.
+	template<typename T, size_t N>
+	auto FromHex(std::string_view hexStr, std::array<T, N>& data) -> std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>, bool>
+	{
+		std::vector<T> buf;
+
+		if (!FromHex(hexStr, buf) || buf.size() != N) {
+			return false;
+		}
+
+		std::copy(buf.begin(), buf.end(), data.begin());
 		return true;
 	}
 }

@@ -34,17 +34,23 @@ namespace nem2_sdk { namespace internal { namespace binary {
 				return static_cast<size_t>(obj.template value<Traits::Id()>());
 			}
 		};
-		
-		template<typename>
-		constexpr bool is_variable_size_v = false;
-		
-		template<typename TName>
-		constexpr bool is_variable_size_v<VariableSize<TName>> = true;
-		
-		template<typename>
-		constexpr bool is_trailing_size_v = false;
+
+		template<typename T>
+		struct is_variable_size: public std::false_type { };
 		
 		template<typename TName>
-		constexpr bool is_trailing_size_v<TrailingSize<TName>> = true;
+		struct is_variable_size<VariableSize<TName>>: public std::true_type { };
+
+		template<typename T>
+		constexpr bool is_variable_size_v = is_variable_size<T>::value;
+
+		template<typename T>
+		struct is_trailing_size: public std::false_type { };
+
+		template<typename TName>
+		struct is_trailing_size<TrailingSize<TName>>: public std::true_type { };
+
+		template<typename T>
+		constexpr bool is_trailing_size_v = is_trailing_size<T>::value;
 	}
 }}}
