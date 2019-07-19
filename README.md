@@ -6,6 +6,8 @@ nem2-sdk-cpp is a C++ client library for Catapult API.
 ## Prerequisites
 
 * C++ compliler with C++17 support
+* CMake
+* [Conan](https://conan.io)
 
 ## Common notes
 
@@ -17,6 +19,7 @@ Following variables can be used to control build process:
 ## Building
 
 Prepare build with following instructions:
+
 ```
 mkdir build
 cd build
