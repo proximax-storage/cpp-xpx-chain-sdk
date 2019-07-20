@@ -93,7 +93,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		{
 			if constexpr (std::is_integral_v<TField> || std::is_enum_v<TField> || is_array_ext_v<TField> || is_variadic_struct_v<TField>) {
 				if constexpr (!std::is_same_v<TDescriptor, void>) {
-					static_assert(sizeof(TField) == 0, "invalid field descriptor (should be void)");
+					static_assert(sizeof(TField) == 0, "invalid field descriptor (should be 'void')");
 				}
 
 				if constexpr (is_array_ext_v<TField>) {
@@ -101,7 +101,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 				}
 			} else if constexpr (!IsItem && (is_specialization_v<TField, std::vector> || std::is_same_v<TField, std::string>)) {
 				if constexpr (desc::is_variable_size_v<TDescriptor> || desc::is_trailing_size_v<TDescriptor>) {
-					if constexpr (!has_field_by_name<typename TDescriptor::SizeFieldName, TStruct>::value) {
+					if constexpr (!has_field_by_name_v<typename TDescriptor::SizeFieldName, TStruct>) {
 						static_assert(sizeof(TField) == 0, "unknown size field name");
 					} else if constexpr (!std::is_integral_v<typename struct_field_by_name<typename TDescriptor::SizeFieldName, TStruct>::ValueType>) {
 						static_assert(sizeof(TField) == 0, "invalid size field type (should be integral)");

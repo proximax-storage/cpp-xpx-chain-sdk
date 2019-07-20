@@ -15,13 +15,15 @@
 
 #include <algorithm>
 #include <array>
+#include <cstring>
 #include <iterator>
+#include <limits>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
 #include <vector>
-
+#include <stdio.h>
 namespace nem2_sdk { namespace internal { namespace json {
 
 	// Json DTOs should contain only following types:
@@ -33,6 +35,12 @@ namespace nem2_sdk { namespace internal { namespace json {
 	// 4. std::string
 	// 5. special template type 'Hex<T>' which marks wrapped type as hex-formatted in json; type T can be
 	//    integral, enum or any of the container type from 3 if their value type is integral or enum.
+	//
+	// Also Json DTO can contain special field with name STR_LITERAL("__data") and type std::string. During read
+	// operation this field is initialized with raw json object data. When writing DTO containing initialized "__data"
+	// field, other DTOs fields are merged into it, adding/updating fields in raw json object data.
+
+	constexpr const char* Object_Data_Field_Name = "__data";
 
 	enum class OutputMode: uint8_t {
 		Default = 0,
@@ -88,7 +96,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 				return { false, "" };
 			}
 			
-			rapidjson::Value& jsonValue = CreateValueByPointer(document_, ptr);
+			rapidjson::Value& jsonValue = rapidjson::CreateValueByPointer(document_, ptr);
 			return Impl<T>::Write(value, jsonValue, jsonPtr, document_);
 		}
 		
@@ -119,6 +127,8 @@ namespace nem2_sdk { namespace internal { namespace json {
 		}
 		
 	private:
+		static std::string ValueToString(const rapidjson::Value* jsonValue, OutputMode mode = OutputMode::Default);
+
 		template<typename T>
 		static ParseResult Write(const T& obj, std::string& data, const char* jsonPtr, OutputMode mode)
 		{
@@ -137,7 +147,11 @@ namespace nem2_sdk { namespace internal { namespace json {
 		static constexpr bool IsValidField() // bool return value to force compiler to instantiate this function template early
 		{
 			if constexpr (!desc::is_field_flags_v<TDescriptor> && !std::is_same_v<TDescriptor, void>) {
-				static_assert(sizeof(TField) == 0, "invalid field descriptor (should be void or 'Flags')");
+				static_assert(sizeof(TField) == 0, "invalid field descriptor (should be 'void' or 'Flags')");
+			}
+
+			if  constexpr (FnvHash(TName::Value) == FnvHash(Object_Data_Field_Name) && !std::is_same_v<TField, std::string>) {
+				static_assert(sizeof(TField) == 0, "invalid '__data' field type (should be 'std::string')");
 			}
 
 			if constexpr ( (std::is_arithmetic_v<TField> && !std::is_same_v<TField, float>) ||
@@ -412,6 +426,17 @@ namespace nem2_sdk { namespace internal { namespace json {
 		
 		
 	private:
+		template<typename TTraits>
+		static constexpr bool IsObjectDataField()
+		{
+			if constexpr (TTraits::Id() == FnvHash(Object_Data_Field_Name) &&
+			              std::is_same_v<typename TTraits::ValueType, std::string>) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		template<size_t... Idx>
 		static ParseResult Read(StructType& value,
 		                        const rapidjson::Value* jsonValue,
@@ -446,8 +471,23 @@ namespace nem2_sdk { namespace internal { namespace json {
 			                                             StructType,
 			                                             typename struct_field_by_index<Idx, StructType>::ValueType,
 			                                             typename struct_field_by_index<Idx, StructType>::DescriptorType>() && ...);
-
+			
 			if constexpr (isValidStruct) {
+				if constexpr (has_field_by_id_v<FnvHash(Object_Data_Field_Name), StructType>) {
+					if (value.isSet<FnvHash(Object_Data_Field_Name)>()) {
+						rapidjson::Document merged;
+						merged.Parse(value.value<FnvHash(Object_Data_Field_Name)>().c_str(),
+						             value.value<FnvHash(Object_Data_Field_Name)>().size());
+
+						if (merged.HasParseError() || !merged.IsObject()) {
+							std::string invalidField = MakeString{} << jsonPtr << "/" << Object_Data_Field_Name;
+							return { false, invalidField };
+						}
+
+						jsonValue.CopyFrom(merged.Move(), document.GetAllocator());
+					}
+				}
+
 				ParseResult result = true;
 
 				( ( result = WriteField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr, document),
@@ -461,6 +501,11 @@ namespace nem2_sdk { namespace internal { namespace json {
 		template<typename TTraits, typename TStruct>
 		static ParseResult ReadField(TStruct& obj, const rapidjson::Value* jsonValue, const char* jsonPtr)
 		{
+			if constexpr (IsObjectDataField<TTraits>()) {
+				obj.set<FnvHash(Object_Data_Field_Name)>(ValueToString(jsonValue));
+				return true;
+			}
+
 			std::string fieldPtr = MakeString{} << jsonPtr << "/" << TTraits::Name();
 			auto it = jsonValue->FindMember(TTraits::Name());
 			
@@ -493,6 +538,10 @@ namespace nem2_sdk { namespace internal { namespace json {
 		                              const char* jsonPtr,
 		                              rapidjson::Document& document)
 		{
+			if constexpr (IsObjectDataField<TTraits>()) {
+				return true;
+			}
+
 			std::string fieldPtr = MakeString{} << jsonPtr << "/" << TTraits::Name();
 			ParseResult result = true;
 			
@@ -504,6 +553,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 					obj.template value<TTraits::Id()>(), memberValue, fieldPtr.c_str(), document);
 				
 				if (result) {
+					jsonValue.RemoveMember(memberName);
 					jsonValue.AddMember(memberName.Move(), memberValue.Move(), document.GetAllocator());
 				}
 			} else if constexpr (!desc::Is_Optional<typename TTraits::DescriptorType>) {
