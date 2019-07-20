@@ -6,7 +6,8 @@
 
 namespace nem2_sdk::internal::dto {
 
-    using MultipleBlocksDtoT = VariadicStruct<Field<STR_LITERAL("blocksDtoT"), std::vector<BlockDtoT> >>;
+    using MultipleBlocksDtoT = std::vector<BlockDtoT>;
+
 
 	class MultipleBlocksDto {
 	public:
