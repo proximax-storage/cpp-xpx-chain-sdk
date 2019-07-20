@@ -381,7 +381,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 				fieldPtr.c_str());
 			
 			obj.template isSet<TTraits::Id()>() =
-				it != jsonValue->MemberEnd() && !(it->value.IsNull()) ? result : false;
+				it != jsonValue->MemberEnd() && !(it->value.IsNull()) ? result : ParseResult(false);
 			
 			if (result) {
 				bool isSet = it != jsonValue->MemberEnd() && !(it->value.IsNull());

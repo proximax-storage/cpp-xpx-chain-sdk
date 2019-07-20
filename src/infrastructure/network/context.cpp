@@ -1,5 +1,7 @@
 #include "context.h"
 
+namespace ssl = boost::asio::ssl;
+
 using namespace nem2_sdk::internal::network;
 
 namespace ssl = boost::asio::ssl;

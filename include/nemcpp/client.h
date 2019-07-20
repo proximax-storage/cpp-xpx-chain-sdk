@@ -5,6 +5,8 @@
 #include <nemcpp/config.h>
 #include <nemcpp/client/blockchain.h>
 
+#include <memory>
+
 namespace nem2_sdk {
 	class InvalidRequest : public std::runtime_error {
 	public:

@@ -1,24 +1,28 @@
 #include "multiple_blocks_dto.h"
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-
+//#include <boost/property_tree/ptree.hpp>
+//#include <boost/property_tree/json_parser.hpp>
+#include <infrastructure/json/parser.h>
 using namespace nem2_sdk::internal::dto;
 
-MultipleBlocksDto MultipleBlocksDto::from_json(std::istream& json) {
-	boost::property_tree::ptree pTree;
-	boost::property_tree::read_json(json, pTree);
+using Parser = nem2_sdk::internal::json::Parser;
 
-	return MultipleBlocksDto::from_ptree(pTree);
+MultipleBlocksDto MultipleBlocksDto::from_json(std::istream& json) {
+    std::string jsonStr;
+    std::getline(json, jsonStr);
+    MultipleBlocksDtoT dto;
+    Parser::Read(dto, jsonStr);
+    MultipleBlocksDto data = MultipleBlocksDto::getDto(dto);
+    return data;
 }
 
-MultipleBlocksDto MultipleBlocksDto::from_ptree(boost::property_tree::ptree& pTree) {
-	MultipleBlocksDto dto;
+MultipleBlocksDto MultipleBlocksDto::getDto(const MultipleBlocksDtoT& dto) {
+	MultipleBlocksDto mbdto;
 
-	for (auto& child: pTree) {
-		auto block = BlockDto::from_ptree(child.second);
-		dto.blocks.push_back(block);
+	for (auto& blockDtoT: dto.value<"blocksDtoT"_>()) {
+		Block block = BlockDto::getDto(blockDtoT);
+		mbdto.blocks.push_back(block);
 	}
 
-	return dto;
+	return mbdto;
 }

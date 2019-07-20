@@ -109,7 +109,7 @@ if (NEM2_SDK_BUILD_STATIC)
 	set_target_properties(nemcpp PROPERTIES
 		OUTPUT_NAME "nemcpp-static")
 else()
-	add_library(nemcpp SHARED "" src/infrastructure/network/context.h src/infrastructure/network/websocket.h)
+	add_library(nemcpp SHARED "" src/infrastructure/network/context.h src/infrastructure/network/websocket.h include/nemcpp/contract/ContractService.cpp include/nemcpp/contract/ContractService.h)
 	set_target_properties(nemcpp PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
@@ -196,7 +196,7 @@ if (NEM2_SDK_BUILD_TESTS)
 endif()
 
 if (NEM2_SDK_BUILD_EXAMPLES)
-	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
+	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp include/nemcpp/message.cpp include/nemcpp/message.h)
 	target_link_libraries(get_block
 			nemcpp
 			CONAN_PKG::rapidjson
