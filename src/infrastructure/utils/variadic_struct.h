@@ -3,6 +3,7 @@
 
 #include <any>
 #include <cstdint>
+#include <limits>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -15,7 +16,7 @@ namespace nem2_sdk { namespace internal {
 	template<typename T> struct is_variadic_struct;
 	template<typename TStruct> struct struct_size;
 	template<typename TStruct> struct struct_parent;
-	template<uint64_t Id, typename TStruct> struct has_field_by_id;;
+	template<uint64_t Id, typename TStruct> struct has_field_by_id;
 	template<typename TLiteral, typename TStruct> struct has_field_by_name;
 	template<size_t I, typename TStruct> struct struct_field_by_index;
 	template<uint64_t Id, typename TStruct> struct struct_field_by_id;
@@ -390,6 +391,12 @@ namespace nem2_sdk { namespace internal {
 		public has_field_by_id<FnvHash(StringLiteral<chars...>::Value), VariadicStruct<TFields...>>
 	{ };
 
+	template<uint64_t Id, typename TStruct>
+	constexpr bool has_field_by_id_v = has_field_by_id<Id, TStruct>::value;
+
+	template<typename TLiteral, typename TStruct>
+	constexpr bool has_field_by_name_v = has_field_by_name<TLiteral, TStruct>::value;
+	
 	template<size_t I, typename TName, typename TValue, typename TDescriptor, typename... TFields>
 	struct struct_field_by_index<I, VariadicStruct<Field<TName, TValue, TDescriptor>, TFields...>>:
 		public struct_field_by_index<I - 1, VariadicStruct<TFields...>>

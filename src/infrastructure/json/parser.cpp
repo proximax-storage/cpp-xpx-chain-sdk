@@ -30,18 +30,22 @@ namespace nem2_sdk { namespace internal { namespace json {
 	
 	std::string Parser::getData(OutputMode mode) const
 	{
+		return ValueToString(&document_, mode);
+	}
+
+	std::string Parser::ValueToString(const rapidjson::Value* value, OutputMode mode)
+	{
 		using namespace rapidjson;
-		
 		StringBuffer buffer;
-		
+
 		if (mode == OutputMode::Pretty) {
 			PrettyWriter<StringBuffer> writer(buffer);
-			document_.Accept(writer);
+			value->Accept(writer);
 		} else {
 			Writer<StringBuffer> writer(buffer);
-			document_.Accept(writer);
+			value->Accept(writer);
 		}
-		
+
 		return buffer.GetString();
 	}
 }}}
