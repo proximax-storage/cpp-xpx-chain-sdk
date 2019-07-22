@@ -4,10 +4,7 @@ using namespace nem2_sdk::internal::dto;
 
 using Parser = nem2_sdk::internal::json::Parser;
 
-MultipleBlocksDto MultipleBlocksDto::from_json(std::istream& json) {
-    std::string jsonStr;
-    std::getline(json, jsonStr);
-
+MultipleBlocksDto MultipleBlocksDto::from_json(const std::string& jsonStr) {
     MultipleBlocksDtoT dto;
     Parser::Read(dto, jsonStr);
 

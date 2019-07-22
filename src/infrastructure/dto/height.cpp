@@ -5,20 +5,26 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include <infrastructure/json/parser.h>
+
+#include <iostream>
+
 using namespace nem2_sdk::internal::dto;
+using nem2_sdk::internal::json::Parser;
 
-HeightDto HeightDto::from_json(std::istream& json) {
-	boost::property_tree::ptree pTree;
-	boost::property_tree::read_json(json, pTree);
+HeightDto HeightDto::from_json(const std::string& jsonStr) {
+    std::cout << ' ' << jsonStr << std::endl;
+    HeightDtoT dto;
+    Parser::Read(dto, jsonStr);
+	auto heightDto = HeightDto::getDto(dto);
+	std::cout << heightDto.height << std::endl;
+	return heightDto;
 
-	return HeightDto::from_ptree(pTree);
 }
 
-HeightDto HeightDto::from_ptree(boost::property_tree::ptree &pTree) {
-	try {
-		HeightDto dto{LowerHigherDto::from_ptree(pTree.get_child("height")).higher};
-		return dto;
-	} catch (boost::property_tree::ptree_bad_path& e) {
-		throw InvalidJSON(e);
-	}
+HeightDto HeightDto::getDto(const HeightDtoT& dto) {
+    HeightDto height = {
+            dto.value<"height"_>()
+    };
+    return height;
 }

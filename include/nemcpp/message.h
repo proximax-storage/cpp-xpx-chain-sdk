@@ -160,7 +160,7 @@ namespace nem2_sdk {
 
             if(Payload.length() != 0) {
                 if(!Base32::Decode(Payload, b)) {
-                    throw "Hex Decode Error";  // change to custom exception
+                    throw "Hex Decode Error";  // TODO:change to custom exception
                 }
             }
 
@@ -170,7 +170,7 @@ namespace nem2_sdk {
                 case SecureMessageType:
                     return std::shared_ptr<Message>(NewSecureMessage(b).get());
                 default:
-                    throw "Invalide Message Type Error";  // change to custom exception
+                    throw "Invalide Message Type Error";  // TODO:change to custom exception
             }
         }
     private:

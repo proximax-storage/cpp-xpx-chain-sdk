@@ -13,7 +13,7 @@ namespace nem2_sdk::internal::dto {
 	public:
 		std::vector<Block> blocks;
 
-		static MultipleBlocksDto from_json(std::istream& json);
+		static MultipleBlocksDto from_json(const std::string& jsonStr);
 		static MultipleBlocksDto getDto(const MultipleBlocksDtoT & dto);
 	};
 }

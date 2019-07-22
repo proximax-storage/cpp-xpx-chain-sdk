@@ -65,21 +65,21 @@ namespace nem2_sdk::internal::dto {
 
 	class BlockMetaDto : public BlockMeta {
 	public:
-		static BlockMetaDto from_json(std::istream& json);
+		static BlockMetaDto from_json(const std::string& jsonStr);
 		static BlockMetaDto getDto(const BlockMetaDtoT& dto);
 	};
 
 
 	class BlockDataDto : public BlockData {
 	public:
-		static BlockDataDto from_json(std::istream& json);
+		static BlockDataDto from_json(const std::string& jsonStr);
 		static BlockDataDto getDto(const BlockDataDtoT& dto);
 	};
 
 
 	class BlockDto : public Block {
 	public:
-		static BlockDto from_json(std::istream& json);
+		static BlockDto from_json(const std::string& jsonStr);
         static BlockDto getDto(const BlockDtoT &dto);
 	};
 }

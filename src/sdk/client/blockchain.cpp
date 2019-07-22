@@ -26,10 +26,8 @@ uint64_t Blockchain::getBlockchainHeight() {
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
-	auto result = internal::network::performHTTPRequest(_context, requestParams);
-
-	std::istringstream resultStream(result);
-	auto dto = nem2_sdk::internal::dto::HeightDto::from_json(resultStream);
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto dto = nem2_sdk::internal::dto::HeightDto::from_json(response);
 	return dto.height;
 }
 
@@ -42,10 +40,8 @@ Block Blockchain::getBlockByHeight(uint64_t height) {
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
-	auto result = internal::network::performHTTPRequest(_context, requestParams);
-
-	std::istringstream resultStream(result);
-	return nem2_sdk::internal::dto::BlockDto::from_json(resultStream);
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	return nem2_sdk::internal::dto::BlockDto::from_json(response);
 }
 
 std::vector<Block> Blockchain::getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) {
@@ -57,8 +53,6 @@ std::vector<Block> Blockchain::getBlocksByHeightWithLimit(uint64_t height, uint6
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
-	auto result = internal::network::performHTTPRequest(_context, requestParams);
-
-	std::istringstream resultStream(result);
-	return internal::dto::MultipleBlocksDto::from_json(resultStream).blocks;
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	return internal::dto::MultipleBlocksDto::from_json(response).blocks;
 }
