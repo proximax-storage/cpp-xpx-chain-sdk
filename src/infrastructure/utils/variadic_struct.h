@@ -367,7 +367,7 @@ namespace nem2_sdk { namespace internal {
 	{ };
 	
 	template<size_t I> struct struct_field_by_index<I, NullStruct> {
-		static_assert(sizeof(I) == 0, "variadic struct field index is out of range");
+		static_assert(I < 0, "variadic struct field index is out of range");
 	};
 	
 	template<uint64_t Id, typename TName, typename TValue, typename TDescriptor, typename... TFields>

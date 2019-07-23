@@ -4,9 +4,6 @@
 
 #pragma once
 
-#ifndef NEM2_SDK_CPP_MESSAGE_H
-#define NEM2_SDK_CPP_MESSAGE_H
-
 #include <ctype.h>
 #include <memory>
 #include <stdint.h>
@@ -178,4 +175,3 @@ namespace nem2_sdk {
         std::string Payload;
     };
 }
-#endif //NEM2_SDK_CPP_MESSAGE_H
