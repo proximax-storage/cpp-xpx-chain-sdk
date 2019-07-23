@@ -8,7 +8,6 @@
 
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
-#include <infrastructure/dto/mosaic_dto.h>
 #include <infrastructure/dto/multiple_blocks_dto.h>
 
 using namespace nem2_sdk;
@@ -24,7 +23,7 @@ MosaicService::MosaicService(
 {}
 
 
-MosaicDataDto MosaicService::getMosaicInfo(MosaicId id) {
+MosaicData MosaicService::getMosaicInfo(MosaicId id) {
 
     std::stringstream path;
 
@@ -39,8 +38,8 @@ MosaicDataDto MosaicService::getMosaicInfo(MosaicId id) {
     return dto.data;
 }
 
-std::vector<MosaicDataDto> MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
-    std::vector<MosaicDataDto> result;
+std::vector<MosaicData> MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
+    std::vector<MosaicData> result;
     return result;
 }
 

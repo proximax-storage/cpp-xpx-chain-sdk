@@ -40,13 +40,15 @@ MosaicDataDto MosaicDataDto::from_json(const std::string& jsonStr) {
 }
 
 MosaicDataDto MosaicDataDto::getDto(const MosaicDataDtoT& dto) {
-    MosaicDataDto mosaicDto = {
-            dto.value<"mosaicid"_>(),
-            dto.value<"supply"_>(),
-            dto.value<"height"_>(),
-            dto.value<"owner"_>(),
-
-    };
+    MosaicDataDto mosaicDto;
+    mosaicDto.mosaicId = dto.value<"mosaicid"_>();
+    mosaicDto.amount = dto.value<"supply"_>();
+    mosaicDto.height = dto.value<"height"_>();
+    mosaicDto.owner = dto.value<"owner"_>();
+    for(auto property : dto.value<"properties"_>()) {
+        nem2_sdk::MosaicProperty tmp = {MosaicPropertyId(property[0]), property[1]};
+        mosaicDto.properties.push_back(tmp);
+    }
     return mosaicDto;
 }
 
@@ -56,9 +58,9 @@ MosaicDto MosaicDto::from_json(const std::string& jsonStr) {
 
     // TODO: Error Processing
 
-    MosaicDto blockDto = MosaicDto::getDto(dto);
+    MosaicDto mosaicDto = MosaicDto::getDto(dto);
 
-    return blockDto;
+    return mosaicDto;
 }
 
 MosaicDto MosaicDto::getDto(const MosaicDtoT &dto) {
@@ -67,4 +69,69 @@ MosaicDto MosaicDto::getDto(const MosaicDtoT &dto) {
             MosaicDataDto::getDto(dto.value<"mosaic"_>())
     };
     return mosaicDto;
+}
+
+MultipleMosaicDto MultipleMosaicDto::from_json(const std::string& jsonStr) {
+    MultipleMosaicDtoT dto;
+    Parser::Read(dto, jsonStr);
+
+    // TODO: Error Processing
+
+    MultipleMosaicDto multipleMosaicDto = MultipleMosaicDto::getDto(dto);
+
+    return multipleMosaicDto;
+}
+
+MultipleMosaicDto MultipleMosaicDto::getDto(const MultipleMosaicDtoT& dto) {
+    MultipleMosaicDto mmdto;
+
+    for (auto& mosaicDtoT: dto) {
+        RichMosaic mosaic = MosaicDto::getDto(mosaicDtoT);
+        mmdto.mosaics.push_back(mosaic);
+    }
+
+    return mmdto;
+}
+
+MosaicNameDto MosaicNameDto::from_json(const std::string& jsonStr) {
+    MosaicNameDtoT dto;
+    Parser::Read(dto, jsonStr);
+
+    // TODO: Error Processing
+
+    MosaicNameDto mosaicNameDto = MosaicNameDto::getDto(dto);
+
+    return mosaicNameDto;
+}
+
+MosaicNameDto MosaicNameDto::getDto(const MosaicNameDtoT& dto) {
+
+    MosaicNameDto mosaicName =  {
+            dto.value<"parentid"_>(),
+            dto.value<"mosaicid"_>(),
+            dto.value<"name"_>()
+    };
+    return mosaicName;
+}
+
+MosaicNamesDto MosaicNamesDto::from_json(const std::string& jsonStr) {
+    MosaicNamesDtoT dto;
+    Parser::Read(dto, jsonStr);
+
+    // TODO: Error Processing
+
+    MosaicNamesDto mosaicNamesDto = MosaicNamesDto::getDto(dto);
+
+    return mosaicNamesDto;
+}
+
+MosaicNamesDto MosaicNamesDto::getDto(const MosaicNamesDtoT& dto) {
+    MosaicNamesDto names;
+
+    for (auto& nameDtoT: dto) {
+        MosaicName mosaic = MosaicNameDto::getDto(nameDtoT);
+        names.names.push_back(mosaic);
+    }
+
+    return names;
 }
