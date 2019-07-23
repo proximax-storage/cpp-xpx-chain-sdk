@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 
-using Uint64 = nem2_sdk::internal::json::Uint64;
+
 
 // Json Example
 /*{
@@ -39,6 +39,7 @@ using Uint64 = nem2_sdk::internal::json::Uint64;
  */
 
 namespace nem2_sdk::internal::dto {
+    using Uint64 = nem2_sdk::internal::json::Uint64;
 
     using BlockMetaDtoT = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,

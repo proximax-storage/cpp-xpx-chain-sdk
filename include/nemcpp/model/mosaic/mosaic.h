@@ -15,8 +15,11 @@ namespace nem2_sdk {
 		
 		/// Mosaic amount.
 		Amount amount;
-		
-		/// Generates mosaic id using \a owner key and \a nonce 
+
+        /// Mosaic height
+//        Height height;
+
+		/// Generates mosaic id using \a owner key and \a nonce
 		static MosaicId GenerateId(const Key& owner, uint32_t nonce);
 	};
 	
@@ -27,5 +30,5 @@ namespace nem2_sdk {
 	bool operator!=(const Mosaic& lhs, const Mosaic& rhs);
 	
 	/// Mosaics container.
-	using Mosaics = std::set<Mosaic, data_comparator<Mosaic, MosaicId, &Mosaic::id>>;
+	using MosaicContainer = std::set<Mosaic, data_comparator<Mosaic, MosaicId, &Mosaic::id>>;
 }

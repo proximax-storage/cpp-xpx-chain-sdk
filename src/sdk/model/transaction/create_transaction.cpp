@@ -294,7 +294,7 @@ namespace nem2_sdk { namespace internal {
 		template<typename TDto, typename... TArgs>
 		void InitTransferTransactionDTO(TDto& dto,
 		                                const Address& recipient,
-		                                const Mosaics& mosaics,
+		                                const MosaicContainer& mosaics,
 		                                RawBuffer message,
 		                                TArgs&&... args)
 		{
@@ -808,7 +808,7 @@ namespace nem2_sdk { namespace internal {
 	
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
-	                              Mosaics mosaics,
+	                              MosaicContainer mosaics,
 	                              RawBuffer message,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
@@ -1226,7 +1226,7 @@ namespace nem2_sdk {
 	
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransaction(const Address& recipient,
-	                          Mosaics mosaics,
+	                          MosaicContainer mosaics,
 	                          RawBuffer message,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
@@ -1237,7 +1237,7 @@ namespace nem2_sdk {
 	
 	std::unique_ptr<EmbeddedTransferTransaction>
 	CreateEmbeddedTransferTransaction(const Address& recipient,
-	                                  Mosaics mosaics,
+	                                  MosaicContainer mosaics,
 	                                  RawBuffer message,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId)

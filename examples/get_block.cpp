@@ -11,7 +11,7 @@ int main() {
 
 	auto height = client->blockchain()->getBlockchainHeight();
 	std::cout << "Block number: " << height << std::endl;
-    height = 148983;
+//    height = 148983;
 	auto block = client->blockchain()->getBlockByHeight(height);
 	std::cout << "Block signature: " << block.block.signature << std::endl;
 

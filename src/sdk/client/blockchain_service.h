@@ -4,13 +4,13 @@
 #include <infrastructure/network/context.h>
 #include <nemcpp/config.h>
 #include <nemcpp/model/blockchain/block.h>
-#include <nemcpp/client/blockchain.h>
+#include <nemcpp/client/blockchain_service.h>
 
 namespace nem2_sdk {
 
-	class Blockchain : public IBlockchain {
+	class BlockchainService : public IBlockchain {
 	public:
-		Blockchain(
+		BlockchainService(
 				std::shared_ptr<Config> config,
 				std::shared_ptr<internal::network::Context> context,
 				internal::network::RequestParamsBuilder builder

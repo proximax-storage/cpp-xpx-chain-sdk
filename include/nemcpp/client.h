@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <nemcpp/config.h>
-#include <nemcpp/client/blockchain.h>
+#include <nemcpp/client/blockchain_service.h>
 
 #include <memory>
 

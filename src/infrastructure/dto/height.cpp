@@ -13,11 +13,9 @@ using namespace nem2_sdk::internal::dto;
 using nem2_sdk::internal::json::Parser;
 
 HeightDto HeightDto::from_json(const std::string& jsonStr) {
-    std::cout << ' ' << jsonStr << std::endl;
     HeightDtoT dto;
     Parser::Read(dto, jsonStr);
-	auto heightDto = HeightDto::getDto(dto);
-	std::cout << heightDto.height << std::endl;
+	HeightDto heightDto = HeightDto::getDto(dto);
 	return heightDto;
 
 }

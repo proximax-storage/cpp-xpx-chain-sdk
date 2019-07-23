@@ -243,7 +243,7 @@ namespace nem2_sdk {
 			                                    EmbeddedTransferTransactionImpl>>
 		std::unique_ptr<TImpl> CreateTransferTransaction(const TDto& dto, RawBuffer binaryData)
 		{
-			Mosaics mosaics;
+			MosaicContainer mosaics;
 			
 			for (const auto& mosaicDTO:  dto.template value<"mosaics"_>()) {
 				mosaics.insert(Mosaic{ mosaicDTO.template value<"id"_>(), mosaicDTO.template value<"amount"_>() });

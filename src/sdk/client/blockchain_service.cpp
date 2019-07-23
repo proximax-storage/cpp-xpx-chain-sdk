@@ -1,7 +1,7 @@
 #include <memory>
 
 #include <nemcpp/client.h>
-#include <sdk/client/blockchain_impl.h>
+#include <sdk/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
 #include <infrastructure/dto/block_dto.h>
@@ -10,7 +10,7 @@
 
 using namespace nem2_sdk;
 
-Blockchain::Blockchain(
+BlockchainService::BlockchainService(
 	std::shared_ptr<Config> config,
 	std::shared_ptr<internal::network::Context> context,
 	internal::network::RequestParamsBuilder builder
@@ -20,7 +20,7 @@ Blockchain::Blockchain(
 	_builder(builder)
 {};
 
-uint64_t Blockchain::getBlockchainHeight() {
+uint64_t BlockchainService::getBlockchainHeight() {
 	auto requestParams = _builder
 		.setPath("chain/height")
 		.setMethod(internal::network::HTTPRequestMethod::GET)
@@ -31,7 +31,7 @@ uint64_t Blockchain::getBlockchainHeight() {
 	return dto.height;
 }
 
-Block Blockchain::getBlockByHeight(uint64_t height) {
+Block BlockchainService::getBlockByHeight(uint64_t height) {
 	std::stringstream path;
 	path << "block/" << height;
 
@@ -44,7 +44,7 @@ Block Blockchain::getBlockByHeight(uint64_t height) {
 	return nem2_sdk::internal::dto::BlockDto::from_json(response);
 }
 
-std::vector<Block> Blockchain::getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) {
+std::vector<Block> BlockchainService::getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) {
 	std::stringstream path;
 	path << "blocks/" << height << "/limit/" << limit;
 

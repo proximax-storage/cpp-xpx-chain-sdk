@@ -229,7 +229,7 @@ namespace nem2_sdk { namespace internal {
 	
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
-	                              Mosaics mosaics,
+	                              MosaicContainer mosaics,
 	                              RawBuffer message,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,

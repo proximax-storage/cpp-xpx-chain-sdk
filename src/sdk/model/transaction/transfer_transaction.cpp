@@ -26,7 +26,7 @@ namespace nem2_sdk {
 	}
 	
 	template<typename TBase>
-	const Mosaics& TTransferTransaction<TBase>::mosaics() const
+	const MosaicContainer& TTransferTransaction<TBase>::mosaics() const
 	{
 		return mosaics_;
 	}

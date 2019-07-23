@@ -1,7 +1,8 @@
 #include "infrastructure/network/context.h"
 #include "infrastructure/network/http.h"
 #include <nemcpp/client.h>
-#include <sdk/client/blockchain_impl.h>
+#include <sdk/client/blockchain_service.h>
+#include <sdk/client/mosaic_service.h>
 
 using namespace nem2_sdk;
 
@@ -15,7 +16,8 @@ public:
 			.setPort(_config->port)
 			.setSecurity(_config->useSSL);
 
-		_blockchain = std::make_shared<Blockchain>(config, _context, _builder);
+		_blockchain = std::make_shared<BlockchainService>(config, _context, _builder);
+		_mosaic     = std::make_shared<MosaicService>(config, _context, _builder);
 	}
 
 	std::shared_ptr<IBlockchain> blockchain() const override {
@@ -26,7 +28,8 @@ private:
 	std::shared_ptr<Config> _config;
 	internal::network::RequestParamsBuilder _builder;
 	std::shared_ptr<internal::network::Context> _context;
-	std::shared_ptr<Blockchain> _blockchain;
+	std::shared_ptr<BlockchainService> _blockchain;
+	std::shared_ptr<MosaicService> _mosaic;
 };
 
 namespace nem2_sdk {

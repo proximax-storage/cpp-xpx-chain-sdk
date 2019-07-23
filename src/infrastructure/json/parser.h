@@ -432,11 +432,12 @@ namespace nem2_sdk { namespace internal { namespace json {
 		{
 			std::array<uint32_t, 2> data;
 			auto result = Impl<decltype(data)>::Read(data, jsonValue, jsonPtr);
-			
+
+			//changed order
 			if (result) {
-				value = data[0];
+				value = data[1];
 				value <<= 32;
-				value |= data[1];
+				value |= data[0];
 			}
 			
 			return result;
