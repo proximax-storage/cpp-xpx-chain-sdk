@@ -3,7 +3,6 @@
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
 #include <nemcpp/config.h>
-#include <nemcpp/model/blockchain/block.h>
 #include <nemcpp/client/blockchain_service.h>
 
 namespace nem2_sdk {
@@ -17,8 +16,11 @@ namespace nem2_sdk {
 		);
 
 		uint64_t getBlockchainHeight() override;
+        ScoreInfo getCurrentScore() override;
+        StorageInfo getStorageInfo() override;
 		Block getBlockByHeight(uint64_t height) override;
 		std::vector<Block> getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) override;
+
 
 	private:
 		std::shared_ptr<Config> _config;

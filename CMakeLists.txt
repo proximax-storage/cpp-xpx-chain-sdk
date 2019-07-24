@@ -196,7 +196,7 @@ if (NEM2_SDK_BUILD_TESTS)
 endif()
 
 if (NEM2_SDK_BUILD_EXAMPLES)
-	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp include/nemcpp/message.cpp include/nemcpp/message.h include/nemcpp/client/mosaic_service.h)
+	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp include/nemcpp/model/blockchain/score.h include/nemcpp/model/blockchain/storage_info.h)
 	target_link_libraries(get_block
 			nemcpp
 			CONAN_PKG::rapidjson

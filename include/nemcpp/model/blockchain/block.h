@@ -27,6 +27,6 @@ namespace nem2_sdk {
 	class Block {
 	public:
 		BlockMeta meta;
-		BlockData block;
+		BlockData data;
 	};
 }

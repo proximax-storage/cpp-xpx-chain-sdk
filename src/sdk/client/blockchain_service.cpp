@@ -33,7 +33,7 @@ uint64_t BlockchainService::getBlockchainHeight() {
 
 Block BlockchainService::getBlockByHeight(uint64_t height) {
 	std::stringstream path;
-	path << "block/" << height;
+	path << "data/" << height;
 
 	auto requestParams = _builder
 		.setPath(path.str())
@@ -55,4 +55,26 @@ std::vector<Block> BlockchainService::getBlocksByHeightWithLimit(uint64_t height
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
 	return internal::dto::MultipleBlocksDto::from_json(response).blocks;
+}
+
+ScoreInfo BlockchainService::getCurrentScore() {
+    auto requestParams = _builder
+            .setPath("chain/score")
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto score = nem2_sdk::internal::dto::ScoreInfoDto::from_json(response);
+    return score;
+}
+
+StorageInfo BlockchainService::getStorageInfo() {
+    auto requestParams = _builder
+            .setPath("diagnostic/storage")
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto storageInfo = nem2_sdk::internal::dto::StorageInfoDto::from_json(response);
+    return storageInfo;
 }

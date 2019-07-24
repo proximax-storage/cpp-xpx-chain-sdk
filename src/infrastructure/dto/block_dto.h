@@ -3,7 +3,8 @@
 #include <nemcpp/model/blockchain/block.h>
 #include "infrastructure/utils/variadic_struct.h"
 #include "infrastructure/json/uint64.h"
-
+#include <nemcpp/model/blockchain/score.h>
+#include <nemcpp/model/blockchain/storage_info.h>
 #include <stdint.h>
 
 
@@ -18,7 +19,7 @@
         "numTransactions": 0,
         "numStatements": 1
     },
-    "block": {
+    "data": {
         "signature": "3264980230498E7BB0CEDD8E13CFD0DA92B456CA028A34D24FDE45B190315FE84FDADFB237E5F25F1DA0C0F3CDAC9FB5E3AFFF3C902FFCF7A872834B72664604",
         "signer": "D9A659A3AA42FD62BE88E1D96B0F10EB91F6097F8D24EC8FD7C94EC6455735EC",
         "version": 43011,
@@ -82,5 +83,30 @@ namespace nem2_sdk::internal::dto {
 	public:
 		static Block from_json(const std::string& jsonStr);
         static BlockDto getDto(const BlockDtoT &dto);
+	};
+
+
+	using StorageInfoDtoT = VariadicStruct<
+	        Field<STR_LITERAL("numBlocks"), uint64_t>,
+            Field<STR_LITERAL("numTransactions"), uint64_t>,
+            Field<STR_LITERAL("numAccounts"), uint64_t> >;
+
+
+	class StorageInfoDto : public StorageInfo {
+	public:
+	    static StorageInfo from_json(const std::string& jsonStr);
+	    static StorageInfoDto getDto(const StorageInfoDtoT& dto);
+	};
+
+
+	using ScoreInfoDtoT = VariadicStruct<
+	        Field<STR_LITERAL("scoreHigh"), Uint64>,
+	        Field<STR_LITERAL("scoreLow"), Uint64> >;
+
+
+	class ScoreInfoDto : public ScoreInfo {
+	public:
+        static ScoreInfo from_json(const std::string& jsonStr);
+        static ScoreInfoDto getDto(const ScoreInfoDtoT& dot);
 	};
 }

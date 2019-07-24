@@ -76,3 +76,45 @@ BlockDto BlockDto::getDto(const BlockDtoT &dto) {
     return blockDto;
 }
 
+StorageInfo StorageInfoDto::from_json(const std::string& jsonStr) {
+    StorageInfoDtoT dto;
+    Parser::Read(dto, jsonStr);
+
+    // TODO: Error Processing
+
+    StorageInfoDto storageInfoDto = StorageInfoDto::getDto(dto);
+
+    return storageInfoDto;
+}
+
+StorageInfoDto StorageInfoDto::getDto(const StorageInfoDtoT& dto) {
+
+    StorageInfoDto storageInfoDto = {
+            dto.value<"numBlocks"_>(),
+            dto.value<"numTransactions"_>(),
+            dto.value<"numAccounts"_>()
+    };
+
+    return storageInfoDto;
+}
+
+
+ScoreInfo ScoreInfoDto::from_json(const std::string& jsonStr) {
+    ScoreInfoDtoT dto;
+    Parser::Read(dto, jsonStr);
+
+    // TODO: Error Processing
+
+    ScoreInfoDto scoreInfoDto = ScoreInfoDto::getDto(dto);
+
+    return scoreInfoDto;
+}
+
+ScoreInfoDto ScoreInfoDto::getDto(const ScoreInfoDtoT& dto) {
+    ScoreInfoDto scoreInfoDto = {
+            dto.value<"scoreHigh"_>(),
+            dto.value<"scoreLow"_>()
+    };
+
+    return scoreInfoDto;
+}
