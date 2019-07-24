@@ -11,7 +11,7 @@ using namespace nem2_sdk::internal::dto;
 using Parser = nem2_sdk::internal::json::Parser;
 
 
-BlockMetaDto BlockMetaDto::from_json(const std::string& jsonStr) {
+BlockMeta BlockMetaDto::from_json(const std::string& jsonStr) {
 	BlockMetaDtoT dto;
 	Parser::Read(dto, jsonStr);
 
@@ -31,7 +31,7 @@ BlockMetaDto BlockMetaDto::getDto(const BlockMetaDtoT &dto) {
     return meta;
 }
 
-BlockDataDto BlockDataDto::from_json(const std::string& jsonStr) {
+BlockData BlockDataDto::from_json(const std::string& jsonStr) {
     BlockDataDtoT dto;
     Parser::Read(dto, jsonStr);
 
@@ -57,7 +57,7 @@ BlockDataDto BlockDataDto::getDto(const BlockDataDtoT& dto) {
     return data;
 }
 
-BlockDto BlockDto::from_json(const std::string& jsonStr) {
+Block BlockDto::from_json(const std::string& jsonStr) {
     BlockDtoT dto;
     Parser::Read(dto, jsonStr);
 

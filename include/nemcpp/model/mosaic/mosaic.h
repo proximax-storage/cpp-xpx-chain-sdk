@@ -32,7 +32,14 @@ namespace nem2_sdk {
 	/// Mosaics container.
 	using MosaicContainer = std::set<Mosaic, data_comparator<Mosaic, MosaicId, &Mosaic::id>>;
 
-    class MosaicMeta {
+	class MosaicName {
+    public:
+        uint64_t parentId;
+        uint64_t mosaicId;
+        std::string name;
+    };
+
+	class MosaicMeta {
     public:
         bool active;
         uint64_t index;

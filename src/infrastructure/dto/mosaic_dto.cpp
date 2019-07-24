@@ -5,11 +5,12 @@
 #include <infrastructure/json/parser.h>
 #include "mosaic_dto.h"
 
+using namespace nem2_sdk;
 using namespace nem2_sdk::internal::dto;
 using nem2_sdk::internal::json::Parser;
 
 
-MosaicMetaDto MosaicMetaDto::from_json(const std::string& jsonStr) {
+MosaicMeta MosaicMetaDto::from_json(const std::string& jsonStr) {
     MosaicMetaDtoT dto;
     Parser::Read(dto, jsonStr);
 
@@ -30,7 +31,7 @@ MosaicMetaDto MosaicMetaDto::getDto(const MosaicMetaDtoT& dto) {
 }
 
 
-MosaicDataDto MosaicDataDto::from_json(const std::string& jsonStr) {
+MosaicData MosaicDataDto::from_json(const std::string& jsonStr) {
     MosaicDataDtoT dto;
     Parser::Read(dto, jsonStr);
 
@@ -52,7 +53,7 @@ MosaicDataDto MosaicDataDto::getDto(const MosaicDataDtoT& dto) {
     return mosaicDto;
 }
 
-MosaicDto MosaicDto::from_json(const std::string& jsonStr) {
+RichMosaic MosaicDto::from_json(const std::string& jsonStr) {
     MosaicDtoT dto;
     Parser::Read(dto, jsonStr);
 
@@ -70,6 +71,7 @@ MosaicDto MosaicDto::getDto(const MosaicDtoT &dto) {
     };
     return mosaicDto;
 }
+
 
 MultipleMosaicDto MultipleMosaicDto::from_json(const std::string& jsonStr) {
     MultipleMosaicDtoT dto;
@@ -93,7 +95,7 @@ MultipleMosaicDto MultipleMosaicDto::getDto(const MultipleMosaicDtoT& dto) {
     return mmdto;
 }
 
-MosaicNameDto MosaicNameDto::from_json(const std::string& jsonStr) {
+MosaicName MosaicNameDto::from_json(const std::string& jsonStr) {
     MosaicNameDtoT dto;
     Parser::Read(dto, jsonStr);
 

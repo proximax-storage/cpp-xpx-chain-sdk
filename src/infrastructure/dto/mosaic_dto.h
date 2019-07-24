@@ -15,8 +15,6 @@
 namespace nem2_sdk::internal::dto {
     using internal::json::Uint64;
 
-
-
     using MosaicMetaDtoT = VariadicStruct<
         Field<STR_LITERAL("active"), bool>,
         Field<STR_LITERAL("index"), uint64_t>,
@@ -45,21 +43,21 @@ namespace nem2_sdk::internal::dto {
 
     class MosaicMetaDto : public MosaicMeta {
     public:
-        static MosaicMetaDto from_json(const std::string& jsonStr);
+        static MosaicMeta from_json(const std::string& jsonStr);
         static MosaicMetaDto getDto(const MosaicMetaDtoT& dto);
     };
 
 
     class MosaicDataDto : public MosaicData {
     public:
-        static MosaicDataDto from_json(const std::string& jsonStr);
+        static MosaicData from_json(const std::string& jsonStr);
         static MosaicDataDto getDto(const MosaicDataDtoT& dto);
     };
 
 
     class MosaicDto : public RichMosaic {
     public:
-        static MosaicDto from_json(const std::string& jsonStr);
+        static RichMosaic from_json(const std::string& jsonStr);
         static MosaicDto getDto(const MosaicDtoT& dto);
     };
 
@@ -71,16 +69,9 @@ namespace nem2_sdk::internal::dto {
         static MultipleMosaicDto getDto(const MultipleMosaicDtoT& dto);
     };
 
-    class MosaicName {
-    public:
-        uint64_t parentId;
-        uint64_t mosaicId;
-        std::string name;
-    };
-
     class MosaicNameDto : public MosaicName {
     public:
-        static MosaicNameDto from_json(const std::string& jsonStr);
+        static MosaicName from_json(const std::string& jsonStr);
         static MosaicNameDto getDto(const MosaicNameDtoT& dto);
     };
 
