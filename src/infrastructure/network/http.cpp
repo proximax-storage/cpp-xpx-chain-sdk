@@ -135,7 +135,7 @@ RequestParamsBuilder& RequestParamsBuilder::setPath(const std::string& path) {
 }
 
 RequestParamsBuilder& RequestParamsBuilder::setRequestBody(const std::string& requestBody) {
-	_request_body;
+	_request_body = requestBody;
 	return *this;
 }
 
