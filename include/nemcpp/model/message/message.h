@@ -45,9 +45,7 @@ namespace nem2_sdk {
         using PlainMessagePtr = std::shared_ptr<PlainMessage>;
     public:
         PlainMessage(const std::string& payload_string) {
-            for(auto x : payload_string) {
-                payload.push_back(x);
-            }
+            payload = ByteArray(payload.begin(), payload.end());
         }
         ~PlainMessage()=default;
     public:
@@ -68,11 +66,7 @@ namespace nem2_sdk {
         }
 
         std::string Message() {
-            std::ostringstream result;
-            for (auto x : payload) {
-                result << (char) x;
-            }
-            return result.str();
+            return String();
         }
 
     private:
@@ -95,9 +89,8 @@ namespace nem2_sdk {
 
     class SecureMessage : public Message {
     public:
-        SecureMessage(const ByteArray& encodedList) {
-            encodedData.resize(encodedList.size());
-            std::copy(encodedList.begin(), encodedList.end(), encodedData.begin());
+        SecureMessage(ByteArray&& encodedList) {
+            encodedData = std::move(encodedList);
         }
         ~SecureMessage()=default;
     public:
@@ -118,19 +111,15 @@ namespace nem2_sdk {
         }
 
         std::string Message() {
-            std::ostringstream result;
-            for (auto x : encodedData) {
-                result << (char) x;
-            }
-            return result.str();
+            return String();
         }
 
     private:
         ByteArray encodedData; //ByteArray = struct { uint8_t* array, int size;}
     };
 
-    std::shared_ptr<SecureMessage> NewSecureMessage(const ByteArray& encodedData) {
-        return std::make_shared<SecureMessage>(encodedData);
+    std::shared_ptr<SecureMessage> NewSecureMessage(ByteArray&& encodedData) {
+        return std::make_shared<SecureMessage>(std::move(encodedData));
     }
 
     std::shared_ptr<SecureMessage> NewSecureMessageFromPlaintText(
@@ -165,7 +154,7 @@ namespace nem2_sdk {
                 case PlainMessageType:
                     return std::shared_ptr<Message>(NewPlainMessage(ByteArrayToString(b)).get());
                 case SecureMessageType:
-                    return std::shared_ptr<Message>(NewSecureMessage(b).get());
+                    return std::shared_ptr<Message>(NewSecureMessage(std::move(b)).get());
                 default:
                     throw "Invalide Message Type Error";  // TODO:change to custom exception
             }

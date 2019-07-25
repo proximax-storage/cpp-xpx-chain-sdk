@@ -11,13 +11,12 @@ int main() {
 
 	auto height = client->blockchain()->getBlockchainHeight();
 	std::cout << "Block number: " << height << std::endl;
-//    height = 148983;
+
 	auto block = client->blockchain()->getBlockByHeight(height);
 	std::cout << "Block signature: " << block.data.signature << std::endl;
 
 	auto blocks = client->blockchain()->getBlocksByHeightWithLimit(height - 1, 25);
 	for (auto& block: blocks) {
-        std::cout << "Block signature: " << block.data.signature << std::endl;
+	    std::cout << "Block signature: " << block.data.signature << std::endl;
     }
-//    auto data = client -> blockchain()->getBlockByHeight(height - 1);
 }

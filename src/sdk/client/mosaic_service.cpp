@@ -26,7 +26,7 @@ MosaicService::MosaicService(
 {}
 
 
-RichMosaic MosaicService::getMosaicInfo(MosaicId id) {
+MosaicInfo MosaicService::getMosaicInfo(MosaicId id) {
 
     std::stringstream path;
 
@@ -37,11 +37,11 @@ RichMosaic MosaicService::getMosaicInfo(MosaicId id) {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = internal::dto::MosaicDto::from_json(response);
+    auto dto = internal::dto::MosaicInfoDto::from_json(response);
     return dto;
 }
 
-std::vector<RichMosaic> MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
+std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;

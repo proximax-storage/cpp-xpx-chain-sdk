@@ -27,12 +27,12 @@ namespace nem2_sdk::internal::dto {
         Field<STR_LITERAL("owner"), std::string>,
         Field<STR_LITERAL("properties"), std::vector<std::array<uint64_t, 2> > > >;
 
-    using MosaicDtoT = VariadicStruct<
+    using MosaicInfoDtoT = VariadicStruct<
         Field<STR_LITERAL("meta"), MosaicMetaDtoT>,
         Field<STR_LITERAL("mosaic"), MosaicDataDtoT> >;
 
 
-    using MultipleMosaicDtoT = std::vector<MosaicDtoT>;
+    using MultipleMosaicDtoT = std::vector<MosaicInfoDtoT>;
 
     using MosaicNameDtoT = VariadicStruct<
         Field<STR_LITERAL("parentid"), Uint64>,
@@ -55,15 +55,15 @@ namespace nem2_sdk::internal::dto {
     };
 
 
-    class MosaicDto : public RichMosaic {
+    class MosaicInfoDto : public MosaicInfo {
     public:
-        static RichMosaic from_json(const std::string& jsonStr);
-        static MosaicDto getDto(const MosaicDtoT& dto);
+        static MosaicInfo from_json(const std::string& jsonStr);
+        static MosaicInfoDto getDto(const MosaicInfoDtoT& dto);
     };
 
     class MultipleMosaicDto {
     public:
-        std::vector<RichMosaic> mosaics;
+        std::vector<MosaicInfo> mosaics;
 
         static MultipleMosaicDto from_json(const std::string& jsonStr);
         static MultipleMosaicDto getDto(const MultipleMosaicDtoT& dto);

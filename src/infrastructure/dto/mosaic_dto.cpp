@@ -53,19 +53,19 @@ MosaicDataDto MosaicDataDto::getDto(const MosaicDataDtoT& dto) {
     return mosaicDto;
 }
 
-RichMosaic MosaicDto::from_json(const std::string& jsonStr) {
-    MosaicDtoT dto;
+MosaicInfo MosaicInfoDto::from_json(const std::string& jsonStr) {
+    MosaicInfoDtoT dto;
     Parser::Read(dto, jsonStr);
 
     // TODO: Error Processing
 
-    MosaicDto mosaicDto = MosaicDto::getDto(dto);
+    MosaicInfoDto mosaicDto = MosaicInfoDto::getDto(dto);
 
     return mosaicDto;
 }
 
-MosaicDto MosaicDto::getDto(const MosaicDtoT &dto) {
-    MosaicDto mosaicDto = {
+MosaicInfoDto MosaicInfoDto::getDto(const MosaicInfoDtoT &dto) {
+    MosaicInfoDto mosaicDto = {
             MosaicMetaDto::getDto(dto.value<"meta"_>()),
             MosaicDataDto::getDto(dto.value<"mosaic"_>())
     };
@@ -88,7 +88,7 @@ MultipleMosaicDto MultipleMosaicDto::getDto(const MultipleMosaicDtoT& dto) {
     MultipleMosaicDto mmdto;
 
     for (auto& mosaicDtoT: dto) {
-        RichMosaic mosaic = MosaicDto::getDto(mosaicDtoT);
+        MosaicInfo mosaic = MosaicInfoDto::getDto(mosaicDtoT);
         mmdto.mosaics.push_back(mosaic);
     }
 
