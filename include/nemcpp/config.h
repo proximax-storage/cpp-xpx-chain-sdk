@@ -10,7 +10,7 @@
 namespace nem2_sdk {
 	
 	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Public;
-	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::seconds(1459468800));
+	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::seconds(14));
 	
 	constexpr uint32_t Block_Avg_Fee_Multiplier = 20;
 	
@@ -43,8 +43,8 @@ namespace nem2_sdk {
 		/// Determines transaction deadline which is used by default.
 		NetworkDuration TransactionDeadline = Transaction_Deadline;
 
-		std::string nodeAddress = "localhost";
-		std::string port = "80";
+		std::string nodeAddress = "bcstage1.xpxsirius.io";
+		std::string port = "3000";
 		bool useSSL = false;
 		std::string basePath = "/";
 	};

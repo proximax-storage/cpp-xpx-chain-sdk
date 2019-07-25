@@ -9,7 +9,7 @@ namespace nem2_sdk::internal::network {
 	enum class HTTPRequestMethod {
 		GET,
 		POST,
-		PUT,
+		PUT
 	};
 
 	struct RequestParams {

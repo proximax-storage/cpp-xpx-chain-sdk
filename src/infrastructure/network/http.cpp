@@ -8,6 +8,7 @@
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
 
+
 using namespace nem2_sdk::internal::network;
 
 namespace asio = boost::asio;
@@ -28,6 +29,7 @@ std::string _performHTTPRequest_internal(
 		const std::string& path,
 		const std::string& request_body
 ) {
+
 	http::verb verb;
 	switch (method) {
 		case HTTPRequestMethod::GET:
@@ -74,6 +76,7 @@ std::string _performHTTPRequest(
 		const std::string& path,
 		const std::string& request_body
 ) {
+
 	asio::io_context ioc;
 
 	ip::tcp::resolver resolver(ioc);
@@ -162,15 +165,14 @@ namespace nem2_sdk::internal::network {
 		} else {
 			port = requestParams.port;
 		}
-
 		std::string path;
-		if (requestParams.path.empty()) {
-			path = "/";
-		} else {
-			path = requestParams.path;
-		}
+        if (requestParams.path.empty()) {
+            path = "/";
+        } else {
+            path = requestParams.path;
+        }
 
-		return _performHTTPRequest(
+        return _performHTTPRequest(
 				context,
 				requestParams.method,
 				requestParams.secure,
@@ -179,5 +181,5 @@ namespace nem2_sdk::internal::network {
 				path,
 				requestParams.request_body
 		);
-	}
+    }
 }
