@@ -34,11 +34,14 @@ namespace nem2_sdk {
 
 
     class Message {
+    public:
         virtual MessageType Type() const = 0;
 
         virtual ByteArray Payload() const = 0;
 
         virtual std::string String() const = 0;
+
+        virtual ~Message() = default;
     };
 
 
