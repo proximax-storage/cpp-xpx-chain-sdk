@@ -3,6 +3,7 @@
 *** Use of this source code is governed by the Apache 2.0
 *** license that can be found in the LICENSE file.
 */
+
 #include <infrastructure/dto/mosaic_dto.h>
 #include <nemcpp/client.h>
 #include <sdk/client/mosaic_service.h>
@@ -73,7 +74,7 @@ std::vector<std::string> MosaicService::getMosaicsNames(const std::vector<Mosaic
     auto dto = internal::dto::MosaicNamesDto::from_json(response);
     std::vector<std::string> result;
 
-    for (auto mosaicName : dto.names) {
+    for (auto& mosaicName : dto.names) {
         result.push_back(mosaicName.name);
     }
     return result;
