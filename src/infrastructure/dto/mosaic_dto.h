@@ -1,7 +1,8 @@
-//
-// Created by vulfke on 22.07.19.
-//
-
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 #pragma once
 
 #include <nemcpp/model/mosaic/mosaic.h>
@@ -14,6 +15,10 @@
 
 namespace nem2_sdk::internal::dto {
     using internal::json::Uint64;
+
+    using MosaicDtoT = VariadicStruct<
+        Field<STR_LITERAL("id"), Uint64>,
+        Field<STR_LITERAL("amount"), Uint64> >;
 
     using MosaicMetaDtoT = VariadicStruct<
         Field<STR_LITERAL("active"), bool>,
@@ -41,24 +46,30 @@ namespace nem2_sdk::internal::dto {
 
     using MosaicNamesDtoT = std::vector<MosaicNameDtoT>;
 
+    class MosaicDto: public Mosaic {
+    public:
+        static Mosaic from_json(const std::string& jsonStr);
+        static Mosaic getFromDto(const MosaicDtoT& dto);
+    };
+
     class MosaicMetaDto : public MosaicMeta {
     public:
         static MosaicMeta from_json(const std::string& jsonStr);
-        static MosaicMetaDto getDto(const MosaicMetaDtoT& dto);
+        static MosaicMeta getFromDto(const MosaicMetaDtoT& dto);
     };
 
 
     class MosaicDataDto : public MosaicData {
     public:
         static MosaicData from_json(const std::string& jsonStr);
-        static MosaicDataDto getDto(const MosaicDataDtoT& dto);
+        static MosaicData getFromDto(const MosaicDataDtoT& dto);
     };
 
 
     class MosaicInfoDto : public MosaicInfo {
     public:
         static MosaicInfo from_json(const std::string& jsonStr);
-        static MosaicInfoDto getDto(const MosaicInfoDtoT& dto);
+        static MosaicInfo getFromDto(const MosaicInfoDtoT& dto);
     };
 
     class MultipleMosaicDto {
@@ -66,13 +77,13 @@ namespace nem2_sdk::internal::dto {
         std::vector<MosaicInfo> mosaics;
 
         static MultipleMosaicDto from_json(const std::string& jsonStr);
-        static MultipleMosaicDto getDto(const MultipleMosaicDtoT& dto);
+        static MultipleMosaicDto getFromDto(const MultipleMosaicDtoT& dto);
     };
 
     class MosaicNameDto : public MosaicName {
     public:
         static MosaicName from_json(const std::string& jsonStr);
-        static MosaicNameDto getDto(const MosaicNameDtoT& dto);
+        static MosaicName getFromDto(const MosaicNameDtoT& dto);
     };
 
 
@@ -81,7 +92,7 @@ namespace nem2_sdk::internal::dto {
         std::vector<MosaicName> names;
 
         static MosaicNamesDto from_json(const std::string& jsonStr);
-        static MosaicNamesDto getDto(const MosaicNamesDtoT& dto);
+        static MosaicNamesDto getFromDto(const MosaicNamesDtoT& dto);
     };
 
 }

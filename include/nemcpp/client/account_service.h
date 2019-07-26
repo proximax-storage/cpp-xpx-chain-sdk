@@ -4,4 +4,8 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "ContractService.h"
+namespace nem2_sdk {
+    class IAccountService {
+
+    };
+}

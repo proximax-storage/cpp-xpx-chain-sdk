@@ -1,5 +1,10 @@
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
+
 #include "block_dto.h"
-#include "lower_higher.h"
 #include <nemcpp/client.h>
 #include <infrastructure/json/parser.h>
 
@@ -13,17 +18,20 @@ using Parser = nem2_sdk::internal::json::Parser;
 
 BlockMeta BlockMetaDto::from_json(const std::string& jsonStr) {
 	BlockMetaDtoT dto;
-	Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    auto result = Parser::Read(dto, jsonStr);
 
-	BlockMetaDto meta = BlockMetaDto::getDto(dto);
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+
+	BlockMeta meta = BlockMetaDto::getFromDto(dto);
 
 	return meta;
 }
 
-BlockMetaDto BlockMetaDto::getDto(const BlockMetaDtoT &dto) {
-    BlockMetaDto meta;
+BlockMeta BlockMetaDto::getFromDto(const BlockMetaDtoT &dto) {
+    BlockMeta meta;
     meta.hash = dto.value<"hash"_>();
     meta.generationHash = dto.value<"generationHash"_>();
     meta.totalFee = dto.value<"totalFee"_>();  // note how Uint64 type from dto ([high, low] in json automatically converted to uint64_t
@@ -33,17 +41,20 @@ BlockMetaDto BlockMetaDto::getDto(const BlockMetaDtoT &dto) {
 
 BlockData BlockDataDto::from_json(const std::string& jsonStr) {
     BlockDataDtoT dto;
-    Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    auto result = Parser::Read(dto, jsonStr);
 
-    BlockDataDto data = BlockDataDto::getDto(dto);
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+
+    BlockData data = BlockDataDto::getFromDto(dto);
 
     return data;
 }
 
-BlockDataDto BlockDataDto::getDto(const BlockDataDtoT& dto) {
-    BlockDataDto data = {
+BlockData BlockDataDto::getFromDto(const BlockDataDtoT& dto) {
+    BlockData data = {
             dto.value<"signature"_>(),
             dto.value<"timestamp"_>(),
             dto.value<"difficulty"_>(),
@@ -59,62 +70,68 @@ BlockDataDto BlockDataDto::getDto(const BlockDataDtoT& dto) {
 
 Block BlockDto::from_json(const std::string& jsonStr) {
     BlockDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    BlockDto blockDto = BlockDto::getDto(dto);
+    Block block = BlockDto::getFromDto(dto);
 
-    return blockDto;
+    return block;
 }
 
-BlockDto BlockDto::getDto(const BlockDtoT &dto) {
-    BlockDto blockDto = {
-            BlockMetaDto::getDto(dto.value<"meta"_>()),
-            BlockDataDto::getDto(dto.value<"block"_>())
+Block BlockDto::getFromDto(const BlockDtoT &dto) {
+    Block block = {
+            BlockMetaDto::getFromDto(dto.value<"meta"_>()),
+            BlockDataDto::getFromDto(dto.value<"block"_>())
     };
-    return blockDto;
+    return block;
 }
 
 StorageInfo StorageInfoDto::from_json(const std::string& jsonStr) {
     StorageInfoDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    StorageInfoDto storageInfoDto = StorageInfoDto::getDto(dto);
+    StorageInfo storageInfoDto = StorageInfoDto::getFromDto(dto);
 
     return storageInfoDto;
 }
 
-StorageInfoDto StorageInfoDto::getDto(const StorageInfoDtoT& dto) {
+StorageInfo StorageInfoDto::getFromDto(const StorageInfoDtoT& dto) {
 
-    StorageInfoDto storageInfoDto = {
+    StorageInfo storageInfo = {
             dto.value<"numBlocks"_>(),
             dto.value<"numTransactions"_>(),
             dto.value<"numAccounts"_>()
     };
 
-    return storageInfoDto;
+    return storageInfo;
 }
 
 
 ScoreInfo ScoreInfoDto::from_json(const std::string& jsonStr) {
     ScoreInfoDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    ScoreInfoDto scoreInfoDto = ScoreInfoDto::getDto(dto);
+    ScoreInfo scoreInfo = ScoreInfoDto::getFromDto(dto);
 
-    return scoreInfoDto;
+    return scoreInfo;
 }
 
-ScoreInfoDto ScoreInfoDto::getDto(const ScoreInfoDtoT& dto) {
-    ScoreInfoDto scoreInfoDto = {
+ScoreInfo ScoreInfoDto::getFromDto(const ScoreInfoDtoT& dto) {
+    ScoreInfo scoreInfo = {
             dto.value<"scoreHigh"_>(),
             dto.value<"scoreLow"_>()
     };
 
-    return scoreInfoDto;
+    return scoreInfo;
 }

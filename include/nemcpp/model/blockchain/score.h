@@ -6,7 +6,7 @@
 namespace nem2_sdk {
     class ScoreInfo {
     public:
-        uint64_t ScoreHigh;
-        uint64_t ScoreLow;
+        uint64_t scoreHigh;
+        uint64_t scoreLow;
     };
 }

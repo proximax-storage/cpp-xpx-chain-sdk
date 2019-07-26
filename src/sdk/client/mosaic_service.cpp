@@ -1,7 +1,8 @@
-//
-// Created by vulfke on 22.07.19.
-//
-
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 #include <infrastructure/dto/mosaic_dto.h>
 #include <nemcpp/client.h>
 #include <sdk/client/mosaic_service.h>

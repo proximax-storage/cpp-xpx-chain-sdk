@@ -44,4 +44,7 @@ namespace nem2_sdk {
 	
 	/// Serialization-related error.
 	NEM2_SDK_DEFINE_EXCEPTION(serialization_error);
+
+	/// Invalid message error.
+	NEM2_SDK_DEFINE_EXCEPTION(message_error);
 }

@@ -4,4 +4,16 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "ContractService.h"
+#pragma once
+
+
+#include <nemcpp/client/namespace_service.h>
+
+namespace nem2_sdk {
+
+    class NamespaceService : public INamespaceService {
+
+    };
+}
+
+

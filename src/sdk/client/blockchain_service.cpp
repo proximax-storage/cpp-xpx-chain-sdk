@@ -1,4 +1,8 @@
-#include <memory>
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 
 #include <nemcpp/client.h>
 #include <sdk/client/blockchain_service.h>
@@ -33,7 +37,7 @@ uint64_t BlockchainService::getBlockchainHeight() {
 
 Block BlockchainService::getBlockByHeight(uint64_t height) {
 	std::stringstream path;
-	path << "data/" << height;
+	path << "block/" << height;
 
 	auto requestParams = _builder
 		.setPath(path.str())

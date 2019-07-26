@@ -43,8 +43,8 @@ namespace nem2_sdk {
 		/// Determines transaction deadline which is used by default.
 		NetworkDuration TransactionDeadline = Transaction_Deadline;
 
-		std::string nodeAddress = "bcstage1.xpxsirius.io";
-		std::string port = "3000";
+		std::string nodeAddress = "localhost";
+		std::string port = "80";
 		bool useSSL = false;
 		std::string basePath = "/";
 	};

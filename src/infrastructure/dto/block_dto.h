@@ -1,3 +1,9 @@
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
+
 #pragma once
 
 #include <nemcpp/model/blockchain/block.h>
@@ -68,21 +74,21 @@ namespace nem2_sdk::internal::dto {
 	class BlockMetaDto : public BlockMeta {
 	public:
 		static BlockMeta from_json(const std::string& jsonStr);
-		static BlockMetaDto getDto(const BlockMetaDtoT& dto);
+		static BlockMeta getFromDto(const BlockMetaDtoT& dto);
 	};
 
 
 	class BlockDataDto : public BlockData {
 	public:
 		static BlockData from_json(const std::string& jsonStr);
-		static BlockDataDto getDto(const BlockDataDtoT& dto);
+		static BlockData getFromDto(const BlockDataDtoT& dto);
 	};
 
 
 	class BlockDto : public Block {
 	public:
 		static Block from_json(const std::string& jsonStr);
-        static BlockDto getDto(const BlockDtoT &dto);
+        static Block getFromDto(const BlockDtoT &dto);
 	};
 
 
@@ -95,7 +101,7 @@ namespace nem2_sdk::internal::dto {
 	class StorageInfoDto : public StorageInfo {
 	public:
 	    static StorageInfo from_json(const std::string& jsonStr);
-	    static StorageInfoDto getDto(const StorageInfoDtoT& dto);
+	    static StorageInfo getFromDto(const StorageInfoDtoT& dto);
 	};
 
 
@@ -107,6 +113,6 @@ namespace nem2_sdk::internal::dto {
 	class ScoreInfoDto : public ScoreInfo {
 	public:
         static ScoreInfo from_json(const std::string& jsonStr);
-        static ScoreInfoDto getDto(const ScoreInfoDtoT& dot);
+        static ScoreInfo getFromDto(const ScoreInfoDtoT& dot);
 	};
 }

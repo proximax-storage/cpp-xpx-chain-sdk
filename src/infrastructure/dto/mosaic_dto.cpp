@@ -1,6 +1,8 @@
-//
-// Created by vulfke on 22.07.19.
-//
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 
 #include <infrastructure/json/parser.h>
 #include "mosaic_dto.h"
@@ -10,85 +12,115 @@ using namespace nem2_sdk::internal::dto;
 using nem2_sdk::internal::json::Parser;
 
 
-MosaicMeta MosaicMetaDto::from_json(const std::string& jsonStr) {
-    MosaicMetaDtoT dto;
-    Parser::Read(dto, jsonStr);
 
-    MosaicMetaDto mosaicDto = MosaicMetaDto::getDto(dto);
+Mosaic MosaicDto::from_json(const std::string& jsonStr) {
+    MosaicDtoT dto;
+    auto result = Parser::Read(dto, jsonStr);
 
-    return mosaicDto;
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+
+    Mosaic mosaic = MosaicDto::getFromDto(dto);
+    return mosaic;
+}
+
+Mosaic MosaicDto::getFromDto(const MosaicDtoT& dto) {
+    return {dto.value<"id"_>(), dto.value<"amount"_>()};
 }
 
 
-MosaicMetaDto MosaicMetaDto::getDto(const MosaicMetaDtoT& dto) {
-    MosaicMetaDto mosaicMetaDto = {
+MosaicMeta MosaicMetaDto::from_json(const std::string& jsonStr) {
+    MosaicMetaDtoT dto;
+    auto result = Parser::Read(dto, jsonStr);
+
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+
+    MosaicMeta mosaicMeta = MosaicMetaDto::getFromDto(dto);
+
+    return mosaicMeta;
+}
+
+
+MosaicMeta MosaicMetaDto::getFromDto(const MosaicMetaDtoT& dto) {
+    MosaicMeta mosaicMeta = {
             dto.value<"active"_>(),
             dto.value<"index"_>(),
             dto.value<"id"_>()
     };
 
-    return mosaicMetaDto;
+    return mosaicMeta;
 }
 
 
 MosaicData MosaicDataDto::from_json(const std::string& jsonStr) {
     MosaicDataDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    MosaicDataDto mosaicDto = MosaicDataDto::getDto(dto);
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    return mosaicDto;
+    MosaicData mosaicData = MosaicDataDto::getFromDto(dto);
+
+    return mosaicData;
 }
 
-MosaicDataDto MosaicDataDto::getDto(const MosaicDataDtoT& dto) {
-    MosaicDataDto mosaicDto;
-    mosaicDto.mosaicId = dto.value<"mosaicid"_>();
-    mosaicDto.amount = dto.value<"supply"_>();
-    mosaicDto.height = dto.value<"height"_>();
-    mosaicDto.owner = dto.value<"owner"_>();
+MosaicData MosaicDataDto::getFromDto(const MosaicDataDtoT& dto) {
+    MosaicData mosaicData;
+    mosaicData.mosaicId = dto.value<"mosaicid"_>();
+    mosaicData.amount = dto.value<"supply"_>();
+    mosaicData.height = dto.value<"height"_>();
+    mosaicData.owner = dto.value<"owner"_>();
     for(auto property : dto.value<"properties"_>()) {
         nem2_sdk::MosaicProperty tmp = {MosaicPropertyId(property[0]), property[1]};
-        mosaicDto.properties.push_back(tmp);
+        mosaicData.properties.push_back(tmp);
     }
-    return mosaicDto;
+    return mosaicData;
 }
 
 MosaicInfo MosaicInfoDto::from_json(const std::string& jsonStr) {
     MosaicInfoDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    MosaicInfoDto mosaicDto = MosaicInfoDto::getDto(dto);
+    MosaicInfo mosaicInfo = MosaicInfoDto::getFromDto(dto);
 
-    return mosaicDto;
+    return mosaicInfo;
 }
 
-MosaicInfoDto MosaicInfoDto::getDto(const MosaicInfoDtoT &dto) {
-    MosaicInfoDto mosaicDto = {
-            MosaicMetaDto::getDto(dto.value<"meta"_>()),
-            MosaicDataDto::getDto(dto.value<"mosaic"_>())
+MosaicInfo MosaicInfoDto::getFromDto(const MosaicInfoDtoT &dto) {
+    MosaicInfo mosaicInfo = {
+            MosaicMetaDto::getFromDto(dto.value<"meta"_>()),
+            MosaicDataDto::getFromDto(dto.value<"mosaic"_>())
     };
-    return mosaicDto;
+    return mosaicInfo;
 }
 
 
 MultipleMosaicDto MultipleMosaicDto::from_json(const std::string& jsonStr) {
     MultipleMosaicDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    MultipleMosaicDto multipleMosaicDto = MultipleMosaicDto::getDto(dto);
+    MultipleMosaicDto multipleMosaicDto = MultipleMosaicDto::getFromDto(dto);
 
     return multipleMosaicDto;
 }
 
-MultipleMosaicDto MultipleMosaicDto::getDto(const MultipleMosaicDtoT& dto) {
+MultipleMosaicDto MultipleMosaicDto::getFromDto(const MultipleMosaicDtoT& dto) {
     MultipleMosaicDto mmdto;
 
     for (auto& mosaicDtoT: dto) {
-        MosaicInfo mosaic = MosaicInfoDto::getDto(mosaicDtoT);
+        MosaicInfo mosaic = MosaicInfoDto::getFromDto(mosaicDtoT);
         mmdto.mosaics.push_back(mosaic);
     }
 
@@ -97,18 +129,20 @@ MultipleMosaicDto MultipleMosaicDto::getDto(const MultipleMosaicDtoT& dto) {
 
 MosaicName MosaicNameDto::from_json(const std::string& jsonStr) {
     MosaicNameDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    MosaicNameDto mosaicNameDto = MosaicNameDto::getDto(dto);
+    MosaicName mosaicName = MosaicNameDto::getFromDto(dto);
 
-    return mosaicNameDto;
+    return mosaicName;
 }
 
-MosaicNameDto MosaicNameDto::getDto(const MosaicNameDtoT& dto) {
+MosaicName MosaicNameDto::getFromDto(const MosaicNameDtoT& dto) {
 
-    MosaicNameDto mosaicName =  {
+    MosaicName mosaicName =  {
             dto.value<"parentid"_>(),
             dto.value<"mosaicid"_>(),
             dto.value<"name"_>()
@@ -118,20 +152,22 @@ MosaicNameDto MosaicNameDto::getDto(const MosaicNameDtoT& dto) {
 
 MosaicNamesDto MosaicNamesDto::from_json(const std::string& jsonStr) {
     MosaicNamesDtoT dto;
-    Parser::Read(dto, jsonStr);
+    auto result = Parser::Read(dto, jsonStr);
 
-    // TODO: Error Processing
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
 
-    MosaicNamesDto mosaicNamesDto = MosaicNamesDto::getDto(dto);
+    MosaicNamesDto mosaicNamesDto = MosaicNamesDto::getFromDto(dto);
 
     return mosaicNamesDto;
 }
 
-MosaicNamesDto MosaicNamesDto::getDto(const MosaicNamesDtoT& dto) {
+MosaicNamesDto MosaicNamesDto::getFromDto(const MosaicNamesDtoT& dto) {
     MosaicNamesDto names;
 
     for (auto& nameDtoT: dto) {
-        MosaicName mosaic = MosaicNameDto::getDto(nameDtoT);
+        MosaicName mosaic = MosaicNameDto::getFromDto(nameDtoT);
         names.names.push_back(mosaic);
     }
 

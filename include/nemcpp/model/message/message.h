@@ -1,7 +1,8 @@
-//
-// Created by vulfke on 18.07.19.
-//
-
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 #pragma once
 
 #include <ctype.h>
@@ -15,6 +16,7 @@
 #include "nemcpp/crypto/signer.h"
 #include "nemcpp/types.h"
 #include "nemcpp/utils/base32.h"
+#include <nemcpp/exceptions.h>
 
 namespace nem2_sdk {
     using PublicKey = Key;
@@ -146,7 +148,7 @@ namespace nem2_sdk {
 
             if(Payload.length() != 0) {
                 if(!Base32::Decode(Payload, b)) {
-                    throw "Hex Decode Error";  // TODO:change to custom exception
+                    NEM2_SDK_THROW(crypto_error, "Cannot decode Base32");
                 }
             }
 
@@ -156,7 +158,9 @@ namespace nem2_sdk {
                 case SecureMessageType:
                     return std::shared_ptr<Message>(NewSecureMessage(std::move(b)).get());
                 default:
-                    throw "Invalide Message Type Error";  // TODO:change to custom exception
+                    NEM2_SDK_THROW(message_error, "Invalide message");
+
+
             }
         }
     private:

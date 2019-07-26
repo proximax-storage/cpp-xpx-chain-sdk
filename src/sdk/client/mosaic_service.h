@@ -1,12 +1,10 @@
-#pragma once
-//
-// Created by vulfke on 22.07.19.
-//
+/*
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+*/
 
-//#ifndef NEM2_SDK_CPP_MOSAIC_INFO_H
-//#define NEM2_SDK_CPP_MOSAIC_INFO_H
-//
-//#endif //NEM2_SDK_CPP_MOSAIC_INFO_H
+#pragma once
 
 #include <nemcpp/types.h>
 #include <nemcpp/model/account/public_account.h>
