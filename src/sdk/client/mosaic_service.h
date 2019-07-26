@@ -23,9 +23,9 @@ namespace nem2_sdk {
                 std::shared_ptr<internal::network::Context> context,
                 internal::network::RequestParamsBuilder builder
         );
-        MosaicInfo getMosaicInfo(MosaicId id) override;
-        std::vector<MosaicInfo> getMosaicInfos(const std::vector<MosaicId>& ids) override;
-        std::vector<std::string> getMosaicsNames(const std::vector<MosaicId>& ids) override;
+        MosaicInfo getMosaicInfo(const std::string& id) override;
+        std::vector<MosaicInfo> getMosaicInfos(const std::vector<std::string>& ids) override;
+        std::vector<std::string> getMosaicsNames(const std::vector<std::string>& ids) override;
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

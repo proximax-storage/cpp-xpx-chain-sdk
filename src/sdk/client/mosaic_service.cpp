@@ -28,7 +28,7 @@ MosaicService::MosaicService(
 {}
 
 
-MosaicInfo MosaicService::getMosaicInfo(MosaicId id) {
+MosaicInfo MosaicService::getMosaicInfo(const std::string& id) {
 
     std::stringstream path;
 
@@ -43,7 +43,7 @@ MosaicInfo MosaicService::getMosaicInfo(MosaicId id) {
     return dto;
 }
 
-std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
+std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;
@@ -59,7 +59,7 @@ std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<MosaicId
     return dto.mosaics;
 }
 
-std::vector<std::string> MosaicService::getMosaicsNames(const std::vector<MosaicId>& ids) {
+std::vector<std::string> MosaicService::getMosaicsNames(const std::vector<std::string>& ids) {
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;
