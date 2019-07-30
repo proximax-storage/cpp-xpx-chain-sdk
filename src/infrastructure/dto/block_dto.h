@@ -71,21 +71,21 @@ namespace nem2_sdk::internal::dto {
             Field<STR_LITERAL("block"), BlockDataDtoT > >;
 
 
-	class BlockMetaDto : public BlockMeta {
+	class BlockMetaDto  {
 	public:
 		static BlockMeta from_json(const std::string& jsonStr);
 		static BlockMeta getFromDto(const BlockMetaDtoT& dto);
 	};
 
 
-	class BlockDataDto : public BlockData {
+	class BlockDataDto  {
 	public:
 		static BlockData from_json(const std::string& jsonStr);
 		static BlockData getFromDto(const BlockDataDtoT& dto);
 	};
 
 
-	class BlockDto : public Block {
+	class BlockDto  {
 	public:
 		static Block from_json(const std::string& jsonStr);
         static Block getFromDto(const BlockDtoT &dto);
@@ -98,7 +98,7 @@ namespace nem2_sdk::internal::dto {
             Field<STR_LITERAL("numAccounts"), uint64_t> >;
 
 
-	class StorageInfoDto : public StorageInfo {
+	class StorageInfoDto {
 	public:
 	    static StorageInfo from_json(const std::string& jsonStr);
 	    static StorageInfo getFromDto(const StorageInfoDtoT& dto);
@@ -110,7 +110,7 @@ namespace nem2_sdk::internal::dto {
 	        Field<STR_LITERAL("scoreLow"), Uint64> >;
 
 
-	class ScoreInfoDto : public ScoreInfo {
+	class ScoreInfoDto {
 	public:
         static ScoreInfo from_json(const std::string& jsonStr);
         static ScoreInfo getFromDto(const ScoreInfoDtoT& dot);

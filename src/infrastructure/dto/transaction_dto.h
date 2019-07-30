@@ -34,7 +34,14 @@ namespace nem2_sdk::internal::dto {
             Field<STR_LITERAL("deadline"), Uint64 >,
             Field<STR_LITERAL("mosaicNonce"), uint64_t >,
             Field<STR_LITERAL("mosaicId"), Uint64 >,
-            Field<STR_LITERAL("properties"), std::vector<MosaicPropertyDtoT> > >;
+            Field<STR_LITERAL("properties"), std::vector<MosaicPropertyDtoT> >,
+            Field<STR_LITERAL("namespaceId"), uint64_t>,
+            Field<STR_LITERAL("aliasAction"), bool>,
+            Field<STR_LITERAL("namespaceType"), bool>,
+            Field<STR_LITERAL("duration"), uint64_t >,
+            Field<STR_LITERAL("parentId"), uint64_t>,
+            Field<STR_LITERAL("name"), std::string >,
+            Field<STR_LITERAL("address"), std::string> >;
 
 }
 

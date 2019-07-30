@@ -8,8 +8,6 @@
 #include <nemcpp/client.h>
 #include <sdk/client/mosaic_service.h>
 
-#include <infrastructure/network/http.h>
-#include <infrastructure/network/context.h>
 #include <infrastructure/dto/multiple_blocks_dto.h>
 #include <infrastructure/json/parser.h>
 

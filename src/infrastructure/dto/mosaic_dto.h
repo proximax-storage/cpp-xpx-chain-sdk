@@ -46,27 +46,27 @@ namespace nem2_sdk::internal::dto {
 
     using MosaicNamesDtoT = std::vector<MosaicNameDtoT>;
 
-    class MosaicDto: public Mosaic {
+    class MosaicDto {
     public:
         static Mosaic from_json(const std::string& jsonStr);
         static Mosaic getFromDto(const MosaicDtoT& dto);
     };
 
-    class MosaicMetaDto : public MosaicMeta {
+    class MosaicMetaDto {
     public:
         static MosaicMeta from_json(const std::string& jsonStr);
         static MosaicMeta getFromDto(const MosaicMetaDtoT& dto);
     };
 
 
-    class MosaicDataDto : public MosaicData {
+    class MosaicDataDto {
     public:
         static MosaicData from_json(const std::string& jsonStr);
         static MosaicData getFromDto(const MosaicDataDtoT& dto);
     };
 
 
-    class MosaicInfoDto : public MosaicInfo {
+    class MosaicInfoDto {
     public:
         static MosaicInfo from_json(const std::string& jsonStr);
         static MosaicInfo getFromDto(const MosaicInfoDtoT& dto);
@@ -80,7 +80,7 @@ namespace nem2_sdk::internal::dto {
         static MultipleMosaicDto getFromDto(const MultipleMosaicDtoT& dto);
     };
 
-    class MosaicNameDto : public MosaicName {
+    class MosaicNameDto {
     public:
         static MosaicName from_json(const std::string& jsonStr);
         static MosaicName getFromDto(const MosaicNameDtoT& dto);

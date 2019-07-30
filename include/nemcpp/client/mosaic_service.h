@@ -11,9 +11,7 @@ namespace nem2_sdk {
     class IMosaicService {
     public:
         virtual MosaicInfo getMosaicInfo(const std::string& id) = 0;
-
         virtual std::vector<MosaicInfo> getMosaicInfos(const std::vector<std::string>& ids) = 0;
-
         virtual std::vector<std::string> getMosaicsNames(const std::vector<std::string>& ids) = 0;
 
         ~IMosaicService() = default;

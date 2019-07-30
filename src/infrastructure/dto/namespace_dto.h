@@ -8,6 +8,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <vector>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/uint64.h>
 #include <nemcpp/model/namespace/namespace_info.h>
@@ -44,26 +45,43 @@ namespace nem2_sdk::internal::dto {
             Field<STR_LITERAL("meta"), NamespaceMetaDtoT>,
             Field<STR_LITERAL("namespace"), NamespaceDataDtoT> >;
 
+    using NamespaceNameDtoT = VariadicStruct<
+            Field<STR_LITERAL("name"), std::string> >;
 
-    class AliasDto : public Alias {
+    using NamespaceNamesDtoT = std::vector<NamespaceNameDtoT>;
+
+
+    class AliasDto {
     public:
         static Alias from_json(const std::string& jsonStr);
         static Alias getFromDto(const AliasDtoT& dto);
     };
-    class NamespaceMetaDto : public NamespaceMeta {
+    class NamespaceMetaDto {
     public:
         static NamespaceMeta from_json(const std::string& jsonStr);
         static NamespaceMeta getFromDto(const NamespaceMetaDtoT& dto);
     };
-    class NamespaceDataDto :public NamespaceData {
+    class NamespaceDataDto {
     public:
         static NamespaceData from_json(const std::string& jsonStr);
         static NamespaceData getFromDto(const NamespaceDataDtoT& dto);
     };
 
-    class NamespaceInfoDto : public NamespaceInfo {
+    class NamespaceInfoDto {
     public:
         static NamespaceInfo from_json(const std::string& jsonStr);
         static NamespaceInfo getFromDto(const NamespaceInfoDtoT& dto);
+    };
+
+    class NamespaceNameDto {
+    public:
+        static std::string from_json(const std::string& jsonStr);
+        static std::string getFromDto(const NamespaceNameDtoT& dto);
+    };
+
+    class NamespaceNamesDto {
+    public:
+        static std::vector<std::string> from_json(const std::string& jsonStr);
+        static std::vector<std::string> getFromDto(const NamespaceNameDtoT& dto);
     };
 }

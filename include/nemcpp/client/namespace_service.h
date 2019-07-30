@@ -24,9 +24,10 @@ namespace nem2_sdk {
     class INamespaceService {
     public:
         virtual NamespaceInfo getNamespaceInfoById(const NamespaceId& id);
-        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccount();
-        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccounts();
-        virtual std::vector<MosaicId> getMosaicIds();
-//        virtual std::vector<AccountId> getAccountIds();
+        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccount(const std::string& accountId);
+        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds);
+        virtual std::vector<std::string> getNamespaceNames(const std::vector<std::string>& namespaceIds);
+//        virtual std::vector<string> getAccountIds(); //maybe in future if will know how to do it
+        ~INamespaceService() = default;
     };
 }

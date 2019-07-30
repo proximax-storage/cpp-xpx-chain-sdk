@@ -107,3 +107,37 @@ NamespaceInfo NamespaceInfoDto::getFromDto(const NamespaceInfoDtoT& dto) {
     };
     return namespaceInfo;
 }
+
+std::string NamespaceNameDto::from_json(const std::string& jsonStr) {
+    NamespaceNameDtoT dto;
+    auto result = Parser::Read(dto, jsonStr);
+
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+
+    return dto.value<"name"_>();
+}
+
+std::string NamespaceNameDto::getFromDto(const NamespaceNameDtoT& dto) {
+    return dto.value<"name"_>();
+}
+
+std::vector<std::string> NamespaceNamesDto::from_json(const std::string& jsonStr) {
+    NamespaceNamesDtoT dto;
+    auto result = Parser::Read(dto, jsonStr);
+
+    if(!result) {
+        NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+    }
+    auto names = NamespaceNamesDto::getFromDto(dto);
+}
+
+std::vector<std::string> NamespaceNamesDto::getFromDto(const NamespaceNameDtoT& dto) {
+    std::vector<std::string> names;
+
+    for(auto& nameT : dto) {
+        names.push_back(NamespaceNameDto::getFromDto(nameT));
+    }
+    return names;
+}

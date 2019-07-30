@@ -1,5 +1,11 @@
 #pragma once
 
+
+#include <nemcpp/config.h>
+#include <nemcpp/client/blockchain_service.h>
+#include <nemcpp/client/mosaic_service.h>
+#include <nemcpp/client/namespace_service.h>
+
 #include <memory>
 
 #include <nemcpp/config.h>
@@ -22,6 +28,8 @@ namespace nem2_sdk {
 	class IClient {
 	public:
 		virtual std::shared_ptr<IBlockchain> blockchain() const = 0;
+        virtual std::shared_ptr<IMosaicService> mosaics() const = 0;
+        virtual std::shared_ptr<INamespaceService> namespaces() const = 0;
 		virtual ~IClient() = default;
 	};
 
