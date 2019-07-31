@@ -18,6 +18,12 @@ using namespace xpx_sdk;
 using xpx_sdk::internal::json::Parser;
 using xpx_sdk::internal::json::dto::from_json;
 
+NamespaceService::NamespaceService(
+        std::shared_ptr<Config> config,
+        std::shared_ptr<internal::network::Context> context,
+        internal::network::RequestParamsBuilder builder
+) : _config(config), _context(context), _builder(builder) {}
+
 NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
     std::stringstream path;
     path << "namespace/" << int_to_hex(id);

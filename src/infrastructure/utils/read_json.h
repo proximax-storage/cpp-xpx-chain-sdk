@@ -42,249 +42,71 @@ namespace xpx_sdk { namespace  internal { namespace json {
         }
 
         template<>
-        BlockMeta fromDto<BlockMeta, BlockMetaDto>(const BlockMetaDto &dto) {
-            BlockMeta meta;
-            meta.hash = dto.value<"hash"_>();
-            meta.generationHash = dto.value<"generationHash"_>();
-            meta.totalFee = dto.value<"totalFee"_>();  // note how Uint64 type from dto ([high, low] in json automatically converted to uint64_t
-            meta.numTransactions = dto.value<"numTransactions"_>();
-            return meta;
-        }
+        BlockMeta fromDto<BlockMeta, BlockMetaDto>(const BlockMetaDto &dto);
 
         template<>
-        BlockData fromDto<BlockData, BlockDataDto>(const BlockDataDto &dto) {
-            BlockData data = {
-                    dto.value<"signature"_>(),
-                    dto.value<"timestamp"_>(),
-                    dto.value<"difficulty"_>(),
-                    dto.value<"feeMultiplier"_>(),
-                    dto.value<"previousBlockHash"_>(),
-                    dto.value<"blockTransactionsHash"_>(),
-                    dto.value<"blockReceiptsHash"_>(),
-                    dto.value<"stateHash"_>(),
-                    dto.value<"beneficiary"_>()
-            };
-            return data;
-        }
+        BlockData fromDto<BlockData, BlockDataDto>(const BlockDataDto &dto);
 
         template<>
-        Block fromDto<Block, BlockDto>(const BlockDto &dto) {
-            Block block = {
-                    fromDto<BlockMeta, BlockMetaDto>(dto.value<"meta"_>()),
-                    fromDto<BlockData, BlockDataDto>(dto.value<"block"_>())
-            };
-            return block;
-        }
+        Block fromDto<Block, BlockDto>(const BlockDto &dto);
 
         template<>
-        StorageInfo fromDto<StorageInfo, StorageInfoDto>(const StorageInfoDto &dto) {
-
-            StorageInfo storageInfo = {
-                    dto.value<"numBlocks"_>(),
-                    dto.value<"numTransactions"_>(),
-                    dto.value<"numAccounts"_>()
-            };
-
-            return storageInfo;
-        }
+        StorageInfo fromDto<StorageInfo, StorageInfoDto>(const StorageInfoDto &dto) ;
 
         template<>
-        ScoreInfo fromDto<ScoreInfo, ScoreInfoDto>(const ScoreInfoDto &dto) {
-            ScoreInfo scoreInfo = {
-                    dto.value<"scoreHigh"_>(),
-                    dto.value<"scoreLow"_>()
-            };
-
-            return scoreInfo;
-        }
+        ScoreInfo fromDto<ScoreInfo, ScoreInfoDto>(const ScoreInfoDto &dto) ;
 
         template<>
-        Height fromDto<Height, HeightDto>(const HeightDto& dto) {
-            Height height = {
-                    dto.value<"height"_>()
-            };
-            return height;
-        }
+        Height fromDto<Height, HeightDto>(const HeightDto& dto) ;
 
         template<>
-        Mosaic fromDto<Mosaic, MosaicDto>(const MosaicDto& dto) {
-            return {dto.value<"id"_>(), dto.value<"amount"_>()};
-        }
+        Mosaic fromDto<Mosaic, MosaicDto>(const MosaicDto& dto);
 
         template<>
-        AccountInfo fromDto<AccountInfo, AccountInfoDto>(const AccountInfoDto& dto ) {
-            AccountInfo accountInfo;
-            accountInfo.address = dto.value<"address"_>();
-            accountInfo.addressHeight = dto.value<"addressHeight"_>();
-            accountInfo.publicKey = dto.value<"publicKey"_>();
-            accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>();
-
-            for(auto& mosaicDto : dto.value<"mosaics"_>()) {
-                accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
-            }
-
-            return accountInfo;
-
-        }
-
-
+        AccountInfo fromDto<AccountInfo, AccountInfoDto>(const AccountInfoDto& dto );
 
         template<>
-        MosaicMeta fromDto<MosaicMeta, MosaicMetaDto>(const MosaicMetaDto& dto) {
-            MosaicMeta mosaicMeta = {
-                    dto.value<"active"_>(),
-                    dto.value<"index"_>(),
-                    dto.value<"id"_>()
-            };
-
-            return mosaicMeta;
-        }
+        MosaicMeta fromDto<MosaicMeta, MosaicMetaDto>(const MosaicMetaDto& dto);
 
         template<>
-        MosaicData fromDto<MosaicData, MosaicDataDto>(const MosaicDataDto& dto) {
-            MosaicData mosaicData;
-            mosaicData.mosaicId = dto.value<"mosaicid"_>();
-            mosaicData.amount = dto.value<"supply"_>();
-            mosaicData.height = dto.value<"height"_>();
-            mosaicData.owner = dto.value<"owner"_>();
-            for(auto property : dto.value<"properties"_>()) {
-                xpx_sdk::MosaicProperty tmp = {MosaicPropertyId(property[0]), property[1]};
-                mosaicData.properties.push_back(tmp);
-            }
-            return mosaicData;
-        }
+        MosaicData fromDto<MosaicData, MosaicDataDto>(const MosaicDataDto& dto) ;
 
         template<>
-        MosaicInfo fromDto<MosaicInfo, MosaicInfoDto>(const MosaicInfoDto &dto) {
-            MosaicInfo mosaicInfo = {
-                    fromDto<MosaicMeta, MosaicMetaDto>(dto.value<"meta"_>()),
-                    fromDto<MosaicData, MosaicDataDto>(dto.value<"mosaic"_>())
-            };
-            return mosaicInfo;
-        }
+        MosaicInfo fromDto<MosaicInfo, MosaicInfoDto>(const MosaicInfoDto &dto);
 
         template<>
-        MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicDto>(const MultipleMosaicDto& dto) {
-            MultipleMosaicInfo mmdto;
-
-            for (auto& mosaicDto: dto) {
-                MosaicInfo mosaic = fromDto<MosaicInfo, MosaicInfoDto>(mosaicDto);
-                mmdto.mosaics.push_back(mosaic);
-            }
-
-            return mmdto;
-        }
+        MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicDto>(const MultipleMosaicDto& dto);
 
         template<>
-        MosaicName fromDto<MosaicName, MosaicNameDto>(const MosaicNameDto& dto) {
-
-            MosaicName mosaicName =  {
-                    dto.value<"parentid"_>(),
-                    dto.value<"mosaicid"_>(),
-                    dto.value<"name"_>()
-            };
-            return mosaicName;
-        }
+        MosaicName fromDto<MosaicName, MosaicNameDto>(const MosaicNameDto& dto);
 
         template<>
-        MosaicNames fromDto<MosaicNames, MosaicNamesDto>(const MosaicNamesDto& dto) {
-            MosaicNames names;
-
-            for (auto& nameDto: dto) {
-                MosaicName mosaic = fromDto<MosaicName, MosaicNameDto>(nameDto);
-                names.names.push_back(mosaic);
-            }
-
-            return names;
-        }
+        MosaicNames fromDto<MosaicNames, MosaicNamesDto>(const MosaicNamesDto& dto);
 
         template<>
-        Alias fromDto<Alias, AliasDto>(const AliasDto& dto) {
-
-            Alias alias = {
-                    dto.value<"type"_>(),
-                    dto.value<"mosaicId"_>(),
-                    dto.value<"address"_>()
-            };
-            return alias;
-        }
+        Alias fromDto<Alias, AliasDto>(const AliasDto& dto);
+        template<>
+        NamespaceMeta fromDto<NamespaceMeta, NamespaceMetaDto>(const NamespaceMetaDto& dto);
 
         template<>
-        NamespaceMeta fromDto<NamespaceMeta, NamespaceMetaDto>(const NamespaceMetaDto& dto) {
-            NamespaceMeta namespaceMeta = {
-                    dto.value<"active"_>(),
-                    dto.value<"index"_>(),
-                    dto.value<"id"_>()
-            };
-            return namespaceMeta;
-        }
+        NamespaceData fromDto<NamespaceData, NamespaceDataDto>(const NamespaceDataDto& dto);
 
         template<>
-        NamespaceData fromDto<NamespaceData, NamespaceDataDto>(const NamespaceDataDto& dto) {
-            NamespaceData namespaceData = {
-                    dto.value<"owner"_>(),
-                    dto.value<"ownerAddress"_>(),
-                    dto.value<"startHeight"_>(),
-                    dto.value<"endHeight"_>(),
-                    dto.value<"depth"_>(),
-                    dto.value<"level0"_>(),
-                    dto.value<"level1"_>(),
-                    dto.value<"level2"_>(),
-                    dto.value<"type"_>(),
-                    fromDto<Alias, AliasDto>(dto.value<"alias"_>()),
-                    dto.value<"parentId"_>()
-            };
-            return namespaceData;
-        }
+        NamespaceInfo fromDto<NamespaceInfo, NamespaceInfoDto>(const NamespaceInfoDto& dto);
 
         template<>
-        NamespaceInfo fromDto<NamespaceInfo, NamespaceInfoDto>(const NamespaceInfoDto& dto) {
-            NamespaceInfo namespaceInfo = {
-                    fromDto<NamespaceMeta, NamespaceMetaDto>(dto.value<"meta"_>()),
-                    fromDto<NamespaceData, NamespaceDataDto>(dto.value<"namespace"_>())
-            };
-            return namespaceInfo;
-        }
+        MultipleNamespaceInfo fromDto<MultipleNamespaceInfo, MultipleNamespaceDto>(const MultipleNamespaceDto& dto);
 
         template<>
-        MultipleNamespaceInfo fromDto<MultipleNamespaceInfo, MultipleNamespaceDto>(const MultipleNamespaceDto& dto) {
-            MultipleNamespaceInfo namespaceInfos;
-            for(auto & nInfosDto : dto) {
-                NamespaceInfo namespaceInfo = fromDto<NamespaceInfo, NamespaceInfoDto>(nInfosDto);
-                namespaceInfos.namespaceInfos.push_back(namespaceInfo);
-            }
-            return namespaceInfos;
-        }
-
+        NamespaceName fromDto<NamespaceName, NamespaceNameDto>(const NamespaceNameDto& dto);
 
         template<>
-        std::string fromDto<std::string, NamespaceNameDto>(const NamespaceNameDto& dto) {
-            return dto.value<"name"_>();
-        }
+        NamespaceNames fromDto<NamespaceNames, NamespaceNamesDto>(const NamespaceNamesDto& dto);
 
         template<>
-        NamespaceNames fromDto<NamespaceNames, NamespaceNamesDto>(const NamespaceNamesDto& dto) {
-            NamespaceNames names;
+        MultipleBlock fromDto<MultipleBlock, MultipleBlocksDto>(const MultipleBlocksDto& dto);
 
-            for(auto& nameT : dto) {
-                names.names.push_back(fromDto<NamespaceName, NamespaceNameDto>(nameT));
-            }
-            return names;
-        }
 
-        template<>
-        MultipleBlock fromDto<MultipleBlock, MultipleBlocksDto>(const MultipleBlocksDto& dto) {
-            MultipleBlock mbdto;
-
-            for (auto& blockDto: dto) {
-                Block block = fromDto<Block, BlockDto>(blockDto);
-                mbdto.blocks.push_back(block);
-            }
-
-            return mbdto;
-        }
-
-    
     }
 }
 }

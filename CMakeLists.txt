@@ -110,7 +110,7 @@ if (NEM2_SDK_BUILD_STATIC)
 		OUTPUT_NAME "nemcpp-static")
 else()
 
-	add_library(nemcpp SHARED "" )
+	add_library(nemcpp SHARED "")
 
 	set_target_properties(nemcpp PROPERTIES
 		VERSION ${PROJECT_VERSION}

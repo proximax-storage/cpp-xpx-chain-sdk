@@ -1,3 +1,5 @@
+#pragma once
+
 #include <infrastructure/utils/variadic_struct.h>
 #include "namespace_dto.h"
 #include <vector>
