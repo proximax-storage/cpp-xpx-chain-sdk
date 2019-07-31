@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	uint16_t MakeTransactionFullVersion(uint8_t version, NetworkIdentifier networkId)
 	{
@@ -26,7 +26,7 @@ namespace nem2_sdk { namespace internal {
 	
 	RawBuffer GetTransactionSignedData(const Transaction* transaction)
 	{
-		using namespace nem2_sdk::internal::binary;
+		using namespace xpx_sdk::internal::binary;
 		
 		const auto& data = transaction->binary();
 		assert(data.size() >= Tx_Signed_Data_Start);

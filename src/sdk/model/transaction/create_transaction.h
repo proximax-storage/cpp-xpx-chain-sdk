@@ -17,7 +17,7 @@
 
 #include <utility>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	template<typename TTransaction>
 	class TTransactionImpl: public TTransaction {

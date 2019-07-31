@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Constant to be used as empty message in transfer transaction.
 	constexpr uint8_t Empty_Message[] = {0};

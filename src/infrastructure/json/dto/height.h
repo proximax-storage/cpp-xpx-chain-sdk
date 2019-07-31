@@ -12,14 +12,9 @@
 #include "infrastructure/utils/variadic_struct.h"
 
 #include <stdint.h>
-namespace nem2_sdk::internal::dto {
-    using nem2_sdk::internal::json::Uint64;
-    using HeightDtoT = VariadicStruct<Field<STR_LITERAL("height"), Uint64> >;
+namespace xpx_sdk::internal::json::dto {
+    using xpx_sdk::internal::json::Uint64;
+    using HeightDto = VariadicStruct<Field<STR_LITERAL("height"), Uint64> >;
 
-	class HeightDto {
-	public:
-		uint64_t height;
-		static HeightDto from_json(const std::string& jsonStr);
-		static HeightDto getFromDto(const HeightDtoT& dto);
-	};
+
 }

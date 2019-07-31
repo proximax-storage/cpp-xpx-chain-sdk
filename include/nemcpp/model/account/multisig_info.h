@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <nemcpp/model/mosaic/mosaic.h>
 
@@ -25,7 +26,7 @@
     ]
 
 }*/
-namespace nem2_sdk {
+namespace xpx_sdk {
     class MultisigInfo {
     public:
         std::string account;

@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <functional>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	constexpr size_t Hash160_Size = 20;
 	constexpr size_t Hash256_Size = 32;

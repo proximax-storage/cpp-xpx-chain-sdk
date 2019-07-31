@@ -4,16 +4,22 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include <infrastructure/dto/mosaic_dto.h>
+#include <infrastructure/json/dto/mosaic_dto.h>
 #include <nemcpp/client.h>
 #include <sdk/client/mosaic_service.h>
 
-#include <infrastructure/dto/multiple_blocks_dto.h>
+#include <infrastructure/json/dto/multiple_blocks_dto.h>
 #include <infrastructure/json/parser.h>
 
-using namespace nem2_sdk;
+#include <infrastructure/utils/read_json.h>
 
-using nem2_sdk::internal::json::Parser;
+using namespace xpx_sdk;
+using xpx_sdk::internal::json::Parser;
+using internal::json::dto::from_json;
+
+using internal::json::dto::MosaicInfoDto;
+using internal::json::dto::MosaicNamesDto;
+using internal::json::dto::MultipleMosaicDto;
 
 MosaicService::MosaicService(
         std::shared_ptr<Config> config,
@@ -37,11 +43,11 @@ MosaicInfo MosaicService::getMosaicInfo(const std::string& id) {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = internal::dto::MosaicInfoDto::from_json(response);
+    auto dto = from_json<MosaicInfo, MosaicInfoDto>(response);
     return dto;
 }
 
-std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<std::string>& ids){
+MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;
@@ -53,11 +59,11 @@ std::vector<MosaicInfo> MosaicService::getMosaicInfos(const std::vector<std::str
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = internal::dto::MultipleMosaicDto::from_json(response);
-    return dto.mosaics;
+    auto dto = from_json<MultipleMosaicInfo, MultipleMosaicDto>(response);
+    return dto;
 }
 
-std::vector<std::string> MosaicService::getMosaicsNames(const std::vector<std::string>& ids) {
+MosaicNames MosaicService::getMosaicsNames(const std::vector<std::string>& ids) {
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;
@@ -69,11 +75,7 @@ std::vector<std::string> MosaicService::getMosaicsNames(const std::vector<std::s
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = internal::dto::MosaicNamesDto::from_json(response);
-    std::vector<std::string> result;
+    auto dto = from_json<MosaicNames, MosaicNamesDto>(response);
 
-    for (auto& mosaicName : dto.names) {
-        result.push_back(mosaicName.name);
-    }
-    return result;
+    return dto;
 }

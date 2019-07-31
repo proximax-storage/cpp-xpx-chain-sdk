@@ -6,15 +6,21 @@
 #include <nemcpp/model/mosaic/mosaic_property.h>
 #include <set>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 
     /// Mosaic data.
-    struct Mosaic {
+    class Mosaic {
+    public:
+        Mosaic() = default;
+        Mosaic(uint64_t _id, uint64_t _amount) :id(_id) , amount(_amount) {}
+        ~Mosaic() = default;
+
+    public:
         /// Mosaic id.
-        MosaicId id;
+        uint64_t id;
 
         /// Mosaic amount.
-        Amount amount;
+        uint64_t amount;
 
         /// Mosaic height
         //        Height height;
@@ -32,12 +38,7 @@ namespace nem2_sdk {
     /// Mosaics container.
     using MosaicContainer = std::set<Mosaic, data_comparator<Mosaic, MosaicId, &Mosaic::id>>;
 
-    class MosaicName {
-    public:
-        uint64_t parentId;
-        uint64_t mosaicId;
-        std::string name;
-    };
+
 
     class MosaicMeta {
     public:

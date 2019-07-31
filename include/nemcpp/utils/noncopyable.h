@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Mixin that disables copy/move for descendants.
 	class NonCopyable {

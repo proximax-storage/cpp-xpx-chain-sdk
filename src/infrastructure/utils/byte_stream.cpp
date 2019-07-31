@@ -6,7 +6,7 @@
 #include <iterator>
 #include <utility>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	namespace {
 		template<typename T>

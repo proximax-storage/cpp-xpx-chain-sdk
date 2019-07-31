@@ -1,9 +1,10 @@
 #pragma once
+
 #include <string>
 #include <nemcpp/model/mosaic/mosaic.h>
 
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     class AccountInfo {
     public:
         std::string address;

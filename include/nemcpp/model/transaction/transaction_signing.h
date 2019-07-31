@@ -5,7 +5,7 @@
 #include <nemcpp/model/transaction/transaction.h>
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Calculates signature for \a transaction using \a keyPair.
 	Signature CalculateTransactionSignature(const Transaction* transaction,

@@ -15,8 +15,9 @@
 #include <memory>
 #include <infrastructure/network/context.h>
 #include <infrastructure/network/http.h>
+#include <nemcpp/model/namespace/multiple_namespace_info.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 
     class NamespaceService : public INamespaceService {
     public:
@@ -26,9 +27,9 @@ namespace nem2_sdk {
                 internal::network::RequestParamsBuilder builder
         );
         NamespaceInfo getNamespaceInfoById(const NamespaceId& id) override;
-        std::vector<NamespaceInfo> getNamespaceInfoByAccount(const std::string& accountId) override;
-        std::vector<NamespaceInfo> getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) override;
-        std::vector<std::string> getNamespaceNames(const std::vector<std::string> & namespaceIds) override;
+        MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) override;
+        MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) override;
+        NamespaceNames getNamespaceNames(const std::vector<std::string> & namespaceIds) override;
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

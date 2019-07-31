@@ -11,9 +11,9 @@
 #include <nemcpp/config.h>
 #include <nemcpp/client/blockchain_service.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 
-	class BlockchainService : public IBlockchain {
+	class BlockchainService : public IBlockchainService {
 	public:
 		BlockchainService(
 				std::shared_ptr<Config> config,
@@ -25,7 +25,7 @@ namespace nem2_sdk {
         ScoreInfo getCurrentScore() override;
         StorageInfo getStorageInfo() override;
 		Block getBlockByHeight(uint64_t height) override;
-		std::vector<Block> getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) override;
+        MultipleBlock getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) override;
 
 
 	private:

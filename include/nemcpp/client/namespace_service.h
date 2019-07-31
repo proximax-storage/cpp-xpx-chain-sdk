@@ -6,6 +6,8 @@
 
 #pragma once
 #include <nemcpp/model/namespace/namespace_info.h>
+#include <nemcpp/model/namespace/multiple_namespace_info.h>
+#include <nemcpp/model/namespace/namespace_names.h>
 #include <nemcpp/types.h>
 /*
  * Info on a single namespace by id
@@ -20,13 +22,13 @@
 
     Get ids of linked accounts
 */
-namespace nem2_sdk {
+namespace xpx_sdk {
     class INamespaceService {
     public:
-        virtual NamespaceInfo getNamespaceInfoById(const NamespaceId& id);
-        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccount(const std::string& accountId);
-        virtual std::vector<NamespaceInfo> getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds);
-        virtual std::vector<std::string> getNamespaceNames(const std::vector<std::string>& namespaceIds);
+        virtual NamespaceInfo getNamespaceInfoById(const NamespaceId& id) = 0;
+        virtual MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) = 0;
+        virtual MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) = 0;
+        virtual NamespaceNames getNamespaceNames(const std::vector<std::string>& namespaceIds) = 0;
 //        virtual std::vector<string> getAccountIds(); //maybe in future if will know how to do it
         ~INamespaceService() = default;
     };

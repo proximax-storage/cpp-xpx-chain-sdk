@@ -5,7 +5,7 @@
 #include <sdk/client/mosaic_service.h>
 #include <sdk/client/namespace_service.h>
 
-using namespace nem2_sdk;
+using namespace xpx_sdk;
 
 class Client : public IClient {
 public:
@@ -18,17 +18,17 @@ public:
 			.setSecurity(_config->useSSL);
 
 		_blockchain = std::make_shared<BlockchainService>(config, _context, _builder);
-		_mosaic     = std::make_shared<MosaicService>(config, _context, _builder);
+//		_mosaic     = std::make_shared<MosaicService>(config, _context, _builder);
 		_namespace  = std::make_shared<NamespaceService>(config, _context, _builder);
 	}
 
-	std::shared_ptr<IBlockchain> blockchain() const override {
+	std::shared_ptr<IBlockchainService> blockchain() const override {
 		return _blockchain;
 	}
 
-    std::shared_ptr<IMosaicService> mosaics() const override {
-        return std::make_shared<IMosaicService>(_mosaic);
-    }
+//    std::shared_ptr<IMosaicService> mosaics() const override {
+//        return _mosaic;
+//    }
 
     std::shared_ptr<INamespaceService> namespaces() const override {
         return _namespace;
@@ -38,12 +38,13 @@ private:
 	std::shared_ptr<Config> _config;
 	internal::network::RequestParamsBuilder _builder;
 	std::shared_ptr<internal::network::Context> _context;
-	std::shared_ptr<BlockchainService> _blockchain;
-	std::shared_ptr<MosaicService> _mosaic;
-	std::shared_ptr<NamespaceService> _namespace;
+
+	std::shared_ptr<IBlockchainService> _blockchain;
+	std::shared_ptr<IMosaicService> _mosaic;
+	std::shared_ptr<INamespaceService> _namespace;
 };
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config) {
 		return std::make_shared<Client>(config);
 	}

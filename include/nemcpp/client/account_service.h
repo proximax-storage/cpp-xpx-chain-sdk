@@ -4,7 +4,7 @@
 *** license that can be found in the LICENSE file.
 */
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     class IAccountService {
 
     };

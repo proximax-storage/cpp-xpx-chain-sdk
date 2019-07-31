@@ -18,7 +18,7 @@
 #include "nemcpp/utils/base32.h"
 #include <nemcpp/exceptions.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     using PublicKey = Key;
 //    class ByteArray { // we can use vector<uint8_t>
 //        uint8_t *array;

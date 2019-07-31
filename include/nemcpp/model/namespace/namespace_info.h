@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     class Alias {
     public:
         uint64_t type;

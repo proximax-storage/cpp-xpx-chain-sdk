@@ -10,7 +10,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Aggregate transaction.
 	/// \note If aggregate transaction will be announced to network with all cosignatures, it is called complete.

@@ -14,7 +14,7 @@
 #include <infrastructure/network/http.h>
 #include <nemcpp/client/mosaic_service.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 
     class MosaicService : IMosaicService {
     public:
@@ -24,8 +24,8 @@ namespace nem2_sdk {
                 internal::network::RequestParamsBuilder builder
         );
         MosaicInfo getMosaicInfo(const std::string& id) override;
-        std::vector<MosaicInfo> getMosaicInfos(const std::vector<std::string>& ids) override;
-        std::vector<std::string> getMosaicsNames(const std::vector<std::string>& ids) override;
+        MultipleMosaicInfo getMosaicInfos(const std::vector<std::string>& ids) override;
+        MosaicNames getMosaicsNames(const std::vector<std::string>& ids) override;
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

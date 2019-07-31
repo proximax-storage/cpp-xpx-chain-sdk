@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	bool AggregateTransaction::isComplete() const
 	{

@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Type-safe formatted string builder.
 	class MakeString {

@@ -2,7 +2,7 @@
 #include <nemcpp/model/mosaic/mosaic.h>
 #include <nemcpp/crypto/hash.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	MosaicId Mosaic::GenerateId(const Key& owner, uint32_t nonce)
 	{

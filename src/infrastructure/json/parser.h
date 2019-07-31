@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-namespace nem2_sdk { namespace internal { namespace json {
+namespace xpx_sdk { namespace internal { namespace json {
 	
 	enum class OutputMode: uint8_t {
 		Default = 0,

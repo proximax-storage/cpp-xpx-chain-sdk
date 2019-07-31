@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <typeindex>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Hashable array for which \c std::hash is specialized.
 	/// \note Can be used as a key in STL hash-based containers.
@@ -18,8 +18,8 @@ namespace nem2_sdk {
 namespace std {
 	
 	template<typename T, size_t N>
-	struct hash<nem2_sdk::HashableArray<T, N>> {
-		size_t operator()(const nem2_sdk::HashableArray<T, N>& a) const
+	struct hash<xpx_sdk::HashableArray<T, N>> {
+		size_t operator()(const xpx_sdk::HashableArray<T, N>& a) const
 		{
 			size_t hash = 0;
 			
@@ -34,10 +34,10 @@ namespace std {
 	};
 	
 	template<typename T, size_t N>
-	class tuple_size<nem2_sdk::HashableArray<T, N>>: public integral_constant<size_t, N> { };
+	class tuple_size<xpx_sdk::HashableArray<T, N>>: public integral_constant<size_t, N> { };
 	
 	template<size_t I, typename T, size_t N>
-	struct tuple_element<I, nem2_sdk::HashableArray<T, N>> {
+	struct tuple_element<I, xpx_sdk::HashableArray<T, N>> {
 		using type = T;
 	};
 }

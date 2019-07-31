@@ -11,7 +11,7 @@
 #include <optional>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	class Transaction;
 	

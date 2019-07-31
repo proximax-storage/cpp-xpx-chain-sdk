@@ -1,9 +1,8 @@
 #pragma once
 
-
 #include <stdint.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     class ScoreInfo {
     public:
         uint64_t scoreHigh;

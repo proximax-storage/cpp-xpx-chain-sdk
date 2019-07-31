@@ -22,7 +22,7 @@ class NAME: public std::runtime_error { \
 	throw TYPE(MakeString{} << "Exception: " << (MESSAGE) << " (" << (PARAM1) << ", " << (PARAM2) << ")"); \
 }
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Buffer cast error.
 	NEM2_SDK_DEFINE_EXCEPTION(buffer_cast_error);

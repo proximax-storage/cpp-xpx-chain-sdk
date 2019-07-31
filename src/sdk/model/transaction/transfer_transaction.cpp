@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/transfer_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	const Address& TTransferTransaction<TBase>::recipient() const

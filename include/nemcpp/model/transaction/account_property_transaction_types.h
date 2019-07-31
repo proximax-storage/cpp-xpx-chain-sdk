@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <set>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Account property modification type.
 	enum class AccountPropertyModificationType: uint8_t {

@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Base32 encoder.
 	class Base32 {

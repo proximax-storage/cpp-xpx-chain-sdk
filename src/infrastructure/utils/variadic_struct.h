@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
 	template<typename... TArgs> class VariadicStruct;
@@ -464,12 +464,12 @@ namespace nem2_sdk { namespace internal {
 namespace std {
 	
 	template<typename... TFields>
-	class tuple_size<nem2_sdk::internal::VariadicStruct<TFields...>>:
-		public std::integral_constant<size_t, nem2_sdk::internal::struct_size<nem2_sdk::internal::VariadicStruct<TFields...>>::value>
+	class tuple_size<xpx_sdk::internal::VariadicStruct<TFields...>>:
+		public std::integral_constant<size_t, xpx_sdk::internal::struct_size<xpx_sdk::internal::VariadicStruct<TFields...>>::value>
 	{ };
 	
 	template<size_t I, typename... TFields>
-	struct tuple_element<I, nem2_sdk::internal::VariadicStruct<TFields...>> {
-		using type = typename nem2_sdk::internal::struct_field_by_index<I, nem2_sdk::internal::VariadicStruct<TFields...>>::ValueType;
+	struct tuple_element<I, xpx_sdk::internal::VariadicStruct<TFields...>> {
+		using type = typename xpx_sdk::internal::struct_field_by_index<I, xpx_sdk::internal::VariadicStruct<TFields...>>::ValueType;
 	};
 }

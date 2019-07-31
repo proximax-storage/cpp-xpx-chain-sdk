@@ -7,7 +7,7 @@
 #include <string>
 #include <chrono>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Public;
 	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::seconds(14));

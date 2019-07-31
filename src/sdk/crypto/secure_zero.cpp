@@ -7,7 +7,7 @@
 #include <string.h>
 #endif
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	void SecureZero(MutableRawBuffer buffer)
 	{

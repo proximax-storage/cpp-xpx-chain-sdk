@@ -15,7 +15,7 @@
 #include <utility>
 #include <variant>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Private key supplier call reason.
 	enum class PrivateKeySupplierReason: uint8_t {

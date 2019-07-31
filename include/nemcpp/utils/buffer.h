@@ -6,7 +6,7 @@
 #include <iterator>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TElement, template<typename, typename> class TConversionTrait> class Buffer;
 	

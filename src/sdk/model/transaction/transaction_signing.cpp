@@ -6,7 +6,7 @@
 #include "infrastructure/binary/offsets.h"
 #include "infrastructure/utils/byte_stream.h"
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Signature CalculateTransactionSignature(const Transaction* transaction,
 	                                        const KeyPair& keyPair)

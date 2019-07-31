@@ -10,10 +10,11 @@
 #include <limits>
 #include <type_traits>
 
-using namespace nem2_sdk::internal;
-using namespace nem2_sdk::internal::binary;
+using namespace xpx_sdk::internal;
+using namespace xpx_sdk::internal::binary;
 
-namespace nem2_sdk { namespace internal {
+
+namespace xpx_sdk { namespace internal {
 
 	namespace {
 		
@@ -849,7 +850,7 @@ namespace nem2_sdk { namespace internal {
 
 
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransaction(AccountLinkTransactionAction action,

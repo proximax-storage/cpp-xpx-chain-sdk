@@ -10,7 +10,7 @@
 #include <optional>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Account property transaction template base class.
 	template<typename TBase, typename TProperty>

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <string>
+#include <infrastructure/json/dto/block_dto.h>
+#include <infrastructure/utils/variadic_struct.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
+
 	class BlockMeta {
 	public:
 		std::string hash;

@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <sstream>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
     std::string int_to_hex(uint64_t id) {
         std::stringstream stream;
         stream << std::hex << id;

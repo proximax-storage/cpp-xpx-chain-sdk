@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/register_namespace_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	const Namespace& TRegisterNamespaceTransaction<TBase>::ns() const

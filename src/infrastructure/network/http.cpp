@@ -9,7 +9,7 @@
 #include <boost/beast/ssl.hpp>
 
 
-using namespace nem2_sdk::internal::network;
+using namespace xpx_sdk::internal::network;
 
 namespace asio = boost::asio;
 namespace ip = boost::asio::ip;
@@ -61,7 +61,7 @@ std::string _performHTTPRequest_internal(
 		auto path = response.at("Location").to_string();
 		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
 	} else if (response.result() != http::status::ok) {
-		throw nem2_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
+		throw xpx_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
 	}
 
 	return response.body();
@@ -153,7 +153,7 @@ RequestParams RequestParamsBuilder::getRequestParams() {
 	};
 }
 
-namespace nem2_sdk::internal::network {
+namespace xpx_sdk::internal::network {
 	std::string performHTTPRequest(std::shared_ptr<Context> context, const RequestParams &requestParams) {
 		std::string port;
 		if (requestParams.port.empty()) {

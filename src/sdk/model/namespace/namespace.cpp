@@ -2,7 +2,7 @@
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/crypto/hash.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Namespace::Namespace(std::string_view name, NamespaceId parentId):
 		id_(parentId == Namespace_Base_Id ? GenerateRootId(name) : GenerateChildId(name, parentId)),

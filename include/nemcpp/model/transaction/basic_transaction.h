@@ -9,7 +9,7 @@
 #include <memory>
 #include <optional>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	class BasicTransaction;
 	

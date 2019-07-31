@@ -3,7 +3,7 @@
 
 #include <nemcpp/utils/buffer.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Securely cleares \a buffer.
 	void SecureZero(MutableRawBuffer buffer);

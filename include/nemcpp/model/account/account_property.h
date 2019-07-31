@@ -5,7 +5,7 @@
 #include <nemcpp/model/account/address.h>
 #include <nemcpp/model/transaction/transaction_type.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Account property type.
 	enum class AccountPropertyType: uint8_t {

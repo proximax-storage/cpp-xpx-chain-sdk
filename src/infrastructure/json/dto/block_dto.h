@@ -6,11 +6,8 @@
 
 #pragma once
 
-#include <nemcpp/model/blockchain/block.h>
 #include "infrastructure/utils/variadic_struct.h"
 #include "infrastructure/json/uint64.h"
-#include <nemcpp/model/blockchain/score.h>
-#include <nemcpp/model/blockchain/storage_info.h>
 #include <stdint.h>
 
 
@@ -45,17 +42,19 @@
 }
  */
 
-namespace nem2_sdk::internal::dto {
-    using Uint64 = nem2_sdk::internal::json::Uint64;
+namespace xpx_sdk::internal::json::dto {
+    using Uint64 = xpx_sdk::internal::json::Uint64;
 
-    using BlockMetaDtoT = VariadicStruct<
+
+
+    using BlockMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,
             Field<STR_LITERAL("generationHash"), std::string>,
             Field<STR_LITERAL("totalFee"), Uint64>,
             Field<STR_LITERAL("numTransactions"), uint64_t >,
             Field<STR_LITERAL("numStatements"), uint64_t > >;
 
-    using BlockDataDtoT = VariadicStruct<
+    using BlockDataDto = VariadicStruct<
             Field<STR_LITERAL("signature"), std::string>,
             Field<STR_LITERAL("timestamp"), Uint64 >,
             Field<STR_LITERAL("difficulty"), Uint64 >,
@@ -66,53 +65,18 @@ namespace nem2_sdk::internal::dto {
             Field<STR_LITERAL("stateHash"), std::string>,
             Field<STR_LITERAL("beneficiary"), std::string> >;
 
-    using BlockDtoT = VariadicStruct<
-            Field<STR_LITERAL("meta"), BlockMetaDtoT>,
-            Field<STR_LITERAL("block"), BlockDataDtoT > >;
+    using BlockDto = VariadicStruct<
+            Field<STR_LITERAL("meta"), BlockMetaDto>,
+            Field<STR_LITERAL("block"), BlockDataDto > >;
 
-
-	class BlockMetaDto  {
-	public:
-		static BlockMeta from_json(const std::string& jsonStr);
-		static BlockMeta getFromDto(const BlockMetaDtoT& dto);
-	};
-
-
-	class BlockDataDto  {
-	public:
-		static BlockData from_json(const std::string& jsonStr);
-		static BlockData getFromDto(const BlockDataDtoT& dto);
-	};
-
-
-	class BlockDto  {
-	public:
-		static Block from_json(const std::string& jsonStr);
-        static Block getFromDto(const BlockDtoT &dto);
-	};
-
-
-	using StorageInfoDtoT = VariadicStruct<
-	        Field<STR_LITERAL("numBlocks"), uint64_t>,
+    using StorageInfoDto = VariadicStruct<
+            Field<STR_LITERAL("numBlocks"), uint64_t>,
             Field<STR_LITERAL("numTransactions"), uint64_t>,
             Field<STR_LITERAL("numAccounts"), uint64_t> >;
 
-
-	class StorageInfoDto {
-	public:
-	    static StorageInfo from_json(const std::string& jsonStr);
-	    static StorageInfo getFromDto(const StorageInfoDtoT& dto);
-	};
+    using ScoreInfoDto = VariadicStruct<
+            Field<STR_LITERAL("scoreHigh"), Uint64>,
+            Field<STR_LITERAL("scoreLow"), Uint64> >;
 
 
-	using ScoreInfoDtoT = VariadicStruct<
-	        Field<STR_LITERAL("scoreHigh"), Uint64>,
-	        Field<STR_LITERAL("scoreLow"), Uint64> >;
-
-
-	class ScoreInfoDto {
-	public:
-        static ScoreInfo from_json(const std::string& jsonStr);
-        static ScoreInfo getFromDto(const ScoreInfoDtoT& dot);
-	};
 }

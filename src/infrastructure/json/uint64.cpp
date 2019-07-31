@@ -1,7 +1,7 @@
 
 #include "infrastructure/json/uint64.h"
 
-namespace nem2_sdk { namespace internal { namespace json {
+namespace xpx_sdk { namespace internal { namespace json {
 	
 	Uint64::Uint64(uint64_t value): value_(value)
 	{ }

@@ -9,7 +9,7 @@
 #include <optional>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Mosaic definition transaction base class.
 	template<typename TBase>

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace nem2_sdk { namespace internal { namespace json {
+namespace xpx_sdk { namespace internal { namespace json {
 	
 	class Uint64 {
 	public:

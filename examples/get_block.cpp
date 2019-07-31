@@ -3,11 +3,11 @@
 #include <iostream>
 
 int main() {
-	nem2_sdk::Config config = nem2_sdk::GetConfig();
+	xpx_sdk::Config config = xpx_sdk::GetConfig();
 	config.nodeAddress = "bcstage1.xpxsirius.io";
 	config.port = "3000";
 
-	auto client = nem2_sdk::getClient(std::make_shared<nem2_sdk::Config>(config));
+	auto client = xpx_sdk::getClient(std::make_shared<xpx_sdk::Config>(config));
 
 	auto score = client->blockchain()->getCurrentScore();
 	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;
