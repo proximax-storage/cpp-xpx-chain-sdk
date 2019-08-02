@@ -8,6 +8,10 @@
 #include <infrastructure/json/dto/account_info_dto.h>
 #include <infrastructure/json/dto/multiple_namespace_dto.h>
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
+#include <infrastructure/json/dto/account_info_dto.h>
+#include <infrastructure/json/dto/multisig_graph_dto.h>
+#include <infrastructure/json/dto/network_info_dto.h>
+
 #include <nemcpp/model/blockchain/block.h>
 #include <nemcpp/model/blockchain/score.h>
 #include <nemcpp/model/blockchain/height.h>
@@ -22,6 +26,10 @@
 #include <nemcpp/model/namespace/namespace_name.h>
 #include <nemcpp/model/namespace/namespace_names.h>
 #include <nemcpp/model/namespace/multiple_namespace_info.h>
+#include <nemcpp/model/account/account_properties.h>
+#include <nemcpp/model/network/network_info.h>
+
+
 #include <nemcpp/exceptions.h>
 
 
@@ -63,9 +71,6 @@ namespace xpx_sdk { namespace  internal { namespace json {
         Mosaic fromDto<Mosaic, MosaicDto>(const MosaicDto& dto);
 
         template<>
-        AccountInfo fromDto<AccountInfo, AccountInfoDto>(const AccountInfoDto& dto );
-
-        template<>
         MosaicMeta fromDto<MosaicMeta, MosaicMetaDto>(const MosaicMetaDto& dto);
 
         template<>
@@ -85,6 +90,7 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
         template<>
         Alias fromDto<Alias, AliasDto>(const AliasDto& dto);
+
         template<>
         NamespaceMeta fromDto<NamespaceMeta, NamespaceMetaDto>(const NamespaceMetaDto& dto);
 
@@ -106,7 +112,29 @@ namespace xpx_sdk { namespace  internal { namespace json {
         template<>
         MultipleBlock fromDto<MultipleBlock, MultipleBlocksDto>(const MultipleBlocksDto& dto);
 
+        template<>
+        Property fromDto<Property, PropertyDto>(const PropertyDto& dto);
 
+        template<>
+        AccountProperty fromDto<AccountProperty, AccountPropertyDto>(const AccountPropertyDto& dto) ;
+
+        template<>
+        MultipleAccountProperty fromDto<MultipleAccountProperty, MultipleAccountPropertyDto>(const MultipleAccountPropertyDto& dto);
+
+        template<>
+        MultisigInfo fromDto<MultisigInfo, MultisigInfoDto> (const MultisigInfoDto& dto);
+
+        template<>
+        AccountInfo fromDto<AccountInfo, AccountInfoDto> (const AccountInfoDto& dto);
+
+        template<>
+        MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto);
+
+        template<>
+        MultisigGraph fromDto<MultisigGraph, MultisigGraphDto>(const MultisigGraphDto& dto);
+
+        template<>
+        NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto);
     }
 }
 }

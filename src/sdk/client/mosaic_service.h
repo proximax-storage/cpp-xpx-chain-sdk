@@ -16,7 +16,7 @@
 
 namespace xpx_sdk {
 
-    class MosaicService : IMosaicService {
+    class MosaicService : public IMosaicService {
     public:
         MosaicService(
                 std::shared_ptr<Config> config,

@@ -78,21 +78,6 @@ namespace xpx_sdk::internal::json::dto {
     }
 
     template<>
-    AccountInfo fromDto<AccountInfo, AccountInfoDto>(const AccountInfoDto &dto) {
-        AccountInfo accountInfo;
-        accountInfo.address = dto.value<"address"_>();
-        accountInfo.addressHeight = dto.value<"addressHeight"_>();
-        accountInfo.publicKey = dto.value<"publicKey"_>();
-        accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>();
-
-        for (auto &mosaicDto : dto.value<"mosaics"_>()) {
-            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
-        }
-
-        return accountInfo;
-    }
-
-    template<>
     MosaicMeta fromDto<MosaicMeta, MosaicMetaDto>(const MosaicMetaDto &dto) {
         MosaicMeta mosaicMeta = {
                 dto.value<"active"_>(),
@@ -248,5 +233,92 @@ namespace xpx_sdk::internal::json::dto {
         }
 
         return mbdto;
+    }
+
+    // Accounts
+
+    template<>
+    Property fromDto<Property, PropertyDto>(const PropertyDto& dto) {
+        Property property = {
+                dto.value<"propertyType"_>(),
+                dto.value<"values"_>()
+        };
+        return property;
+    }
+
+    template<>
+    AccountProperty fromDto<AccountProperty, AccountPropertyDto>(const AccountPropertyDto& dto) {
+        AccountProperty accountProperty;
+        accountProperty.address = dto.value<"address"_>();
+        for(auto & pdto : dto.value<"properties"_>()) {
+            accountProperty.properties.push_back(fromDto<Property, PropertyDto>(pdto));
+        }
+        return accountProperty;
+    }
+
+    template<>
+    MultipleAccountProperty fromDto<MultipleAccountProperty, MultipleAccountPropertyDto>(const MultipleAccountPropertyDto& dto) {
+        MultipleAccountProperty multipleAccountProperty;
+        for(auto & apdto : dto ){
+            multipleAccountProperty.accountProperties.push_back(fromDto<AccountProperty, AccountPropertyDto>(apdto));
+        }
+        return multipleAccountProperty;
+    }
+
+    template<>
+    MultisigInfo fromDto<MultisigInfo, MultisigInfoDto> (const MultisigInfoDto& dto) {
+        MultisigInfo multisigInfo = {
+                dto.value<"account"_>(),
+                dto.value<"accountAddress"_>(),
+                dto.value<"minApproval"_>(),
+                dto.value<"minRemoval"_>(),
+                dto.value<"cosignatories"_>(),
+                dto.value<"multisigAccounts"_>()
+        };
+        return multisigInfo
+    }
+
+    template<>
+    AccountInfo fromDto<AccountInfo, AccountInfoDto> (const AccountInfoDto& dto) {
+        AccountInfo accountInfo;
+
+        accountInfo.address =  dto.value<"address"_>(),
+        accountInfo.addressHeight = dto.value<"addressHeight"_>(),
+        accountInfo.publicKey = dto.value<"publicKey"_>(),
+        accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>(),
+        for(auto& mosaicDto : dto.value<"mosaics"_>()) {
+            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
+        };
+
+        return accountInfo;
+    }
+
+    template<>
+    MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto) {
+        MultisigLevel multisigLevel;
+        multisigLevel.level = dto.value<"level"_>();
+        for(auto& multisig : dto.value<"multisigEntries"_>()) {
+            multisigLevel.multisigEntries.push_back(fromDto<MultisigInfo, MultisigInfoDto>(multisig))
+        }
+        return multisigLevel;
+    }
+
+    template<>
+    MultisigGraph fromDto<MultisigGraph, MultisigGraphDto>(const MultisigGraphDto& dto) {
+        MultisigGraph multisigGraph;
+        for(auto& multisigLevel : dto) {
+            multisigGraph.multisigLevels.push_back(fromDto<MultisigLevel, MultisigLevelDto>(multisigLevel));
+        }
+        return multisigGraph;
+    }
+
+    //Network
+    template<>
+    NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto) {
+        NetworkInfo networkInfo = {
+                dto.value<"name"_>(),
+                dto.value<"description"_>();
+        };
+        return networkInfo;
     }
 }

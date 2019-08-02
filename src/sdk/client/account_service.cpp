@@ -5,3 +5,107 @@
 */
 
 #include "account_service.h"
+#include <infrastructure/utils/read_json.h>
+#include <infrastructure/json/parser.h>
+#include <sstream>
+
+using namespace xpx_sdk;
+using namespace internal::json::dto;
+using internal::json::Parser;
+
+
+AccountService::AccountService(
+        std::shared_ptr<Config> config,
+        std::shared_ptr<internal::network::Context> context,
+        internal::network::RequestParamsBuilder builder):_config(config), _context(context), _builder(builder) {}
+
+AccountInfo AccountService::getAccountInfo(const std::string& id) {
+
+    std::stringstream path;
+
+    path << "account/" << id;
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<AccountInfo, AccountInfoDto>(response);
+    return dto;
+
+}
+
+MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::string>& ids){
+    std::string requestJson;
+    Parser::Write(ids, requestJson);
+    std::stringstream path;
+    path << "account/";
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::POST)
+            .setRequestBody(requestJson)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<MultipleAccountInfo, MultipleAccountInfoDto>(response);
+    return dto;
+
+}
+
+AccountProperty AccountService::getAccountProperties(const std::string& id ){
+    std::stringstream path;
+
+    path << "account/properties/" << id;
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<AccountProperty, AccountPropertyDto>(response);
+    return dto;
+}
+
+MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<std::string>& ids){
+    std::string requestJson;
+    Parser::Write(ids, requestJson);
+    std::stringstream path;
+    path << "account/properties";
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::POST)
+            .setRequestBody(requestJson)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<MultipleAccountProperty, MultipleAccountPropertyDto>(response);
+    return dto;
+}
+
+MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
+    std::stringstream path;
+
+    path << "account/" << id << "/multisig";
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<MultisigInfo, MultisigInfoDto>(response);
+    return dto;
+}
+
+MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id) {
+    std::stringstream path;
+
+    path << "account/" << id << "/multisig/graph";
+    auto requestParams = _builder
+            .setPath(path.str())
+            .setMethod(internal::network::HTTPRequestMethod::GET)
+            .getRequestParams();
+
+    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    auto dto = from_json<MultisigGraph, MultisigGraphDto>(response);
+    return dto;
+}

@@ -5,6 +5,8 @@
 #include <nemcpp/client/blockchain_service.h>
 #include <nemcpp/client/mosaic_service.h>
 #include <nemcpp/client/namespace_service.h>
+#include <nemcpp/client/account_service.h>
+#include <nemcpp/client/network_service.h>
 
 #include <memory>
 
@@ -27,9 +29,11 @@ namespace xpx_sdk {
 
 	class IClient {
 	public:
+        virtual std::shared_ptr<IAccountService> account() const = 0;
 		virtual std::shared_ptr<IBlockchainService> blockchain() const = 0;
-//        virtual std::shared_ptr<IMosaicService> mosaics() const = 0;
+        virtual std::shared_ptr<IMosaicService> mosaics() const = 0;
         virtual std::shared_ptr<INamespaceService> namespaces() const = 0;
+        virtual std::shared_ptr<INetworkService> network() const = 0;
 		virtual ~IClient() = default;
 	};
 

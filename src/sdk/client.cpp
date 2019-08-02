@@ -4,6 +4,8 @@
 #include <sdk/client/blockchain_service.h>
 #include <sdk/client/mosaic_service.h>
 #include <sdk/client/namespace_service.h>
+#include <sdk/client/network_service.h>
+#include <sdk/client/account_service.h>
 
 using namespace xpx_sdk;
 
@@ -17,21 +19,31 @@ public:
 			.setPort(_config->port)
 			.setSecurity(_config->useSSL);
 
+		_account    = std::make_shared<AccountService>(config, _context, _builder);
 		_blockchain = std::make_shared<BlockchainService>(config, _context, _builder);
-//		_mosaic     = std::make_shared<MosaicService>(config, _context, _builder);
+		_mosaic     = std::make_shared<MosaicService>(config, _context, _builder);
 		_namespace  = std::make_shared<NamespaceService>(config, _context, _builder);
+		_network    = std::make_shared<NetworkService>(config, _context, _builder);
+	}
+
+	std::shared_ptr<IAccountService> account() const override  {
+	    return _account;
 	}
 
 	std::shared_ptr<IBlockchainService> blockchain() const override {
 		return _blockchain;
 	}
 
-//    std::shared_ptr<IMosaicService> mosaics() const override {
-//        return _mosaic;
-//    }
+    std::shared_ptr<IMosaicService> mosaics() const override {
+        return _mosaic;
+    }
 
     std::shared_ptr<INamespaceService> namespaces() const override {
         return _namespace;
+    }
+
+    std::shared_ptr<INetworkService> network() const override {
+        return _network;
     }
 
 private:
@@ -39,9 +51,11 @@ private:
 	internal::network::RequestParamsBuilder _builder;
 	std::shared_ptr<internal::network::Context> _context;
 
+	std::shared_ptr<IAccountService> _account;
 	std::shared_ptr<IBlockchainService> _blockchain;
 	std::shared_ptr<IMosaicService> _mosaic;
 	std::shared_ptr<INamespaceService> _namespace;
+	std::shared_ptr<INetworkService> _network;
 };
 
 namespace xpx_sdk {

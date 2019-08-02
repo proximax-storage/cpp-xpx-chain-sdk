@@ -25,12 +25,11 @@ MosaicService::MosaicService(
         std::shared_ptr<Config> config,
         std::shared_ptr<internal::network::Context> context,
         internal::network::RequestParamsBuilder builder
-) :
+):
         _config(config),
         _context(context),
         _builder(builder)
 {}
-
 
 MosaicInfo MosaicService::getMosaicInfo(const std::string& id) {
 
