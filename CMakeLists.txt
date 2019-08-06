@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(nem2-sdk-cpp VERSION 1.0.0)
 
+# CMP0068: fallback to older policies for macOS
+cmake_policy(SET CMP0068 OLD)
+
 #-----------------------------------------------------------------------------
 # options and features
 #-----------------------------------------------------------------------------
@@ -30,131 +33,26 @@ check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 #-----------------------------------------------------------------------------
 # dependencies
 #-----------------------------------------------------------------------------
-set(rapidjson_dir ${CMAKE_BINARY_DIR}/download/rapidjson)
-configure_file(cmake/CMakeLists-rapidjson.txt.in "${rapidjson_dir}/CMakeLists.txt")
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+	message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.14/conan.cmake"
+		"${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
 
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-	WORKING_DIRECTORY "${rapidjson_dir}")
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-	WORKING_DIRECTORY "${rapidjson_dir}")
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES rapidjson/1.1.0@bincrafters/stable
+	BASIC_SETUP
+	BUILD missing)
 
 #-----------------------------------------------------------------------------
 # sources
 #-----------------------------------------------------------------------------
-
-set(sources
-	include/nemcpp/config.h
-	include/nemcpp/exceptions.h
-	include/nemcpp/sdk.h
-	include/nemcpp/types.h
-	include/nemcpp/crypto/hash.h
-	include/nemcpp/crypto/key_pair.h
-	include/nemcpp/crypto/private_key.h
-	include/nemcpp/crypto/secure_zero.h
-	include/nemcpp/crypto/signer.h
-	include/nemcpp/model/account/account.h
-	include/nemcpp/model/account/account_property.h
-	include/nemcpp/model/account/address.h
-	include/nemcpp/model/account/public_account.h
-	include/nemcpp/model/mosaic/mosaic.h
-	include/nemcpp/model/mosaic/mosaic_property.h
-	include/nemcpp/model/namespace/namespace.h
-	include/nemcpp/model/namespace/namespace_path.h
-	include/nemcpp/model/transaction/account_link_transaction.h
-	include/nemcpp/model/transaction/account_link_transaction_types.h
-	include/nemcpp/model/transaction/account_property_transaction.h
-	include/nemcpp/model/transaction/account_property_transaction_types.h
-	include/nemcpp/model/transaction/address_alias_transaction.h
-	include/nemcpp/model/transaction/aggregate_transaction.h
-	include/nemcpp/model/transaction/aggregate_transaction_types.h
-	include/nemcpp/model/transaction/alias_transaction_base.h
-	include/nemcpp/model/transaction/alias_transaction_types.h
-	include/nemcpp/model/transaction/basic_transaction.h
-	include/nemcpp/model/transaction/embedded_transaction.h
-	include/nemcpp/model/transaction/lock_funds_transaction.h
-	include/nemcpp/model/transaction/modify_multisig_account_transaction.h
-	include/nemcpp/model/transaction/modify_multisig_account_transaction_types.h
-	include/nemcpp/model/transaction/mosaic_alias_transaction.h
-	include/nemcpp/model/transaction/mosaic_definition_transaction.h
-	include/nemcpp/model/transaction/mosaic_supply_change_transaction.h
-	include/nemcpp/model/transaction/mosaic_supply_change_transaction_types.h
-	include/nemcpp/model/transaction/register_namespace_transaction.h
-	include/nemcpp/model/transaction/secret_hash_algorithm.h
-	include/nemcpp/model/transaction/secret_lock_transaction.h
-	include/nemcpp/model/transaction/secret_proof_transaction.h
-	include/nemcpp/model/transaction/transaction.h
-	include/nemcpp/model/transaction/transaction_signing.h
-	include/nemcpp/model/transaction/transaction_type.h
-	include/nemcpp/model/transaction/transfer_transaction.h
-	include/nemcpp/service/read_result.h
-	include/nemcpp/service/serialization.h
-	include/nemcpp/utils/base32.h
-	include/nemcpp/utils/bitwise_enum.h
-	include/nemcpp/utils/buffer.h
-	include/nemcpp/utils/comparator.h
-	include/nemcpp/utils/format.h
-	include/nemcpp/utils/hashable_array.h
-	include/nemcpp/utils/hasher.h
-	include/nemcpp/utils/lazy.h
-	include/nemcpp/utils/network_time.h
-	include/nemcpp/utils/noncopyable.h
-	src/infrastructure/binary/descriptors.h
-	src/infrastructure/binary/offsets.h
-	src/infrastructure/binary/parser.cpp
-	src/infrastructure/binary/parser.h
-	src/infrastructure/binary/dto/transaction_dto.h
-	src/infrastructure/json/descriptors.h
-	src/infrastructure/json/hex.h
-	src/infrastructure/json/parser.cpp
-	src/infrastructure/json/parser.h
-	src/infrastructure/json/uint64.cpp
-	src/infrastructure/json/uint64.h
-	src/infrastructure/json/dto/mosaic_dto.h
-	src/infrastructure/utils/byte_stream.cpp
-	src/infrastructure/utils/byte_stream.h
-	src/infrastructure/utils/variadic_struct.h
-	src/sdk/config.cpp
-	src/sdk/crypto/hash.cpp
-	src/sdk/crypto/key_pair.cpp
-	src/sdk/crypto/private_key.cpp
-	src/sdk/crypto/secure_zero.cpp
-	src/sdk/crypto/signer.cpp
-	src/sdk/model/account/account.cpp
-	src/sdk/model/account/address.cpp
-	src/sdk/model/account/public_account.cpp
-	src/sdk/model/mosaic/mosaic.cpp
-	src/sdk/model/mosaic/mosaic_property.cpp
-	src/sdk/model/namespace/namespace.cpp
-	src/sdk/model/namespace/namespace_path.cpp
-	src/sdk/model/transaction/account_link_transaction.cpp
-	src/sdk/model/transaction/account_property_transaction.cpp
-	src/sdk/model/transaction/address_alias_transaction.cpp
-	src/sdk/model/transaction/aggregate_transaction.cpp
-	src/sdk/model/transaction/alias_transaction_base.cpp
-	src/sdk/model/transaction/basic_transaction.cpp
-	src/sdk/model/transaction/create_transaction.cpp
-	src/sdk/model/transaction/create_transaction.h
-	src/sdk/model/transaction/embedded_transaction.cpp
-	src/sdk/model/transaction/lock_funds_transaction.cpp
-	src/sdk/model/transaction/modify_multisig_account_transaction.cpp
-	src/sdk/model/transaction/mosaic_alias_transaction.cpp
-	src/sdk/model/transaction/mosaic_definition_transaction.cpp
-	src/sdk/model/transaction/mosaic_supply_change_transaction.cpp
-	src/sdk/model/transaction/register_namespace_transaction.cpp
-	src/sdk/model/transaction/secret_hash_algorithm.cpp
-	src/sdk/model/transaction/secret_lock_transaction.cpp
-	src/sdk/model/transaction/secret_proof_transaction.cpp
-	src/sdk/model/transaction/transaction.cpp
-	src/sdk/model/transaction/transaction_signing.cpp
-	src/sdk/model/transaction/transaction_type.cpp
-	src/sdk/model/transaction/transaction_utils.cpp
-	src/sdk/model/transaction/transaction_utils.h
-	src/sdk/model/transaction/transfer_transaction.cpp
-	src/sdk/service/binary_serialization.cpp
-	src/sdk/service/read_result.cpp
-	src/sdk/utils/base32.cpp
-	src/sdk/utils/format.cpp
-	src/sdk/utils/network_time.cpp)
+file(GLOB_RECURSE sources
+	"include/nemcpp/*.h"
+	"src/infrastructure/*.h"
+	"src/infrastructure/*.cpp"
+	"src/sdk/*.cpp")
 
 file(GLOB ref10_sources
 	"src/third-party/ref10/*.c"
@@ -228,7 +126,7 @@ target_include_directories(nemcpp
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src
-		"${rapidjson_dir}/src/include")
+		CONAN_PKG::rapidjson)
 
 # adding alias for target (required to consistent use of SDK when
 # it is built as subproject)
