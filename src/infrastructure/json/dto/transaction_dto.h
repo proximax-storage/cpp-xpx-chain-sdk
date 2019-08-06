@@ -19,12 +19,17 @@
 #include <nemcpp/model/transaction/mosaic_supply_change_transaction_types.h>
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/model/transaction/secret_hash_algorithm.h>
+#include <nemcpp/model/transaction/account_property_transaction_types.h>
 #include "mosaic_dto.h"
 
 namespace xpx_sdk::internal::json::dto {
     using xpx_sdk::internal::json::Uint64;
 
     using MosaicPropertyDto = std::array<uint64_t , 2>;
+
+    using AccountPropertyModificationDTO = VariadicStruct<
+            Field<STR_LITERAL("value"),            std::string>,
+            Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 
     using CosignatureDTO = VariadicStruct<
             Field<STR_LITERAL("publicKey"), Key>,
@@ -95,8 +100,8 @@ namespace xpx_sdk::internal::json::dto {
             Field<STR_LITERAL("address"),                 AddressData>,
             Field<STR_LITERAL("mosaicId"),                MosaicId>,
             Field<STR_LITERAL("propertyType"),            uint8_t>,
-            Field<STR_LITERAL("modificationsCount"),      uint8_t> >;
-//            Field<STR_LITERAL("modifications"),           std::vector<TAccountPropertyModificationDTO<T>> >;
+            Field<STR_LITERAL("modificationsCount"),      uint8_t> >,
+            Field<STR_LITERAL("modifications"),           std::vector<AccountPropertyModificationDTO> > >;
 
 }
 
