@@ -9,7 +9,7 @@ namespace xpx_sdk::internal::json::dto {
             Field<STR_LITERAL("level"), uint32_t >,
             Field<STR_LITERAL("multisigEntries"), std::vector<MultisigInfoDto> > >;
 
-    using MultisigGraphDto = std::vector<MultisigEntrieDto>;
+    using MultisigGraphDto = std::vector<MultisigLevelDto>;
 
 
 }

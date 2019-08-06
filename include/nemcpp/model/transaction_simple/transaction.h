@@ -2,6 +2,8 @@
 #include <vector>
 #include <stdint.h>
 
+
+
 namespace xpx_sdk {
     class Transaction {
     public:
@@ -141,8 +143,9 @@ namespace xpx_sdk {
         transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
         transaction.flags = dto.value<"flags"_>();
         transaction.divisibility = dto.value<"divisibility"_>();
-        transaction.optionalProperties = dto.value<"optionalProperties"_>();
-
+        for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
+			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		}
         return transaction;
     }
 
@@ -327,7 +330,7 @@ namespace xpx_sdk {
     public:
         uint8_t propertyType;
         uint8_t modificationsCount;
-        std::vector<TAccountPropertyModification <T>> modifications;
+        std::vector<TAccountPropertyModification<T>> modifications;
     };
 
     template<typename TBase, typename T>
