@@ -5,9 +5,8 @@
 */
 #pragma once
 
-#include <infrastructure/utils/variadic_struct.h>
-#include <infrastructure/json/uint64.h>
-
+#include "infrastructure/utils/variadic_struct.h"
+#include "infrastructure/json/uint64.h"
 
 #include <string>
 #include <stdint.h>

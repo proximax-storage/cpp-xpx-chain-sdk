@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-
-
+#include <nemcpp/types.h>
+#include <nemcpp/model/transaction/transaction_type.h>
 
 namespace xpx_sdk {
     class Transaction {
