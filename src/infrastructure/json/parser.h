@@ -23,7 +23,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <stdio.h>
+
 namespace nem2_sdk { namespace internal { namespace json {
 
 	// Json DTOs should contain only following types:
@@ -474,10 +474,10 @@ namespace nem2_sdk { namespace internal { namespace json {
 			
 			if constexpr (isValidStruct) {
 				if constexpr (has_field_by_id_v<FnvHash(Object_Data_Field_Name), StructType>) {
-					if (value.isSet<FnvHash(Object_Data_Field_Name)>()) {
+					if (value.template isSet<FnvHash(Object_Data_Field_Name)>()) {
 						rapidjson::Document merged;
-						merged.Parse(value.value<FnvHash(Object_Data_Field_Name)>().c_str(),
-						             value.value<FnvHash(Object_Data_Field_Name)>().size());
+						merged.Parse(value.template value<FnvHash(Object_Data_Field_Name)>().c_str(),
+						             value.template value<FnvHash(Object_Data_Field_Name)>().size());
 
 						if (merged.HasParseError() || !merged.IsObject()) {
 							std::string invalidField = MakeString{} << jsonPtr << "/" << Object_Data_Field_Name;

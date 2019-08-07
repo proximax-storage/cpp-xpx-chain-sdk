@@ -217,21 +217,40 @@ namespace nem2_sdk { namespace internal {
 		using TFields::set...;
 		using TFields::isSet...;
 		
-		// Overloads for readable compiler error when none of inherited methods fit.
+		// Overloads that produce readable compiler error when none of inherited methods fit.
 		// Note that we use '...' as methods parameter because such overloads are picked last.
-		// Also we declare them as 'const' to trigger them for both const and non-const lvalue and rvalue objects.
 
-		template<uint64_t FieldId>
-		std::any& value(...) const
-		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		[[noreturn]] std::any value(...) const
+		{
+			static_assert(FieldId < 0, "unknown variadic struct field");
+		}
 
-		template<uint64_t FieldId>
-		bool set(...) const
-		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		[[noreturn]] bool set(...)
+		{
+			static_assert(FieldId < 0, "unknown variadic struct field");
+		}
 
-		template<uint64_t FieldId>
-		std::any& isSet(...) const
-		{ static_assert(FieldId < 0, "unknown variadic struct field"); }
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		[[noreturn]] bool& isSet(...)
+		{
+			static_assert(FieldId < 0, "unknown variadic struct field");
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		[[noreturn]] const bool& isSet(...) const
+		{
+			static_assert(FieldId < 0, "unknown variadic struct field");
+		}
 
 	public:
 		VariadicStruct() = default;
@@ -275,14 +294,70 @@ namespace nem2_sdk { namespace internal {
 		using SelfType = VariadicStruct<VariadicStruct<TParentFields...>, TFields...>;
 		using ParentType = VariadicStruct<TParentFields...>;
 		
-		using ParentType::value;
-		using ParentType::set;
-		using ParentType::isSet;
-		
 		using TFields::value...;
 		using TFields::set...;
 		using TFields::isSet...;
 		
+		// Methods to access fields declared in parent. We do not add methods from parent with 'using'
+		// because we will no be able to generate readable compiler errors in that case.
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr auto& value(...) &
+		{
+			return ParentType::template value<FieldId>();
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr const auto& value(...) const&
+		{
+			return ParentType::template value<FieldId>();
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr auto&& value(...) &&
+		{
+			return std::move(*this).ParentType::template value<FieldId>();
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr const auto&& value(...) const&&
+		{
+			return std::move(*this).ParentType::template value<FieldId>();
+		}
+
+		template<
+			uint64_t FieldId,
+			typename TArg,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr bool set(TArg&& arg, ...)
+		{
+			return ParentType::template set<FieldId>(std::forward<TArg>(arg));
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr bool& isSet(...)
+		{
+			return ParentType::template isSet<FieldId>();
+		}
+
+		template<
+			uint64_t FieldId,
+			typename = typename std::enable_if<((TFields::Traits::Id() != FieldId) && ...)>::type>
+		constexpr const bool& isSet(...) const
+		{
+			return ParentType::template isSet<FieldId>();
+		}
+
 	public:
 		VariadicStruct() = default;
 		
