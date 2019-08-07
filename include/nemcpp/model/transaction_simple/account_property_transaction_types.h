@@ -3,12 +3,12 @@
 
 #include <nemcpp/types.h>
 #include <nemcpp/utils/comparator.h>
-#include <nemcpp/model/transaction/transaction_type.h>
+#include <nemcpp/model/transaction_simple/transaction_type.h>
 
 #include <cstdint>
 #include <set>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk {
 	
 	/// Account property modification type.
 	enum class AccountPropertyModificationType: uint8_t {

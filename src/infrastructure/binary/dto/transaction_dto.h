@@ -20,6 +20,8 @@
 #include <string>
 #include <vector>
 
+using namespace xpx_sdk::difficult_transactions;
+
 namespace xpx_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:

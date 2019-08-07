@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk {
 	
 	/// Transaction type.
 	enum class TransactionType: uint16_t {

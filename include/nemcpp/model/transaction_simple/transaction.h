@@ -2,8 +2,14 @@
 #include <vector>
 #include <stdint.h>
 #include <nemcpp/types.h>
-#include <nemcpp/model/transaction/transaction_type.h>
-#include <nemcpp/model/transaction/alias_transaction_types.h>
+#include "account_link_transaction_types.h"
+#include "account_property_transaction_types.h"
+#include "transaction_type.h"
+#include "modify_multisig_account_transaction_types.h"
+#include "mosaic_supply_change_transaction_types.h"
+#include "aggregate_transaction_types.h"
+#include "secret_hash_algorithm.h"
+#include "alias_transaction_types.h"
 
 
 namespace xpx_sdk {

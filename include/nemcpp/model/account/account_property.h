@@ -9,66 +9,69 @@
 
 namespace xpx_sdk {
 
-    class Property {
-    public:
-        uint8_t propertyType;
-        std::vector<std::string> values;
-    };
+	class Property {
+	public:
+		uint8_t propertyType;
+		std::vector<std::string> values;
+	};
 
-    class AccountProperty {
-    public:
-        std::string address;
-        std::vector<Property> properties;
-    };
+	class AccountProperty {
+	public:
+		std::string address;
+		std::vector<Property> properties;
+	};
+
 	/// Account property type.
-	enum class AccountPropertyType: uint8_t {
+	enum class AccountPropertyType : uint8_t {
 		Address = 0x01,
 		Mosaic = 0x02,
 		Transaction = 0x04
 	};
-	
+
 	/// Account property rule.
-	enum class AccountPropertyRule: uint8_t {
+	enum class AccountPropertyRule : uint8_t {
 		Allow = 0x00,
 		Block = 0x80
 	};
-	
-//	/// Account property.
-//	template<typename TValue, AccountPropertyType PropertyTypeId>
-//	struct AccountProperty {
-//		using ValueType = TValue;
-//
-//		/// Returns property type.
-//		static constexpr AccountPropertyType GetType()
-//		{ return PropertyTypeId; }
-//
-//		/// Property value.
-//		TValue value;
-//
-//		/// Property rule.
-//		AccountPropertyRule rule;
-//	};
-//
-//	/// Returns \c true if \a lhs and \a rhs are equal.
-//	template<typename TValue, AccountPropertyType PropertyTypeId>
-//	bool operator==(const AccountProperty<TValue, PropertyTypeId>& lhs, const AccountProperty<TValue, PropertyTypeId>& rhs)
-//	{
-//		return lhs.value == rhs.value && lhs.rule == rhs.rule;
-//	}
-//
-//	/// Returns \c true if \a lhs and \a rhs are not equal.
-//	template<typename TValue, AccountPropertyType PropertyTypeId>
-//	bool operator!=(const AccountProperty<TValue, PropertyTypeId>& lhs, const AccountProperty<TValue, PropertyTypeId>& rhs)
-//	{
-//		return !(lhs == rhs);
-//	}
-//
-//	/// Account address property.
-//	using AccountAddressProperty = AccountProperty<AddressData, AccountPropertyType::Address>;
-//
-//	/// Account mosaic property.
-//	using AccountMosaicProperty = AccountProperty<MosaicId, AccountPropertyType::Mosaic>;
-//
-//	/// Account transaction property.
-//	using AccountTransactionProperty = AccountProperty<TransactionType, AccountPropertyType::Transaction>;
+}
+
+namespace xpx_sdk::difficult_transactions {
+	/// Account property.
+	template<typename TValue, AccountPropertyType PropertyTypeId>
+	struct AccountProperty {
+		using ValueType = TValue;
+
+		/// Returns property type.
+		static constexpr AccountPropertyType GetType()
+		{ return PropertyTypeId; }
+
+		/// Property value.
+		TValue value;
+
+		/// Property rule.
+		AccountPropertyRule rule;
+	};
+
+	/// Returns \c true if \a lhs and \a rhs are equal.
+	template<typename TValue, AccountPropertyType PropertyTypeId>
+	bool operator==(const AccountProperty<TValue, PropertyTypeId>& lhs, const AccountProperty<TValue, PropertyTypeId>& rhs)
+	{
+		return lhs.value == rhs.value && lhs.rule == rhs.rule;
+	}
+
+	/// Returns \c true if \a lhs and \a rhs are not equal.
+	template<typename TValue, AccountPropertyType PropertyTypeId>
+	bool operator!=(const AccountProperty<TValue, PropertyTypeId>& lhs, const AccountProperty<TValue, PropertyTypeId>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	/// Account address property.
+	using AccountAddressProperty = AccountProperty<AddressData, AccountPropertyType::Address>;
+
+	/// Account mosaic property.
+	using AccountMosaicProperty = AccountProperty<MosaicId, AccountPropertyType::Mosaic>;
+
+	/// Account transaction property.
+	using AccountTransactionProperty = AccountProperty<TransactionType, AccountPropertyType::Transaction>;
 }

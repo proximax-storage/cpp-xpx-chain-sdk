@@ -12,12 +12,13 @@
 
 using namespace xpx_sdk::internal;
 using namespace xpx_sdk::internal::binary;
+using namespace xpx_sdk::difficult_transactions;
 
 
 namespace xpx_sdk { namespace internal {
 
 	
-	/*namespace {
+	namespace {
 		
 		template<typename TDto>
 		void AppendDtoData(const TDto& dto, std::vector<uint8_t>& data)
@@ -851,7 +852,7 @@ namespace xpx_sdk { namespace internal {
 
 
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransaction(AccountLinkTransactionAction action,
@@ -919,7 +920,7 @@ namespace xpx_sdk {
 		EmbeddedAccountMosaicPropertyTransactionDTO dto;
 		InitAccountPropertyTransactionDTO<AccountMosaicProperty>(
 			dto, TransactionType::Mosaic_Property, propertyRule, propertyModifications, signer, networkId);
-		
+
 		return CreateTransaction<EmbeddedAccountMosaicPropertyTransactionImpl>(
 			dto, propertyRule, std::move(propertyModifications));
 	}
@@ -934,7 +935,7 @@ namespace xpx_sdk {
 		return CreateAccountTransactionPropertyTransactionImpl(
 			propertyRule, std::move(propertyModifications), maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedAccountTransactionPropertyTransaction>
 	CreateEmbeddedAccountTransactionPropertyTransaction(AccountPropertyRule propertyRule,
 	                                                    AccountTransactionPropertyModifications propertyModifications,
@@ -944,7 +945,7 @@ namespace xpx_sdk {
 		EmbeddedAccountTransactionPropertyTransactionDTO dto;
 		InitAccountPropertyTransactionDTO<AccountTransactionProperty>(
 			dto, TransactionType::Transaction_Property, propertyRule, propertyModifications, signer, networkId);
-		
+
 		return CreateTransaction<EmbeddedAccountTransactionPropertyTransactionImpl>(
 			dto, propertyRule, std::move(propertyModifications));
 	}
@@ -971,7 +972,7 @@ namespace xpx_sdk {
 		InitAddressAliasTransactionDTO(dto, action, aliasNamespaceId, aliasedAddress, signer, networkId);
 		return CreateTransaction<EmbeddedAddressAliasTransactionImpl>(dto, action, aliasNamespaceId, aliasedAddress);
 	}
-	
+
 	std::unique_ptr<MosaicAliasTransaction>
 	CreateMosaicAliasTransaction(AliasTransactionAction action,
 	                             NamespaceId aliasNamespaceId,
@@ -982,7 +983,7 @@ namespace xpx_sdk {
 	{
 		return CreateMosaicAliasTransactionImpl(action, aliasNamespaceId, aliasedMosaicId, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedMosaicAliasTransaction>
 	CreateEmbeddedMosaicAliasTransaction(AliasTransactionAction action,
 	                                     NamespaceId aliasNamespaceId,
@@ -994,7 +995,7 @@ namespace xpx_sdk {
 		InitMosaicAliasTransactionDTO(dto, action, aliasNamespaceId, aliasedMosaicId, signer, networkId);
 		return CreateTransaction<EmbeddedMosaicAliasTransactionImpl>(dto, action, aliasNamespaceId, aliasedMosaicId);
 	}
-	
+
 	std::unique_ptr<LockFundsTransaction>
 	CreateLockFundsTransaction(const Mosaic& lockedMosaic,
 	                           BlockDuration lockDuration,
@@ -1005,7 +1006,7 @@ namespace xpx_sdk {
 	{
 		return CreateLockFundsTransactionImpl(lockedMosaic, lockDuration, lockHash, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedLockFundsTransaction>
 	CreateEmbeddedLockFundsTransaction(const Mosaic& lockedMosaic,
 	                                   BlockDuration lockDuration,
@@ -1017,7 +1018,7 @@ namespace xpx_sdk {
 		InitLockFundsTransactionDTO(dto, lockedMosaic, lockDuration, lockHash, signer, networkId);
 		return CreateTransaction<EmbeddedLockFundsTransactionImpl>(dto, lockedMosaic, lockDuration, lockHash);
 	}
-	
+
 	std::unique_ptr<ModifyMultisigAccountTransaction>
 	CreateModifyMultisigAccountTransaction(int8_t minRemovalDelta,
 	                                       int8_t minApprovalDelta,
@@ -1029,7 +1030,7 @@ namespace xpx_sdk {
 		return CreateModifyMultisigAccountTransactionImpl(
 			minRemovalDelta, minApprovalDelta, cosignatoryModifications, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedModifyMultisigAccountTransaction>
 	CreateEmbeddedModifyMultisigAccountTransaction(int8_t minRemovalDelta,
 	                                               int8_t minApprovalDelta,
@@ -1040,11 +1041,11 @@ namespace xpx_sdk {
 		EmbeddedModifyMultisigAccountTransactionDTO dto;
 		InitModifyMultisigAccountTransactionDTO(
 			dto, minRemovalDelta, minApprovalDelta, cosignatoryModifications, signer, networkId);
-		
+
 		return CreateTransaction<EmbeddedModifyMultisigAccountTransactionImpl>(
 			dto, minRemovalDelta, minApprovalDelta, cosignatoryModifications);
 	}
-	
+
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                  MosaicId mosaicId,
@@ -1056,7 +1057,7 @@ namespace xpx_sdk {
 		return CreateMosaicDefinitionTransactionImpl(
 			mosaicNonce, mosaicId, std::move(mosaicProperties), maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedMosaicDefinitionTransaction>
 	CreateEmbeddedMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                          MosaicId mosaicId,
@@ -1066,11 +1067,11 @@ namespace xpx_sdk {
 	{
 		EmbeddedMosaicDefinitionTransactionDTO dto;
 		InitMosaicDefinitionTransactionDTO(dto, mosaicNonce, mosaicId, mosaicProperties, signer, networkId);
-		
+
 		return CreateTransaction<EmbeddedMosaicDefinitionTransactionImpl>(
 			dto, mosaicNonce, mosaicId, std::move(mosaicProperties));
 	}
-	
+
 	std::unique_ptr<MosaicSupplyChangeTransaction>
 	CreateMosaicSupplyChangeTransaction(MosaicId mosaicId,
 	                                    MosaicSupplyChangeDirection changeDirection,
@@ -1081,7 +1082,7 @@ namespace xpx_sdk {
 	{
 		return CreateMosaicSupplyChangeTransactionImpl(mosaicId, changeDirection, changeDelta, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedMosaicSupplyChangeTransaction>
 	CreateEmbeddedMosaicSupplyChangeTransaction(MosaicId mosaicId,
 	                                            MosaicSupplyChangeDirection changeDirection,
@@ -1093,7 +1094,7 @@ namespace xpx_sdk {
 		InitMosaicSupplyChangeTransactionDTO(dto, mosaicId, changeDirection, changeDelta, signer, networkId);
 		return CreateTransaction<EmbeddedMosaicSupplyChangeTransactionImpl>(dto, mosaicId, changeDirection, changeDelta);
 	}
-	
+
 	std::unique_ptr<RegisterNamespaceTransaction>
 	CreateRegisterRootNamespaceTransaction(std::string_view namespaceName,
 	                                       BlockDuration namespaceDuration,
@@ -1103,7 +1104,7 @@ namespace xpx_sdk {
 	{
 		return CreateRegisterRootNamespaceTransactionImpl(namespaceName, namespaceDuration, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<RegisterNamespaceTransaction>
 	CreateRegisterChildNamespaceTransaction(std::string_view namespaceName,
 	                                        NamespaceId namespaceParentId,
@@ -1113,7 +1114,7 @@ namespace xpx_sdk {
 	{
 		return CreateRegisterChildNamespaceTransactionImpl(namespaceName, namespaceParentId, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedRegisterNamespaceTransaction>
 	CreateEmbeddedRegisterRootNamespaceTransaction(std::string_view namespaceName,
 	                                               BlockDuration namespaceDuration,
@@ -1121,12 +1122,12 @@ namespace xpx_sdk {
 	                                               std::optional<NetworkIdentifier> networkId)
 	{
 		Namespace ns(namespaceName);
-		
+
 		EmbeddedRegisterNamespaceTransactionDTO dto;
 		InitRegisterNamespaceTransactionDTO(dto, ns, namespaceDuration, signer, networkId);
 		return CreateTransaction<EmbeddedRegisterNamespaceTransactionImpl>(dto, std::move(ns), namespaceDuration);
 	}
-	
+
 	std::unique_ptr<EmbeddedRegisterNamespaceTransaction>
 	CreateEmbeddedRegisterChildNamespaceTransaction(std::string_view namespaceName,
 	                                                NamespaceId namespaceParentId,
@@ -1134,12 +1135,12 @@ namespace xpx_sdk {
 	                                                std::optional<NetworkIdentifier> networkId)
 	{
 		Namespace ns(namespaceName, namespaceParentId);
-		
+
 		EmbeddedRegisterNamespaceTransactionDTO dto;
 		InitRegisterNamespaceTransactionDTO(dto, ns, namespaceParentId, signer, networkId);
 		return CreateTransaction<EmbeddedRegisterNamespaceTransactionImpl>(dto, std::move(ns), 0);
 	}
-	
+
 	std::unique_ptr<SecretLockTransaction>
 	CreateSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
 	                            const Hash256& secretHash,
@@ -1154,7 +1155,7 @@ namespace xpx_sdk {
 			secretHashAlgorithm, secretHash, lockedMosaic, lockDuration, lockedMosaicRecipient,
 			maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<SecretLockTransaction>
 	CreateSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
 	                                      RawBuffer secret,
@@ -1169,7 +1170,7 @@ namespace xpx_sdk {
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedSecretLockTransaction>
 	CreateEmbeddedSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
 	                                    const Hash256& secretHash,
@@ -1183,11 +1184,11 @@ namespace xpx_sdk {
 		InitSecretLockTransactionDTO(
 			dto, secretHashAlgorithm, secretHash, lockedMosaic, lockDuration, lockedMosaicRecipient,
 			signer, networkId);
-		
+
 		return CreateTransaction<EmbeddedSecretLockTransactionImpl>(
 			dto, secretHashAlgorithm, secretHash, lockedMosaic, lockDuration, lockedMosaicRecipient);
 	}
-	
+
 	std::unique_ptr<EmbeddedSecretLockTransaction>
 	CreateEmbeddedSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
 	                                              RawBuffer secret,
@@ -1201,7 +1202,7 @@ namespace xpx_sdk {
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, signer, networkId);
 	}
-	
+
 	std::unique_ptr<SecretProofTransaction>
 	CreateSecretProofTransaction(SecretHashAlgorithm secretHashAlgorithm,
 	                             RawBuffer secret,
@@ -1212,7 +1213,7 @@ namespace xpx_sdk {
 		return CreateSecretProofTransactionImpl(
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm), secret, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedSecretProofTransaction>
 	CreateEmbeddedSecretProofTransaction(SecretHashAlgorithm secretHashAlgorithm,
 	                                     RawBuffer secret,
@@ -1220,12 +1221,12 @@ namespace xpx_sdk {
 	                                     std::optional<NetworkIdentifier> networkId)
 	{
 		auto secretHash = CalculateSecretHash(secret, secretHashAlgorithm);
-		
+
 		EmbeddedSecretProofTransactionDTO dto;
 		InitSecretProofTransactionDTO(dto, secretHashAlgorithm, secretHash, secret, signer, networkId);
 		return CreateTransaction<EmbeddedSecretProofTransactionImpl>(dto, secretHashAlgorithm, secretHash, secret);
 	}
-	
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransaction(const Address& recipient,
 	                          MosaicContainer mosaics,
@@ -1236,7 +1237,7 @@ namespace xpx_sdk {
 	{
 		return CreateTransferTransactionImpl(recipient, mosaics, message, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<EmbeddedTransferTransaction>
 	CreateEmbeddedTransferTransaction(const Address& recipient,
 	                                  MosaicContainer mosaics,
@@ -1248,7 +1249,7 @@ namespace xpx_sdk {
 		InitTransferTransactionDTO(dto, recipient, mosaics, message, signer, networkId);
 		return CreateTransaction<EmbeddedTransferTransactionImpl>(dto, recipient, mosaics, message);
 	}
-	
+
 	std::unique_ptr<AggregateTransaction>
 	CreateCompleteAggregateTransaction(const EmbeddedTransactions& embeddedTransactions,
 	                                   const std::unordered_map<Key, Signature>& cosignatures,
@@ -1258,7 +1259,7 @@ namespace xpx_sdk {
 	{
 		return CreateAggregateTransactionImpl(true, embeddedTransactions, cosignatures, maxFee, deadline, networkId);
 	}
-	
+
 	std::unique_ptr<AggregateTransaction>
 	CreateBondedAggregateTransaction(const EmbeddedTransactions& embeddedTransactions,
 	                                 const std::unordered_map<Key, Signature>& cosignatures,
@@ -1267,5 +1268,5 @@ namespace xpx_sdk {
 	                                 std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateAggregateTransactionImpl(false, embeddedTransactions, cosignatures, maxFee, deadline, networkId);
-	}*/
+	}
 }}

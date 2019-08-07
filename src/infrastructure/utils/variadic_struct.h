@@ -233,7 +233,7 @@ namespace xpx_sdk { namespace internal {
 	private:
 		template<typename... TArgs, size_t... Idx>
 		constexpr VariadicStruct(std::tuple<TArgs...> args, std::index_sequence<Idx...>):
-			TFields(std::forward<TArgs>(std::get<Idx>(args)))...
+				TFields(std::forward<TArgs>(std::get<Idx>(args)))...
 		{ }
 		
 	private:

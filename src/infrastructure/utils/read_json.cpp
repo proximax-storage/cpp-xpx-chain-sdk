@@ -286,9 +286,9 @@ namespace xpx_sdk::internal::json::dto {
         accountInfo.addressHeight = dto.value<"addressHeight"_>();
         accountInfo.publicKey = dto.value<"publicKey"_>();
         accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>();
-        for(auto& mosaicDto : dto.value<"mosaics"_>()) {
-            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
-        };
+//        for(auto& mosaicDto : dto.value<"mosaics"_>()) {
+//            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
+//        };
 
         return accountInfo;
     }

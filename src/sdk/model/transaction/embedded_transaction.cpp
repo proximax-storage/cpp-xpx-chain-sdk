@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/embedded_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	EmbeddedTransaction::EmbeddedTransaction(TransactionType type, uint16_t fullVersion, const Key& signer):
 		BasicTransaction(type, fullVersion, signer)

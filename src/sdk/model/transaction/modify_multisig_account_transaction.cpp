@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/modify_multisig_account_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	template<typename TBase>
 	int8_t TModifyMultisigAccountTransaction<TBase>::minRemovalDelta() const

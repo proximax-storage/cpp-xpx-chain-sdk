@@ -13,13 +13,13 @@
 #include <array>
 #include <vector>
 #include <nemcpp/types.h>
-#include <nemcpp/model/transaction/transaction_type.h>
-#include <nemcpp/model/transaction/account_link_transaction_types.h>
-#include <nemcpp/model/transaction/modify_multisig_account_transaction_types.h>
-#include <nemcpp/model/transaction/mosaic_supply_change_transaction_types.h>
+#include <nemcpp/model/transaction_simple/transaction_type.h>
+#include <nemcpp/model/transaction_simple/account_link_transaction_types.h>
+#include <nemcpp/model/transaction_simple/modify_multisig_account_transaction_types.h>
+#include <nemcpp/model/transaction_simple/mosaic_supply_change_transaction_types.h>
 #include <nemcpp/model/namespace/namespace.h>
-#include <nemcpp/model/transaction/secret_hash_algorithm.h>
-#include <nemcpp/model/transaction/account_property_transaction_types.h>
+#include <nemcpp/model/transaction_simple/secret_hash_algorithm.h>
+#include <nemcpp/model/transaction_simple/account_property_transaction_types.h>
 #include "mosaic_dto.h"
 
 namespace xpx_sdk::internal::json::dto {

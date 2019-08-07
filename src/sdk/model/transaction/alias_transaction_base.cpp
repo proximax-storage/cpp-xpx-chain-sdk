@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/alias_transaction_base.h>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	template<typename TBase>
 	AliasTransactionAction TAliasTransactionBase<TBase>::action() const

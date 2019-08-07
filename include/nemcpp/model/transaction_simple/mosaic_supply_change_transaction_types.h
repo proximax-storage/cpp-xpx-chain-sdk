@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk {
 	
 	/// Direction of supply change.
 	enum class MosaicSupplyChangeDirection: uint8_t {

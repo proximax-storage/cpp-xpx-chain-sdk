@@ -16,7 +16,7 @@
 #include <nemcpp/model/transaction/transfer_transaction.h>
 
 #include <utility>
-
+using namespace xpx_sdk::difficult_transactions;
 namespace xpx_sdk { namespace internal {
 	
 	template<typename TTransaction>
