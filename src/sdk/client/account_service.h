@@ -13,7 +13,7 @@
 
 
 
-namespace internal::network {
+namespace xpx_sdk::internal::network {
 	class RequestParamsBuilder;
 }
 

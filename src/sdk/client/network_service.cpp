@@ -4,6 +4,9 @@
 
 using namespace xpx_sdk;
 
+using xpx_sdk::internal::json::dto::NetworkInfoDto;
+using xpx_sdk::internal::json::dto::from_json;
+
 
 NetworkService::NetworkService(
         std::shared_ptr<Config> config,
@@ -19,6 +22,6 @@ NetworkInfo NetworkService::getNetworkInfo() {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<NetworkInfo, NetworInfoDto>(response);
+    auto dto = from_json<NetworkInfo, NetworkInfoDto>(response);
     return dto;
 }

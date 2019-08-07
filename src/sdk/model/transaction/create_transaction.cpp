@@ -16,7 +16,8 @@ using namespace xpx_sdk::internal::binary;
 
 namespace xpx_sdk { namespace internal {
 
-	namespace {
+	
+	/*namespace {
 		
 		template<typename TDto>
 		void AppendDtoData(const TDto& dto, std::vector<uint8_t>& data)
@@ -1266,5 +1267,5 @@ namespace xpx_sdk {
 	                                 std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateAggregateTransactionImpl(false, embeddedTransactions, cosignatures, maxFee, deadline, networkId);
-	}
-}
+	}*/
+}}

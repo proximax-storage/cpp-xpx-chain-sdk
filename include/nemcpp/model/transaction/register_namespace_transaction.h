@@ -11,7 +11,7 @@
 #include <string_view>
 #include <utility>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	/// Namespace registration transaction base class.
 	template<typename TBase>

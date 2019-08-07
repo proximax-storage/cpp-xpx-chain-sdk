@@ -100,7 +100,7 @@ namespace xpx_sdk::internal::json::dto {
             Field<STR_LITERAL("address"),                 AddressData>,
             Field<STR_LITERAL("mosaicId"),                MosaicId>,
             Field<STR_LITERAL("propertyType"),            uint8_t>,
-            Field<STR_LITERAL("modificationsCount"),      uint8_t> >,
+            Field<STR_LITERAL("modificationsCount"),      uint8_t>,
             Field<STR_LITERAL("modifications"),           std::vector<AccountPropertyModificationDTO> > >;
 
 }

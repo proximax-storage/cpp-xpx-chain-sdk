@@ -15,6 +15,8 @@
 #include <utility>
 #include <variant>
 
+using xpx_sdk::difficult_transactions::Transaction;
+//using xpx_sdk::difficult_transactions::AggregateTransaction;
 namespace xpx_sdk {
 	
 	/// Private key supplier call reason.
@@ -70,7 +72,7 @@ namespace xpx_sdk {
 		void signTransaction(Transaction* transaction) const;
 		
 		/// Calculates cosignature for aggregate transaction.
-		Signature cosignAggregateTransaction(const AggregateTransaction* transaction) const;
+//		Signature cosignAggregateTransaction(const AggregateTransaction* transaction) const;
 		
 		
 	private:

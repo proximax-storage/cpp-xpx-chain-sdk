@@ -55,17 +55,17 @@ namespace xpx_sdk {
 		SignTransaction(transaction, keyPair);
 	}
 	
-	Signature Account::cosignAggregateTransaction(const AggregateTransaction* transaction) const
-	{
-		if (networkId_ != transaction->networkId()) {
-			NEM2_SDK_THROW_2(account_error, "account and transaction network ids do not match",
-			                 to_underlying_type(networkId_),
-			                 to_underlying_type(transaction->networkId()));
-		}
-		
-		KeyPair keyPair(requestPrivateKey(PrivateKeySupplierReason::Aggregate_Transaction_Cosigning, transaction));
-		return CalculateAggregateTransactionCosignature(transaction, keyPair);
-	}
+//	Signature Account::cosignAggregateTransaction(const AggregateTransaction* transaction) const
+//	{
+//		if (networkId_ != transaction->networkId()) {
+//			NEM2_SDK_THROW_2(account_error, "account and transaction network ids do not match",
+//			                 to_underlying_type(networkId_),
+//			                 to_underlying_type(transaction->networkId()));
+//		}
+//
+//		KeyPair keyPair(requestPrivateKey(PrivateKeySupplierReason::Aggregate_Transaction_Cosigning, transaction));
+//		return CalculateAggregateTransactionCosignature(transaction, keyPair);
+//	}
 	
 	PrivateKey Account::requestPrivateKey(PrivateKeySupplierReason reason, PrivateKeySupplierParam param) const
 	{

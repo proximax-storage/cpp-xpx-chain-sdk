@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	/// Multisig account modification transaction base class.
 	template<typename TBase>

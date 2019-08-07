@@ -1,5 +1,10 @@
 #include <nemcpp/client/network_service.h>
 #include <memory>
+#include <nemcpp/config.h>
+#include <sdk/client/blockchain_service.h>
+#include <infrastructure/network/http.h>
+#include <infrastructure/network/context.h>
+#include <infrastructure/utils/read_json.h>
 
 namespace xpx_sdk {
     class NetworkService :public INetworkService {

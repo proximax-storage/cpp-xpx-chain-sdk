@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	/// Secret proof transaction base class.
 	/// \note Unlocks funds locked with secret lock transaction for some recipient.

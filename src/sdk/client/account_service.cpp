@@ -10,8 +10,9 @@
 #include <sstream>
 
 using namespace xpx_sdk;
-using namespace internal::json::dto;
-using internal::json::Parser;
+using namespace xpx_sdk::internal::json::dto;
+using xpx_sdk::internal::json::Parser;
+using xpx_sdk::internal::json::dto::from_json;
 
 
 AccountService::AccountService(

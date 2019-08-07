@@ -54,9 +54,9 @@ namespace xpx_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("value"),            TValue>,
 		Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 	
-	using AddressPropertyModificationDTO = TAccountPropertyModificationDTO<AccountAddressProperty::ValueType>;
-	using MosaicPropertyModificationDTO = TAccountPropertyModificationDTO<AccountMosaicProperty::ValueType>;
-	using TransactionPropertyModificationDTO = TAccountPropertyModificationDTO<AccountTransactionProperty::ValueType>;
+//	using AddressPropertyModificationDTO = TAccountPropertyModificationDTO<AccountAddressProperty::ValueType>;
+//	using MosaicPropertyModificationDTO = TAccountPropertyModificationDTO<AccountMosaicProperty::ValueType>;
+//	using TransactionPropertyModificationDTO = TAccountPropertyModificationDTO<AccountTransactionProperty::ValueType>;
 	
 	// Transaction DTOs
 	//==========================================================================

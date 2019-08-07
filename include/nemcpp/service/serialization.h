@@ -7,7 +7,8 @@
 
 #include <string>
 #include <vector>
-
+using xpx_sdk::difficult_transactions::TransactionPtr;
+using xpx_sdk::difficult_transactions::Transaction;
 namespace xpx_sdk {
 	
 	/// Converts \a transaction to binary representation.

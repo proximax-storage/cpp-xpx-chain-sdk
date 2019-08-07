@@ -275,17 +275,17 @@ namespace xpx_sdk::internal::json::dto {
                 dto.value<"cosignatories"_>(),
                 dto.value<"multisigAccounts"_>()
         };
-        return multisigInfo
+        return multisigInfo;
     }
 
     template<>
     AccountInfo fromDto<AccountInfo, AccountInfoDto> (const AccountInfoDto& dto) {
         AccountInfo accountInfo;
 
-        accountInfo.address =  dto.value<"address"_>(),
-        accountInfo.addressHeight = dto.value<"addressHeight"_>(),
-        accountInfo.publicKey = dto.value<"publicKey"_>(),
-        accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>(),
+        accountInfo.address =  dto.value<"address"_>();
+        accountInfo.addressHeight = dto.value<"addressHeight"_>();
+        accountInfo.publicKey = dto.value<"publicKey"_>();
+        accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>();
         for(auto& mosaicDto : dto.value<"mosaics"_>()) {
             accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
         };
@@ -298,7 +298,7 @@ namespace xpx_sdk::internal::json::dto {
         MultisigLevel multisigLevel;
         multisigLevel.level = dto.value<"level"_>();
         for(auto& multisig : dto.value<"multisigEntries"_>()) {
-            multisigLevel.multisigEntries.push_back(fromDto<MultisigInfo, MultisigInfoDto>(multisig))
+            multisigLevel.multisigEntries.push_back(fromDto<MultisigInfo, MultisigInfoDto>(multisig));
         }
         return multisigLevel;
     }
@@ -317,7 +317,7 @@ namespace xpx_sdk::internal::json::dto {
     NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto) {
         NetworkInfo networkInfo = {
                 dto.value<"name"_>(),
-                dto.value<"description"_>();
+                dto.value<"description"_>()
         };
         return networkInfo;
     }

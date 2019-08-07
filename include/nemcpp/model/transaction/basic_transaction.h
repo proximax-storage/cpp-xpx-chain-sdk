@@ -9,7 +9,7 @@
 #include <memory>
 #include <optional>
 
-namespace xpx_sdk {
+namespace xpx_sdk::difficult_transactions {
 	
 	class BasicTransaction;
 	
