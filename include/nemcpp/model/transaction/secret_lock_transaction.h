@@ -64,49 +64,49 @@ namespace xpx_sdk::difficult_transactions {
 	using SecretLockTransaction = TSecretLockTransaction<Transaction>;
 	using EmbeddedSecretLockTransaction = TSecretLockTransaction<EmbeddedTransaction>;
 	
-	/// Creates secret lock transaction.
-	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
-	std::unique_ptr<SecretLockTransaction>
-	CreateSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
-	                            const Hash256& secretHash,
-	                            const Mosaic& lockedMosaic,
-	                            BlockDuration lockDuration,
-	                            const Address& lockedMosaicRecipient,
-	                            std::optional<Amount> maxFee = std::nullopt,
-	                            std::optional<NetworkDuration> deadline = std::nullopt,
-	                            std::optional<NetworkIdentifier> networkId = std::nullopt);
-	
-	/// Creates secret lock transaction from secret.
-	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
-	std::unique_ptr<SecretLockTransaction>
-	CreateSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
-	                                      RawBuffer secret,
-	                                      const Mosaic& lockedMosaic,
-	                                      BlockDuration lockDuration,
-	                                      const Address& lockedMosaicRecipient,
-	                                      std::optional<Amount> maxFee = std::nullopt,
-	                                      std::optional<NetworkDuration> deadline = std::nullopt,
-	                                      std::optional<NetworkIdentifier> networkId = std::nullopt);
-	
-	/// Creates embedded secret lock transaction.
-	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
-	std::unique_ptr<EmbeddedSecretLockTransaction>
-	CreateEmbeddedSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
-	                                    const Hash256& secretHash,
-	                                    const Mosaic& lockedMosaic,
-	                                    BlockDuration lockDuration,
-	                                    const Address& lockedMosaicRecipient,
-	                                    const Key& signer,
-	                                    std::optional<NetworkIdentifier> networkId = std::nullopt);
-	
-	/// Creates embedded secret lock transaction from secret.
-	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
-	std::unique_ptr<EmbeddedSecretLockTransaction>
-	CreateEmbeddedSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
-	                                              RawBuffer secret,
-	                                              const Mosaic& lockedMosaic,
-	                                              BlockDuration lockDuration,
-	                                              const Address& lockedMosaicRecipient,
-	                                              const Key& signer,
-	                                              std::optional<NetworkIdentifier> networkId = std::nullopt);
+//	/// Creates secret lock transaction.
+//	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
+//	std::unique_ptr<SecretLockTransaction>
+//	CreateSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
+//	                            const Hash256& secretHash,
+//	                            const Mosaic& lockedMosaic,
+//	                            BlockDuration lockDuration,
+//	                            const Address& lockedMosaicRecipient,
+//	                            std::optional<Amount> maxFee = std::nullopt,
+//	                            std::optional<NetworkDuration> deadline = std::nullopt,
+//	                            std::optional<NetworkIdentifier> networkId = std::nullopt);
+//
+//	/// Creates secret lock transaction from secret.
+//	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
+//	std::unique_ptr<SecretLockTransaction>
+//	CreateSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
+//	                                      RawBuffer secret,
+//	                                      const Mosaic& lockedMosaic,
+//	                                      BlockDuration lockDuration,
+//	                                      const Address& lockedMosaicRecipient,
+//	                                      std::optional<Amount> maxFee = std::nullopt,
+//	                                      std::optional<NetworkDuration> deadline = std::nullopt,
+//	                                      std::optional<NetworkIdentifier> networkId = std::nullopt);
+//
+//	/// Creates embedded secret lock transaction.
+//	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
+//	std::unique_ptr<EmbeddedSecretLockTransaction>
+//	CreateEmbeddedSecretLockTransaction(SecretHashAlgorithm secretHashAlgorithm,
+//	                                    const Hash256& secretHash,
+//	                                    const Mosaic& lockedMosaic,
+//	                                    BlockDuration lockDuration,
+//	                                    const Address& lockedMosaicRecipient,
+//	                                    const Key& signer,
+//	                                    std::optional<NetworkIdentifier> networkId = std::nullopt);
+//
+//	/// Creates embedded secret lock transaction from secret.
+//	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
+//	std::unique_ptr<EmbeddedSecretLockTransaction>
+//	CreateEmbeddedSecretLockTransactionFromSecret(SecretHashAlgorithm secretHashAlgorithm,
+//	                                              RawBuffer secret,
+//	                                              const Mosaic& lockedMosaic,
+//	                                              BlockDuration lockDuration,
+//	                                              const Address& lockedMosaicRecipient,
+//	                                              const Key& signer,
+//	                                              std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

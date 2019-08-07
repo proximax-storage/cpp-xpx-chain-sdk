@@ -12,7 +12,9 @@
 
 using namespace xpx_sdk::internal;
 using namespace xpx_sdk::internal::binary;
-using namespace xpx_sdk::difficult_transactions;
+//using namespace xpx_sdk::difficult_transactions;
+
+//using xpx_sdk::difficult_transactions::
 
 
 namespace xpx_sdk { namespace internal {
@@ -949,17 +951,17 @@ namespace xpx_sdk {
 		return CreateTransaction<EmbeddedAccountTransactionPropertyTransactionImpl>(
 			dto, propertyRule, std::move(propertyModifications));
 	}
-	
-	std::unique_ptr<AddressAliasTransaction>
-	CreateAddressAliasTransaction(AliasTransactionAction action,
-	                              NamespaceId aliasNamespaceId,
-	                              const Address& aliasedAddress,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId)
-	{
-		return CreateAddressAliasTransactionImpl(action, aliasNamespaceId, aliasedAddress, maxFee, deadline, networkId);
-	}
+
+//	std::unique_ptr<AddressAliasTransaction>
+//	CreateAddressAliasTransaction(AliasTransactionAction action,
+//	                              NamespaceId aliasNamespaceId,
+//	                              const Address& aliasedAddress,
+//	                              std::optional<Amount> maxFee,
+//	                              std::optional<NetworkDuration> deadline,
+//	                              std::optional<NetworkIdentifier> networkId)
+//	{
+//		return CreateAddressAliasTransaction(action, aliasNamespaceId, aliasedAddress, maxFee, deadline, networkId);
+//	}
 	
 	std::unique_ptr<EmbeddedAddressAliasTransaction>
 	CreateEmbeddedAddressAliasTransaction(AliasTransactionAction action,
@@ -1166,7 +1168,7 @@ namespace xpx_sdk {
 	                                      std::optional<NetworkDuration> deadline,
 	                                      std::optional<NetworkIdentifier> networkId)
 	{
-		return difficult_transactions::CreateSecretLockTransaction(
+		return CreateSecretLockTransaction(
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, maxFee, deadline, networkId);
 	}
@@ -1198,7 +1200,7 @@ namespace xpx_sdk {
 	                                              const Key& signer,
 	                                              std::optional<NetworkIdentifier> networkId)
 	{
-		return difficult_transactions::CreateEmbeddedSecretLockTransaction(
+		return CreateEmbeddedSecretLockTransaction(
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, signer, networkId);
 	}

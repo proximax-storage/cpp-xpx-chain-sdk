@@ -13,10 +13,6 @@
 
 
 
-namespace xpx_sdk::internal::network {
-	class RequestParamsBuilder;
-}
-
 namespace xpx_sdk {
     class AccountService : public IAccountService {
     public:
