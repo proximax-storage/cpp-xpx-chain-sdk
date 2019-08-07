@@ -12,7 +12,7 @@
 #include "alias_transaction_types.h"
 
 
-namespace xpx_sdk {
+namespace xpx_sdk::simple_transactions {
     class Transaction {
     public:
         uint32_t size;

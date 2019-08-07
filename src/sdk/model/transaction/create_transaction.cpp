@@ -852,7 +852,7 @@ namespace xpx_sdk { namespace internal {
 
 
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk {
 	
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransaction(AccountLinkTransactionAction action,
@@ -1166,7 +1166,7 @@ namespace xpx_sdk::difficult_transactions {
 	                                      std::optional<NetworkDuration> deadline,
 	                                      std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateSecretLockTransaction(
+		return difficult_transactions::CreateSecretLockTransaction(
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, maxFee, deadline, networkId);
 	}
@@ -1198,7 +1198,7 @@ namespace xpx_sdk::difficult_transactions {
 	                                              const Key& signer,
 	                                              std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateEmbeddedSecretLockTransaction(
+		return difficult_transactions::CreateEmbeddedSecretLockTransaction(
 			secretHashAlgorithm, CalculateSecretHash(secret, secretHashAlgorithm),
 			lockedMosaic, lockDuration, lockedMosaicRecipient, signer, networkId);
 	}
@@ -1269,4 +1269,4 @@ namespace xpx_sdk::difficult_transactions {
 	{
 		return CreateAggregateTransactionImpl(false, embeddedTransactions, cosignatures, maxFee, deadline, networkId);
 	}
-}}
+}

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace xpx_sdk {
+namespace xpx_sdk::simple_transactions {
 	
 	/// Account link transaction action.
 	enum class AccountLinkTransactionAction: uint8_t {

@@ -4,7 +4,7 @@
 #include <nemcpp/types.h>
 #include <nemcpp/utils/buffer.h>
 
-namespace xpx_sdk {
+namespace xpx_sdk::simple_transactions {
 	
 	/// Secret hash algorithm for secret lock/proof transactions.
 	enum class SecretHashAlgorithm: uint8_t {

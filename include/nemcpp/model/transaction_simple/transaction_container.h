@@ -2,7 +2,7 @@
 #include <nemcpp/model/transaction_simple/transaction.h>
 
 
-namespace xpx_sdk {
+namespace xpx_sdk::simple_transactions {
 	class TransactionContainer {
 	public:
 		union AbstractTransaction {

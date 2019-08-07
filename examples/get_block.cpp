@@ -26,4 +26,7 @@ int main() {
 	for (auto& block: blocks) {
 	    std::cout << "Block signature: " << block.data.signature << std::endl;
     }
+
+	auto networkInfo = client -> network() -> getNetworkInfo();
+	std::cout << "Network Info " << networkInfo.description << ' ' << networkInfo.name << std::endl;
 }

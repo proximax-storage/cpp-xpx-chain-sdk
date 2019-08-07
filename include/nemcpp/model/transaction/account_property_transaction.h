@@ -21,7 +21,7 @@ namespace xpx_sdk::difficult_transactions {
 		using PropertyType = TProperty;
 
 		/// Property modifications type.
-		using PropertyModifications = AccountPropertyModifications<int>;
+		using PropertyModifications = AccountPropertyModifications<typename PropertyType::ValueType>;
 
 	public:
 		/// Creates account property transaction.

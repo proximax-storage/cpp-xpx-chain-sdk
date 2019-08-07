@@ -22,6 +22,14 @@
 #include <nemcpp/model/transaction_simple/account_property_transaction_types.h>
 #include "mosaic_dto.h"
 
+using xpx_sdk::simple_transactions::AccountPropertyModificationType;
+using xpx_sdk::simple_transactions::CosignatoryModificationType;
+using xpx_sdk::simple_transactions::TransactionType;
+using xpx_sdk::simple_transactions::AccountLinkTransactionAction;
+using xpx_sdk::simple_transactions::MosaicSupplyChangeDirection;
+using xpx_sdk::simple_transactions::SecretHashAlgorithm;
+
+
 namespace xpx_sdk::internal::json::dto {
     using xpx_sdk::internal::json::Uint64;
 
