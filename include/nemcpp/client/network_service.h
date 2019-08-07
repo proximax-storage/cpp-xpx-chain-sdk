@@ -5,6 +5,7 @@
 namespace xpx_sdk {
     class INetworkService {
     public:
-        virtual NetworkInfo getNetworkInfo();
+        virtual NetworkInfo getNetworkInfo() = 0;
+        virtual ~INetworkService() = default;
     };
 }

@@ -293,6 +293,15 @@ namespace xpx_sdk::internal::json::dto {
         return accountInfo;
     }
 
+	template<>
+	MultipleAccountInfo fromDto<MultipleAccountInfo, MultipleAccountInfoDto>(const MultipleAccountInfoDto & dto) {
+		MultipleAccountInfo multipleAccountInfo;
+		for(auto & accountInfoDto : dto) {
+			multipleAccountInfo.accountInfos.push_back(fromDto<AccountInfo, AccountInfoDto>(accountInfoDto));
+		}
+		return multipleAccountInfo;
+	}
+
     template<>
     MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto) {
         MultisigLevel multisigLevel;

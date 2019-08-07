@@ -17,12 +17,12 @@
 namespace xpx_sdk {
     class IAccountService {
     public:
-        virtual AccountInfo getAccountInfo(const std::string& id);
-        virtual MultipleAccountInfo getAccountsInfo(const std::vector<std::string>& ids);
-        virtual AccountProperty getAccountProperties(const std::string& id );
-        virtual MultipleAccountProperty getAccountsProperties(const std::vector<std::string>& ids);
-        virtual MultisigInfo getMultisigInfo(const std::string& id);
-        virtual MultisigGraph getMultisigAccountGraphInfo(const std::string& id);
-        virtual ~IAccountService(){};
+        virtual AccountInfo getAccountInfo(const std::string& id) = 0;
+        virtual MultipleAccountInfo getAccountsInfo(const std::vector<std::string>& ids) = 0;
+        virtual AccountProperty getAccountProperties(const std::string& id ) = 0;
+        virtual MultipleAccountProperty getAccountsProperties(const std::vector<std::string>& ids) = 0;
+        virtual MultisigInfo getMultisigInfo(const std::string& id) = 0;
+        virtual MultisigGraph getMultisigAccountGraphInfo(const std::string& id) = 0;
+        virtual ~IAccountService() = default;
     };
 }

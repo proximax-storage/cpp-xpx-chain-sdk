@@ -33,7 +33,7 @@
 
 
 #include <nemcpp/exceptions.h>
-
+#include <nemcpp/model/account/multiple_account_info.h>
 
 
 namespace xpx_sdk { namespace  internal { namespace json {
@@ -128,6 +128,9 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
         template<>
         AccountInfo fromDto<AccountInfo, AccountInfoDto> (const AccountInfoDto& dto);
+
+        template<>
+        MultipleAccountInfo fromDto<MultipleAccountInfo, MultipleAccountInfoDto>(const MultipleAccountInfoDto & dto);
 
         template<>
         MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto);
