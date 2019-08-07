@@ -1,3 +1,5 @@
+#include <memory>
+
 #include <nemcpp/client.h>
 #include <sdk/client/blockchain_impl.h>
 #include <infrastructure/network/http.h>

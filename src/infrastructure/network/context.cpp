@@ -2,6 +2,8 @@
 
 using namespace nem2_sdk::internal::network;
 
+namespace ssl = boost::asio::ssl;
+
 Context::Context() :
 		_ctx(ssl::context::tls_client)
 {

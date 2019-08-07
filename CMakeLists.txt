@@ -11,6 +11,7 @@ cmake_policy(SET CMP0068 OLD)
 option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
 option(NEM2_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
 option(NEM2_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
+option(NEM2_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
@@ -53,6 +54,7 @@ conan_cmake_run(REQUIRES
 #-----------------------------------------------------------------------------
 # sources
 #-----------------------------------------------------------------------------
+
 file(GLOB_RECURSE sources
 	"include/nemcpp/*.h"
 	"src/infrastructure/*.h"
@@ -131,6 +133,10 @@ target_include_directories(nemcpp
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+if(NEM2_SDK_ENABLE_WEBSOCKETS)
+    target_compile_definitions(nemcpp PRIVATE NEM2_SDK_ENABLE_WEBSOCKETS)
+endif()
 
 target_link_libraries(nemcpp
 		CONAN_PKG::rapidjson

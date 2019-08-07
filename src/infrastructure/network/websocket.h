@@ -1,3 +1,5 @@
+#ifdef NEM2_SDK_ENABLE_WEBSOCKETS
+
 #pragma once
 
 #include "context.h"
@@ -72,3 +74,5 @@ namespace nem2_sdk::internal::network {
 		_IWebSocketImpl* _impl;
 	};
 }
+
+#endif

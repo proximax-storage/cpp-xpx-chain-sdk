@@ -1,3 +1,5 @@
+#ifdef NEM2_SDK_ENABLE_WEBSOCKETS
+
 #include "websocket.h"
 
 #include <boost/asio.hpp>
@@ -117,3 +119,5 @@ namespace nem2_sdk::internal::network {
 		return input;
 	}
 }
+
+#endif
