@@ -5,6 +5,7 @@
 #include <nemcpp/utils/comparator.h>
 #include <nemcpp/model/mosaic/mosaic_property.h>
 #include <set>
+#include <vector>
 
 namespace xpx_sdk {
 
