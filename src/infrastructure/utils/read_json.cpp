@@ -80,8 +80,6 @@ namespace xpx_sdk::internal::json::dto {
     template<>
     MosaicMeta fromDto<MosaicMeta, MosaicMetaDto>(const MosaicMetaDto &dto) {
         MosaicMeta mosaicMeta = {
-                dto.value<"active"_>(),
-                dto.value<"index"_>(),
                 dto.value<"id"_>()
         };
 
@@ -91,12 +89,12 @@ namespace xpx_sdk::internal::json::dto {
     template<>
     MosaicData fromDto<MosaicData, MosaicDataDto>(const MosaicDataDto &dto) {
         MosaicData mosaicData;
-        mosaicData.mosaicId = dto.value<"mosaicid"_>();
+        mosaicData.mosaicId = dto.value<"mosaicId"_>();
         mosaicData.amount = dto.value<"supply"_>();
         mosaicData.height = dto.value<"height"_>();
         mosaicData.owner = dto.value<"owner"_>();
-        for (auto property : dto.value<"properties"_>()) {
-            xpx_sdk::MosaicProperty tmp = {MosaicPropertyId(property[0]), property[1]};
+        for (auto& property : dto.value<"properties"_>()) {
+            xpx_sdk::MosaicProperty tmp = {MosaicPropertyId(property.value<"id"_>()), property.value<"value"_>()};
             mosaicData.properties.push_back(tmp);
         }
         return mosaicData;
@@ -112,7 +110,7 @@ namespace xpx_sdk::internal::json::dto {
     }
 
     template<>
-    MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicDto>(const MultipleMosaicDto &dto) {
+    MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicInfoDto>(const MultipleMosaicInfoDto &dto) {
         MultipleMosaicInfo mmdto;
 
         for (auto &mosaicDto: dto) {
@@ -281,14 +279,14 @@ namespace xpx_sdk::internal::json::dto {
     template<>
     AccountInfo fromDto<AccountInfo, AccountInfoDto> (const AccountInfoDto& dto) {
         AccountInfo accountInfo;
-
-        accountInfo.address =  dto.value<"address"_>();
-        accountInfo.addressHeight = dto.value<"addressHeight"_>();
-        accountInfo.publicKey = dto.value<"publicKey"_>();
-        accountInfo.publicKeyHeight = dto.value<"publicKeyHeight"_>();
-//        for(auto& mosaicDto : dto.value<"mosaics"_>()) {
-//            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
-//        };
+		auto accountDto = dto.value<"account"_>();
+        accountInfo.address =  accountDto.value<"address"_>();
+        accountInfo.addressHeight = accountDto.value<"addressHeight"_>();
+        accountInfo.publicKey = accountDto.value<"publicKey"_>();
+        accountInfo.publicKeyHeight = accountDto.value<"publicKeyHeight"_>();
+        for(auto& mosaicDto : accountDto.value<"mosaics"_>()) {
+            accountInfo.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
+        }
 
         return accountInfo;
     }

@@ -34,14 +34,16 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
-    return dto;
+    auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
+    return result;
 
 }
 
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::string& accountId) {
     std::stringstream path;
-    path << "account/" << accountId << "/namespace";
+    path << "account/" << accountId << "/namespaces";
+
+    std::cout << path.str() << std::endl;
 
     auto requestParams = _builder
             .setPath(path.str())
@@ -49,8 +51,8 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultipleNamespaceInfo, internal::json::dto::MultipleNamespaceDto>(response);
-    return dto;
+    auto result = from_json<MultipleNamespaceInfo, internal::json::dto::MultipleNamespaceDto>(response);
+    return result;
 }
 
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds){
@@ -81,6 +83,6 @@ NamespaceNames NamespaceService::getNamespaceNames(const std::vector<std::string
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<NamespaceNames, internal::json::dto::NamespaceNamesDto>(response);
-    return dto;
+    auto result = from_json<NamespaceNames, internal::json::dto::NamespaceNamesDto>(response);
+    return result;
 }

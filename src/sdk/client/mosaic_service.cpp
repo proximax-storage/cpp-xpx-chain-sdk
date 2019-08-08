@@ -13,13 +13,15 @@
 
 #include <infrastructure/utils/read_json.h>
 
+#include <sdk/utils/hex_processing.h>
+
 using namespace xpx_sdk;
 using xpx_sdk::internal::json::Parser;
 using internal::json::dto::from_json;
 
 using internal::json::dto::MosaicInfoDto;
 using internal::json::dto::MosaicNamesDto;
-using internal::json::dto::MultipleMosaicDto;
+using internal::json::dto::MultipleMosaicInfoDto;
 
 MosaicService::MosaicService(
         std::shared_ptr<Config> config,
@@ -31,11 +33,11 @@ MosaicService::MosaicService(
         _builder(builder)
 {}
 
-MosaicInfo MosaicService::getMosaicInfo(const std::string& id) {
+MosaicInfo MosaicService::getMosaicInfo(const MosaicId& id) {
 
     std::stringstream path;
 
-    path << "mosaic/" << id;
+    path << "mosaic/" << int_to_hex(id);
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
@@ -46,11 +48,24 @@ MosaicInfo MosaicService::getMosaicInfo(const std::string& id) {
     return dto;
 }
 
-MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<std::string>& ids){
+MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
     std::string requestJson;
-    Parser::Write(ids, requestJson);
+    std::vector<std::string> hexIds;
+    for(auto& mosaicId : ids) {
+    	hexIds.push_back(int_to_hex(mosaicId));
+    }
+
+    Parser::Write(hexIds, requestJson);
+//	std::string tmp;
+//	for(int i = 0; i < requestJson.size() ; i++) {
+//		if(requestJson[i] != '"') tmp += requestJson[i];
+//	}
+//	std::swap(requestJson, tmp);
+	requestJson = "{\"mosaicIds\":" + requestJson + "}";
+
+    std::cout << "REequest Json: " << requestJson << std::endl;
     std::stringstream path;
-    path << "mosaic/";
+    path << "mosaic";
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::POST)
@@ -58,11 +73,16 @@ MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<std::string>&
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultipleMosaicInfo, MultipleMosaicDto>(response);
+    auto dto = from_json<MultipleMosaicInfo, MultipleMosaicInfoDto>(response);
     return dto;
 }
 
-MosaicNames MosaicService::getMosaicsNames(const std::vector<std::string>& ids) {
+MosaicNames MosaicService::getMosaicsNames(const std::vector<MosaicId>& ids) {
+
+	std::vector<std::string> hexIds;
+	for(auto& mosaicId : ids) {
+		hexIds.push_back(int_to_hex(mosaicId));
+	}
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::stringstream path;

@@ -9,6 +9,9 @@
 #include <infrastructure/json/parser.h>
 #include <sstream>
 
+
+#include <iostream>
+
 using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json::dto;
 using xpx_sdk::internal::json::Parser;
@@ -31,8 +34,9 @@ AccountInfo AccountService::getAccountInfo(const std::string& id) {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<AccountInfo, AccountInfoDto>(response);
-    return dto;
+    std::cout << "Response: " << response << std::endl;
+    AccountInfo result = from_json<AccountInfo, AccountInfoDto>(response);
+    return result;
 
 }
 
@@ -48,8 +52,8 @@ MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::strin
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultipleAccountInfo, MultipleAccountInfoDto>(response);
-    return dto;
+    auto result = from_json<MultipleAccountInfo, MultipleAccountInfoDto>(response);
+    return result;
 
 }
 
@@ -63,8 +67,8 @@ AccountProperty AccountService::getAccountProperties(const std::string& id ){
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<AccountProperty, AccountPropertyDto>(response);
-    return dto;
+    auto result = from_json<AccountProperty, AccountPropertyDto>(response);
+    return result;
 }
 
 MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<std::string>& ids){
@@ -79,8 +83,8 @@ MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultipleAccountProperty, MultipleAccountPropertyDto>(response);
-    return dto;
+    auto result = from_json<MultipleAccountProperty, MultipleAccountPropertyDto>(response);
+    return result;
 }
 
 MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
@@ -93,8 +97,8 @@ MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultisigInfo, MultisigInfoDto>(response);
-    return dto;
+    auto result = from_json<MultisigInfo, MultisigInfoDto>(response);
+    return result;
 }
 
 MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id) {
@@ -107,6 +111,6 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<MultisigGraph, MultisigGraphDto>(response);
-    return dto;
+    auto result = from_json<MultisigGraph, MultisigGraphDto>(response);
+    return result;
 }

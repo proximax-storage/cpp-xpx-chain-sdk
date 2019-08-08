@@ -23,9 +23,9 @@ namespace xpx_sdk {
                 std::shared_ptr<internal::network::Context> context,
                 internal::network::RequestParamsBuilder builder
         );
-        MosaicInfo getMosaicInfo(const std::string& id) override;
-        MultipleMosaicInfo getMosaicInfos(const std::vector<std::string>& ids) override;
-        MosaicNames getMosaicsNames(const std::vector<std::string>& ids) override;
+        MosaicInfo getMosaicInfo(const MosaicId& id) override;
+        MultipleMosaicInfo getMosaicInfos(const std::vector<MosaicId>& ids) override;
+        MosaicNames getMosaicsNames(const std::vector<MosaicId>& ids) override;
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

@@ -46,9 +46,13 @@ std::string _performHTTPRequest_internal(
 	http::request<http::string_body> request{verb, path, HTTP_VERSION};
 	request.set(http::field::host, host);
 	request.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+	request.set(http::field::content_type, "application/json");
 
 	if (method == HTTPRequestMethod::PUT || method == HTTPRequestMethod::POST) {
-		request.set(http::field::body, request_body);
+		request.set(http::field::content_length, request_body.size());
+//		request.set(http::field::body, request_body);
+		request.body() = request_body;
+		request.prepare_payload();
 	}
 
 	http::write(stream, request);

@@ -10,14 +10,16 @@
 #include <nemcpp/model/mosaic/multiple_mosaic.h>
 #include <nemcpp/model/mosaic/mosaic_names.h>
 
+
+
 #include <vector>
 
 namespace xpx_sdk {
     class IMosaicService {
     public:
-        virtual MosaicInfo getMosaicInfo(const std::string& id) = 0;
-        virtual MultipleMosaicInfo getMosaicInfos(const std::vector<std::string>& ids) = 0;
-        virtual MosaicNames getMosaicsNames(const std::vector<std::string>& ids) = 0;
+        virtual MosaicInfo getMosaicInfo(const MosaicId & id) = 0;
+        virtual MultipleMosaicInfo getMosaicInfos(const std::vector<MosaicId>& ids) = 0;
+        virtual MosaicNames getMosaicsNames(const std::vector<MosaicId>& ids) = 0;
 
         virtual ~IMosaicService() = default;
     };

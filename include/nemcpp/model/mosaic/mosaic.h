@@ -42,8 +42,6 @@ namespace xpx_sdk {
 
     class MosaicMeta {
     public:
-        bool active;
-        uint64_t index;
         std::string id;
     };
 

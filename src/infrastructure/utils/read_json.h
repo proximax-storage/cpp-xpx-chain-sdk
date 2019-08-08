@@ -34,6 +34,7 @@
 
 #include <nemcpp/exceptions.h>
 #include <nemcpp/model/account/multiple_account_info.h>
+#include <iostream>
 
 
 namespace xpx_sdk { namespace  internal { namespace json {
@@ -43,7 +44,9 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
         template<typename Object, typename ObjectDto>
         Object from_json(const std::string &jsonStr) {
+        	std::cout << jsonStr << std::endl;
             ObjectDto dto;
+
             auto result = Parser::Read(dto, jsonStr);
             if (!result) {
                 NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
@@ -82,7 +85,7 @@ namespace xpx_sdk { namespace  internal { namespace json {
         MosaicInfo fromDto<MosaicInfo, MosaicInfoDto>(const MosaicInfoDto &dto);
 
         template<>
-        MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicDto>(const MultipleMosaicDto& dto);
+        MultipleMosaicInfo fromDto<MultipleMosaicInfo, MultipleMosaicInfoDto>(const MultipleMosaicInfoDto& dto);
 
         template<>
         MosaicName fromDto<MosaicName, MosaicNameDto>(const MosaicNameDto& dto);

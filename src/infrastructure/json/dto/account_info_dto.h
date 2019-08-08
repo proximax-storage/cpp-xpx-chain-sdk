@@ -44,11 +44,14 @@
 namespace xpx_sdk::internal::json::dto {
 
     using AccountInfoDto = VariadicStruct<
+            Field<STR_LITERAL("account"),
+                    VariadicStruct<
             Field<STR_LITERAL("address"), std::string>,
             Field<STR_LITERAL("addressHeight"), Uint64>,
             Field<STR_LITERAL("publicKey"), std::string>,
             Field<STR_LITERAL("publicKeyHeight"), Uint64>,
-            Field<STR_LITERAL("mosaics"), MultipleMosaicDto > >;
+            Field<STR_LITERAL("mosaics"), MultipleMosaicDto >
+                    > > >;
 
     using MultisigInfoDto = VariadicStruct<
             Field<STR_LITERAL("account"), std::string>,
