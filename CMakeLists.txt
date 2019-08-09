@@ -10,6 +10,8 @@ cmake_policy(SET CMP0068 OLD)
 
 option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
 option(NEM2_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
+option(NEM2_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
+option(NEM2_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
@@ -41,13 +43,18 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES rapidjson/1.1.0@bincrafters/stable
+conan_cmake_run(REQUIRES
+		rapidjson/1.1.0@bincrafters/stable
+		boost/1.70.0@conan/stable
+        OpenSSL/1.1.1c@conan/stable
 	BASIC_SETUP
+	CMAKE_TARGETS
 	BUILD missing)
 
 #-----------------------------------------------------------------------------
 # sources
 #-----------------------------------------------------------------------------
+
 file(GLOB_RECURSE sources
 	"include/nemcpp/*.h"
 	"src/infrastructure/*.h"
@@ -102,7 +109,7 @@ if (NEM2_SDK_BUILD_STATIC)
 	set_target_properties(nemcpp PROPERTIES
 		OUTPUT_NAME "nemcpp-static")
 else()
-	add_library(nemcpp SHARED "")
+	add_library(nemcpp SHARED "" src/infrastructure/network/context.h src/infrastructure/network/websocket.h)
 	set_target_properties(nemcpp PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
@@ -125,12 +132,16 @@ target_include_directories(nemcpp
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
-		${CMAKE_CURRENT_SOURCE_DIR}/src
-		CONAN_PKG::rapidjson)
+		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# adding alias for target (required to consistent use of SDK when
-# it is built as subproject)
-add_library("NEM2::nemcpp" ALIAS nemcpp)
+if(NEM2_SDK_ENABLE_WEBSOCKETS)
+    target_compile_definitions(nemcpp PRIVATE NEM2_SDK_ENABLE_WEBSOCKETS)
+endif()
+
+target_link_libraries(nemcpp
+		CONAN_PKG::rapidjson
+		CONAN_PKG::boost
+		CONAN_PKG::OpenSSL)
 
 #-----------------------------------------------------------------------------
 # install
@@ -182,4 +193,13 @@ if (NEM2_SDK_BUILD_TESTS)
 	include(CTest)
 	enable_testing()
 	add_subdirectory(tests)
+endif()
+
+if (NEM2_SDK_BUILD_EXAMPLES)
+	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
+	target_link_libraries(get_block
+			nemcpp
+			CONAN_PKG::rapidjson
+			CONAN_PKG::boost
+			CONAN_PKG::OpenSSL)
 endif()
