@@ -39,6 +39,22 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
 
 }
 
+NamespaceInfo NamespaceService::getNamespaceInfoById(const std::string& id) {
+	std::stringstream path;
+	path << "namespace/" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
+	return result;
+
+}
+
+
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::string& accountId) {
     std::stringstream path;
     path << "account/" << accountId << "/namespaces";

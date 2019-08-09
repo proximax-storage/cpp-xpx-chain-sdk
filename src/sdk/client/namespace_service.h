@@ -27,7 +27,8 @@ namespace xpx_sdk {
                 internal::network::RequestParamsBuilder builder
         );
         NamespaceInfo getNamespaceInfoById(const NamespaceId& id) override;
-        MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) override;
+		NamespaceInfo getNamespaceInfoById(const std::string& id) override;
+		MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) override;
         MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) override;
         NamespaceNames getNamespaceNames(const std::vector<std::string> & namespaceIds) override;
     private:

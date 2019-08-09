@@ -29,6 +29,7 @@ namespace xpx_sdk {
         virtual MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) = 0;
         virtual MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) = 0;
         virtual NamespaceNames getNamespaceNames(const std::vector<std::string>& namespaceIds) = 0;
+		virtual NamespaceInfo getNamespaceInfoById(const std::string& id) = 0;
 //        virtual std::vector<string> getAccountIds(); //maybe in future if will know how to do it
         virtual ~INamespaceService() = default;
     };

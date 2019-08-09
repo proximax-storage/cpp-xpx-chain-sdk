@@ -51,9 +51,10 @@ int main() {
 	std::cout << mosaicInfos.mosaics.size() << std::endl;
 
 	auto namespaces = client -> namespaces() -> getNamespaceInfoByAccount(accountAddress);
-
+	std::vector<std::string> namespaceIds;
 	for(auto x : namespaces.namespaceInfos) {
 		std::cout << x.data.owner << std::endl;
+		namespaceIds.push_back(x.meta.id);
 	}
 
 }
