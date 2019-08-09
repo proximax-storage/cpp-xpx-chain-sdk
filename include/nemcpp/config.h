@@ -4,6 +4,7 @@
 #include <nemcpp/types.h>
 #include <nemcpp/utils/network_time.h>
 
+#include <string>
 #include <chrono>
 
 namespace nem2_sdk {
@@ -41,6 +42,11 @@ namespace nem2_sdk {
 		
 		/// Determines transaction deadline which is used by default.
 		NetworkDuration TransactionDeadline = Transaction_Deadline;
+
+		std::string nodeAddress = "localhost";
+		std::string port = "80";
+		bool useSSL = false;
+		std::string basePath = "/";
 	};
 	
 	/// Returns SDK config.
