@@ -7,7 +7,7 @@ int main() {
 	config.nodeAddress = "bcstage1.xpxsirius.io";
 	config.port = "3000";
 
-	config.nodeAddress = "192.168.88.41";
+//	config.nodeAddress = "192.168.88.41";
 
 	std::string accountAddress = "VA7PKVZYTGLHZUCZTIM6TCJZIW2KB2PYCMKVTF27";
 	accountAddress = "SBGS2IGUED476REYI5ZZGISVSEHAF6YIQZV6YJFQ";

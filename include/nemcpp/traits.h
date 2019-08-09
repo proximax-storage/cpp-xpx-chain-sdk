@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Returns enumeration type \a value converted to underlying type.
 	template<typename TEnum>

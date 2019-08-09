@@ -83,7 +83,7 @@ namespace xpx_sdk {
 	
 	/// Returns string containing hex-formatted \a value of iterable type (those with methods \c begin and \c end).
 	template<typename T>
-	auto ToHex(const T& value) -> std::enable_if_t<nem2_sdk::is_iterable_v<T>, std::string>
+	auto ToHex(const T& value) -> std::enable_if_t<xpx_sdk::is_iterable_v<T>, std::string>
 	{
 		std::string result;
 		
