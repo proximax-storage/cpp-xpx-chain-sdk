@@ -22,9 +22,9 @@ namespace xpx_sdk {
 		static std::string getErrorMessage(uint16_t code);
 	};
 
-	class InvalidJSON : public std::runtime_error {
+	class InvalidJson : public std::runtime_error {
 	public:
-		explicit InvalidJSON(const runtime_error &error);
+		explicit InvalidJson(const runtime_error &error);
 	};
 
 	class IClient {

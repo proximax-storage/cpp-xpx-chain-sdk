@@ -74,4 +74,4 @@ std::string InvalidRequest::getErrorMessage(uint16_t code) {
 	return s.str();
 }
 
-InvalidJSON::InvalidJSON(const std::runtime_error &error) : runtime_error(error) {}
+InvalidJson::InvalidJson(const std::runtime_error &error) : runtime_error(error) {}
