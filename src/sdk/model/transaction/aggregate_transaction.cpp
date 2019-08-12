@@ -2,7 +2,7 @@
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
 namespace xpx_sdk::complex_transactions {
-//
+
 	bool AggregateTransaction::isComplete() const
 	{
 		return type() == TransactionType::Aggregate_Complete;

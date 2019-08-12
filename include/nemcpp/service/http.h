@@ -3,7 +3,7 @@
 #include <boost/asio/ip/tcp.hpp>
 
 namespace xpx_sdk::http {
-	typedef int StatusCode;
+	using StatusCode = int;
 
 	enum class ContextStatus {
 		Ready,

@@ -198,7 +198,7 @@ if (NEM2_SDK_BUILD_TESTS)
 endif()
 
 if (NEM2_SDK_BUILD_EXAMPLES)
-	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp )
+	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
 	target_link_libraries(get_block
 			nemcpp
 			CONAN_PKG::rapidjson

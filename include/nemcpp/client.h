@@ -30,11 +30,11 @@ namespace xpx_sdk {
 	class IClient {
 	public:
         virtual std::shared_ptr<IAccountService> account() const = 0;
-		virtual std::shared_ptr<IBlockchainService> blockchain() const = 0;
+        virtual std::shared_ptr<IBlockchainService> blockchain() const = 0;
         virtual std::shared_ptr<IMosaicService> mosaics() const = 0;
         virtual std::shared_ptr<INamespaceService> namespaces() const = 0;
         virtual std::shared_ptr<INetworkService> network() const = 0;
-		virtual ~IClient() = default;
+        virtual ~IClient() = default;
 	};
 
 	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config);
