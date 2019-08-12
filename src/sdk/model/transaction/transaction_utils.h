@@ -4,7 +4,7 @@
 #include <nemcpp/utils/buffer.h>
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
-using xpx_sdk::difficult_transactions::Transaction;
+using xpx_sdk::complex_transactions::Transaction;
 namespace xpx_sdk { namespace internal {
 	
 	uint16_t MakeTransactionFullVersion(uint8_t version, NetworkIdentifier networkId);

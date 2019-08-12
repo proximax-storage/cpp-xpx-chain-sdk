@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/account_property_transaction.h>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	template<typename TBase, typename TProperty>
 	AccountPropertyRule TAccountPropertyTransaction<TBase, TProperty>::propertyRule() const

@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <set>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Account property modification type.
 	enum class AccountPropertyModificationType: uint8_t {

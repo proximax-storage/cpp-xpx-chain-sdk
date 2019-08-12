@@ -74,10 +74,9 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds){
     std::string requestJson;
     Parser::Write(accountIds, requestJson);
-    std::stringstream path;
-    path << "account/namespaces";
+    std::string path = "account/namespaces";
     auto requestParams = _builder
-            .setPath(path.str())
+            .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -90,10 +89,9 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::ve
 NamespaceNames NamespaceService::getNamespaceNames(const std::vector<std::string> & namespaceIds) {
     std::string requestJson;
     Parser::Write(namespaceIds, requestJson);
-    std::stringstream path;
-    path << "namespace/names";
+    std::string path = "namespace/names";
     auto requestParams = _builder
-            .setPath(path.str())
+            .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();

@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 //
 	bool AggregateTransaction::isComplete() const
 	{

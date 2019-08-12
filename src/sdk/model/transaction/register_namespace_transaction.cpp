@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/register_namespace_transaction.h>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	template<typename TBase>
 	const Namespace& TRegisterNamespaceTransaction<TBase>::ns() const

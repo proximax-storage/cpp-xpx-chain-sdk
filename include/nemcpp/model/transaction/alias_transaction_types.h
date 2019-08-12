@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Alias transaction action.
 	enum class AliasTransactionAction: uint8_t {

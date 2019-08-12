@@ -6,7 +6,7 @@
 #include <nemcpp/model/transaction/aggregate_transaction.h>
 
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Calculates signature for \a transaction using \a keyPair.
 	Signature CalculateTransactionSignature(const Transaction* transaction,

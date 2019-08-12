@@ -8,7 +8,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Address alias transaction base class.
 	template<typename TBase>

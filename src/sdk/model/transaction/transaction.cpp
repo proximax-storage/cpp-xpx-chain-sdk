@@ -4,7 +4,7 @@
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	Transaction::Transaction(TransactionType type,
 	                         uint16_t fullVersion,

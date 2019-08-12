@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Constant to be used as empty message in transfer transaction.
 	constexpr uint8_t Empty_Message[] = {0};

@@ -43,10 +43,9 @@ AccountInfo AccountService::getAccountInfo(const std::string& id) {
 MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
-    std::stringstream path;
-    path << "account/";
+    std::string path = "account/";
     auto requestParams = _builder
-            .setPath(path.str())
+            .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -74,10 +73,9 @@ AccountProperty AccountService::getAccountProperties(const std::string& id ){
 MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
-    std::stringstream path;
-    path << "account/properties";
+    std::string path = "account/properties";
     auto requestParams = _builder
-            .setPath(path.str())
+            .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();

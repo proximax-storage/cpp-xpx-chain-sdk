@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-using namespace xpx_sdk::difficult_transactions;
+using namespace xpx_sdk::complex_transactions;
 namespace xpx_sdk { namespace internal {
 	
 	uint16_t MakeTransactionFullVersion(uint8_t version, NetworkIdentifier networkId)

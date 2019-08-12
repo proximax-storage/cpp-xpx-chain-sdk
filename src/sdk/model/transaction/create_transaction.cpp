@@ -12,9 +12,9 @@
 
 using namespace xpx_sdk::internal;
 using namespace xpx_sdk::internal::binary;
-//using namespace xpx_sdk::difficult_transactions;
+//using namespace xpx_sdk::complex_transactions;
 
-//using xpx_sdk::difficult_transactions::
+//using xpx_sdk::complex_transactions::
 
 
 namespace xpx_sdk { namespace internal {

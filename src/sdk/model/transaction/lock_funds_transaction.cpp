@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/lock_funds_transaction.h>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	template<typename TBase>
 	const Mosaic& TLockFundsTransaction<TBase>::lockedMosaic() const

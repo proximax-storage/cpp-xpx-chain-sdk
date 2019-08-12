@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/transaction_type.h>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	const char* GetTransactionName(TransactionType type)
 	{

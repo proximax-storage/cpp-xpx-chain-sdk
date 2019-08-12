@@ -35,7 +35,7 @@ namespace xpx_sdk {
 	};
 }
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	/// Account property.
 	template<typename TValue, AccountPropertyType PropertyTypeId>
 	struct AccountProperty {

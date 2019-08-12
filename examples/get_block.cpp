@@ -10,7 +10,7 @@ int main() {
 //	config.nodeAddress = "192.168.88.41";
 
 	std::string accountAddress = "VA7PKVZYTGLHZUCZTIM6TCJZIW2KB2PYCMKVTF27";
-	accountAddress = "SBGS2IGUED476REYI5ZZGISVSEHAF6YIQZV6YJFQ";
+//	accountAddress = "SBGS2IGUED476REYI5ZZGISVSEHAF6YIQZV6YJFQ";
 
 	auto client = xpx_sdk::getClient(std::make_shared<xpx_sdk::Config>(config));
 

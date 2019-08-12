@@ -6,7 +6,7 @@
 
 #include <unordered_map>
 
-namespace xpx_sdk::difficult_transactions {
+namespace xpx_sdk::complex_transactions {
 	
 	/// Transactions, embedded to aggregate transaction.
 	using EmbeddedTransactions = std::vector<std::shared_ptr<EmbeddedTransaction>>;
