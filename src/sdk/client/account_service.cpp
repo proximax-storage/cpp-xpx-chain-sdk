@@ -9,14 +9,11 @@
 #include <infrastructure/json/parser.h>
 #include <sstream>
 
-
-#include <iostream>
-
 using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json::dto;
+
 using xpx_sdk::internal::json::Parser;
 using xpx_sdk::internal::json::dto::from_json;
-
 
 AccountService::AccountService(
         std::shared_ptr<Config> config,
@@ -24,17 +21,15 @@ AccountService::AccountService(
         internal::network::RequestParamsBuilder builder):_config(config), _context(context), _builder(builder) {}
 
 AccountInfo AccountService::getAccountInfo(const std::string& id) {
-
     std::stringstream path;
-
     path << "account/" << id;
+
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    std::cout << "Response: " << response << std::endl;
     AccountInfo result = from_json<AccountInfo, AccountInfoDto>(response);
     return result;
 
@@ -44,6 +39,7 @@ MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::strin
     std::string requestJson;
     Parser::Write(ids, requestJson);
     std::string path = "account/";
+
     auto requestParams = _builder
             .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
@@ -58,8 +54,8 @@ MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::strin
 
 AccountProperty AccountService::getAccountProperties(const std::string& id ){
     std::stringstream path;
-
     path << "account/properties/" << id;
+
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
@@ -73,7 +69,9 @@ AccountProperty AccountService::getAccountProperties(const std::string& id ){
 MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
+
     std::string path = "account/properties";
+
     auto requestParams = _builder
             .setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
@@ -87,8 +85,8 @@ MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<
 
 MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
     std::stringstream path;
-
     path << "account/" << id << "/multisig";
+
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
@@ -101,8 +99,8 @@ MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
 
 MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id) {
     std::stringstream path;
-
     path << "account/" << id << "/multisig/graph";
+
     auto requestParams = _builder
             .setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)

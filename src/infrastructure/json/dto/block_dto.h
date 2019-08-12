@@ -43,9 +43,8 @@
  */
 
 namespace xpx_sdk::internal::json::dto {
-    using Uint64 = xpx_sdk::internal::json::Uint64;
 
-
+	using Uint64 = xpx_sdk::internal::json::Uint64;
 
     using BlockMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,
@@ -77,6 +76,5 @@ namespace xpx_sdk::internal::json::dto {
     using ScoreInfoDto = VariadicStruct<
             Field<STR_LITERAL("scoreHigh"), Uint64>,
             Field<STR_LITERAL("scoreLow"), Uint64> >;
-
 
 }

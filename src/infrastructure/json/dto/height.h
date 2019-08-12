@@ -13,8 +13,8 @@
 
 #include <stdint.h>
 namespace xpx_sdk::internal::json::dto {
+
     using xpx_sdk::internal::json::Uint64;
     using HeightDto = VariadicStruct<Field<STR_LITERAL("height"), Uint64> >;
-
 
 }

@@ -22,6 +22,6 @@ NetworkInfo NetworkService::getNetworkInfo() {
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto dto = from_json<NetworkInfo, NetworkInfoDto>(response);
-    return dto;
+    auto result = from_json<NetworkInfo, NetworkInfoDto>(response);
+    return result;
 }

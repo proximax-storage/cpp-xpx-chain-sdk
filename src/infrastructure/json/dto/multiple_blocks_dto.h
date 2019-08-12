@@ -14,5 +14,4 @@ namespace xpx_sdk::internal::json::dto {
 
     using MultipleBlocksDto = std::vector<BlockDto>;
 
-
 }

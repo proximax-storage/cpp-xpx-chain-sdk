@@ -951,17 +951,6 @@ namespace xpx_sdk {
 		return CreateTransaction<EmbeddedAccountTransactionPropertyTransactionImpl>(
 			dto, propertyRule, std::move(propertyModifications));
 	}
-
-//	std::unique_ptr<AddressAliasTransaction>
-//	CreateAddressAliasTransaction(AliasTransactionAction action,
-//	                              NamespaceId aliasNamespaceId,
-//	                              const Address& aliasedAddress,
-//	                              std::optional<Amount> maxFee,
-//	                              std::optional<NetworkDuration> deadline,
-//	                              std::optional<NetworkIdentifier> networkId)
-//	{
-//		return CreateAddressAliasTransaction(action, aliasNamespaceId, aliasedAddress, maxFee, deadline, networkId);
-//	}
 	
 	std::unique_ptr<EmbeddedAddressAliasTransaction>
 	CreateEmbeddedAddressAliasTransaction(AliasTransactionAction action,

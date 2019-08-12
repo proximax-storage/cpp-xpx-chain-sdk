@@ -20,10 +20,6 @@
 
 namespace xpx_sdk {
     using PublicKey = Key;
-//    class ByteArray { // we can use vector<uint8_t>
-//        uint8_t *array;
-//        int size;
-//    };
 
     using ByteArray = std::vector<uint8_t>;
 
@@ -75,7 +71,7 @@ namespace xpx_sdk {
         }
 
     private:
-        ByteArray payload; //ByteArray = struct { uint8_t* array, int size;}
+        ByteArray payload;
     };
 
 
@@ -88,7 +84,7 @@ namespace xpx_sdk {
             PrivateKey recipient,
             PublicKey sender) {
 
-        // TODO
+		/// TODO: Implement this method;
     }
 
 
@@ -120,7 +116,7 @@ namespace xpx_sdk {
         }
 
     private:
-        ByteArray encodedData; //ByteArray = struct { uint8_t* array, int size;}
+        ByteArray encodedData;
     };
 
     std::shared_ptr<SecureMessage> NewSecureMessage(ByteArray&& encodedData) {
@@ -133,7 +129,7 @@ namespace xpx_sdk {
             PublicKey recipient) {
 
 
-        // TODO
+        /// TODO: Implement this method;
     }
 
     std::string ByteArrayToString(const ByteArray& data ) {
@@ -162,8 +158,6 @@ namespace xpx_sdk {
                     return std::shared_ptr<Message>(NewSecureMessage(std::move(b)).get());
                 default:
                     NEM2_SDK_THROW(message_error, "Invalide message");
-
-
             }
         }
     private:

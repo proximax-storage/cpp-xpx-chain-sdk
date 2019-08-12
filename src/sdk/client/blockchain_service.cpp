@@ -39,8 +39,8 @@ uint64_t BlockchainService::getBlockchainHeight() {
 		.getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto dto = from_json<Height, HeightDto>(response);
-	return dto.height;
+	auto result = from_json<Height, HeightDto>(response);
+	return result.height;
 }
 
 Block BlockchainService::getBlockByHeight(uint64_t height) {
