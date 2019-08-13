@@ -328,4 +328,222 @@ namespace xpx_sdk::internal::json::dto {
         };
         return networkInfo;
     }
+
+
+	template<>
+	Transaction fromDto<Transaction, TransactionDto >(const TransactionDto & dto) {
+		Transaction transaction;
+		transaction.size = dto.value<"size"_>();
+		transaction.signature = dto.value<"signature"_>();
+		transaction.signer = dto.value<"signer"_>();
+		transaction.version = dto.value<"version"_>();
+		transaction.type = dto.value<"type"_>();
+		transaction.maxFee = dto.value<"maxFee"_>();
+		transaction.deadline = dto.value<"deadline"_>();
+		return transaction;
+	}
+
+	template<>
+	EmbeddedTransaction fromDto<EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
+		EmbeddedTransaction transaction;
+		transaction.size = dto.value<"size"_>();
+		transaction.signer = dto.value<"signer"_>();
+		transaction.version = dto.value<"version"_>();
+		transaction.type = dto.value<"type"_>();
+		return transaction;
+	}
+
+	template<>
+	AggregateTransaction fromDto<AggregateTransaction, AggregateTransactionDto >(const AggregateTransactionDto & dto) {
+		AggregateTransaction transaction(fromDto<Transaction, AggregateTransactionDto>(dto));
+		transaction.payloadSize = dto.value<"payloadSize"_>();
+		transaction.payload = dto.value<"payload"_>();
+		transaction.cosignatures = dto.value<"cosignatures"_>();
+		return transaction;
+	}
+
+
+	template<>
+	AccountLinkTransaction fromDto<AccountLinkTransaction, AccountLinkTransaction >(const AccountLinkTransaction & dto) {
+		using TBase = Transaction;
+		AccountLinkTransaction transaction;
+		transaction.linkAction = dto.value<"linkAction"_>();
+		transaction.remoteAccountKey = dto.value<"remoteAccountKey"_>();
+		return transaction;
+	}
+
+
+	template<>
+	LockFundsTransaction fromDto<LockFundsTransaction, LockFundsTransaction >(const LockFundsTransaction & dto) {
+		using TBase = Transaction;
+		LockFundsTransaction transaction(fromDto<TBase, LockFundsTransaction>(dto));
+		transaction.lockedMosaic = dto.value<"lockedMosaic"_>();
+		transaction.lockDuration = dto.value<"lockDuration"_>();
+		transaction.lockHash = dto.value<"lockHash"_>();
+		return transaction;
+	}
+
+
+	template<>
+	ModifyMultisigAccountTransaction fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransaction >(const ModifyMultisigAccountTransaction & dto) {
+		using TBase = Transaction;
+		ModifyMultisigAccountTransaction transaction(fromDto<TBase, ModifyMultisigAccountTransaction>(dto));
+		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
+		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
+		transaction.modificationsCount = dto.value<"modificationsCount"_>();
+		transaction.modifications = dto.value<"modifications"_>();
+		return transaction;
+	}
+
+
+	template<>
+	MosaicDefinitionTransaction fromDto<MosaicDefinitionTransaction, MosaicDefinitionTransaction >(const MosaicDefinitionTransaction & dto) {
+		using TBase = Transaction;
+		MosaicDefinitionTransaction transaction(fromDto<TBase, MosaicDefinitionTransaction>(dto));
+
+		transaction.nonce = dto.value<"nonce"_>();
+		transaction.mosaicId = dto.value<"mosaicId"_>();
+		transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
+		transaction.flags = dto.value<"flags"_>();
+		transaction.divisibility = dto.value<"divisibility"_>();
+		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
+			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		}
+		return transaction;
+	}
+
+
+	template<>
+	MosaicSupplyChangeTransaction fromDto<MosaicSupplyChangeTransaction, MosaicSupplyChangeTransaction >(const MosaicSupplyChangeTransaction & dto) {
+		using TBase = Transaction;
+		MosaicSupplyChangeTransaction transaction(fromDto<TBase, MosaicSupplyChangeTransaction>(dto));
+		transaction.mosaicId = dto.value<"mosaicId"_>();
+		transaction.direction = dto.value<"direction"_>();
+		transaction.delta = dto.value<"delta"_>();
+		return transaction;
+	}
+
+
+	template<>
+	RegisterNamespaceTransaction fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransaction >(const RegisterNamespaceTransaction & dto) {
+		using TBase = Transaction;
+		RegisterNamespaceTransaction transaction(fromDto<TBase, RegisterNamespaceTransaction>(dto));
+
+		transaction.namespaceType = dto.value<"namespaceType"_>();
+		transaction.durationOrParentId = dto.value<"durationOrParentId"_>();
+		transaction.namespaceId = dto.value<"namespaceId"_>();
+		transaction.namespaceNameSize = dto.value<"namespaceNameSize"_>();
+		transaction.namespaceName = dto.value<"namespaceName"_>();
+
+		return transaction;
+	}
+
+	template<>
+	SecretLockTransaction fromDto<SecretLockTransaction, SecretLockTransaction >(const SecretLockTransaction & dto) {
+		using TBase = Transaction;
+		SecretLockTransaction transaction(fromDto<TBase, SecretLockTransaction>(dto));
+
+		transaction.mosaicId = dto.value<"mosaicId"_>();
+		transaction.amount = dto.value<"amount"_>();
+		transaction.duration = dto.value<"duration"_>();
+		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
+		transaction.secret = dto.value<"secret"_>();
+		transaction.recipient = dto.value<"recipient"_>();
+
+
+		return transaction;
+	}
+
+
+	template<>
+	SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransaction >(const SecretProofTransaction & dto) {
+		using TBase = Transaction;
+		SecretProofTransaction transaction(fromDto<TBase, SecretProofTransaction>(dto));
+
+		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
+		transaction.secret = dto.value<"secret"_>();
+		transaction.proofSize = dto.value<"proofSize"_>();
+		transaction.proof = dto.value<"proof"_>();
+
+
+		return transaction;
+	}
+
+
+	template<>
+	TransferTransaction fromDto<TransferTransaction, TransferTransaction >(const TransferTransaction & dto) {
+		using TBase = Transaction;
+		TransferTransaction transaction(fromDto<TBase, TransferTransaction>(dto));
+
+		transaction.recipient = dto.value<"recipient"_>();
+		transaction.messageSize = dto.value<"messageSize"_>();
+		transaction.mosaicsCount = dto.value<"mosaicsCount"_>();
+		transaction.message = dto.value<"message"_>();
+		transaction.mosaics = dto.value<"mosaics"_>();
+
+		return transaction;
+	}
+
+
+	template<>
+	AliasTransactionBase fromDto<AliasTransactionBase, AliasTransactionBase >(const AliasTransactionBase & dto) {
+		using TBase = Transaction;
+		TAliasTransactionBase<TBase> transaction(fromDto<TBase, AliasTransactionBase>(dto));
+
+		transaction.aliasAction = dto.value<"aliasAction"_>();
+		transaction.namespaceId = dto.value<"namespaceId"_>();
+
+		return transaction;
+	}
+
+	template<>
+	AddressAliasTransaction fromDto<AddressAliasTransaction, AddressAliasTransaction >(const AddressAliasTransaction & dto) {
+		AddressAliasTransaction transaction(fromDto<AliasTransactionBase, AddressAliasTransaction>(dto));
+		transaction.address = dto.value<"address"_>();
+		return transaction;
+	}
+
+	template<>
+	MosaicAliasTransaction fromDto<MosaicAliasTransaction, MosaicAliasTransaction >(const MosaicAliasTransaction & dto) {
+		MosaicAliasTransaction transaction(fromDto<AliasTransactionBase, MosaicAliasTransaction>(dto));
+		transaction.mosaicId = dto.value<"mosaicId"_>();
+		return transaction;
+	}
+
+	/// Account Property Transactions
+	template<>
+	AccountPropertyTransaction fromDto<AccountPropertyTransaction, AccountPropertyTransaction >(const AccountPropertyTransaction & dto) {
+		using TBase = Transaction;
+		AccountPropertyTransaction transaction(fromDto<TBase, AccountPropertyTransaction>(dto));
+
+		transaction.propertyType = dto.value<"propertyType"_>();
+		transaction.modificationsCount = dto.value<"modificationsCount"_>();
+		transaction.modifications = dto.value<"modifications"_>(); //??
+
+		return transaction;
+	}
+
+	template<>
+	AccountMosaicPropertyTransaction fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransaction >(const AccountMosaicPropertyTransaction & dto) {
+		using TBase = Transaction;
+		AccountMosaicPropertyTransaction transaction(fromDto<TBase, AccountMosaicPropertyTransaction>(dto));
+
+		transaction.propertyType = dto.value<"propertyType"_>();
+		transaction.modificationsCount = dto.value<"modificationsCount"_>();
+		transaction.modifications = dto.value<"modifications"_>(); //??
+
+		return transaction;
+	}
+
+	template<>
+	AccountAddressPropertyTransaction fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransaction >(const AccountAddressPropertyTransaction & dto) {
+		using TBase = Transaction;
+		AccountAddressPropertyTransaction transaction(fromDto<TBase, AccountAddressPropertyTransaction>(dto));
+
+		transaction.propertyType = dto.value<"propertyType"_>();
+		transaction.modificationsCount = dto.value<"modificationsCount"_>();
+		transaction.modifications = dto.value<"modifications"_>(); //??
+
+		return transaction;
+	}
 }

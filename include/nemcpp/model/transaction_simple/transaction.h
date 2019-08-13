@@ -42,7 +42,7 @@ namespace xpx_sdk::simple_transactions {
     };
 
     template<typename TBase>
-    class TAccountLinkTransaction : TBase {
+    class TAccountLinkTransaction : public TBase {
     public:
         TAccountLinkTransaction(const TBase& other) : TBase(other) {}
     public:
@@ -233,8 +233,11 @@ namespace xpx_sdk::simple_transactions {
     using AccountMosaicPropertyTransaction  = TAccountPropertyTransaction<Transaction, MosaicId>;
     using EmbeddedAccountMosaicPropertyTransaction  = TAccountPropertyTransaction <EmbeddedTransaction, MosaicId>;
 
-    using AccountTransactionPropertyTransaction  = TAccountPropertyTransaction<Transaction, TransactionType>;
-    using EmbeddedAccountTransactionPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, TransactionType>;
+    using AccountPropertyTransaction  = TAccountPropertyTransaction<Transaction, TransactionType>;
+    using EmbeddedAccountPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, TransactionType>;
+
+    using AliasTransactionBase = TAliasTransactionBase<Transaction>;
+    using EmbededAliasTransactionBase = TAliasTransactionBase<EmbeddedTransaction>;
 }
 
 
