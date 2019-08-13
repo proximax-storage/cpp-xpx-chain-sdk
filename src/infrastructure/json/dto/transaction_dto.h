@@ -53,9 +53,9 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("value"),            TValue>,
 				Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 
-		//	using AddressPropertyModificationDto = TAccountPropertyModificationDto<AccountAddressProperty::ValueType>;
-		//	using MosaicPropertyModificationDto = TAccountPropertyModificationDto<AccountMosaicProperty::ValueType>;
-//			using TransactionPropertyModificationDto = TAccountPropertyModificationDto<AccountTransactionProperty::ValueType>;
+		using AddressPropertyModificationDto = TAccountPropertyModificationDto<AddressData>;
+		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
+		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
 
 		// Transaction Dtos
 		//==========================================================================
@@ -217,8 +217,8 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using AccountMosaicPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, MosaicId>;
 		using EmbeddedAccountMosaicPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, MosaicId>;
 
-		using AccountPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, TransactionType>;
-		using EmbeddedAccountPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, TransactionType>;
+		using AccountTransactionPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, TransactionType>;
+		using EmbeddedAccountTransactionPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, TransactionType>;
 
 		using AliasTransactionBaseDto = TAliasTransactionBaseDto<TransactionDto>;
 		using EmbeddedAliasTransactionBaseDto = TAliasTransactionBaseDto<EmbeddedTransactionDto>;

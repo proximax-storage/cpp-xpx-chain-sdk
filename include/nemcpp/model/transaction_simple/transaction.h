@@ -13,6 +13,20 @@
 
 
 namespace xpx_sdk::simple_transactions {
+
+
+	class Cosignature {
+	public:
+		Key publicKey;
+		Signature signature;
+	};
+
+	class CosignatoryModification {
+	public:
+		Key publicKey;
+		CosignatoryModificationType modificationType;
+	};
+
     class Transaction {
     public:
         uint32_t size;
@@ -34,17 +48,13 @@ namespace xpx_sdk::simple_transactions {
 
     class AggregateTransaction : public Transaction {
     public:
-        AggregateTransaction(const Transaction& other) : Transaction(other) {}
-    public:
         uint32_t payloadSize;
         std::vector<uint8_t> payload;
-        std::vector<Signature> cosignatures; // Cosginatures is already container
+        std::vector<Cosignature> cosignatures; // Cosginatures is already container
     };
 
     template<typename TBase>
     class TAccountLinkTransaction : public TBase {
-    public:
-        TAccountLinkTransaction(const TBase& other) : TBase(other) {}
     public:
 
         AccountLinkTransactionAction linkAction;
@@ -55,8 +65,6 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TLockFundsTransaction : public TBase {
     public:
-        TLockFundsTransaction(const TBase& other) : TBase(other) {}
-    public:
         Mosaic lockedMosaic;
         BlockDuration lockDuration;
         Hash256 lockHash;
@@ -66,19 +74,15 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TModifyMultisigAccountTransaction : public TBase {
     public:
-        TModifyMultisigAccountTransaction(const TBase& other) : TBase(other) {}
-    public:
         int8_t minRemovalDelta;
         int8_t minApprovalDelta;
         uint8_t modificationsCount;
-        std::vector<CosignatoryModifications> modifications; // CosignatoryModifications is already container
+        std::vector<CosignatoryModification> modifications; // CosignatoryModifications is already container
     };
 
 
     template<typename TBase>
     class TMosaicDefinitionTransaction : public TBase {
-    public:
-        TMosaicDefinitionTransaction(const TBase& other) : TBase(other) {}
     public:
         uint32_t nonce;
         MosaicId mosaicId;
@@ -94,8 +98,6 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TMosaicSupplyChangeTransaction: public TBase {
     public:
-        TMosaicSupplyChangeTransaction(const TBase& other) : TBase(other) {}
-    public:
         MosaicId mosaicId;
         MosaicSupplyChangeDirection direction;
         Amount delta;
@@ -106,8 +108,6 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TRegisterNamespaceTransaction: public TBase {
     public:
-        TRegisterNamespaceTransaction(const TBase& other) : TBase(other) {}
-    public:
         NamespaceType namespaceType;
         uint64_t durationOrParentId;
         NamespaceId namespaceId;
@@ -117,8 +117,6 @@ namespace xpx_sdk::simple_transactions {
 
     template<typename TBase>
     class TSecretLockTransaction: public TBase {
-    public:
-        TSecretLockTransaction(const TBase& other) : TBase(other) {}
     public:
         MosaicId mosaicId;
         Amount amount;
@@ -131,8 +129,6 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TSecretProofTransaction: public TBase {
     public:
-        TSecretProofTransaction(const TBase& other) : TBase(other) {}
-    public:
 
         SecretHashAlgorithm hashAlgorithm;
         Hash256 secret;
@@ -144,8 +140,6 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TTransferTransaction: public TBase {
     public:
-        TTransferTransaction(const TBase& other) : TBase(other) {}
-    public:
         AddressData recipient;
         uint16_t messageSize;
         uint8_t mosaicsCount;
@@ -156,8 +150,6 @@ namespace xpx_sdk::simple_transactions {
 
     template<typename TBase>
     class TAliasTransactionBase: public TBase {
-    public:
-        TAliasTransactionBase(const TBase& other) : TBase(other) {}
 
     public:
         AliasTransactionAction aliasAction;
@@ -167,23 +159,17 @@ namespace xpx_sdk::simple_transactions {
     template<typename TBase>
     class TAddressAliasTransaction: public TAliasTransactionBase<TBase> {
     public:
-        TAddressAliasTransaction(const TBase& other) : TBase(other) {}
-    public:
         AddressData address;
     };
 
     template<typename TBase>
     class TMosaicAliasTransaction: public TAliasTransactionBase<TBase> {
     public:
-        TMosaicAliasTransaction(const TAliasTransactionBase<TBase>& other) : TAliasTransactionBase<TBase>(other) {}
-    public:
         MosaicId mosaicId;
     };
 
     template<typename TBase, typename T>
     class  TAccountPropertyTransaction: public TBase {
-    public:
-        TAccountPropertyTransaction(const TBase& other) : TBase(other) {}
     public:
         uint8_t propertyType;
         uint8_t modificationsCount;
@@ -233,11 +219,11 @@ namespace xpx_sdk::simple_transactions {
     using AccountMosaicPropertyTransaction  = TAccountPropertyTransaction<Transaction, MosaicId>;
     using EmbeddedAccountMosaicPropertyTransaction  = TAccountPropertyTransaction <EmbeddedTransaction, MosaicId>;
 
-    using AccountPropertyTransaction  = TAccountPropertyTransaction<Transaction, TransactionType>;
-    using EmbeddedAccountPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, TransactionType>;
+    using AccountTransactionPropertyTransaction  = TAccountPropertyTransaction<Transaction, TransactionType>;
+    using EmbeddedAccountTransactionPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, TransactionType>;
 
     using AliasTransactionBase = TAliasTransactionBase<Transaction>;
-    using EmbededAliasTransactionBase = TAliasTransactionBase<EmbeddedTransaction>;
+    using EmbeddedAliasTransactionBase = TAliasTransactionBase<EmbeddedTransaction>;
 }
 
 

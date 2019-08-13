@@ -18,7 +18,8 @@ namespace xpx_sdk::simple_transactions {
 	
 	/// Account property modification type.
 	template<typename TValue>
-	struct AccountPropertyModification {
+	class AccountPropertyModification {
+	public:
 		TValue value;
 		AccountPropertyModificationType modificationType;
 	};
@@ -39,4 +40,14 @@ namespace xpx_sdk::simple_transactions {
 	
 	/// Account transaction property modifications.
 	using AccountTransactionPropertyModifications = AccountPropertyModifications<TransactionType>;
+
+	/// Account address property modification.
+	using AccountAddressPropertyModification = AccountPropertyModification<AddressData>;
+
+	/// Account mosaic property modification.
+	using AccountMosaicPropertyModification = AccountPropertyModification<MosaicId>;
+
+	/// Account transaction property modification.
+	using AccountTransactionPropertyModification = AccountPropertyModification<TransactionType>;
+}
 }
