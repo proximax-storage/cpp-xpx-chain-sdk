@@ -9,12 +9,13 @@
 #include <sdk/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 #include <nemcpp/model/blockchain/height.h>
 
 using namespace xpx_sdk;
 
 using internal::json::dto::from_json;
+using internal::json::dto::transactions_from_json;
 using internal::json::dto::MultipleBlocksDto;
 using internal::json::dto::HeightDto;
 using internal::json::dto::BlockDto;
@@ -67,6 +68,21 @@ MultipleBlock BlockchainService::getBlocksByHeightWithLimit(uint64_t height, uin
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
 	return from_json<MultipleBlock, MultipleBlocksDto>(response);
+}
+
+simple_transactions::TransactionContainer BlockchainService::getBlockTransactions(uint64_t height) {
+	std::stringstream path;
+	path << "blocks/" << height << "/transactions";
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	return transactions_from_json(response);
+
+
 }
 
 ScoreInfo BlockchainService::getCurrentScore() {

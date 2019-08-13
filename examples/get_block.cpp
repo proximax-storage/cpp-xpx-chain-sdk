@@ -7,10 +7,8 @@ int main() {
 	config.nodeAddress = "bcstage1.xpxsirius.io";
 	config.port = "3000";
 
-//	config.nodeAddress = "192.168.88.41";
-
 	std::string accountAddress = "VA7PKVZYTGLHZUCZTIM6TCJZIW2KB2PYCMKVTF27";
-//	accountAddress = "SBGS2IGUED476REYI5ZZGISVSEHAF6YIQZV6YJFQ";
+	std::string publicKey = "E0C0BDFD0CFBC83D5DDC5F16CAD9CF18FE4339649946A79AC334AB5AA39D4BB7";
 
 	auto client = xpx_sdk::getClient(std::make_shared<xpx_sdk::Config>(config));
 
@@ -56,5 +54,10 @@ int main() {
 		std::cout << x.data.owner << std::endl;
 		namespaceIds.push_back(x.meta.id);
 	}
+
+	auto transactions = client -> account() -> getAccountTransactions(publicKey);
+	std::shared_ptr<xpx_sdk::simple_transactions::Transaction> transaction(reinterpret_cast<xpx_sdk::simple_transactions::Transaction*>(transactions.transactions[0].get()));
+
+	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
 
 }

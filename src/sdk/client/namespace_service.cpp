@@ -11,7 +11,7 @@
 #include <sstream>
 #include <sdk/utils/hex_processing.h>
 #include <infrastructure/json/parser.h>
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 using namespace xpx_sdk;
 
 

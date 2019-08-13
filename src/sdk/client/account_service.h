@@ -27,6 +27,31 @@ namespace xpx_sdk {
         MultipleAccountProperty getAccountsProperties(const std::vector<std::string>& ids) override;
         MultisigInfo getMultisigInfo(const std::string& id) override;
         MultisigGraph getMultisigAccountGraphInfo(const std::string& id) override;
+		simple_transactions::TransactionContainer getAccountTransactions(
+				const std::string& publicKey,
+				int pageSize,
+				std::string id,
+				std::string ordering) override;
+		simple_transactions::TransactionContainer getAccountIncomingTransactions(
+				const std::string& publicKey,
+				int pageSize,
+				std::string id,
+				std::string ordering) override;
+		simple_transactions::TransactionContainer getAccountOutgoingTransactions(
+				const std::string& publicKey,
+				int pageSize,
+				std::string id,
+				std::string ordering) override;
+		simple_transactions::TransactionContainer getAccountUnconfirmedTransactions(
+				const std::string& publicKey,
+				int pageSize,
+				std::string id,
+				std::string ordering) override;
+		simple_transactions::TransactionContainer getAccountAggregateBoundedTransactions(
+				const std::string& publicKey,
+				int pageSize,
+				std::string id,
+				std::string ordering) override;
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

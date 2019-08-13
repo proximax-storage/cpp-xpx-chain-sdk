@@ -1,18 +1,14 @@
 #include "hex_processing.h"
-#include <iostream>
 using namespace xpx_sdk;
 
 namespace xpx_sdk {
 	std::string int_to_hex(uint64_t id) {
 		std::stringstream stream;
 		stream << std::hex << id;
-		std::cout << id << ' ' << stream.str() << std::endl;
 		std::string result(16, '0');
-		std::cout << result << std::endl;
 		for(int i = (int)stream.str().size() -1 , j = 15; i >= 0; i--,j--) {
 			result[j] = stream.str()[i];
 		}
-		std::cout << "int_to_hex:" << result << std::endl;
 		return result;
 	}
 

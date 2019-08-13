@@ -25,6 +25,7 @@ namespace xpx_sdk {
         ScoreInfo getCurrentScore() override;
         StorageInfo getStorageInfo() override;
 		Block getBlockByHeight(uint64_t height) override;
+		simple_transactions::TransactionContainer getBlockTransactions(uint64_t height) override;
         MultipleBlock getBlocksByHeightWithLimit(uint64_t height, uint64_t limit) override;
 
 

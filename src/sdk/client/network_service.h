@@ -4,7 +4,7 @@
 #include <sdk/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 
 namespace xpx_sdk {
     class NetworkService :public INetworkService {

@@ -1,6 +1,6 @@
 
 #include "network_service.h"
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 
 using namespace xpx_sdk;
 
