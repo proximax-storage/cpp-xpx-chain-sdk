@@ -56,8 +56,10 @@ namespace xpx_sdk { namespace  internal { namespace json {
             return fromDto<Object, ObjectDto>(dto);
         }
 
+		TransactionContainer transactions_from_json(const std::string& jsonStr);
 
-        std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr);
+
+		std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr);
 
         template<>
 		TransactionContainer fromDto<TransactionContainer, TransactionContainerDto>(const TransactionContainerDto& dto);

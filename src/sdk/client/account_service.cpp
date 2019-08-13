@@ -127,7 +127,7 @@ simple_transactions::TransactionContainer AccountService::getAccountTransactions
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	auto result = transactions_from_json(response);
 	return result;
 
 }
@@ -148,7 +148,7 @@ simple_transactions::TransactionContainer AccountService::getAccountIncomingTran
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	auto result = transactions_from_json(response);
 	return result;
 
 }
@@ -169,7 +169,7 @@ simple_transactions::TransactionContainer AccountService::getAccountOutgoingTran
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	auto result = transactions_from_json(response);
 	return result;
 
 }
@@ -190,7 +190,7 @@ simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedT
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	auto result = transactions_from_json(response);
 	return result;
 
 }
@@ -211,7 +211,7 @@ simple_transactions::TransactionContainer AccountService::getAccountAggregateBou
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	auto result = transactions_from_json(response);
 	return result;
 
 }

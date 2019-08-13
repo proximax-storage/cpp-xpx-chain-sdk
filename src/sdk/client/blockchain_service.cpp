@@ -15,6 +15,7 @@
 using namespace xpx_sdk;
 
 using internal::json::dto::from_json;
+using internal::json::dto::transactions_from_json;
 using internal::json::dto::MultipleBlocksDto;
 using internal::json::dto::HeightDto;
 using internal::json::dto::BlockDto;
@@ -79,7 +80,7 @@ simple_transactions::TransactionContainer BlockchainService::getBlockTransaction
 			.getRequestParams();
 
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	return from_json<TransactionContainer, internal::json::dto::TransactionContainerDto>(response);
+	return transactions_from_json(response);
 
 
 }

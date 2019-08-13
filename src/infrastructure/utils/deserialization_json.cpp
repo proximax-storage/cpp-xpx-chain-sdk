@@ -8,6 +8,31 @@ using namespace xpx_sdk::simple_transactions;
 
 namespace xpx_sdk::internal::json::dto {
 
+	std::vector<std::string> parseJsonArray(const std::string& jsonStr) {
+		std::vector<std::string> result;
+		int balance = 0;
+		for (auto x : jsonStr) {
+			if (x == '{') {
+				if (balance == 0) {
+					result.push_back(std::string());
+				}
+				balance += 1;
+			}
+			if (balance) {
+				result.back().push_back(x);
+			}
+			if (x == '}') {
+				balance -= 1;
+			}
+		}
+		return result;
+	}
+
+	TransactionContainer transactions_from_json(const std::string& jsonStr) {
+		auto dto = parseJsonArray(jsonStr);
+		return fromDto<TransactionContainer, TransactionContainerDto>(dto);
+	}
+
 	template<>
 	TransactionContainer fromDto<TransactionContainer, TransactionContainerDto>(const TransactionContainerDto& dto) {
 		TransactionContainer result;
@@ -19,95 +44,181 @@ namespace xpx_sdk::internal::json::dto {
 		return result;
 	}
 
-	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonString) {
+	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {
 
-		VariadicStruct<Field<STR_LITERAL("transaction"), std::string> > tmp_dto;
-		Parser::Read(tmp_dto, jsonString);
-
-		std::string jsonStr = tmp_dto.value<"transaction"_>();
-
-		BasicTransactionDto dto;
+		VariadicStruct<Field<STR_LITERAL("transaction"), BasicTransactionDto> > dto;
 		Parser::Read(dto, jsonStr);
 
 		TransactionContainer transactions;
-		TransactionType type = dto.value<"type"_>();
+		TransactionType type = dto.value<"transaction"_>().value<"type"_>();
 
 		std::shared_ptr<BasicTransaction> result = nullptr;
 
 		if(TransactionType::Transfer == type) {
-			auto transaction = from_json<TransferTransaction, TransferTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
+			VariadicStruct<Field<STR_LITERAL("transaction"), TransferTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<TransferTransaction, TransferTransactionDto>(t_dto.value<"transaction"_>());
+			result = std::make_shared<TransferTransaction>(transaction);
 		}
 
 		if(TransactionType::Mosaic_Definition == type) {
-			auto transaction = from_json<MosaicDefinitionTransaction , MosaicDefinitionTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
+			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicDefinitionTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<MosaicDefinitionTransaction , MosaicDefinitionTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<MosaicDefinitionTransaction>(transaction);
 		}
 
 		if(TransactionType::Mosaic_Supply_Change == type) {
-			auto transaction = from_json<MosaicSupplyChangeTransaction , MosaicSupplyChangeTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
+			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicSupplyChangeTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<MosaicSupplyChangeTransaction , MosaicSupplyChangeTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<MosaicSupplyChangeTransaction>(transaction);
 		}
 
 		if(TransactionType::Register_Namespace == type) {
-			auto transaction = from_json<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if(TransactionType::Address_Alias == type) {
-			auto transaction = from_json<AddressAliasTransaction, AddressAliasTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if(TransactionType::Mosaic_Alias == type) {
-			auto transaction = from_json<MosaicAliasTransaction, MosaicAliasTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Modify_Multisig_Account == type) {
-			auto transaction = from_json<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Aggregate_Complete == type) {
-			auto transaction = from_json<AggregateTransaction, AggregateTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Aggregate_Bonded == type) {
-			auto transaction = from_json<AggregateTransaction, AggregateTransactionDto>(jsonStr); /// Don't know the difference between this two, so need to check.
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Lock_Funds == type) {
-			auto transaction = from_json<LockFundsTransaction, LockFundsTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Address_Property == type) {
-			auto transaction = from_json<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Mosaic_Property == type) {
-			auto transaction = from_json<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Transaction_Property == type) {
-			auto transaction = from_json<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Secret_Lock == type) {
-			auto transaction = from_json<SecretLockTransaction, SecretLockTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Secret_Proof == type) {
-			auto transaction = from_json<SecretProofTransaction, SecretProofTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
-		}
-		if( TransactionType::Account_Link == type) {
-			auto transaction = from_json<AccountLinkTransaction, AccountLinkTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
+			VariadicStruct<Field<STR_LITERAL("transaction"), RegisterNamespaceTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<RegisterNamespaceTransaction>(transaction);
 		}
 
-		/* Is not implemented yet
-		if(TransactionType::Mosaic_Levy_Change == type) {
-			auto transaction = from_json<, TransferTransactionDto>(jsonStr);
-			result = std::shared_ptr<BasicTransaction>(&transaction);
+		if(TransactionType::Address_Alias == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AddressAliasTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AddressAliasTransaction, AddressAliasTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AddressAliasTransaction>(transaction);
 		}
-		 */
+
+		if(TransactionType::Mosaic_Alias == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicAliasTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<MosaicAliasTransaction>(transaction);
+		}
+
+		if( TransactionType::Modify_Multisig_Account == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), ModifyMultisigAccountTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<ModifyMultisigAccountTransaction>(transaction);
+		}
+
+		if( TransactionType::Aggregate_Complete == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AggregateTransaction>(transaction);
+		}
+
+		if( TransactionType::Aggregate_Bonded == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(t_dto.value<"transaction"_>() ); /// Don't know the difference between this two, so need to check.
+			result = std::make_shared<AggregateTransaction>(transaction);
+		}
+
+		if( TransactionType::Lock_Funds == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), LockFundsTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<LockFundsTransaction, LockFundsTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<LockFundsTransaction>(transaction);
+		}
+
+		if( TransactionType::Address_Property == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AccountAddressPropertyTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AccountAddressPropertyTransaction>(transaction);
+		}
+
+		if( TransactionType::Mosaic_Property == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AccountMosaicPropertyTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AccountMosaicPropertyTransaction>(transaction);
+		}
+
+		if( TransactionType::Transaction_Property == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AccountTransactionPropertyTransactionDto> > t_dto;
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+			auto transaction = fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AccountTransactionPropertyTransaction>(transaction);
+		}
+
+		if( TransactionType::Secret_Lock == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), SecretLockTransactionDto> > t_dto;
+
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+
+			auto transaction = fromDto<SecretLockTransaction, SecretLockTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<SecretLockTransaction>(transaction);
+		}
+
+		if( TransactionType::Secret_Proof == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), SecretProofTransactionDto> > t_dto;
+
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+
+			auto transaction = fromDto<SecretProofTransaction, SecretProofTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<SecretProofTransaction>(transaction);
+		}
+
+		if(TransactionType::Account_Link == type) {
+			VariadicStruct<Field<STR_LITERAL("transaction"), AccountLinkTransactionDto> > t_dto;
+
+			auto err = Parser::Read(t_dto, jsonStr);
+			if (!err) {
+				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			}
+
+			auto transaction = fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(t_dto.value<"transaction"_>() );
+			result = std::make_shared<AccountLinkTransaction>(transaction);
+		}
 
 		return result;
 	}
