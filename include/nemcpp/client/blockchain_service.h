@@ -10,6 +10,7 @@
 #include <nemcpp/model/blockchain/score.h>
 #include <nemcpp/model/blockchain/storage_info.h>
 #include <nemcpp/model/blockchain/multiple_block.h>
+#include <nemcpp/model/transaction_simple/transaction_container.h>
 
 namespace xpx_sdk {
 	class IBlockchainService {
@@ -18,6 +19,7 @@ namespace xpx_sdk {
 		virtual ScoreInfo getCurrentScore() = 0;
 		virtual StorageInfo getStorageInfo() = 0;
 		virtual Block getBlockByHeight(uint64_t height) = 0;
+		virtual simple_transactions::TransactionContainer getBlockTransactions(uint64_t height) = 0;
 		virtual MultipleBlock getBlocksByHeightWithLimit(
 				uint64_t height,
 				uint64_t limit

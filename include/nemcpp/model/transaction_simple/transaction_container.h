@@ -7,7 +7,6 @@
 namespace xpx_sdk::simple_transactions {
 	class TransactionContainer {
 	public:
-
 		std::vector<std::shared_ptr<BasicTransaction> > transactions;
 	public:
 		void Add(const std::shared_ptr<BasicTransaction>& transaction) {
@@ -15,6 +14,4 @@ namespace xpx_sdk::simple_transactions {
 		}
 
 	};
-
-
 }

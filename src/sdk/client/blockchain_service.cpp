@@ -69,6 +69,21 @@ MultipleBlock BlockchainService::getBlocksByHeightWithLimit(uint64_t height, uin
 	return from_json<MultipleBlock, MultipleBlocksDto>(response);
 }
 
+simple_transactions::TransactionContainer BlockchainService::getBlockTransactions(uint64_t height) {
+	std::stringstream path;
+	path << "blocks/" << height << "/transactions";
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	return from_json<TransactionContainer, internal::json::dto::TransactionContainerDto>(response);
+
+
+}
+
 ScoreInfo BlockchainService::getCurrentScore() {
     auto requestParams = _builder
             .setPath("chain/score")

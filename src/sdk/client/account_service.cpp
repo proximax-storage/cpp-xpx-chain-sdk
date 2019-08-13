@@ -110,3 +110,108 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
     auto result = from_json<MultisigGraph, MultisigGraphDto>(response);
     return result;
 }
+
+simple_transactions::TransactionContainer AccountService::getAccountTransactions(
+		const std::string& publicKey,
+		int pageSize =10,
+		std::string id = "underfined",
+		std::string ordering = "-id") {
+
+	std::stringstream path;
+	path << "account/" << publicKey << "/transactions?pageSize=" << pageSize << "&ordering=" << ordering;
+	if(id != "underfined") path << "&id=" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	return result;
+
+}
+
+simple_transactions::TransactionContainer AccountService::getAccountIncomingTransactions(
+		const std::string& publicKey,
+		int pageSize =10,
+		std::string id = "underfined",
+		std::string ordering = "-id") {
+
+	std::stringstream path;
+	path << "account/" << publicKey << "/transactions/incoming?pageSize=" << pageSize << "&ordering=" << ordering;
+	if(id != "underfined") path << "&id=" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	return result;
+
+}
+
+simple_transactions::TransactionContainer AccountService::getAccountOutgoingTransactions(
+		const std::string& publicKey,
+		int pageSize =10,
+		std::string id = "underfined",
+		std::string ordering = "-id") {
+
+	std::stringstream path;
+	path << "account/" << publicKey << "/transactions/outgoing?pageSize=" << pageSize << "&ordering=" << ordering;
+	if(id != "underfined") path << "&id=" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	return result;
+
+}
+
+simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
+		const std::string& publicKey,
+		int pageSize =10,
+		std::string id = "underfined",
+		std::string ordering = "-id") {
+
+	std::stringstream path;
+	path << "account/" << publicKey << "/transactions/unconfirmed?pageSize=" << pageSize << "&ordering=" << ordering;
+	if(id != "underfined") path << "&id=" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	return result;
+
+}
+
+simple_transactions::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
+		const std::string& publicKey,
+		int pageSize =10,
+		std::string id = "underfined",
+		std::string ordering = "-id") {
+
+	std::stringstream path;
+	path << "account/" << publicKey << "/transactions/partial?pageSize=" << pageSize << "&ordering=" << ordering;
+	if(id != "underfined") path << "&id=" << id;
+
+	auto requestParams = _builder
+			.setPath(path.str())
+			.setMethod(internal::network::HTTPRequestMethod::GET)
+			.getRequestParams();
+
+	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
+	return result;
+
+}

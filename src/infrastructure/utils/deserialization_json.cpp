@@ -8,13 +8,30 @@ using namespace xpx_sdk::simple_transactions;
 
 namespace xpx_sdk::internal::json::dto {
 
+	template<>
+	TransactionContainer fromDto<TransactionContainer, TransactionContainerDto>(const TransactionContainerDto& dto) {
+		TransactionContainer result;
 
-	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {
+		for(std::string transactionJson : dto) {
+			result.Add(transaction_from_json(transactionJson));
+		}
+
+		return result;
+	}
+
+	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonString) {
+
+		VariadicStruct<Field<STR_LITERAL("transaction"), std::string> > tmp_dto;
+		Parser::Read(tmp_dto, jsonString);
+
+		std::string jsonStr = tmp_dto.value<"transaction"_>();
+
 		BasicTransactionDto dto;
 		Parser::Read(dto, jsonStr);
 
 		TransactionContainer transactions;
 		TransactionType type = dto.value<"type"_>();
+
 		std::shared_ptr<BasicTransaction> result = nullptr;
 
 		if(TransactionType::Transfer == type) {

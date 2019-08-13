@@ -225,4 +225,7 @@ namespace xpx_sdk { namespace internal { namespace json {
 
 		using AliasTransactionBaseDto = TAliasTransactionBaseDto<TransactionDto>;
 		using EmbeddedAliasTransactionBaseDto = TAliasTransactionBaseDto<EmbeddedTransactionDto>;
+
+
+		using TransactionContainerDto = std::vector<std::string>;
 	}}}}

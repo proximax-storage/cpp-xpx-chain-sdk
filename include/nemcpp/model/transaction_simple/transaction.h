@@ -12,9 +12,11 @@
 #include "aggregate_transaction_types.h"
 #include "secret_hash_algorithm.h"
 #include "alias_transaction_types.h"
+#include <nemcpp/model/namespace/namespace.h>
+#include <nemcpp/model/mosaic/mosaic.h>
 
 
-namespace xpx_sdk::simple_transactions {
+namespace xpx_sdk { namespace simple_transactions {
 
 	class BasicTransaction {
 	public:
@@ -229,7 +231,7 @@ namespace xpx_sdk::simple_transactions {
 
     using AliasTransactionBase = TAliasTransactionBase<Transaction>;
     using EmbeddedAliasTransactionBase = TAliasTransactionBase<EmbeddedTransaction>;
-}
+}}
 
 
 
