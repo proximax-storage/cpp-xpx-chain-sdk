@@ -1,12 +1,99 @@
-#include "read_json.h"
+#include "deserialization_json.h"
 
 using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json;
 using namespace xpx_sdk::internal::json::dto;
 
+using namespace xpx_sdk::simple_transactions;
+
 namespace xpx_sdk::internal::json::dto {
 
 
+	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {
+		BasicTransactionDto dto;
+		Parser::Read(dto, jsonStr);
+
+		TransactionContainer transactions;
+		TransactionType type = dto.value<"type"_>();
+		std::shared_ptr<BasicTransaction> result = nullptr;
+
+		if(TransactionType::Transfer == type) {
+			auto transaction = from_json<TransferTransaction, TransferTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+
+		if(TransactionType::Mosaic_Definition == type) {
+			auto transaction = from_json<MosaicDefinitionTransaction , MosaicDefinitionTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+
+		if(TransactionType::Mosaic_Supply_Change == type) {
+			auto transaction = from_json<MosaicSupplyChangeTransaction , MosaicSupplyChangeTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+
+		if(TransactionType::Register_Namespace == type) {
+			auto transaction = from_json<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if(TransactionType::Address_Alias == type) {
+			auto transaction = from_json<AddressAliasTransaction, AddressAliasTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if(TransactionType::Mosaic_Alias == type) {
+			auto transaction = from_json<MosaicAliasTransaction, MosaicAliasTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Modify_Multisig_Account == type) {
+			auto transaction = from_json<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Aggregate_Complete == type) {
+			auto transaction = from_json<AggregateTransaction, AggregateTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Aggregate_Bonded == type) {
+			auto transaction = from_json<AggregateTransaction, AggregateTransactionDto>(jsonStr); /// Don't know the difference between this two, so need to check.
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Lock_Funds == type) {
+			auto transaction = from_json<LockFundsTransaction, LockFundsTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Address_Property == type) {
+			auto transaction = from_json<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Mosaic_Property == type) {
+			auto transaction = from_json<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Transaction_Property == type) {
+			auto transaction = from_json<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Secret_Lock == type) {
+			auto transaction = from_json<SecretLockTransaction, SecretLockTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Secret_Proof == type) {
+			auto transaction = from_json<SecretProofTransaction, SecretProofTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		if( TransactionType::Account_Link == type) {
+			auto transaction = from_json<AccountLinkTransaction, AccountLinkTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+
+		/* Is not implemented yet
+		if(TransactionType::Mosaic_Levy_Change == type) {
+			auto transaction = from_json<, TransferTransactionDto>(jsonStr);
+			result = std::shared_ptr<BasicTransaction>(&transaction);
+		}
+		 */
+
+		return result;
+	}
     template<>
     BlockMeta fromDto<BlockMeta, BlockMetaDto>(const BlockMetaDto &dto) {
         BlockMeta meta;
@@ -378,6 +465,16 @@ namespace xpx_sdk::internal::json::dto {
 	}
 
 	template<>
+	MosaicProperty fromDto<MosaicProperty, MosaicPropertyDto>(const MosaicPropertyDto& dto) {
+		MosaicProperty result = {
+				dto.value<"id"_>(),
+				dto.value<"value"_>()
+		};
+
+		return result;
+	}
+
+	template<>
 	Transaction fromDto<Transaction, TransactionDto >(const TransactionDto & dto) {
 		Transaction transaction;
 		transaction.size = dto.value<"size"_>();
@@ -423,7 +520,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	AccountLinkTransaction fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(const AccountLinkTransactionDto & dto) {
-		using TBase = Transaction;
 		AccountLinkTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -442,7 +538,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	LockFundsTransaction fromDto<LockFundsTransaction, LockFundsTransactionDto >(const LockFundsTransactionDto & dto) {
-		using TBase = Transaction;
 		LockFundsTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -462,7 +557,7 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	ModifyMultisigAccountTransaction fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto >(const ModifyMultisigAccountTransactionDto & dto) {
-		using TBase = Transaction;
+		 
 		ModifyMultisigAccountTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -485,7 +580,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	MosaicDefinitionTransaction fromDto<MosaicDefinitionTransaction, MosaicDefinitionTransactionDto >(const MosaicDefinitionTransactionDto & dto) {
-		using TBase = Transaction;
 		MosaicDefinitionTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -511,7 +605,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	MosaicSupplyChangeTransaction fromDto<MosaicSupplyChangeTransaction, MosaicSupplyChangeTransactionDto >(const MosaicSupplyChangeTransactionDto & dto) {
-		using TBase = Transaction;
 		MosaicSupplyChangeTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -531,7 +624,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	RegisterNamespaceTransaction fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto >(const RegisterNamespaceTransactionDto & dto) {
-		using TBase = Transaction;
 		RegisterNamespaceTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -554,7 +646,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	SecretLockTransaction fromDto<SecretLockTransaction, SecretLockTransactionDto >(const SecretLockTransactionDto & dto) {
-		using TBase = Transaction;
 		SecretLockTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -580,7 +671,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransactionDto >(const SecretProofTransactionDto & dto) {
-		using TBase = Transaction;
 		SecretProofTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -604,7 +694,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto) {
-		using TBase = Transaction;
 		TransferTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -629,7 +718,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	AliasTransactionBase fromDto<AliasTransactionBase, AliasTransactionBaseDto >(const AliasTransactionBaseDto & dto) {
-		using TBase = Transaction;
 		AliasTransactionBase transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -682,7 +770,6 @@ namespace xpx_sdk::internal::json::dto {
 	/// Account Property Transactions
 	template<>
 	AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		AccountTransactionPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -705,7 +792,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	AccountMosaicPropertyTransaction fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto >(const AccountMosaicPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		AccountMosaicPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -728,7 +814,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	AccountAddressPropertyTransaction fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto >(const AccountAddressPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		AccountAddressPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -753,7 +838,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedAccountLinkTransaction fromDto<EmbeddedAccountLinkTransaction, EmbeddedAccountLinkTransactionDto >(const EmbeddedAccountLinkTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedAccountLinkTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -769,7 +853,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedLockFundsTransaction fromDto<EmbeddedLockFundsTransaction, EmbeddedLockFundsTransactionDto >(const EmbeddedLockFundsTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedLockFundsTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -786,7 +869,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedModifyMultisigAccountTransaction fromDto<EmbeddedModifyMultisigAccountTransaction, EmbeddedModifyMultisigAccountTransactionDto >(const EmbeddedModifyMultisigAccountTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedModifyMultisigAccountTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -807,7 +889,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedMosaicDefinitionTransaction fromDto<EmbeddedMosaicDefinitionTransaction, EmbeddedMosaicDefinitionTransactionDto >(const EmbeddedMosaicDefinitionTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedMosaicDefinitionTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -830,7 +911,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedMosaicSupplyChangeTransaction fromDto<EmbeddedMosaicSupplyChangeTransaction, EmbeddedMosaicSupplyChangeTransactionDto >(const EmbeddedMosaicSupplyChangeTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedMosaicSupplyChangeTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -847,7 +927,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedRegisterNamespaceTransaction fromDto<EmbeddedRegisterNamespaceTransaction, EmbeddedRegisterNamespaceTransactionDto >(const EmbeddedRegisterNamespaceTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedRegisterNamespaceTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -867,7 +946,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedSecretLockTransaction fromDto<EmbeddedSecretLockTransaction, EmbeddedSecretLockTransactionDto >(const EmbeddedSecretLockTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedSecretLockTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -890,7 +968,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedSecretProofTransaction fromDto<EmbeddedSecretProofTransaction, EmbeddedSecretProofTransactionDto >(const EmbeddedSecretProofTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedSecretProofTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -911,7 +988,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedTransferTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -935,7 +1011,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedAliasTransactionBase fromDto<EmbeddedAliasTransactionBase, EmbeddedAliasTransactionBaseDto >(const EmbeddedAliasTransactionBaseDto & dto) {
-		using TBase = Transaction;
 		EmbeddedAliasTransactionBase transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -979,7 +1054,6 @@ namespace xpx_sdk::internal::json::dto {
 	/// Account Property Transactions
 	template<>
 	EmbeddedAccountTransactionPropertyTransaction fromDto<EmbeddedAccountTransactionPropertyTransaction, EmbeddedAccountTransactionPropertyTransactionDto >(const EmbeddedAccountTransactionPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedAccountTransactionPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -999,7 +1073,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedAccountMosaicPropertyTransaction fromDto<EmbeddedAccountMosaicPropertyTransaction, EmbeddedAccountMosaicPropertyTransactionDto >(const EmbeddedAccountMosaicPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedAccountMosaicPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();
@@ -1019,7 +1092,6 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto) {
-		using TBase = Transaction;
 		EmbeddedAccountAddressPropertyTransaction transaction;
 
 		transaction.size = dto.value<"size"_>();

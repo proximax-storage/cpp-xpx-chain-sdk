@@ -34,6 +34,7 @@
 
 #include <nemcpp/exceptions.h>
 #include <nemcpp/model/account/multiple_account_info.h>
+#include <nemcpp/model/transaction_simple/transaction_container.h>
 
 
 using namespace xpx_sdk::simple_transactions;
@@ -54,6 +55,8 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
             return fromDto<Object, ObjectDto>(dto);
         }
+
+        std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr);
 
         template<>
         BlockMeta fromDto<BlockMeta, BlockMetaDto>(const BlockMetaDto &dto);
@@ -151,6 +154,15 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
 		template<>
 		CosignatoryModification fromDto<CosignatoryModification, CosignatoryModificationDto>(const CosignatoryModificationDto& dto);
+
+		template<>
+		AccountTransactionPropertyModification fromDto<AccountTransactionPropertyModification, TransactionPropertyModificationDto>(const TransactionPropertyModificationDto& dto);
+
+		template<>
+		AccountMosaicPropertyModification fromDto<AccountMosaicPropertyModification, MosaicPropertyModificationDto>(const MosaicPropertyModificationDto& dto);
+
+		template<>
+		AccountAddressPropertyModification fromDto<AccountAddressPropertyModification, AddressPropertyModificationDto>(const AddressPropertyModificationDto& dto);
 
 		template<>
 		Transaction fromDto<Transaction, TransactionDto >(const TransactionDto & dto);

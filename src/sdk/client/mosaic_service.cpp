@@ -11,7 +11,7 @@
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
 #include <infrastructure/json/parser.h>
 
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 
 #include <sdk/utils/hex_processing.h>
 

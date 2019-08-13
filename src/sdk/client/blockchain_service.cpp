@@ -9,7 +9,7 @@
 #include <sdk/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
-#include <infrastructure/utils/read_json.h>
+#include <infrastructure/utils/deserialization_json.h>
 #include <nemcpp/model/blockchain/height.h>
 
 using namespace xpx_sdk;

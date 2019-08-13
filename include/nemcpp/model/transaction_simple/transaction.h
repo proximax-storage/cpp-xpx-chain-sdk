@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -14,6 +16,11 @@
 
 namespace xpx_sdk::simple_transactions {
 
+	class BasicTransaction {
+	public:
+		TransactionType type;
+	};
+
 
 	class Cosignature {
 	public:
@@ -27,23 +34,21 @@ namespace xpx_sdk::simple_transactions {
 		CosignatoryModificationType modificationType;
 	};
 
-    class Transaction {
+    class Transaction : public BasicTransaction {
     public:
         uint32_t size;
         Signature signature;
         Key signer;
         uint16_t version;
-        TransactionType type;
         Amount maxFee;
         int64_t deadline;
     };
 
-    class EmbeddedTransaction {
+    class EmbeddedTransaction : public BasicTransaction {
     public:
         uint32_t size;
         Key signer;
         uint16_t version;
-        TransactionType type;
     };
 
     class AggregateTransaction : public Transaction {

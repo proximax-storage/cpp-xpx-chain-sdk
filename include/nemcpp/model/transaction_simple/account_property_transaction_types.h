@@ -50,4 +50,4 @@ namespace xpx_sdk::simple_transactions {
 	/// Account transaction property modification.
 	using AccountTransactionPropertyModification = AccountPropertyModification<TransactionType>;
 }
-}
+

@@ -60,6 +60,9 @@ namespace xpx_sdk { namespace internal { namespace json {
 		// Transaction Dtos
 		//==========================================================================
 
+		using BasicTransactionDto = VariadicStruct<
+		        Field<STR_LITERAL("type"), TransactionType> >;
+
 		using TransactionDto = VariadicStruct<
 				Field<STR_LITERAL("size"),      uint32_t>,
 				Field<STR_LITERAL("signature"), Signature>,
