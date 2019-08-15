@@ -42,7 +42,7 @@ namespace xpx_sdk::simple_transactions {
 	using AccountTransactionPropertyModifications = AccountPropertyModifications<TransactionType>;
 
 	/// Account address property modification.
-	using AccountAddressPropertyModification = AccountPropertyModification<AddressData>;
+	using AccountAddressPropertyModification = AccountPropertyModification<std::string>; // AddressData needed here
 
 	/// Account mosaic property modification.
 	using AccountMosaicPropertyModification = AccountPropertyModification<MosaicId>;

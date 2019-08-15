@@ -21,27 +21,28 @@ namespace xpx_sdk { namespace simple_transactions {
 	class BasicTransaction {
 	public:
 		TransactionType type;
+		virtual ~BasicTransaction() = default;
 	};
 
 
 	class Cosignature {
 	public:
-		Key publicKey;
-		Signature signature;
+		std::string publicKey;
+		std::string signature;
 	};
 
 	class CosignatoryModification {
 	public:
-		Key publicKey;
+		std::string publicKey;
 		CosignatoryModificationType modificationType;
 	};
 
     class Transaction : public BasicTransaction {
     public:
         uint32_t size;
-        Signature signature;
-        Key signer;
-        uint16_t version;
+        std::string signature;
+        std::string signer;
+        int64_t version;
         Amount maxFee;
         int64_t deadline;
     };
@@ -49,8 +50,9 @@ namespace xpx_sdk { namespace simple_transactions {
     class EmbeddedTransaction : public BasicTransaction {
     public:
         uint32_t size;
-        Key signer;
+        std::string signer;
         uint16_t version;
+        TransactionType type;
     };
 
     class AggregateTransaction : public Transaction {
@@ -65,7 +67,7 @@ namespace xpx_sdk { namespace simple_transactions {
     public:
 
         AccountLinkTransactionAction linkAction;
-        Key remoteAccountKey;
+        std::string remoteAccountKey;
     };
 
 
@@ -74,7 +76,7 @@ namespace xpx_sdk { namespace simple_transactions {
     public:
         Mosaic lockedMosaic;
         BlockDuration lockDuration;
-        Hash256 lockHash;
+        std::string  lockHash;
     };
 
 
@@ -129,8 +131,8 @@ namespace xpx_sdk { namespace simple_transactions {
         Amount amount;
         BlockDuration duration;
         SecretHashAlgorithm hashAlgorithm;
-        Hash256 secret;
-        AddressData recipient;
+        std::string  secret;
+        std::string recipient;
     };
 
     template<typename TBase>
@@ -138,7 +140,7 @@ namespace xpx_sdk { namespace simple_transactions {
     public:
 
         SecretHashAlgorithm hashAlgorithm;
-        Hash256 secret;
+        std::string  secret;
         uint16_t proofSize;
         std::vector<uint8_t> proof;
     };
@@ -147,7 +149,7 @@ namespace xpx_sdk { namespace simple_transactions {
     template<typename TBase>
     class TTransferTransaction: public TBase {
     public:
-        AddressData recipient;
+        std::string recipient;
         uint16_t messageSize;
         uint8_t mosaicsCount;
         std::vector<uint8_t> message;
@@ -166,7 +168,7 @@ namespace xpx_sdk { namespace simple_transactions {
     template<typename TBase>
     class TAddressAliasTransaction: public TAliasTransactionBase<TBase> {
     public:
-        AddressData address;
+        std::string address;
     };
 
     template<typename TBase>
@@ -220,8 +222,8 @@ namespace xpx_sdk { namespace simple_transactions {
     using AbstractAccountPropertyTransaction = TAccountPropertyTransaction<Transaction, std::string>;
     using EmbededAbastractAccountPropertyTransaction = TAccountPropertyTransaction<EmbeddedTransaction, std::string>;
 
-    using AccountAddressPropertyTransaction  = TAccountPropertyTransaction<Transaction, AddressData>;
-    using EmbeddedAccountAddressPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, AddressData>;
+    using AccountAddressPropertyTransaction  = TAccountPropertyTransaction<Transaction, std::string>;
+    using EmbeddedAccountAddressPropertyTransaction  = TAccountPropertyTransaction<EmbeddedTransaction, std::string>;
 
     using AccountMosaicPropertyTransaction  = TAccountPropertyTransaction<Transaction, MosaicId>;
     using EmbeddedAccountMosaicPropertyTransaction  = TAccountPropertyTransaction <EmbeddedTransaction, MosaicId>;

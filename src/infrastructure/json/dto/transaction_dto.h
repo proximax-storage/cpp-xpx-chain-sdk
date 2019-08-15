@@ -17,6 +17,7 @@
 #include <nemcpp/model/transaction_simple/secret_hash_algorithm.h>
 #include <nemcpp/model/transaction_simple/transaction_type.h>
 #include "mosaic_dto.h"
+#include <infrastructure/json/hex.h>
 
 #include <array>
 #include <string>
@@ -41,11 +42,11 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("value"), uint64_t>>;
 
 		using CosignatureDto = VariadicStruct<
-				Field<STR_LITERAL("publicKey"), Key>,
-				Field<STR_LITERAL("signature"), Signature>>;
+				Field<STR_LITERAL("publicKey"), std::string>,
+				Field<STR_LITERAL("signature"), std::string>>;
 
 		using CosignatoryModificationDto = VariadicStruct<
-				Field<STR_LITERAL("publicKey"),        Key>,
+				Field<STR_LITERAL("publicKey"),        std::string>,
 				Field<STR_LITERAL("modificationType"), CosignatoryModificationType>>;
 
 		template<typename TValue>
@@ -53,7 +54,7 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("value"),            TValue>,
 				Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 
-		using AddressPropertyModificationDto = TAccountPropertyModificationDto<AddressData>;
+		using AddressPropertyModificationDto = TAccountPropertyModificationDto<std::string>; // AddressData
 		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
 		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
 
@@ -64,17 +65,17 @@ namespace xpx_sdk { namespace internal { namespace json {
 		        Field<STR_LITERAL("type"), TransactionType> >;
 
 		using TransactionDto = VariadicStruct<
-				Field<STR_LITERAL("size"),      uint32_t>,
-				Field<STR_LITERAL("signature"), Signature>,
-				Field<STR_LITERAL("signer"),    Key>,
-				Field<STR_LITERAL("version"),   uint16_t>,
+				Field<STR_LITERAL("size"),      uint32_t, desc::Optional>,
+				Field<STR_LITERAL("signature"), std::string>,
+				Field<STR_LITERAL("signer"),    std::string>,
+				Field<STR_LITERAL("version"),   int64_t>,
 				Field<STR_LITERAL("type"),      TransactionType>,
-				Field<STR_LITERAL("maxFee"),    Amount>,
-				Field<STR_LITERAL("deadline"),  int64_t>>;
+				Field<STR_LITERAL("maxFee"),    Uint64 >,
+				Field<STR_LITERAL("deadline"),  Uint64 	>>;
 
 		using EmbeddedTransactionDto = VariadicStruct<
-				Field<STR_LITERAL("size"),      uint32_t>,
-				Field<STR_LITERAL("signer"),    Key>,
+				Field<STR_LITERAL("size"),      uint32_t, desc::Optional>,
+				Field<STR_LITERAL("signer"),    std::string>,
 				Field<STR_LITERAL("version"),   uint16_t>,
 				Field<STR_LITERAL("type"),      TransactionType>>;
 
@@ -88,14 +89,14 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using TAccountLinkTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("linkAction"),       AccountLinkTransactionAction>,
-				Field<STR_LITERAL("remoteAccountKey"), Key>>;
+				Field<STR_LITERAL("remoteAccountKey"), std::string>>;
 
 		template<typename TBase>
 		using TLockFundsTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("lockedMosaic"), MosaicDto>,
 				Field<STR_LITERAL("lockDuration"), BlockDuration>,
-				Field<STR_LITERAL("lockHash"),     Hash256>>;
+				Field<STR_LITERAL("lockHash"),     std::string >>;
 
 		template<typename TBase>
 		using TModifyMultisigAccountTransactionDto = VariadicStruct<
@@ -138,24 +139,24 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("amount"),        Amount>,
 				Field<STR_LITERAL("duration"),      BlockDuration>,
 				Field<STR_LITERAL("hashAlgorithm"), SecretHashAlgorithm>,
-				Field<STR_LITERAL("secret"),        Hash256>,
-				Field<STR_LITERAL("recipient"),     AddressData>>;
+				Field<STR_LITERAL("secret"),        std::string >,
+				Field<STR_LITERAL("recipient"),     std::string>>;
 
 		template<typename TBase>
 		using TSecretProofTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("hashAlgorithm"), SecretHashAlgorithm>,
-				Field<STR_LITERAL("secret"),        Hash256>,
+				Field<STR_LITERAL("secret"),        std::string >,
 				Field<STR_LITERAL("proofSize"),     uint16_t>,
 				Field<STR_LITERAL("proof"),         std::vector<uint8_t> > >;
 
 		template<typename TBase>
 		using TTransferTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("recipient"),    AddressData>,
-				Field<STR_LITERAL("messageSize"),  uint16_t>,
-				Field<STR_LITERAL("mosaicsCount"), uint8_t>,
-				Field<STR_LITERAL("message"),      std::vector<uint8_t> >,
+				Field<STR_LITERAL("recipient"),    std::string>,
+				Field<STR_LITERAL("messageSize"),  uint16_t, desc::Optional>,
+				Field<STR_LITERAL("mosaicsCount"), uint8_t, desc::Optional>,
+				Field<STR_LITERAL("message"),      std::vector<uint8_t>, desc::Optional>,
 				Field<STR_LITERAL("mosaics"),      std::vector<MosaicDto> > >;
 
 		template<typename TBase>
@@ -167,7 +168,7 @@ namespace xpx_sdk { namespace internal { namespace json {
 		template<typename TBase>
 		using TAddressAliasTransactionDto = VariadicStruct<
 				TAliasTransactionBaseDto<TBase>,
-				Field<STR_LITERAL("address"), AddressData>>;
+				Field<STR_LITERAL("address"), std::string>>;
 
 		template<typename TBase>
 		using TMosaicAliasTransactionDto = VariadicStruct<
@@ -214,8 +215,8 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using MosaicAliasTransactionDto = TMosaicAliasTransactionDto<TransactionDto>;
 		using EmbeddedMosaicAliasTransactionDto = TMosaicAliasTransactionDto<EmbeddedTransactionDto>;
 
-		using AccountAddressPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, AddressData>;
-		using EmbeddedAccountAddressPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, AddressData>;
+		using AccountAddressPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, std::string>;
+		using EmbeddedAccountAddressPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, std::string>;
 
 		using AccountMosaicPropertyTransactionDto = TAccountPropertyTransactionDto<TransactionDto, MosaicId>;
 		using EmbeddedAccountMosaicPropertyTransactionDto = TAccountPropertyTransactionDto<EmbeddedTransactionDto, MosaicId>;
