@@ -1,12 +1,31 @@
 #include "deserialization_json.h"
 
+
+
 using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json;
 using namespace xpx_sdk::internal::json::dto;
 
 using namespace xpx_sdk::simple_transactions;
 
+
+#define EXTRACT_TRANSACTION(transaction, dto) \
+transaction.size = dto.value<"size"_>(); \
+transaction.signature = dto.value<"signature"_>(); \
+transaction.signer = dto.value<"signer"_>(); \
+transaction.version = dto.value<"version"_>(); \
+transaction.type = dto.value<"type"_>(); \
+transaction.maxFee = dto.value<"maxFee"_>(); \
+transaction.deadline = dto.value<"deadline"_>();
+
+#define EXTRACT_EMBEDDED_TRANSACTION(transaction, dto) \
+transaction.size = dto.value<"size"_>(); \
+transaction.signer = dto.value<"signer"_>(); \
+transaction.version = dto.value<"version"_>(); \
+transaction.type = dto.value<"type"_>(); \
+
 namespace xpx_sdk::internal::json::dto {
+
 
 	std::vector<std::string> parseJsonArray(const std::string& jsonStr) {
 		std::vector<std::string> result;
@@ -60,6 +79,7 @@ namespace xpx_sdk::internal::json::dto {
 			if (!err) {
 				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 			}
+
 			auto transaction = fromDto<TransferTransaction, TransferTransactionDto>(t_dto.value<"transaction"_>());
 			result = std::make_shared<TransferTransaction>(transaction);
 		}
@@ -605,23 +625,14 @@ namespace xpx_sdk::internal::json::dto {
 	template<>
 	Transaction fromDto<Transaction, TransactionDto >(const TransactionDto & dto) {
 		Transaction transaction;
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 		return transaction;
 	}
 
 	template<>
 	EmbeddedTransaction fromDto<EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
 		EmbeddedTransaction transaction;
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 		return transaction;
 	}
 
@@ -629,13 +640,7 @@ namespace xpx_sdk::internal::json::dto {
 	AggregateTransaction fromDto<AggregateTransaction, AggregateTransactionDto >(const AggregateTransactionDto & dto) {
 		AggregateTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.payloadSize = dto.value<"payloadSize"_>();
 		transaction.payload = dto.value<"payload"_>();
@@ -650,13 +655,7 @@ namespace xpx_sdk::internal::json::dto {
 	AccountLinkTransaction fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(const AccountLinkTransactionDto & dto) {
 		AccountLinkTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.linkAction = dto.value<"linkAction"_>();
 		transaction.remoteAccountKey = dto.value<"remoteAccountKey"_>();
@@ -668,13 +667,7 @@ namespace xpx_sdk::internal::json::dto {
 	LockFundsTransaction fromDto<LockFundsTransaction, LockFundsTransactionDto >(const LockFundsTransactionDto & dto) {
 		LockFundsTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.lockedMosaic = fromDto<Mosaic, MosaicDto>(dto.value<"lockedMosaic"_>());
 		transaction.lockDuration = dto.value<"lockDuration"_>();
@@ -688,13 +681,7 @@ namespace xpx_sdk::internal::json::dto {
 		 
 		ModifyMultisigAccountTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
@@ -710,13 +697,7 @@ namespace xpx_sdk::internal::json::dto {
 	MosaicDefinitionTransaction fromDto<MosaicDefinitionTransaction, MosaicDefinitionTransactionDto >(const MosaicDefinitionTransactionDto & dto) {
 		MosaicDefinitionTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.nonce = dto.value<"nonce"_>();
@@ -735,13 +716,7 @@ namespace xpx_sdk::internal::json::dto {
 	MosaicSupplyChangeTransaction fromDto<MosaicSupplyChangeTransaction, MosaicSupplyChangeTransactionDto >(const MosaicSupplyChangeTransactionDto & dto) {
 		MosaicSupplyChangeTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		transaction.direction = dto.value<"direction"_>();
@@ -754,13 +729,7 @@ namespace xpx_sdk::internal::json::dto {
 	RegisterNamespaceTransaction fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto >(const RegisterNamespaceTransactionDto & dto) {
 		RegisterNamespaceTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.namespaceType = dto.value<"namespaceType"_>();
@@ -776,13 +745,7 @@ namespace xpx_sdk::internal::json::dto {
 	SecretLockTransaction fromDto<SecretLockTransaction, SecretLockTransactionDto >(const SecretLockTransactionDto & dto) {
 		SecretLockTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
@@ -801,13 +764,7 @@ namespace xpx_sdk::internal::json::dto {
 	SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransactionDto >(const SecretProofTransactionDto & dto) {
 		SecretProofTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
@@ -824,14 +781,7 @@ namespace xpx_sdk::internal::json::dto {
 	TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto) {
 		TransferTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
-
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.recipient = dto.value<"recipient"_>();
 		transaction.messageSize = dto.value<"messageSize"_>();
@@ -848,13 +798,7 @@ namespace xpx_sdk::internal::json::dto {
 	AliasTransactionBase fromDto<AliasTransactionBase, AliasTransactionBaseDto >(const AliasTransactionBaseDto & dto) {
 		AliasTransactionBase transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
@@ -867,13 +811,7 @@ namespace xpx_sdk::internal::json::dto {
 	AddressAliasTransaction fromDto<AddressAliasTransaction, AddressAliasTransactionDto >(const AddressAliasTransactionDto & dto) {
 		AddressAliasTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.address = dto.value<"address"_>();
 		return transaction;
@@ -883,13 +821,7 @@ namespace xpx_sdk::internal::json::dto {
 	MosaicAliasTransaction fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto >(const MosaicAliasTransactionDto & dto) {
 		MosaicAliasTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		return transaction;
@@ -900,13 +832,7 @@ namespace xpx_sdk::internal::json::dto {
 	AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto) {
 		AccountTransactionPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.propertyType = dto.value<"propertyType"_>();
@@ -922,13 +848,7 @@ namespace xpx_sdk::internal::json::dto {
 	AccountMosaicPropertyTransaction fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto >(const AccountMosaicPropertyTransactionDto & dto) {
 		AccountMosaicPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.propertyType = dto.value<"propertyType"_>();
@@ -944,13 +864,7 @@ namespace xpx_sdk::internal::json::dto {
 	AccountAddressPropertyTransaction fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto >(const AccountAddressPropertyTransactionDto & dto) {
 		AccountAddressPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signature = dto.value<"signature"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-		transaction.maxFee = dto.value<"maxFee"_>();
-		transaction.deadline = dto.value<"deadline"_>();
+		EXTRACT_TRANSACTION(transaction, dto)
 
 
 		transaction.propertyType = dto.value<"propertyType"_>();
@@ -968,10 +882,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAccountLinkTransaction fromDto<EmbeddedAccountLinkTransaction, EmbeddedAccountLinkTransactionDto >(const EmbeddedAccountLinkTransactionDto & dto) {
 		EmbeddedAccountLinkTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.linkAction = dto.value<"linkAction"_>();
 		transaction.remoteAccountKey = dto.value<"remoteAccountKey"_>();
@@ -983,10 +894,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedLockFundsTransaction fromDto<EmbeddedLockFundsTransaction, EmbeddedLockFundsTransactionDto >(const EmbeddedLockFundsTransactionDto & dto) {
 		EmbeddedLockFundsTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.lockedMosaic = fromDto<Mosaic, MosaicDto>(dto.value<"lockedMosaic"_>());
 		transaction.lockDuration = dto.value<"lockDuration"_>();
@@ -999,10 +907,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedModifyMultisigAccountTransaction fromDto<EmbeddedModifyMultisigAccountTransaction, EmbeddedModifyMultisigAccountTransactionDto >(const EmbeddedModifyMultisigAccountTransactionDto & dto) {
 		EmbeddedModifyMultisigAccountTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
@@ -1019,10 +924,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedMosaicDefinitionTransaction fromDto<EmbeddedMosaicDefinitionTransaction, EmbeddedMosaicDefinitionTransactionDto >(const EmbeddedMosaicDefinitionTransactionDto & dto) {
 		EmbeddedMosaicDefinitionTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
 		transaction.nonce = dto.value<"nonce"_>();
@@ -1041,10 +943,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedMosaicSupplyChangeTransaction fromDto<EmbeddedMosaicSupplyChangeTransaction, EmbeddedMosaicSupplyChangeTransactionDto >(const EmbeddedMosaicSupplyChangeTransactionDto & dto) {
 		EmbeddedMosaicSupplyChangeTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		transaction.direction = dto.value<"direction"_>();
@@ -1057,11 +956,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedRegisterNamespaceTransaction fromDto<EmbeddedRegisterNamespaceTransaction, EmbeddedRegisterNamespaceTransactionDto >(const EmbeddedRegisterNamespaceTransactionDto & dto) {
 		EmbeddedRegisterNamespaceTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.namespaceType = dto.value<"namespaceType"_>();
 		transaction.durationOrParentId = dto.value<"durationOrParentId"_>();
@@ -1076,10 +971,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedSecretLockTransaction fromDto<EmbeddedSecretLockTransaction, EmbeddedSecretLockTransactionDto >(const EmbeddedSecretLockTransactionDto & dto) {
 		EmbeddedSecretLockTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
@@ -1098,11 +990,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedSecretProofTransaction fromDto<EmbeddedSecretProofTransaction, EmbeddedSecretProofTransactionDto >(const EmbeddedSecretProofTransactionDto & dto) {
 		EmbeddedSecretProofTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
@@ -1118,10 +1006,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto) {
 		EmbeddedTransferTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
 		transaction.recipient = dto.value<"recipient"_>();
@@ -1141,10 +1026,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAliasTransactionBase fromDto<EmbeddedAliasTransactionBase, EmbeddedAliasTransactionBaseDto >(const EmbeddedAliasTransactionBaseDto & dto) {
 		EmbeddedAliasTransactionBase transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
@@ -1157,10 +1039,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAddressAliasTransaction fromDto<EmbeddedAddressAliasTransaction, EmbeddedAddressAliasTransactionDto >(const EmbeddedAddressAliasTransactionDto & dto) {
 		EmbeddedAddressAliasTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.address = dto.value<"address"_>();
 		return transaction;
@@ -1170,10 +1049,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedMosaicAliasTransaction fromDto<EmbeddedMosaicAliasTransaction, EmbeddedMosaicAliasTransactionDto >(const EmbeddedMosaicAliasTransactionDto & dto) {
 		EmbeddedMosaicAliasTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		return transaction;
@@ -1184,11 +1060,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAccountTransactionPropertyTransaction fromDto<EmbeddedAccountTransactionPropertyTransaction, EmbeddedAccountTransactionPropertyTransactionDto >(const EmbeddedAccountTransactionPropertyTransactionDto & dto) {
 		EmbeddedAccountTransactionPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
@@ -1203,10 +1075,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAccountMosaicPropertyTransaction fromDto<EmbeddedAccountMosaicPropertyTransaction, EmbeddedAccountMosaicPropertyTransactionDto >(const EmbeddedAccountMosaicPropertyTransactionDto & dto) {
 		EmbeddedAccountMosaicPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
 		transaction.propertyType = dto.value<"propertyType"_>();
@@ -1222,11 +1091,7 @@ namespace xpx_sdk::internal::json::dto {
 	EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto) {
 		EmbeddedAccountAddressPropertyTransaction transaction;
 
-		transaction.size = dto.value<"size"_>();
-		transaction.signer = dto.value<"signer"_>();
-		transaction.version = dto.value<"version"_>();
-		transaction.type = dto.value<"type"_>();
-
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();

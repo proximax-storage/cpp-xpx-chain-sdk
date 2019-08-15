@@ -56,8 +56,10 @@ int main() {
 	}
 
 	auto transactions = client -> account() -> getAccountTransactions(publicKey);
-	std::shared_ptr<xpx_sdk::simple_transactions::Transaction> transaction(reinterpret_cast<xpx_sdk::simple_transactions::Transaction*>(transactions.transactions[0].get()));
+	auto transaction = reinterpret_cast<xpx_sdk::simple_transactions::TransferTransaction*>(transactions.transactions[0].get());
 
 	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
+	std::cout << "Transaction version " << transaction -> version << std::endl;
+
 
 }
