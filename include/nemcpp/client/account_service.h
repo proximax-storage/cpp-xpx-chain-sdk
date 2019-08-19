@@ -39,29 +39,29 @@ namespace xpx_sdk {
         MultisigGraph getMultisigAccountGraphInfo(const std::string& id);
 		TransactionContainer getAccountTransactions(
 				const std::string& publicKey,
-				int pageSize,
-				std::string id,
-				std::string ordering);
+				int pageSize =10,
+				std::string id = "underfined",
+				std::string ordering = "-id");
 		TransactionContainer getAccountIncomingTransactions(
 				const std::string& publicKey,
-				int pageSize,
-				std::string id,
-				std::string ordering);
+				int pageSize =10,
+				std::string id = "underfined",
+				std::string ordering = "-id");
 		TransactionContainer getAccountOutgoingTransactions(
 				const std::string& publicKey,
-				int pageSize,
-				std::string id,
-				std::string ordering);
+				int pageSize =10,
+				std::string id = "underfined",
+				std::string ordering = "-id");
 		TransactionContainer getAccountUnconfirmedTransactions(
 				const std::string& publicKey,
-				int pageSize,
-				std::string id,
-				std::string ordering);
+				int pageSize =10,
+				std::string id = "underfined",
+				std::string ordering = "-id");
 		TransactionContainer getAccountAggregateBoundedTransactions(
 				const std::string& publicKey,
-				int pageSize,
-				std::string id,
-				std::string ordering);
+				int pageSize =10,
+				std::string id = "underfined",
+				std::string ordering = "-id");
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

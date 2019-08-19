@@ -114,9 +114,9 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
 
 simple_transactions::TransactionContainer AccountService::getAccountTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions?pageSize=" << pageSize << "&ordering=" << ordering;
@@ -135,9 +135,9 @@ simple_transactions::TransactionContainer AccountService::getAccountTransactions
 
 simple_transactions::TransactionContainer AccountService::getAccountIncomingTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/incoming?pageSize=" << pageSize << "&ordering=" << ordering;
@@ -156,9 +156,9 @@ simple_transactions::TransactionContainer AccountService::getAccountIncomingTran
 
 simple_transactions::TransactionContainer AccountService::getAccountOutgoingTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/outgoing?pageSize=" << pageSize << "&ordering=" << ordering;
@@ -177,9 +177,9 @@ simple_transactions::TransactionContainer AccountService::getAccountOutgoingTran
 
 simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/unconfirmed?pageSize=" << pageSize << "&ordering=" << ordering;
@@ -198,9 +198,9 @@ simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedT
 
 simple_transactions::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/partial?pageSize=" << pageSize << "&ordering=" << ordering;
