@@ -24,7 +24,6 @@ namespace xpx_sdk { namespace simple_transactions {
 		virtual ~BasicTransaction() = default;
 	};
 
-
 	class Cosignature {
 	public:
 		std::string publicKey;
@@ -43,6 +42,7 @@ namespace xpx_sdk { namespace simple_transactions {
         std::string signature;
         std::string signer;
         int64_t version;
+        TransactionType type;
         Amount maxFee;
         int64_t deadline;
     };
@@ -65,11 +65,9 @@ namespace xpx_sdk { namespace simple_transactions {
     template<typename TBase>
     class TAccountLinkTransaction : public TBase {
     public:
-
         AccountLinkTransactionAction linkAction;
         std::string remoteAccountKey;
     };
-
 
     template<typename TBase>
     class TLockFundsTransaction : public TBase {
@@ -78,7 +76,6 @@ namespace xpx_sdk { namespace simple_transactions {
         BlockDuration lockDuration;
         std::string  lockHash;
     };
-
 
     template<typename TBase>
     class TModifyMultisigAccountTransaction : public TBase {
@@ -89,7 +86,6 @@ namespace xpx_sdk { namespace simple_transactions {
         std::vector<CosignatoryModification> modifications; // CosignatoryModifications is already container
     };
 
-
     template<typename TBase>
     class TMosaicDefinitionTransaction : public TBase {
     public:
@@ -99,10 +95,7 @@ namespace xpx_sdk { namespace simple_transactions {
         MosaicFlags flags;
         uint8_t divisibility;
         std::vector<MosaicProperty> optionalProperties;
-
     };
-
-
 
     template<typename TBase>
     class TMosaicSupplyChangeTransaction: public TBase {
@@ -111,8 +104,6 @@ namespace xpx_sdk { namespace simple_transactions {
         MosaicSupplyChangeDirection direction;
         Amount delta;
     };
-
-
 
     template<typename TBase>
     class TRegisterNamespaceTransaction: public TBase {
@@ -138,13 +129,11 @@ namespace xpx_sdk { namespace simple_transactions {
     template<typename TBase>
     class TSecretProofTransaction: public TBase {
     public:
-
         SecretHashAlgorithm hashAlgorithm;
         std::string  secret;
         uint16_t proofSize;
         std::vector<uint8_t> proof;
     };
-
 
     template<typename TBase>
     class TTransferTransaction: public TBase {
@@ -184,7 +173,6 @@ namespace xpx_sdk { namespace simple_transactions {
         uint8_t modificationsCount;
         std::vector<AccountPropertyModification<T>> modifications;
     };
-
 
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;

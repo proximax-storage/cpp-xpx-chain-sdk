@@ -35,14 +35,30 @@
 #include <nemcpp/exceptions.h>
 #include <nemcpp/model/account/multiple_account_info.h>
 #include <nemcpp/model/transaction_simple/transaction_container.h>
+#include <infrastructure/binary/parser.h>
 
 
 using namespace xpx_sdk::simple_transactions;
+
+using xpx_sdk::internal::binary::Parser;
 
 namespace xpx_sdk { namespace  internal { namespace json {
 			namespace dto {
 				template<typename Object, typename ObjectDto>
 				ObjectDto toDto(const Object &transaction);
+
+				using ByteArray = std::vector<uint8_t>;
+
+				template<typename Object, typename ObjectDto>
+				ByteArray to_bytes(const Object& transaction) {
+					ObjectDto dto = toDto<Object, ObjectDto>(transaction);
+					ByteArray data;
+					Parser::Write(dto, data);
+					return data;
+				}
+
+				template<>
+				MosaicDto toDto<Mosaic, MosaicDto>(const Mosaic& mosaic);
 
 				template<>
 				CosignatureDto toDto<Cosignature, CosignatureDto>(const Cosignature &transaction);

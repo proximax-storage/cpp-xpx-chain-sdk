@@ -41,6 +41,14 @@ namespace xpx_sdk::internal::json::dto {
 	}
 
 	template<>
+	MosaicDto toDto<Mosaic, MosaicDto>(const Mosaic& mosaic) {
+		MosaicDto dto;
+		dto.set<"id"_>(mosaic.id);
+		dto.set<"amount"_>(mosaic.amount);
+		return dto;
+	}
+
+	template<>
 	CosignatoryModificationDto
 	toDto<CosignatoryModification, CosignatoryModificationDto>(const CosignatoryModification &transaction) {
 		CosignatoryModificationDto dto;

@@ -72,174 +72,206 @@ namespace xpx_sdk::internal::json::dto {
 		TransactionType type = dto.value<"transaction"_>().value<"type"_>();
 
 		std::shared_ptr<BasicTransaction> result = nullptr;
+		switch(type) {
 
-		if(TransactionType::Transfer == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), TransferTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			case TransactionType::Transfer: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), TransferTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<TransferTransaction, TransferTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<TransferTransaction>(transaction);
+				break;
 			}
 
-			auto transaction = fromDto<TransferTransaction, TransferTransactionDto>(t_dto.value<"transaction"_>());
-			result = std::make_shared<TransferTransaction>(transaction);
-		}
-
-		if(TransactionType::Mosaic_Definition == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicDefinitionTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<MosaicDefinitionTransaction , MosaicDefinitionTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<MosaicDefinitionTransaction>(transaction);
-		}
-
-		if(TransactionType::Mosaic_Supply_Change == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicSupplyChangeTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<MosaicSupplyChangeTransaction , MosaicSupplyChangeTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<MosaicSupplyChangeTransaction>(transaction);
-		}
-
-		if(TransactionType::Register_Namespace == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), RegisterNamespaceTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<RegisterNamespaceTransaction>(transaction);
-		}
-
-		if(TransactionType::Address_Alias == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AddressAliasTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AddressAliasTransaction, AddressAliasTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AddressAliasTransaction>(transaction);
-		}
-
-		if(TransactionType::Mosaic_Alias == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), MosaicAliasTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<MosaicAliasTransaction>(transaction);
-		}
-
-		if( TransactionType::Modify_Multisig_Account == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), ModifyMultisigAccountTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<ModifyMultisigAccountTransaction>(transaction);
-		}
-
-		if( TransactionType::Aggregate_Complete == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AggregateTransaction>(transaction);
-		}
-
-		if( TransactionType::Aggregate_Bonded == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(t_dto.value<"transaction"_>() ); /// Don't know the difference between this two, so need to check.
-			result = std::make_shared<AggregateTransaction>(transaction);
-		}
-
-		if( TransactionType::Lock_Funds == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), LockFundsTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<LockFundsTransaction, LockFundsTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<LockFundsTransaction>(transaction);
-		}
-
-		if( TransactionType::Address_Property == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AccountAddressPropertyTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AccountAddressPropertyTransaction>(transaction);
-		}
-
-		if( TransactionType::Mosaic_Property == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AccountMosaicPropertyTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AccountMosaicPropertyTransaction>(transaction);
-		}
-
-		if( TransactionType::Transaction_Property == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AccountTransactionPropertyTransactionDto> > t_dto;
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-			}
-			auto transaction = fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AccountTransactionPropertyTransaction>(transaction);
-		}
-
-		if( TransactionType::Secret_Lock == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), SecretLockTransactionDto> > t_dto;
-
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			case TransactionType::Mosaic_Definition: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicDefinitionTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<MosaicDefinitionTransaction, MosaicDefinitionTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<MosaicDefinitionTransaction>(transaction);
+				break;
 			}
 
-			auto transaction = fromDto<SecretLockTransaction, SecretLockTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<SecretLockTransaction>(transaction);
-		}
-
-		if( TransactionType::Secret_Proof == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), SecretProofTransactionDto> > t_dto;
-
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			case TransactionType::Mosaic_Supply_Change: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicSupplyChangeTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<MosaicSupplyChangeTransaction, MosaicSupplyChangeTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<MosaicSupplyChangeTransaction>(transaction);
+				break;
 			}
 
-			auto transaction = fromDto<SecretProofTransaction, SecretProofTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<SecretProofTransaction>(transaction);
-		}
-
-		if(TransactionType::Account_Link == type) {
-			VariadicStruct<Field<STR_LITERAL("transaction"), AccountLinkTransactionDto> > t_dto;
-
-			auto err = Parser::Read(t_dto, jsonStr);
-			if (!err) {
-				NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+			case TransactionType::Register_Namespace: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), RegisterNamespaceTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<RegisterNamespaceTransaction>(transaction);
+				break;
 			}
 
-			auto transaction = fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(t_dto.value<"transaction"_>() );
-			result = std::make_shared<AccountLinkTransaction>(transaction);
-		}
+			case TransactionType::Address_Alias: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AddressAliasTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AddressAliasTransaction, AddressAliasTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AddressAliasTransaction>(transaction);
+				break;
+			}
 
+			case TransactionType::Mosaic_Alias: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicAliasTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<MosaicAliasTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Modify_Multisig_Account: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), ModifyMultisigAccountTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<ModifyMultisigAccountTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Aggregate_Complete: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AggregateTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Aggregate_Bonded: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(
+						t_dto.value<"transaction"_>()); /// Don't know the difference between this two, so need to check.
+				result = std::make_shared<AggregateTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Lock_Funds: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), LockFundsTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<LockFundsTransaction, LockFundsTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<LockFundsTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Address_Property: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AccountAddressPropertyTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AccountAddressPropertyTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Mosaic_Property: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AccountMosaicPropertyTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AccountMosaicPropertyTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Transaction_Property: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AccountTransactionPropertyTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+				auto transaction = fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AccountTransactionPropertyTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Secret_Lock: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), SecretLockTransactionDto> > t_dto;
+
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<SecretLockTransaction, SecretLockTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<SecretLockTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Secret_Proof: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), SecretProofTransactionDto> > t_dto;
+
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<SecretProofTransaction, SecretProofTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<SecretProofTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Account_Link: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AccountLinkTransactionDto> > t_dto;
+
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(
+						t_dto.value<"transaction"_>());
+				result = std::make_shared<AccountLinkTransaction>(transaction);
+				break;
+			}
+		};
 		return result;
 	}
     template<>
