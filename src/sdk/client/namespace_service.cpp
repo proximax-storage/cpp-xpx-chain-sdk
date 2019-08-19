@@ -4,7 +4,7 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "namespace_service.h"
+#include "nemcpp/client/namespace_service.h"
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/multiple_namespace_dto.h>
 
@@ -12,6 +12,8 @@
 #include <sdk/utils/hex_processing.h>
 #include <infrastructure/json/parser.h>
 #include <infrastructure/utils/deserialization_json.h>
+#include <infrastructure/network/http.h>
+
 using namespace xpx_sdk;
 
 
@@ -21,7 +23,7 @@ using xpx_sdk::internal::json::dto::from_json;
 NamespaceService::NamespaceService(
         std::shared_ptr<Config> config,
         std::shared_ptr<internal::network::Context> context,
-        internal::network::RequestParamsBuilder builder
+		std::shared_ptr<RequestParamsBuilder> builder
 ) : _config(config), _context(context), _builder(builder) {}
 
 NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
@@ -29,7 +31,7 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
     path << "namespace/" << int_to_hex(id);
 
     auto requestParams = _builder
-            .setPath(path.str())
+            ->setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -44,7 +46,7 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const std::string& id) {
 	path << "namespace/" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			->setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -60,7 +62,7 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
     path << "account/" << accountId << "/namespaces";
 
     auto requestParams = _builder
-            .setPath(path.str())
+            ->setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -76,7 +78,7 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::ve
     std::string path = "account/namespaces";
 
     auto requestParams = _builder
-            .setPath(path)
+            ->setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -93,7 +95,7 @@ NamespaceNames NamespaceService::getNamespaceNames(const std::vector<std::string
     std::string path = "namespace/names";
 
     auto requestParams = _builder
-            .setPath(path)
+            ->setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
