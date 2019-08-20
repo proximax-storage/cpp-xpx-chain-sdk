@@ -30,6 +30,8 @@
 #include <nemcpp/model/account/account_properties.h>
 #include <nemcpp/model/network/network_info.h>
 #include <nemcpp/model/transaction_simple/transaction.h>
+#include <nemcpp/model/transaction_simple/transaction_status.h>
+#include <nemcpp/model/transaction_simple/transaction_info.h>
 
 
 #include <nemcpp/exceptions.h>
@@ -153,6 +155,20 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
         template<>
         NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto);
+
+        /// Transaction Meta
+
+        template<>
+		TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto);
+
+		template<>
+		TransactionStatus fromDto<TransactionStatus, TransactionStatusDto>(const TransactionStatusDto& dto);
+
+		template<>
+		MultipleTransactionInfo fromDto<MultipleTransactionInfo, MultipleTransactionInfoDto>(const MultipleTransactionInfoDto& dto);
+
+		template<>
+		MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto);
 
         /// Transactions
         template<>

@@ -10,7 +10,6 @@ using namespace xpx_sdk::simple_transactions;
 
 
 #define EXTRACT_TRANSACTION(transaction, dto) \
-transaction.size = dto.value<"size"_>(); \
 transaction.signature = dto.value<"signature"_>(); \
 transaction.signer = dto.value<"signer"_>(); \
 transaction.version = dto.value<"version"_>(); \
@@ -19,10 +18,9 @@ transaction.maxFee = dto.value<"maxFee"_>(); \
 transaction.deadline = dto.value<"deadline"_>();
 
 #define EXTRACT_EMBEDDED_TRANSACTION(transaction, dto) \
-transaction.size = dto.value<"size"_>(); \
 transaction.signer = dto.value<"signer"_>(); \
 transaction.version = dto.value<"version"_>(); \
-transaction.type = dto.value<"type"_>(); \
+transaction.type = dto.value<"type"_>();
 
 namespace xpx_sdk::internal::json::dto {
 
@@ -596,6 +594,45 @@ namespace xpx_sdk::internal::json::dto {
         return networkInfo;
     }
 
+	/// Transaction Meta
+
+	template<>
+	TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto) {
+		TransactionInfo transactionInfo;
+		return transactionInfo;
+	}
+
+	template<>
+	TransactionStatus fromDto<TransactionStatus, TransactionStatusDto>(const TransactionStatusDto& dto) {
+		TransactionStatus transactionStatus;
+		transactionStatus.group = dto.value<"group"_>();
+		transactionStatus.status = dto.value<"status"_>();
+		transactionStatus.hash = dto.value<"hash"_>();
+		transactionStatus.deadline = dto.value<"deadline"_>();
+		transactionStatus.height = dto.value<"height"_>();
+		return transactionStatus;
+	}
+
+	template<>
+	MultipleTransactionInfo fromDto<MultipleTransactionInfo, MultipleTransactionInfoDto>(const MultipleTransactionInfoDto& dto) {
+		MultipleTransactionInfo transactionInfos;
+
+		for(auto& transactionInfoDto : dto) {
+			transactionInfos.infos.push_back(fromDto<TransactionInfo, TransactionInfoDto>(transactionInfoDto));
+		}
+		return transactionInfos;
+	}
+
+	template<>
+	MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto) {
+		MultipleTransactionStatus transactionStatuses;
+
+		for(auto& transactionStatusDto : dto) {
+			transactionStatuses.statuses.push_back(fromDto<TransactionStatus, TransactionStatusDto>(transactionStatusDto));
+		}
+		return transactionStatuses;
+	}
+
     // Transactions
 
 	template<>
@@ -717,7 +754,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
-		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& cosignatoryModificationDto : dto.value<"modifications"_>()) {
 			transaction.modifications.push_back(fromDto<CosignatoryModification, CosignatoryModificationDto>(cosignatoryModificationDto));
 		}
@@ -734,7 +770,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.nonce = dto.value<"nonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
 		transaction.flags = dto.value<"flags"_>();
 		transaction.divisibility = dto.value<"divisibility"_>();
 		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
@@ -801,7 +836,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
-		transaction.proofSize = dto.value<"proofSize"_>();
 		transaction.proof = dto.value<"proof"_>();
 
 
@@ -816,8 +850,6 @@ namespace xpx_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.messageSize = dto.value<"messageSize"_>();
-		transaction.mosaicsCount = dto.value<"mosaicsCount"_>();
 		transaction.message = dto.value<"message"_>();
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {
 			transaction.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
@@ -943,7 +975,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
-		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& cosignatoryModificationDto : dto.value<"modifications"_>()) {
 			transaction.modifications.push_back(fromDto<CosignatoryModification, CosignatoryModificationDto>(cosignatoryModificationDto));
 		}
@@ -961,7 +992,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.nonce = dto.value<"nonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
 		transaction.flags = dto.value<"flags"_>();
 		transaction.divisibility = dto.value<"divisibility"_>();
 		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
@@ -1026,7 +1056,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
-		transaction.proofSize = dto.value<"proofSize"_>();
 		transaction.proof = dto.value<"proof"_>();
 
 
@@ -1042,8 +1071,6 @@ namespace xpx_sdk::internal::json::dto {
 
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.messageSize = dto.value<"messageSize"_>();
-		transaction.mosaicsCount = dto.value<"mosaicsCount"_>();
 		transaction.message = dto.value<"message"_>();
 
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {

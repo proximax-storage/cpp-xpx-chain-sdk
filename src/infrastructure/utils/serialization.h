@@ -11,7 +11,7 @@
 #include <infrastructure/json/dto/account_info_dto.h>
 #include <infrastructure/json/dto/multisig_graph_dto.h>
 #include <infrastructure/json/dto/network_info_dto.h>
-#include <infrastructure/json/dto/transaction_dto.h>
+#include <infrastructure/binary/dto/transaction_dto.h>
 
 #include <nemcpp/model/blockchain/block.h>
 #include <nemcpp/model/blockchain/score.h>
@@ -36,6 +36,7 @@
 #include <nemcpp/model/account/multiple_account_info.h>
 #include <nemcpp/model/transaction_simple/transaction_container.h>
 #include <infrastructure/binary/parser.h>
+#include <infrastructure/json/dto/transaction_dto.h>
 
 
 using namespace xpx_sdk::simple_transactions;

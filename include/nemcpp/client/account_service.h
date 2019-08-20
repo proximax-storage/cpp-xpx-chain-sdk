@@ -30,6 +30,7 @@ namespace xpx_sdk {
                 std::shared_ptr<Config> config,
                 std::shared_ptr<internal::network::Context> context,
 				std::shared_ptr<RequestParamsBuilder> builder);
+        ~AccountService() = default;
 
         AccountInfo getAccountInfo(const std::string& id);
         MultipleAccountInfo getAccountsInfo(const std::vector<std::string>& ids);

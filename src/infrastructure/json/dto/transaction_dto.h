@@ -27,13 +27,13 @@ using namespace xpx_sdk::simple_transactions;
 
 namespace xpx_sdk { namespace internal { namespace json {
 	namespace dto {
-	// Binary Dtos should contain only following types:
+	// Json Dtos should contain only following types:
 	//
 	// 1. arithmetic (int, double, etc) and enums
 	// 2. std::array which has fixed size
 	// 3. std::string which requires size descriptor and treats it as string length
 	// 4. std::vector which requires size descriptor and treats it as elements count
-	// 5. other binary Dtos
+	// 5. other json Dtos
 
 	// Common Dtos
 	//==========================================================================
@@ -58,6 +58,20 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
 		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
 
+		//Transaction meta Dtos
+
+		using TransactionInfoDto = VariadicStruct<>;
+
+		using TransactionStatusDto = VariadicStruct<
+		        Field<STR_LITERAL("group"), std::string>,
+				Field<STR_LITERAL("status"), std::string>,
+				Field<STR_LITERAL("hash"), std::string>,
+				Field<STR_LITERAL("deadline"), Uint64 >,
+				Field<STR_LITERAL("height"), Uint64 > >;
+
+		using MultipleTransactionInfoDto = std::vector<TransactionInfoDto>;
+		using MultipleTransactionStatusDto = std::vector<TransactionStatusDto>;
+
 		// Transaction Dtos
 		//==========================================================================
 
@@ -65,7 +79,6 @@ namespace xpx_sdk { namespace internal { namespace json {
 		        Field<STR_LITERAL("type"), TransactionType> >;
 
 		using TransactionDto = VariadicStruct<
-				Field<STR_LITERAL("size"),      uint32_t, desc::Optional>,
 				Field<STR_LITERAL("signature"), std::string>,
 				Field<STR_LITERAL("signer"),    std::string>,
 				Field<STR_LITERAL("version"),   int64_t>,
@@ -74,7 +87,6 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("deadline"),  Uint64 	>>;
 
 		using EmbeddedTransactionDto = VariadicStruct<
-				Field<STR_LITERAL("size"),      uint32_t, desc::Optional>,
 				Field<STR_LITERAL("signer"),    std::string>,
 				Field<STR_LITERAL("version"),   uint16_t>,
 				Field<STR_LITERAL("type"),      TransactionType>>;
@@ -103,7 +115,6 @@ namespace xpx_sdk { namespace internal { namespace json {
 				TBase,
 				Field<STR_LITERAL("minRemovalDelta"),    int8_t>,
 				Field<STR_LITERAL("minApprovalDelta"),   int8_t>,
-				Field<STR_LITERAL("modificationsCount"), uint8_t>,
 				Field<STR_LITERAL("modifications"),      std::vector<CosignatoryModificationDto> > >;
 
 		template<typename TBase>
@@ -111,7 +122,6 @@ namespace xpx_sdk { namespace internal { namespace json {
 				TBase,
 				Field<STR_LITERAL("nonce"),                   uint32_t>,
 				Field<STR_LITERAL("mosaicId"),                MosaicId>,
-				Field<STR_LITERAL("optionalPropertiesCount"), uint8_t>,
 				Field<STR_LITERAL("flags"),                   MosaicFlags>,
 				Field<STR_LITERAL("divisibility"),            uint8_t>,
 				Field<STR_LITERAL("optionalProperties"),      std::vector<MosaicPropertyDto> > >;
@@ -147,15 +157,12 @@ namespace xpx_sdk { namespace internal { namespace json {
 				TBase,
 				Field<STR_LITERAL("hashAlgorithm"), SecretHashAlgorithm>,
 				Field<STR_LITERAL("secret"),        std::string >,
-				Field<STR_LITERAL("proofSize"),     uint16_t>,
 				Field<STR_LITERAL("proof"),         std::vector<uint8_t> > >;
 
 		template<typename TBase>
 		using TTransferTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("recipient"),    std::string>,
-				Field<STR_LITERAL("messageSize"),  uint16_t, desc::Optional>,
-				Field<STR_LITERAL("mosaicsCount"), uint8_t, desc::Optional>,
 				Field<STR_LITERAL("message"),      std::vector<uint8_t>, desc::Optional>,
 				Field<STR_LITERAL("mosaics"),      std::vector<MosaicDto> > >;
 
@@ -226,7 +233,6 @@ namespace xpx_sdk { namespace internal { namespace json {
 
 		using AliasTransactionBaseDto = TAliasTransactionBaseDto<TransactionDto>;
 		using EmbeddedAliasTransactionBaseDto = TAliasTransactionBaseDto<EmbeddedTransactionDto>;
-
 
 		using TransactionContainerDto = std::vector<std::string>;
 	}}}}
