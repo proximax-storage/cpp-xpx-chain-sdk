@@ -6,25 +6,46 @@
 
 #pragma once
 
-#include <nemcpp/model/blockchain/block.h>
-#include <nemcpp/model/blockchain/score.h>
+#include <nemcpp/config.h>
+#include <nemcpp/client/blockchain_service.h>
 #include <nemcpp/model/blockchain/storage_info.h>
-#include <nemcpp/model/blockchain/multiple_block.h>
+#include <nemcpp/model/blockchain/block.h>
 #include <nemcpp/model/transaction_simple/transaction_container.h>
+#include <nemcpp/model/blockchain/multiple_block.h>
+#include <nemcpp/model/blockchain/score.h>
 
-namespace xpx_sdk {
-	class IBlockchainService {
-	public:
-		virtual uint64_t getBlockchainHeight() = 0;
-		virtual ScoreInfo getCurrentScore() = 0;
-		virtual StorageInfo getStorageInfo() = 0;
-		virtual Block getBlockByHeight(uint64_t height) = 0;
-		virtual simple_transactions::TransactionContainer getBlockTransactions(uint64_t height) = 0;
-		virtual MultipleBlock getBlocksByHeightWithLimit(
-				uint64_t height,
-				uint64_t limit
-		) = 0;
-		virtual ~IBlockchainService() = default;
-	};
+
+namespace xpx_sdk::internal::network {
+	class Context;
+	class RequestParamsBuilder;
 }
 
+namespace xpx_sdk {
+
+	using internal::network::Context;
+	using internal::network::RequestParamsBuilder;
+	using simple_transactions::TransactionContainer;
+
+	class BlockchainService {
+	public:
+		BlockchainService(
+				std::shared_ptr<Config> config,
+				std::shared_ptr<internal::network::Context> context,
+				std::shared_ptr<RequestParamsBuilder>  builder
+		);
+		~BlockchainService() = default;
+		uint64_t getBlockchainHeight();
+        ScoreInfo getCurrentScore();
+        StorageInfo getStorageInfo();
+		Block getBlockByHeight(uint64_t height);
+		TransactionContainer getBlockTransactions(uint64_t height);
+        MultipleBlock getBlocksByHeightWithLimit(uint64_t height, uint64_t limit);
+
+
+	private:
+		std::shared_ptr<Config> _config;
+		std::shared_ptr<Context> _context;
+		std::shared_ptr<RequestParamsBuilder> _builder;
+	};
+
+}

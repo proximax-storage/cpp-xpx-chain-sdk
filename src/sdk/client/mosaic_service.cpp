@@ -6,7 +6,7 @@
 
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <nemcpp/client.h>
-#include <sdk/client/mosaic_service.h>
+#include <nemcpp/client/mosaic_service.h>
 
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
 #include <infrastructure/json/parser.h>
@@ -14,6 +14,7 @@
 #include <infrastructure/utils/deserialization_json.h>
 
 #include <sdk/utils/hex_processing.h>
+#include <infrastructure/network/http.h>
 
 using namespace xpx_sdk;
 using xpx_sdk::internal::json::Parser;
@@ -26,7 +27,7 @@ using internal::json::dto::MultipleMosaicInfoDto;
 MosaicService::MosaicService(
         std::shared_ptr<Config> config,
         std::shared_ptr<internal::network::Context> context,
-        internal::network::RequestParamsBuilder builder
+		std::shared_ptr<RequestParamsBuilder> builder
 ):
         _config(config),
         _context(context),
@@ -38,7 +39,7 @@ MosaicInfo MosaicService::getMosaicInfo(const MosaicId& id) {
     path << "mosaic/" << int_to_hex(id);
 
     auto requestParams = _builder
-            .setPath(path.str())
+            ->setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -62,7 +63,7 @@ MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<MosaicId>& id
     std::string path = "mosaic";
 
     auto requestParams = _builder
-            .setPath(path)
+            ->setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -85,7 +86,7 @@ MosaicNames MosaicService::getMosaicsNames(const std::vector<MosaicId>& ids) {
     std::string path = "mosaicIds/";
 
     auto requestParams = _builder
-            .setPath(path)
+            ->setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();

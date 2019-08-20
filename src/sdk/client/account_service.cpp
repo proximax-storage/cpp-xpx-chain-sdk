@@ -4,10 +4,11 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "account_service.h"
+#include "nemcpp/client/account_service.h"
 #include <infrastructure/utils/deserialization_json.h>
 #include <infrastructure/json/parser.h>
 #include <sstream>
+#include <infrastructure/network/http.h>
 
 using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json::dto;
@@ -18,14 +19,14 @@ using xpx_sdk::internal::json::dto::from_json;
 AccountService::AccountService(
         std::shared_ptr<Config> config,
         std::shared_ptr<internal::network::Context> context,
-        internal::network::RequestParamsBuilder builder):_config(config), _context(context), _builder(builder) {}
+		std::shared_ptr<RequestParamsBuilder> builder):_config(config), _context(context), _builder(builder) {}
 
 AccountInfo AccountService::getAccountInfo(const std::string& id) {
     std::stringstream path;
     path << "account/" << id;
 
     auto requestParams = _builder
-            .setPath(path.str())
+            -> setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -41,7 +42,7 @@ MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::strin
     std::string path = "account/";
 
     auto requestParams = _builder
-            .setPath(path)
+            -> setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -57,7 +58,7 @@ AccountProperty AccountService::getAccountProperties(const std::string& id ){
     path << "account/properties/" << id;
 
     auto requestParams = _builder
-            .setPath(path.str())
+            -> setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -73,7 +74,7 @@ MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<
     std::string path = "account/properties";
 
     auto requestParams = _builder
-            .setPath(path)
+            -> setPath(path)
             .setMethod(internal::network::HTTPRequestMethod::POST)
             .setRequestBody(requestJson)
             .getRequestParams();
@@ -88,7 +89,7 @@ MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
     path << "account/" << id << "/multisig";
 
     auto requestParams = _builder
-            .setPath(path.str())
+            -> setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -102,7 +103,7 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
     path << "account/" << id << "/multisig/graph";
 
     auto requestParams = _builder
-            .setPath(path.str())
+            -> setPath(path.str())
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -113,16 +114,16 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
 
 simple_transactions::TransactionContainer AccountService::getAccountTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions?pageSize=" << pageSize << "&ordering=" << ordering;
 	if(id != "underfined") path << "&id=" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			-> setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -134,16 +135,16 @@ simple_transactions::TransactionContainer AccountService::getAccountTransactions
 
 simple_transactions::TransactionContainer AccountService::getAccountIncomingTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/incoming?pageSize=" << pageSize << "&ordering=" << ordering;
 	if(id != "underfined") path << "&id=" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			-> setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -155,16 +156,16 @@ simple_transactions::TransactionContainer AccountService::getAccountIncomingTran
 
 simple_transactions::TransactionContainer AccountService::getAccountOutgoingTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/outgoing?pageSize=" << pageSize << "&ordering=" << ordering;
 	if(id != "underfined") path << "&id=" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			-> setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -176,16 +177,16 @@ simple_transactions::TransactionContainer AccountService::getAccountOutgoingTran
 
 simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/unconfirmed?pageSize=" << pageSize << "&ordering=" << ordering;
 	if(id != "underfined") path << "&id=" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			-> setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -197,16 +198,16 @@ simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedT
 
 simple_transactions::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
 		const std::string& publicKey,
-		int pageSize =10,
-		std::string id = "underfined",
-		std::string ordering = "-id") {
+		int pageSize,
+		std::string id,
+		std::string ordering) {
 
 	std::stringstream path;
 	path << "account/" << publicKey << "/transactions/partial?pageSize=" << pageSize << "&ordering=" << ordering;
 	if(id != "underfined") path << "&id=" << id;
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			-> setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 

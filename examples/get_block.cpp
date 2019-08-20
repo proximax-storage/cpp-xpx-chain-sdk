@@ -60,6 +60,11 @@ int main() {
 
 	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
 	std::cout << "Transaction version " << transaction -> version << std::endl;
+	std::cout << "Message size " << transaction -> message.size() << std::endl;
+	for(auto x : transaction -> message) {
+		std::cout<< x << ' ';
+	}
+	std::cout << std::endl;
 
 
 }

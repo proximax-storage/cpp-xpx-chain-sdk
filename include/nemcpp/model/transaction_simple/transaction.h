@@ -14,6 +14,7 @@
 #include "alias_transaction_types.h"
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/model/mosaic/mosaic.h>
+#include <memory>
 
 
 namespace xpx_sdk { namespace simple_transactions {
@@ -23,7 +24,6 @@ namespace xpx_sdk { namespace simple_transactions {
 		TransactionType type;
 		virtual ~BasicTransaction() = default;
 	};
-
 
 	class Cosignature {
 	public:
@@ -43,6 +43,7 @@ namespace xpx_sdk { namespace simple_transactions {
         std::string signature;
         std::string signer;
         int64_t version;
+        TransactionType type;
         Amount maxFee;
         int64_t deadline;
     };
@@ -58,18 +59,16 @@ namespace xpx_sdk { namespace simple_transactions {
     class AggregateTransaction : public Transaction {
     public:
         uint32_t payloadSize;
-        std::vector<uint8_t> payload;
-        std::vector<Cosignature> cosignatures; // Cosginatures is already container
+        std::vector<std::shared_ptr<BasicTransaction> > transactions;
+        std::vector<Cosignature> cosignatures;
     };
 
     template<typename TBase>
     class TAccountLinkTransaction : public TBase {
     public:
-
         AccountLinkTransactionAction linkAction;
         std::string remoteAccountKey;
     };
-
 
     template<typename TBase>
     class TLockFundsTransaction : public TBase {
@@ -78,7 +77,6 @@ namespace xpx_sdk { namespace simple_transactions {
         BlockDuration lockDuration;
         std::string  lockHash;
     };
-
 
     template<typename TBase>
     class TModifyMultisigAccountTransaction : public TBase {
@@ -89,7 +87,6 @@ namespace xpx_sdk { namespace simple_transactions {
         std::vector<CosignatoryModification> modifications; // CosignatoryModifications is already container
     };
 
-
     template<typename TBase>
     class TMosaicDefinitionTransaction : public TBase {
     public:
@@ -99,10 +96,7 @@ namespace xpx_sdk { namespace simple_transactions {
         MosaicFlags flags;
         uint8_t divisibility;
         std::vector<MosaicProperty> optionalProperties;
-
     };
-
-
 
     template<typename TBase>
     class TMosaicSupplyChangeTransaction: public TBase {
@@ -111,8 +105,6 @@ namespace xpx_sdk { namespace simple_transactions {
         MosaicSupplyChangeDirection direction;
         Amount delta;
     };
-
-
 
     template<typename TBase>
     class TRegisterNamespaceTransaction: public TBase {
@@ -131,20 +123,18 @@ namespace xpx_sdk { namespace simple_transactions {
         Amount amount;
         BlockDuration duration;
         SecretHashAlgorithm hashAlgorithm;
-        std::string  secret;
+        std::string secret;
         std::string recipient;
     };
 
     template<typename TBase>
     class TSecretProofTransaction: public TBase {
     public:
-
         SecretHashAlgorithm hashAlgorithm;
         std::string  secret;
         uint16_t proofSize;
         std::vector<uint8_t> proof;
     };
-
 
     template<typename TBase>
     class TTransferTransaction: public TBase {
@@ -184,7 +174,6 @@ namespace xpx_sdk { namespace simple_transactions {
         uint8_t modificationsCount;
         std::vector<AccountPropertyModification<T>> modifications;
     };
-
 
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;

@@ -6,7 +6,7 @@
 */
 
 #include <nemcpp/client.h>
-#include <sdk/client/blockchain_service.h>
+#include <nemcpp/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
 #include <infrastructure/utils/deserialization_json.h>
@@ -26,7 +26,7 @@ using internal::json::dto::StorageInfoDto;
 BlockchainService::BlockchainService(
 	std::shared_ptr<Config> config,
 	std::shared_ptr<internal::network::Context> context,
-	internal::network::RequestParamsBuilder builder
+	std::shared_ptr<RequestParamsBuilder>  builder
 ) :
 	_config(config),
 	_context(context),
@@ -35,7 +35,7 @@ BlockchainService::BlockchainService(
 
 uint64_t BlockchainService::getBlockchainHeight() {
 	auto requestParams = _builder
-		.setPath("chain/height")
+		-> setPath("chain/height")
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
@@ -49,7 +49,7 @@ Block BlockchainService::getBlockByHeight(uint64_t height) {
 	path << "block/" << height;
 
 	auto requestParams = _builder
-		.setPath(path.str())
+		->setPath(path.str())
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
@@ -62,7 +62,7 @@ MultipleBlock BlockchainService::getBlocksByHeightWithLimit(uint64_t height, uin
 	path << "blocks/" << height << "/limit/" << limit;
 
 	auto requestParams = _builder
-		.setPath(path.str())
+		->setPath(path.str())
 		.setMethod(internal::network::HTTPRequestMethod::GET)
 		.getRequestParams();
 
@@ -75,7 +75,7 @@ simple_transactions::TransactionContainer BlockchainService::getBlockTransaction
 	path << "blocks/" << height << "/transactions";
 
 	auto requestParams = _builder
-			.setPath(path.str())
+			->setPath(path.str())
 			.setMethod(internal::network::HTTPRequestMethod::GET)
 			.getRequestParams();
 
@@ -87,7 +87,7 @@ simple_transactions::TransactionContainer BlockchainService::getBlockTransaction
 
 ScoreInfo BlockchainService::getCurrentScore() {
     auto requestParams = _builder
-            .setPath("chain/score")
+            ->setPath("chain/score")
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 
@@ -98,7 +98,7 @@ ScoreInfo BlockchainService::getCurrentScore() {
 
 StorageInfo BlockchainService::getStorageInfo() {
     auto requestParams = _builder
-            .setPath("diagnostic/storage")
+            ->setPath("diagnostic/storage")
             .setMethod(internal::network::HTTPRequestMethod::GET)
             .getRequestParams();
 

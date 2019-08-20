@@ -5,31 +5,45 @@
 */
 
 #pragma once
-#include <nemcpp/model/namespace/namespace_info.h>
+
+
+#include <nemcpp/client/namespace_service.h>
+
+#include <nemcpp/types.h>
+#include <nemcpp/model/account/public_account.h>
+#include <nemcpp/model/mosaic/mosaic_property.h>
+#include <memory>
 #include <nemcpp/model/namespace/multiple_namespace_info.h>
 #include <nemcpp/model/namespace/namespace_names.h>
-#include <nemcpp/types.h>
-/*
- * Info on a single namespace by id
 
-    Info on namespaces aliased with an account
+namespace xpx_sdk::internal::network {
+	class Context;
+	class RequestParamsBuilder;
+}
 
-    Info on namespaces aliased with accounts
-
-    Get names of multiple namespaces
-
-    Get ids of linked mosaics
-
-    Get ids of linked accounts
-*/
 namespace xpx_sdk {
-    class INamespaceService {
+
+	using internal::network::Context;
+	using internal::network::RequestParamsBuilder;
+
+    class NamespaceService {
     public:
-    	virtual NamespaceInfo getNamespaceInfoById(const NamespaceId& id) = 0;
-        virtual MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId) = 0;
-        virtual MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds) = 0;
-        virtual NamespaceNames getNamespaceNames(const std::vector<std::string>& namespaceIds) = 0;
-        virtual NamespaceInfo getNamespaceInfoById(const std::string& id) = 0;
-        virtual ~INamespaceService() = default;
+        NamespaceService(
+                std::shared_ptr<Config> config,
+                std::shared_ptr<internal::network::Context> context,
+                std::shared_ptr<RequestParamsBuilder> builder
+        );
+        ~NamespaceService() = default;
+        NamespaceInfo getNamespaceInfoById(const NamespaceId& id);
+		NamespaceInfo getNamespaceInfoById(const std::string& id);
+		MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId);
+        MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds);
+        NamespaceNames getNamespaceNames(const std::vector<std::string> & namespaceIds);
+    private:
+        std::shared_ptr<Config> _config;
+        std::shared_ptr<internal::network::Context> _context;
+		std::shared_ptr<RequestParamsBuilder> _builder;
     };
 }
+
+
