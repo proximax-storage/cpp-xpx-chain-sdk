@@ -675,7 +675,7 @@ namespace xpx_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.payloadSize = dto.value<"payloadSize"_>();
-		transaction.payload = dto.value<"payload"_>();
+//		transaction.payload = dto.value<"payload"_>();
 		for(auto & cosignature : dto.value<"cosignatures"_>()) {
 			transaction.cosignatures.push_back(fromDto<Cosignature, CosignatureDto>(cosignature));
 		}

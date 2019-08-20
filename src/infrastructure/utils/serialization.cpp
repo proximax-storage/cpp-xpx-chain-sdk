@@ -118,7 +118,7 @@ namespace xpx_sdk::internal::json::dto {
 		COMPOSE_TRANSACTION(transaction, dto)
 
 		dto.set<"payloadSize"_>(transaction.payloadSize);
-		dto.set<"payload"_>(transaction.payload);
+//		dto.set<"payload"_>(transaction.payload);
 		std::vector<CosignatureDto> cosignatureDtos;
 		for (auto &cosignature : transaction.cosignatures) {
 			cosignatureDtos.push_back(toDto<Cosignature, CosignatureDto>(cosignature));

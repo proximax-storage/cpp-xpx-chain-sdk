@@ -14,6 +14,7 @@
 #include "alias_transaction_types.h"
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/model/mosaic/mosaic.h>
+#include <memory>
 
 
 namespace xpx_sdk { namespace simple_transactions {
@@ -58,8 +59,8 @@ namespace xpx_sdk { namespace simple_transactions {
     class AggregateTransaction : public Transaction {
     public:
         uint32_t payloadSize;
-        std::vector<uint8_t> payload;
-        std::vector<Cosignature> cosignatures; // Cosginatures is already container
+        std::vector<std::shared_ptr<BasicTransaction> > transactions;
+        std::vector<Cosignature> cosignatures;
     };
 
     template<typename TBase>
@@ -122,7 +123,7 @@ namespace xpx_sdk { namespace simple_transactions {
         Amount amount;
         BlockDuration duration;
         SecretHashAlgorithm hashAlgorithm;
-        std::string  secret;
+        std::string secret;
         std::string recipient;
     };
 
