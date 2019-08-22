@@ -46,6 +46,10 @@ public:
         return _network;
     }
 
+	std::shared_ptr<TransactionService> transactions() const override {
+		return _transaction;
+	}
+
 private:
 	std::shared_ptr<Config> _config;
 	internal::network::RequestParamsBuilder _builder;
@@ -56,6 +60,7 @@ private:
 	std::shared_ptr<MosaicService> _mosaic;
 	std::shared_ptr<NamespaceService> _namespace;
 	std::shared_ptr<NetworkService> _network;
+	std::shared_ptr<TransactionService> _transaction;
 };
 
 namespace xpx_sdk {

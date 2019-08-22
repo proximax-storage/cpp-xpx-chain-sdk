@@ -20,7 +20,6 @@ namespace xpx_sdk {
 
 	using internal::network::Context;
 	using internal::network::RequestParamsBuilder;
-	using simple_transactions::TransactionContainer;
 
 	class TransactionService {
 	public:
@@ -29,13 +28,13 @@ namespace xpx_sdk {
 				std::shared_ptr<internal::network::Context> context,
 				std::shared_ptr<RequestParamsBuilder> builder);
 		~TransactionService() = default;
-		TransactionInfo getTransactionInfo(const std::string& id);
-		MultipleTransactionInfo getTransactionInfos(const std::vector<std::string>& id );
-		TransactionStatus getTransactionStatus(const std::string& id);
-		MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
-		bool announceNewTransaction(const std::string &payload);
-		bool announceAggregateBoundedTransaction(const std::string &payload);
-		bool announceCosignatureTransaction(const std::string &payload);
+		std::shared_ptr<simple_transactions::BasicTransaction> getTransactionInfo(const std::string& id);
+		simple_transactions::TransactionContainer getTransactionInfos(const std::vector<std::string>& id );
+		simple_transactions::TransactionStatus getTransactionStatus(const std::string& id);
+		simple_transactions::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
+		bool announceNewTransaction(const std::vector<uint8_t> &payload);
+		bool announceAggregateBoundedTransaction(const std::vector<uint8_t> &payload);
+		bool announceCosignatureTransaction(const std::vector<uint8_t> &payload);
 
 	private:
 		std::shared_ptr<Config> _config;

@@ -12,6 +12,7 @@
 #include "aggregate_transaction_types.h"
 #include "secret_hash_algorithm.h"
 #include "alias_transaction_types.h"
+#include "transaction_container.h"
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/model/mosaic/mosaic.h>
 #include <memory>
@@ -56,10 +57,20 @@ namespace xpx_sdk { namespace simple_transactions {
         TransactionType type;
     };
 
+	class TransactionContainer {
+	public:
+		std::vector<std::shared_ptr<BasicTransaction> > transactions;
+	public:
+		void Add(const std::shared_ptr<BasicTransaction>& transaction) {
+			transactions.push_back(transaction);
+		}
+
+	};
+
     class AggregateTransaction : public Transaction {
     public:
         uint32_t payloadSize;
-        std::vector<std::shared_ptr<BasicTransaction> > transactions;
+        TransactionContainer transactions;
         std::vector<Cosignature> cosignatures;
     };
 

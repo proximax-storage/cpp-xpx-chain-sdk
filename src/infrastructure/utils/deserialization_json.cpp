@@ -25,11 +25,11 @@ transaction.type = dto.value<"type"_>();
 namespace xpx_sdk::internal::json::dto {
 
 
-	std::vector<std::string> parseJsonArray(const std::string& jsonStr) {
+	std::vector<std::string> parseJsonArray(const std::string& jsonStr, const char lbrace = '{', const char rbrace = '}') {
 		std::vector<std::string> result;
 		int balance = 0;
 		for (auto x : jsonStr) {
-			if (x == '{') {
+			if (x == lbrace) {
 				if (balance == 0) {
 					result.push_back(std::string());
 				}
@@ -38,7 +38,7 @@ namespace xpx_sdk::internal::json::dto {
 			if (balance) {
 				result.back().push_back(x);
 			}
-			if (x == '}') {
+			if (x == rbrace) {
 				balance -= 1;
 			}
 		}
@@ -59,6 +59,27 @@ namespace xpx_sdk::internal::json::dto {
 		}
 
 		return result;
+	}
+
+
+	AggregateTransaction aggregateTransactionFromJson(const std::string& jsonStr) {
+		AggregateTransaction transaction;
+
+		std::string aggregatedTransactionsJson = parseJsonArray(jsonStr, '[', ']')[0];
+		auto transactionContainerDto = parseJsonArray(aggregatedTransactionsJson, '{', '}');
+		transaction.transactions = fromDto<TransactionContainer, TransactionContainerDto>(transactionContainerDto);
+
+		AggregateTransactionDto dto;
+		Parser::Read(dto, jsonStr);
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		for(auto cosignaturesDto : dto.value<"cosignatures"_>()) {
+			transaction.cosignatures.push_back(fromDto<Cosignature, CosignatureDto>(cosignaturesDto));
+		}
+
+		return transaction;
+
 	}
 
 	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {

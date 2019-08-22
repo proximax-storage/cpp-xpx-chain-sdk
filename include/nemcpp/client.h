@@ -7,6 +7,7 @@
 #include <nemcpp/client/namespace_service.h>
 #include <nemcpp/client/account_service.h>
 #include <nemcpp/client/network_service.h>
+#include <nemcpp/client/transaction_service.h>
 
 #include <memory>
 
@@ -34,6 +35,7 @@ namespace xpx_sdk {
         virtual std::shared_ptr<MosaicService> mosaics() const = 0;
         virtual std::shared_ptr<NamespaceService> namespaces() const = 0;
         virtual std::shared_ptr<NetworkService> network() const = 0;
+        virtual std::shared_ptr<TransactionService> transactions() const = 0;
         virtual ~IClient() = default;
 	};
 

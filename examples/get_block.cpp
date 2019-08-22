@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+
 int main() {
 	xpx_sdk::Config config = xpx_sdk::GetConfig();
 	config.nodeAddress = "bcstage1.xpxsirius.io";
@@ -66,5 +67,11 @@ int main() {
 	}
 	std::cout << std::endl;
 
+	auto result = xpx_sdk::complex_transactions::CreateMosaicDefinitionTransaction(0, 182347912384723ll, {xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Duration, 12}});
 
+	if(!client -> transactions() -> announceNewTransaction(result -> binary())) {
+		std::cout << "Something gone wrong" << std::endl;
+	} else {
+		std::cout << "Supposedly transaction successfully announced" << std::endl;
+	}
 }

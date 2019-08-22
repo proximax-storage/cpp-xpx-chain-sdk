@@ -54,9 +54,7 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("value"),            TValue>,
 				Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 
-		using AddressPropertyModificationDto = TAccountPropertyModificationDto<std::string>; // AddressData
-		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
-		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
+
 
 		//Transaction meta Dtos
 
@@ -84,7 +82,7 @@ namespace xpx_sdk { namespace internal { namespace json {
 				Field<STR_LITERAL("version"),   int64_t>,
 				Field<STR_LITERAL("type"),      TransactionType>,
 				Field<STR_LITERAL("maxFee"),    Uint64 >,
-				Field<STR_LITERAL("deadline"),  Uint64 	>>;
+				Field<STR_LITERAL("deadline"),  Uint64> >;
 
 		using EmbeddedTransactionDto = VariadicStruct<
 				Field<STR_LITERAL("signer"),    std::string>,
@@ -235,4 +233,8 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using EmbeddedAliasTransactionBaseDto = TAliasTransactionBaseDto<EmbeddedTransactionDto>;
 
 		using TransactionContainerDto = std::vector<std::string>;
+
+		using AddressPropertyModificationDto = TAccountPropertyModificationDto<std::string>; // AddressData
+		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
+		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
 	}}}}

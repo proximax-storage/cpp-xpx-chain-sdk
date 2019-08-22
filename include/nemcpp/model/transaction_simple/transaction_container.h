@@ -5,13 +5,13 @@
 #include <memory>
 
 namespace xpx_sdk::simple_transactions {
-	class TransactionContainer {
-	public:
-		std::vector<std::shared_ptr<BasicTransaction> > transactions;
-	public:
-		void Add(const std::shared_ptr<BasicTransaction>& transaction) {
-			transactions.push_back(transaction);
-		}
-
-	};
+//	class TransactionContainer {
+//	public:
+//		std::vector<std::shared_ptr<BasicTransaction> > transactions;
+//	public:
+//		void Add(const std::shared_ptr<BasicTransaction>& transaction) {
+//			transactions.push_back(transaction);
+//		}
+//
+//	};
 }
