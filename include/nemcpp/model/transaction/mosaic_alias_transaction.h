@@ -7,7 +7,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Mosaic alias transaction base class.
 	template<typename TBase>

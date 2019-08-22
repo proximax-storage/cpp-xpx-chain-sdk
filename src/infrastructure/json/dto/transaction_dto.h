@@ -9,13 +9,13 @@
 #include <nemcpp/model/mosaic/mosaic_property.h>
 #include <nemcpp/model/mosaic/mosaic.h>
 #include <nemcpp/model/namespace/namespace.h>
-#include <nemcpp/model/transaction_simple/account_link_transaction_types.h>
-#include <nemcpp/model/transaction_simple/account_property_transaction_types.h>
-#include <nemcpp/model/transaction_simple/alias_transaction_types.h>
-#include <nemcpp/model/transaction_simple/modify_multisig_account_transaction_types.h>
-#include <nemcpp/model/transaction_simple/mosaic_supply_change_transaction_types.h>
-#include <nemcpp/model/transaction_simple/secret_hash_algorithm.h>
-#include <nemcpp/model/transaction_simple/transaction_type.h>
+#include <nemcpp/model/transaction/account_link_transaction_types.h>
+#include <nemcpp/model/transaction/account_property_transaction_types.h>
+#include <nemcpp/model/transaction/alias_transaction_types.h>
+#include <nemcpp/model/transaction/modify_multisig_account_transaction_types.h>
+#include <nemcpp/model/transaction/mosaic_supply_change_transaction_types.h>
+#include <nemcpp/model/transaction/secret_hash_algorithm.h>
+#include <nemcpp/model/transaction/transaction_type.h>
 #include "mosaic_dto.h"
 #include <infrastructure/json/hex.h>
 
@@ -23,10 +23,8 @@
 #include <string>
 #include <vector>
 
-using namespace xpx_sdk::simple_transactions;
 
-namespace xpx_sdk { namespace internal { namespace json {
-	namespace dto {
+namespace xpx_sdk::internal::json::dto {
 	// Json Dtos should contain only following types:
 	//
 	// 1. arithmetic (int, double, etc) and enums
@@ -237,4 +235,4 @@ namespace xpx_sdk { namespace internal { namespace json {
 		using AddressPropertyModificationDto = TAccountPropertyModificationDto<std::string>; // AddressData
 		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
 		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
-	}}}}
+	}

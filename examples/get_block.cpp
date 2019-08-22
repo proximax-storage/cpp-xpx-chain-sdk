@@ -57,7 +57,7 @@ int main() {
 	}
 
 	auto transactions = client -> account() -> getAccountTransactions(publicKey);
-	auto transaction = reinterpret_cast<xpx_sdk::simple_transactions::TransferTransaction*>(transactions.transactions[0].get());
+	auto transaction = reinterpret_cast<xpx_sdk::transactions_info::TransferTransaction*>(transactions.transactions[0].get());
 
 	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
 	std::cout << "Transaction version " << transaction -> version << std::endl;
@@ -67,7 +67,7 @@ int main() {
 	}
 	std::cout << std::endl;
 
-	auto result = xpx_sdk::complex_transactions::CreateMosaicDefinitionTransaction(0, 182347912384723ll, {xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Duration, 12}});
+	auto result = xpx_sdk::CreateMosaicDefinitionTransaction(0, 182347912384723ll, {xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Duration, 12}});
 
 	if(!client -> transactions() -> announceNewTransaction(result -> binary())) {
 		std::cout << "Something gone wrong" << std::endl;

@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Base class for alias transactions.
 	template<typename TBase>

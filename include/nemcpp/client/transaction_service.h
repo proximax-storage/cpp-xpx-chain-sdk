@@ -28,10 +28,10 @@ namespace xpx_sdk {
 				std::shared_ptr<internal::network::Context> context,
 				std::shared_ptr<RequestParamsBuilder> builder);
 		~TransactionService() = default;
-		std::shared_ptr<simple_transactions::BasicTransaction> getTransactionInfo(const std::string& id);
-		simple_transactions::TransactionContainer getTransactionInfos(const std::vector<std::string>& id );
-		simple_transactions::TransactionStatus getTransactionStatus(const std::string& id);
-		simple_transactions::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
+		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(const std::string& id);
+		transactions_info::TransactionContainer getTransactionInfos(const std::vector<std::string>& id );
+		transactions_info::TransactionStatus getTransactionStatus(const std::string& id);
+		transactions_info::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
 		bool announceNewTransaction(const std::vector<uint8_t> &payload);
 		bool announceAggregateBoundedTransaction(const std::vector<uint8_t> &payload);
 		bool announceCosignatureTransaction(const std::vector<uint8_t> &payload);

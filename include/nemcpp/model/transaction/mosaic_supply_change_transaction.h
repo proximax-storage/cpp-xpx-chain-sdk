@@ -9,7 +9,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Mosaic supply change transaction base class.
 	template<typename TBase>

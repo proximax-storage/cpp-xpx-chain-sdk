@@ -4,21 +4,20 @@
 #include <vector>
 #include <stdint.h>
 #include <nemcpp/types.h>
-#include "account_link_transaction_types.h"
-#include "account_property_transaction_types.h"
-#include "transaction_type.h"
-#include "modify_multisig_account_transaction_types.h"
-#include "mosaic_supply_change_transaction_types.h"
-#include "aggregate_transaction_types.h"
-#include "secret_hash_algorithm.h"
-#include "alias_transaction_types.h"
-#include "transaction_container.h"
+#include <nemcpp/model/transaction/account_link_transaction_types.h>
+#include "nemcpp/model/transaction/account_property_transaction_types.h"
+#include "nemcpp/model/transaction/transaction_type.h"
+#include "nemcpp/model/transaction/modify_multisig_account_transaction_types.h"
+#include "nemcpp/model/transaction/mosaic_supply_change_transaction_types.h"
+#include "nemcpp/model/transaction/aggregate_transaction_types.h"
+#include "nemcpp/model/transaction/secret_hash_algorithm.h"
+#include "nemcpp/model/transaction/alias_transaction_types.h"
 #include <nemcpp/model/namespace/namespace.h>
 #include <nemcpp/model/mosaic/mosaic.h>
 #include <memory>
 
-
-namespace xpx_sdk { namespace simple_transactions {
+//using EmbeddedTransaction = xpx_sdk::transactions_info::EmbeddedTransaction;
+namespace xpx_sdk { namespace transactions_info {
 
 	class BasicTransaction {
 	public:
@@ -44,7 +43,6 @@ namespace xpx_sdk { namespace simple_transactions {
         std::string signature;
         std::string signer;
         int64_t version;
-        TransactionType type;
         Amount maxFee;
         int64_t deadline;
     };
@@ -54,7 +52,6 @@ namespace xpx_sdk { namespace simple_transactions {
         uint32_t size;
         std::string signer;
         uint16_t version;
-        TransactionType type;
     };
 
 	class TransactionContainer {
@@ -210,7 +207,7 @@ namespace xpx_sdk { namespace simple_transactions {
     using SecretProofTransaction  = TSecretProofTransaction<Transaction >;
     using EmbeddedSecretProofTransaction  = TSecretProofTransaction<EmbeddedTransaction >;
 
-    using TransferTransaction  = TTransferTransaction <Transaction >;
+    using TransferTransaction  = TTransferTransaction <Transaction>;
     using EmbeddedTransferTransaction  = TTransferTransaction<EmbeddedTransaction >;
 
     using AddressAliasTransaction  = TAddressAliasTransaction<Transaction >;

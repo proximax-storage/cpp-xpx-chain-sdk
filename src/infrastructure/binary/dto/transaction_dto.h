@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-using namespace xpx_sdk::complex_transactions;
+using namespace xpx_sdk;
 
 namespace xpx_sdk { namespace internal { namespace binary {
 	

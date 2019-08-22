@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace xpx_sdk::simple_transactions {
+namespace xpx_sdk::transactions_info {
 
 	class TransactionInfo {
 	public:

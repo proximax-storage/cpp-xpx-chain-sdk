@@ -1,12 +1,9 @@
 #include "deserialization_json.h"
 
-
-
-using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json;
 using namespace xpx_sdk::internal::json::dto;
 
-using namespace xpx_sdk::simple_transactions;
+using namespace xpx_sdk::transactions_info;
 
 
 #define EXTRACT_TRANSACTION(transaction, dto) \
@@ -61,7 +58,6 @@ namespace xpx_sdk::internal::json::dto {
 		return result;
 	}
 
-
 	AggregateTransaction aggregateTransactionFromJson(const std::string& jsonStr) {
 		AggregateTransaction transaction;
 
@@ -69,8 +65,9 @@ namespace xpx_sdk::internal::json::dto {
 		auto transactionContainerDto = parseJsonArray(aggregatedTransactionsJson, '{', '}');
 		transaction.transactions = fromDto<TransactionContainer, TransactionContainerDto>(transactionContainerDto);
 
-		AggregateTransactionDto dto;
-		Parser::Read(dto, jsonStr);
+		VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > tmp_dto;
+		Parser::Read(tmp_dto, jsonStr);
+		AggregateTransactionDto dto = tmp_dto.value<"transaction"_>();
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
@@ -82,7 +79,7 @@ namespace xpx_sdk::internal::json::dto {
 
 	}
 
-	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {
+	std::shared_ptr<transactions_info::BasicTransaction> transaction_from_json(const std::string& jsonStr) {
 
 		VariadicStruct<Field<STR_LITERAL("transaction"), BasicTransactionDto> > dto;
 		Parser::Read(dto, jsonStr);
@@ -90,7 +87,7 @@ namespace xpx_sdk::internal::json::dto {
 		TransactionContainer transactions;
 		TransactionType type = dto.value<"transaction"_>().value<"type"_>();
 
-		std::shared_ptr<BasicTransaction> result = nullptr;
+		std::shared_ptr<transactions_info::BasicTransaction> result = nullptr;
 		switch(type) {
 
 			case TransactionType::Transfer: {
@@ -178,13 +175,7 @@ namespace xpx_sdk::internal::json::dto {
 			}
 
 			case TransactionType::Aggregate_Complete: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
-				auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(
-						t_dto.value<"transaction"_>());
+				auto transaction = aggregateTransactionFromJson(jsonStr);
 				result = std::make_shared<AggregateTransaction>(transaction);
 				break;
 			}
@@ -531,8 +522,8 @@ namespace xpx_sdk::internal::json::dto {
     }
 
     template<>
-    AccountProperty fromDto<AccountProperty, AccountPropertyDto>(const AccountPropertyDto& dto) {
-        AccountProperty accountProperty;
+    AccountProperties fromDto<AccountProperties, AccountPropertyDto>(const AccountPropertyDto& dto) {
+        AccountProperties accountProperty;
         accountProperty.address = dto.value<"address"_>();
         for(auto & pdto : dto.value<"properties"_>()) {
             accountProperty.properties.push_back(fromDto<Property, PropertyDto>(pdto));
@@ -544,7 +535,7 @@ namespace xpx_sdk::internal::json::dto {
     MultipleAccountProperty fromDto<MultipleAccountProperty, MultipleAccountPropertyDto>(const MultipleAccountPropertyDto& dto) {
         MultipleAccountProperty multipleAccountProperty;
         for(auto & apdto : dto ){
-            multipleAccountProperty.accountProperties.push_back(fromDto<AccountProperty, AccountPropertyDto>(apdto));
+            multipleAccountProperty.accountProperties.push_back(fromDto<AccountProperties, AccountPropertyDto>(apdto));
         }
         return multipleAccountProperty;
     }
@@ -720,8 +711,8 @@ namespace xpx_sdk::internal::json::dto {
 	}
 
 	template<>
-	EmbeddedTransaction fromDto<EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
-		EmbeddedTransaction transaction;
+	transactions_info::EmbeddedTransaction fromDto<transactions_info::EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
+		xpx_sdk::transactions_info::EmbeddedTransaction transaction;
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 		return transaction;
 	}

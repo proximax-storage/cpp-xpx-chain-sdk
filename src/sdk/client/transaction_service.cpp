@@ -10,7 +10,7 @@ namespace xpx_sdk {
 	using internal::json::dto::transaction_from_json;
 	using internal::json::dto::TransactionContainerDto;
 	using ParserJson = internal::json::Parser;
-	using simple_transactions::TransactionContainer;
+	using transactions_info::TransactionContainer;
 	using internal::json::dto::TransactionStatusDto;
 	using internal::json::dto::MultipleTransactionStatusDto;
 
@@ -20,7 +20,7 @@ namespace xpx_sdk {
 			std::shared_ptr<internal::network::Context> context,
 			std::shared_ptr<RequestParamsBuilder> builder):_config(config), _context(context), _builder(builder) {}
 
-	std::shared_ptr<simple_transactions::BasicTransaction> TransactionService::getTransactionInfo(const std::string &id) {
+	std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getTransactionInfo(const std::string &id) {
 		std::stringstream path;
 		path << "transaction/" << id;
 

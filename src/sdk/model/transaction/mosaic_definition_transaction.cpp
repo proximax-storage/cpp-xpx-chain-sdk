@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/mosaic_definition_transaction.h>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	uint32_t TMosaicDefinitionTransaction<TBase>::mosaicNonce() const

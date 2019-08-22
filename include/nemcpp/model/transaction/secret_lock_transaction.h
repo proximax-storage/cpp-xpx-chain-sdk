@@ -10,7 +10,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Secret lock transaction base class.
 	/// \note Locks funds using secret random set of bytes. Funds are unlocked with proof transaction (in which

@@ -6,7 +6,7 @@
 #include "infrastructure/binary/offsets.h"
 #include "infrastructure/utils/byte_stream.h"
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 
 	Signature CalculateTransactionSignature(const Transaction* transaction,
 	                                        const KeyPair& keyPair)

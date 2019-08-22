@@ -10,7 +10,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Account link transaction base class.
 	/// \note Delegates harvesting to a remote account.

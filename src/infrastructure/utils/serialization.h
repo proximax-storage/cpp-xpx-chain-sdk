@@ -39,7 +39,7 @@
 #include <infrastructure/json/dto/transaction_dto.h>
 
 
-using namespace xpx_sdk::simple_transactions;
+using namespace xpx_sdk::transactions_info;
 
 using xpx_sdk::internal::binary::Parser;
 

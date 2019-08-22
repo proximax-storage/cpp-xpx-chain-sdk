@@ -11,7 +11,7 @@
 #include <optional>
 #include <vector>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	class Transaction;
 	
