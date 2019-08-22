@@ -2,6 +2,7 @@
 #include "nemcpp/client/transaction_service.h"
 #include <infrastructure/utils/deserialization_json.h>
 #include <nemcpp/utils/bytes_to_string.h>
+#include <iostream>
 
 
 namespace xpx_sdk {
@@ -91,7 +92,7 @@ namespace xpx_sdk {
 	bool TransactionService::announceNewTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+		requestJson = "{\"payload\":\"" + payloadStr + "\"}";
 
 		std::string path = "transaction";
 
@@ -104,7 +105,8 @@ namespace xpx_sdk {
 			internal::network::performHTTPRequest(_context, requestParams);
 		}
 		catch(std::exception& e) {
-			return false;
+			std::cout << e.what() << std::endl;
+			throw e;
 		}
 		return true;
 	}
@@ -125,7 +127,7 @@ namespace xpx_sdk {
 			internal::network::performHTTPRequest(_context, requestParams);
 		}
 		catch(std::exception& e) {
-			return false;
+			throw e;
 		}
 		return true;
 	}
@@ -146,7 +148,7 @@ namespace xpx_sdk {
 			internal::network::performHTTPRequest(_context, requestParams);
 		}
 		catch(std::exception& e) {
-			return false;
+			throw e;
 		}
 		return true;
 	}

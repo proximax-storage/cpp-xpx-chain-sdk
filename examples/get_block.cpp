@@ -67,11 +67,20 @@ int main() {
 	}
 	std::cout << std::endl;
 
-	auto result = xpx_sdk::CreateMosaicDefinitionTransaction(0, 182347912384723ll, {xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Duration, 12}});
+	xpx_sdk::MosaicPropertyContainer propertyContainer;
 
-	if(!client -> transactions() -> announceNewTransaction(result -> binary())) {
-		std::cout << "Something gone wrong" << std::endl;
-	} else {
-		std::cout << "Supposedly transaction successfully announced" << std::endl;
+	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Divisibility, 12});
+	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Flags, 12});
+
+	xpx_sdk::MosaicProperties mosaicProperties(propertyContainer);
+	auto result = xpx_sdk::CreateMosaicDefinitionTransaction(0, 182347912384723ll, mosaicProperties);
+
+
+	try {
+		auto response = client -> transactions() -> announceNewTransaction(result -> binary());
+		std::cout << response << std::endl;
+	}
+	catch(std::exception& e) {
+		std::cout << e.what() << std::endl;
 	}
 }

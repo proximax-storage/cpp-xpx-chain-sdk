@@ -72,7 +72,7 @@ namespace xpx_sdk {
 		void signTransaction(Transaction* transaction) const;
 		
 		/// Calculates cosignature for aggregate transaction.
-//		Signature cosignAggregateTransaction(const AggregateTransaction* transaction) const;
+		Signature cosignAggregateTransaction(const AggregateTransaction* transaction) const;
 		
 		
 	private:
