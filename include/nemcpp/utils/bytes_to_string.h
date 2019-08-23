@@ -6,19 +6,26 @@
 
 namespace xpx_sdk {
 
-	char num_to_char(int n) {
-		if(n <= 9) return '0' + n;
-		if(n <= 15) return 'A' + n - 10;
-		return '.';
+	unsigned char num_to_char(int n) {
+		unsigned char result = ' ';
+		if(n <= 9) result = '0' + n;
+		else if(n <= 15) result = 'A' + n - 10;
+
+		return result;
 	}
 
 	std::string bytes_to_string(const std::vector<uint8_t>& bytes) {
 		std::string result;
-		for(uint8_t byte : bytes) {
-			result += num_to_char(byte & 15);
+		int n = bytes.size();
+		result.reserve(n * 2);
+		for(int i = 0; i < n; i++) {
+			int byte = bytes[i];
+			result.push_back(num_to_char(byte & 0xF));
 			byte >>= 4;
-			result += num_to_char(byte & 15); // we could use just byte
+			result.push_back(num_to_char(byte)); // we could use just byte
+			std::swap(result.back(), result[result.size() - 2]);
 		}
+
 		return result;
 	}
 

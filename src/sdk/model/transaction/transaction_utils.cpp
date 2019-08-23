@@ -10,19 +10,19 @@
 using namespace xpx_sdk;
 namespace xpx_sdk { namespace internal {
 	
-	uint16_t MakeTransactionFullVersion(uint8_t version, NetworkIdentifier networkId)
+	uint32_t MakeTransactionFullVersion(uint32_t version, NetworkIdentifier networkId)
 	{
-		return static_cast<uint16_t>(to_underlying_type(networkId) << 8 | version);
+		return static_cast<uint32_t>(to_underlying_type(networkId) << 24 | version);
 	}
 
-	uint8_t ExtractTransactionVersion(uint16_t fullVersion)
+	uint32_t ExtractTransactionVersion(uint32_t fullVersion)
 	{
-		return static_cast<uint8_t>(fullVersion);
+		return static_cast<uint32_t>(fullVersion);
 	}
 
 	NetworkIdentifier ExtractTransactionNetworkId(uint16_t fullVersion)
 	{
-		return static_cast<NetworkIdentifier>(fullVersion >> 8);
+		return static_cast<NetworkIdentifier>(fullVersion >> 24);
 	}
 
 	RawBuffer GetTransactionSignedData(const Transaction* transaction)

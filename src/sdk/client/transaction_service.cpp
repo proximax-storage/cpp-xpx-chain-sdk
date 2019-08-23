@@ -94,6 +94,8 @@ namespace xpx_sdk {
 		std::string payloadStr = bytes_to_string(payload);
 		requestJson = "{\"payload\":\"" + payloadStr + "\"}";
 
+		std::cout << requestJson << std::endl;
+
 		std::string path = "transaction";
 
 		auto requestParams = _builder

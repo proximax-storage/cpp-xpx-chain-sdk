@@ -21,3 +21,4 @@
 #include <nemcpp/model/transaction/transfer_transaction.h>
 #include <nemcpp/model/transaction/transaction_signing.h>
 #include <nemcpp/service/serialization.h>
+#include <nemcpp/utils/HexParser.h>

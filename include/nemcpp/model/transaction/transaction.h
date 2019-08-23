@@ -23,7 +23,7 @@ namespace xpx_sdk {
 	public:
 		/// Creates general transaction.
 		Transaction(TransactionType type,
-		            uint16_t fullVersion,
+		            uint32_t fullVersion,
 		            Amount maxFee,
 		            int64_t deadline,
 		            std::vector<uint8_t> binaryData,

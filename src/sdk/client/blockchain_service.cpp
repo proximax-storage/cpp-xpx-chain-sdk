@@ -11,6 +11,7 @@
 #include <infrastructure/network/context.h>
 #include <infrastructure/utils/deserialization_json.h>
 #include <nemcpp/model/blockchain/height.h>
+#include <iostream>
 
 using namespace xpx_sdk;
 
