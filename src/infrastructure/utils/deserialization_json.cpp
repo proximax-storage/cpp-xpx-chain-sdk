@@ -1,16 +1,12 @@
 #include "deserialization_json.h"
 
-
-
-using namespace xpx_sdk;
 using namespace xpx_sdk::internal::json;
 using namespace xpx_sdk::internal::json::dto;
 
-using namespace xpx_sdk::simple_transactions;
+using namespace xpx_sdk::transactions_info;
 
 
 #define EXTRACT_TRANSACTION(transaction, dto) \
-transaction.size = dto.value<"size"_>(); \
 transaction.signature = dto.value<"signature"_>(); \
 transaction.signer = dto.value<"signer"_>(); \
 transaction.version = dto.value<"version"_>(); \
@@ -19,19 +15,18 @@ transaction.maxFee = dto.value<"maxFee"_>(); \
 transaction.deadline = dto.value<"deadline"_>();
 
 #define EXTRACT_EMBEDDED_TRANSACTION(transaction, dto) \
-transaction.size = dto.value<"size"_>(); \
 transaction.signer = dto.value<"signer"_>(); \
 transaction.version = dto.value<"version"_>(); \
-transaction.type = dto.value<"type"_>(); \
+transaction.type = dto.value<"type"_>();
 
 namespace xpx_sdk::internal::json::dto {
 
 
-	std::vector<std::string> parseJsonArray(const std::string& jsonStr) {
+	std::vector<std::string> parseJsonArray(const std::string& jsonStr, const char lbrace = '{', const char rbrace = '}') {
 		std::vector<std::string> result;
 		int balance = 0;
 		for (auto x : jsonStr) {
-			if (x == '{') {
+			if (x == lbrace) {
 				if (balance == 0) {
 					result.push_back(std::string());
 				}
@@ -40,7 +35,7 @@ namespace xpx_sdk::internal::json::dto {
 			if (balance) {
 				result.back().push_back(x);
 			}
-			if (x == '}') {
+			if (x == rbrace) {
 				balance -= 1;
 			}
 		}
@@ -63,7 +58,28 @@ namespace xpx_sdk::internal::json::dto {
 		return result;
 	}
 
-	std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr) {
+	AggregateTransaction aggregateTransactionFromJson(const std::string& jsonStr) {
+		AggregateTransaction transaction;
+
+		std::string aggregatedTransactionsJson = parseJsonArray(jsonStr, '[', ']')[0];
+		auto transactionContainerDto = parseJsonArray(aggregatedTransactionsJson, '{', '}');
+		transaction.transactions = fromDto<TransactionContainer, TransactionContainerDto>(transactionContainerDto);
+
+		VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > tmp_dto;
+		Parser::Read(tmp_dto, jsonStr);
+		AggregateTransactionDto dto = tmp_dto.value<"transaction"_>();
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		for(auto cosignaturesDto : dto.value<"cosignatures"_>()) {
+			transaction.cosignatures.push_back(fromDto<Cosignature, CosignatureDto>(cosignaturesDto));
+		}
+
+		return transaction;
+
+	}
+
+	std::shared_ptr<transactions_info::BasicTransaction> transaction_from_json(const std::string& jsonStr) {
 
 		VariadicStruct<Field<STR_LITERAL("transaction"), BasicTransactionDto> > dto;
 		Parser::Read(dto, jsonStr);
@@ -71,7 +87,7 @@ namespace xpx_sdk::internal::json::dto {
 		TransactionContainer transactions;
 		TransactionType type = dto.value<"transaction"_>().value<"type"_>();
 
-		std::shared_ptr<BasicTransaction> result = nullptr;
+		std::shared_ptr<transactions_info::BasicTransaction> result = nullptr;
 		switch(type) {
 
 			case TransactionType::Transfer: {
@@ -159,13 +175,7 @@ namespace xpx_sdk::internal::json::dto {
 			}
 
 			case TransactionType::Aggregate_Complete: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
-				auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(
-						t_dto.value<"transaction"_>());
+				auto transaction = aggregateTransactionFromJson(jsonStr);
 				result = std::make_shared<AggregateTransaction>(transaction);
 				break;
 			}
@@ -512,8 +522,8 @@ namespace xpx_sdk::internal::json::dto {
     }
 
     template<>
-    AccountProperty fromDto<AccountProperty, AccountPropertyDto>(const AccountPropertyDto& dto) {
-        AccountProperty accountProperty;
+    AccountProperties fromDto<AccountProperties, AccountPropertyDto>(const AccountPropertyDto& dto) {
+        AccountProperties accountProperty;
         accountProperty.address = dto.value<"address"_>();
         for(auto & pdto : dto.value<"properties"_>()) {
             accountProperty.properties.push_back(fromDto<Property, PropertyDto>(pdto));
@@ -525,7 +535,7 @@ namespace xpx_sdk::internal::json::dto {
     MultipleAccountProperty fromDto<MultipleAccountProperty, MultipleAccountPropertyDto>(const MultipleAccountPropertyDto& dto) {
         MultipleAccountProperty multipleAccountProperty;
         for(auto & apdto : dto ){
-            multipleAccountProperty.accountProperties.push_back(fromDto<AccountProperty, AccountPropertyDto>(apdto));
+            multipleAccountProperty.accountProperties.push_back(fromDto<AccountProperties, AccountPropertyDto>(apdto));
         }
         return multipleAccountProperty;
     }
@@ -596,6 +606,45 @@ namespace xpx_sdk::internal::json::dto {
         return networkInfo;
     }
 
+	/// Transaction Meta
+
+	template<>
+	TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto) {
+		TransactionInfo transactionInfo;
+		return transactionInfo;
+	}
+
+	template<>
+	TransactionStatus fromDto<TransactionStatus, TransactionStatusDto>(const TransactionStatusDto& dto) {
+		TransactionStatus transactionStatus;
+		transactionStatus.group = dto.value<"group"_>();
+		transactionStatus.status = dto.value<"status"_>();
+		transactionStatus.hash = dto.value<"hash"_>();
+		transactionStatus.deadline = dto.value<"deadline"_>();
+		transactionStatus.height = dto.value<"height"_>();
+		return transactionStatus;
+	}
+
+	template<>
+	MultipleTransactionInfo fromDto<MultipleTransactionInfo, MultipleTransactionInfoDto>(const MultipleTransactionInfoDto& dto) {
+		MultipleTransactionInfo transactionInfos;
+
+		for(auto& transactionInfoDto : dto) {
+			transactionInfos.infos.push_back(fromDto<TransactionInfo, TransactionInfoDto>(transactionInfoDto));
+		}
+		return transactionInfos;
+	}
+
+	template<>
+	MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto) {
+		MultipleTransactionStatus transactionStatuses;
+
+		for(auto& transactionStatusDto : dto) {
+			transactionStatuses.statuses.push_back(fromDto<TransactionStatus, TransactionStatusDto>(transactionStatusDto));
+		}
+		return transactionStatuses;
+	}
+
     // Transactions
 
 	template<>
@@ -662,8 +711,8 @@ namespace xpx_sdk::internal::json::dto {
 	}
 
 	template<>
-	EmbeddedTransaction fromDto<EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
-		EmbeddedTransaction transaction;
+	transactions_info::EmbeddedTransaction fromDto<transactions_info::EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
+		xpx_sdk::transactions_info::EmbeddedTransaction transaction;
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 		return transaction;
 	}
@@ -717,7 +766,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
-		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& cosignatoryModificationDto : dto.value<"modifications"_>()) {
 			transaction.modifications.push_back(fromDto<CosignatoryModification, CosignatoryModificationDto>(cosignatoryModificationDto));
 		}
@@ -734,7 +782,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.nonce = dto.value<"nonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
 		transaction.flags = dto.value<"flags"_>();
 		transaction.divisibility = dto.value<"divisibility"_>();
 		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
@@ -801,7 +848,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
-		transaction.proofSize = dto.value<"proofSize"_>();
 		transaction.proof = dto.value<"proof"_>();
 
 
@@ -816,8 +862,6 @@ namespace xpx_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.messageSize = dto.value<"messageSize"_>();
-		transaction.mosaicsCount = dto.value<"mosaicsCount"_>();
 		transaction.message = dto.value<"message"_>();
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {
 			transaction.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
@@ -943,7 +987,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.minRemovalDelta = dto.value<"minRemovalDelta"_>();
 		transaction.minApprovalDelta = dto.value<"minApprovalDelta"_>();
-		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& cosignatoryModificationDto : dto.value<"modifications"_>()) {
 			transaction.modifications.push_back(fromDto<CosignatoryModification, CosignatoryModificationDto>(cosignatoryModificationDto));
 		}
@@ -961,7 +1004,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.nonce = dto.value<"nonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.optionalPropertiesCount = dto.value<"optionalPropertiesCount"_>();
 		transaction.flags = dto.value<"flags"_>();
 		transaction.divisibility = dto.value<"divisibility"_>();
 		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
@@ -1026,7 +1068,6 @@ namespace xpx_sdk::internal::json::dto {
 
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
-		transaction.proofSize = dto.value<"proofSize"_>();
 		transaction.proof = dto.value<"proof"_>();
 
 
@@ -1042,8 +1083,6 @@ namespace xpx_sdk::internal::json::dto {
 
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.messageSize = dto.value<"messageSize"_>();
-		transaction.mosaicsCount = dto.value<"mosaicsCount"_>();
 		transaction.message = dto.value<"message"_>();
 
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {

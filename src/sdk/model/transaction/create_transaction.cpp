@@ -210,7 +210,7 @@ namespace xpx_sdk { namespace internal {
 		{
 			dto.template set<"nonce"_>(mosaicNonce);
 			dto.template set<"mosaicId"_>(mosaicId);
-			dto.template set<"optionalPropertiesCount"_>(mosaicProperties.size());
+			dto.template set<"optionalPropertiesCount"_>(mosaicProperties.size() - 2);
 			dto.template set<"flags"_>(mosaicProperties.flags());
 			dto.template set<"divisibility"_>(mosaicProperties.divisibility());
 			

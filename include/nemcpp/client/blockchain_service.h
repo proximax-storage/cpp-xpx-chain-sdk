@@ -24,7 +24,7 @@ namespace xpx_sdk {
 
 	using internal::network::Context;
 	using internal::network::RequestParamsBuilder;
-	using simple_transactions::TransactionContainer;
+	using transactions_info::TransactionContainer;
 
 	class BlockchainService {
 	public:

@@ -22,7 +22,7 @@ namespace xpx_sdk {
 
 	using internal::network::Context;
 	using internal::network::RequestParamsBuilder;
-	using simple_transactions::TransactionContainer;
+	using transactions_info::TransactionContainer;
 
     class AccountService {
     public:
@@ -30,10 +30,11 @@ namespace xpx_sdk {
                 std::shared_ptr<Config> config,
                 std::shared_ptr<internal::network::Context> context,
 				std::shared_ptr<RequestParamsBuilder> builder);
+        ~AccountService() = default;
 
         AccountInfo getAccountInfo(const std::string& id);
         MultipleAccountInfo getAccountsInfo(const std::vector<std::string>& ids);
-        AccountProperty getAccountProperties(const std::string& id );
+        AccountProperties getAccountProperties(const std::string& id );
         MultipleAccountProperty getAccountsProperties(const std::vector<std::string>& ids);
         MultisigInfo getMultisigInfo(const std::string& id);
         MultisigGraph getMultisigAccountGraphInfo(const std::string& id);

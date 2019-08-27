@@ -9,7 +9,7 @@
 #include <memory>
 #include <optional>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	class BasicTransaction;
 	
@@ -20,7 +20,7 @@ namespace xpx_sdk::complex_transactions {
 	class BasicTransaction {
 	public:
 		/// Base constructor for transactions.
-		BasicTransaction(TransactionType type, uint16_t fullVersion, const std::optional<Key>& signer);
+		BasicTransaction(TransactionType type, uint32_t fullVersion, const std::optional<Key>& signer);
 		
 		/// Copy constructor.
 		BasicTransaction(const BasicTransaction& rhs);
@@ -61,7 +61,7 @@ namespace xpx_sdk::complex_transactions {
 		
 	private:
 		Lazy<PublicAccount, BasicTransaction, &BasicTransaction::initSigner> signer_;
-		uint8_t version_;
+		uint32_t version_;
 		NetworkIdentifier networkId_;
 		TransactionType type_;
 	};

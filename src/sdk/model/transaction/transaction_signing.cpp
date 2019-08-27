@@ -1,17 +1,20 @@
 
 #include <nemcpp/model/transaction/transaction_signing.h>
 #include <nemcpp/crypto/signer.h>
+#include <nemcpp/utils/HexParser.h>
 
 #include "sdk/model/transaction/transaction_utils.h"
 #include "infrastructure/binary/offsets.h"
 #include "infrastructure/utils/byte_stream.h"
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 
 	Signature CalculateTransactionSignature(const Transaction* transaction,
 	                                        const KeyPair& keyPair)
 	{
 		Ed25519 builder;
+		auto generationHash = ParseByteArray<Key>("7B631D803F912B00DC0CBED3014BBD17A302BA50B99D233B9C2D9533B842ABDF");
+		builder.add(RawBuffer(generationHash));
 		builder.add(internal::GetTransactionSignedData(transaction));
 		return builder.sign(keyPair);
 	}

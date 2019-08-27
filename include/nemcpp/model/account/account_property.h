@@ -15,7 +15,7 @@ namespace xpx_sdk {
 		std::vector<std::string> values;
 	};
 
-	class AccountProperty {
+	class AccountProperties {
 	public:
 		std::string address;
 		std::vector<Property> properties;
@@ -35,7 +35,7 @@ namespace xpx_sdk {
 	};
 }
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	/// Account property.
 	template<typename TValue, AccountPropertyType PropertyTypeId>
 	struct AccountProperty {

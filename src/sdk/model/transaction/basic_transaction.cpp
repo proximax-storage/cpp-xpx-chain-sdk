@@ -4,9 +4,9 @@
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
-	BasicTransaction::BasicTransaction(TransactionType type, uint16_t fullVersion, const std::optional<Key>& signer):
+	BasicTransaction::BasicTransaction(TransactionType type, uint32_t fullVersion, const std::optional<Key>& signer):
 		signer_(this, signer),
 		version_(internal::ExtractTransactionVersion(fullVersion)),
 		networkId_(internal::ExtractTransactionNetworkId(fullVersion)),

@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/secret_proof_transaction.h>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	SecretHashAlgorithm TSecretProofTransaction<TBase>::secretHashAlgorithm() const

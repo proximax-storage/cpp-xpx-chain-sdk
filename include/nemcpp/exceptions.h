@@ -47,4 +47,7 @@ namespace xpx_sdk {
 
 	/// Invalid message error.
 	NEM2_SDK_DEFINE_EXCEPTION(message_error);
+
+	/// Invalid format error.
+	NEM2_SDK_DEFINE_EXCEPTION(format_error);
 }

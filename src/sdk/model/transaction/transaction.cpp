@@ -4,10 +4,10 @@
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	Transaction::Transaction(TransactionType type,
-	                         uint16_t fullVersion,
+	                         uint32_t fullVersion,
 	                         Amount maxFee,
 	                         int64_t deadline,
 	                         std::vector<uint8_t> binaryData,

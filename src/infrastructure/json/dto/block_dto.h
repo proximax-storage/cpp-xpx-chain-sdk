@@ -8,6 +8,7 @@
 
 #include "infrastructure/utils/variadic_struct.h"
 #include "infrastructure/json/uint64.h"
+#include "infrastructure/json/descriptors.h"
 #include <stdint.h>
 
 
@@ -51,7 +52,7 @@ namespace xpx_sdk::internal::json::dto {
             Field<STR_LITERAL("generationHash"), std::string>,
             Field<STR_LITERAL("totalFee"), Uint64>,
             Field<STR_LITERAL("numTransactions"), uint64_t >,
-            Field<STR_LITERAL("numStatements"), uint64_t > >;
+            Field<STR_LITERAL("numStatements"), uint64_t, desc::Optional >>;
 
     using BlockDataDto = VariadicStruct<
             Field<STR_LITERAL("signature"), std::string>,

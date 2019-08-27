@@ -11,7 +11,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Aggregate transaction.
 	/// \note If aggregate transaction will be announced to network with all cosignatures, it is called complete.

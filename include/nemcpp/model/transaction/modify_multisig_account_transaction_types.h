@@ -5,7 +5,7 @@
 
 #include <unordered_map>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Multisig account cosignatory modification type.
 	enum class CosignatoryModificationType: uint8_t {

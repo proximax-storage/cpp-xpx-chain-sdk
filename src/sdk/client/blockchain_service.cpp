@@ -11,6 +11,7 @@
 #include <infrastructure/network/context.h>
 #include <infrastructure/utils/deserialization_json.h>
 #include <nemcpp/model/blockchain/height.h>
+#include <iostream>
 
 using namespace xpx_sdk;
 
@@ -70,7 +71,7 @@ MultipleBlock BlockchainService::getBlocksByHeightWithLimit(uint64_t height, uin
 	return from_json<MultipleBlock, MultipleBlocksDto>(response);
 }
 
-simple_transactions::TransactionContainer BlockchainService::getBlockTransactions(uint64_t height) {
+transactions_info::TransactionContainer BlockchainService::getBlockTransactions(uint64_t height) {
 	std::stringstream path;
 	path << "blocks/" << height << "/transactions";
 

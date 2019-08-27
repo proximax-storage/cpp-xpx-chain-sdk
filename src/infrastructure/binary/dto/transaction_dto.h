@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-using namespace xpx_sdk::complex_transactions;
+using namespace xpx_sdk;
 
 namespace xpx_sdk { namespace internal { namespace binary {
 	
@@ -67,7 +67,7 @@ namespace xpx_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("size"),      uint32_t>,
 		Field<STR_LITERAL("signature"), Signature>,
 		Field<STR_LITERAL("signer"),    Key>,
-		Field<STR_LITERAL("version"),   uint16_t>,
+		Field<STR_LITERAL("version"),   uint32_t>,
 		Field<STR_LITERAL("type"),      TransactionType>,
 		Field<STR_LITERAL("maxFee"),    Amount>,
 		Field<STR_LITERAL("deadline"),  int64_t>>;
@@ -75,7 +75,7 @@ namespace xpx_sdk { namespace internal { namespace binary {
 	using EmbeddedTransactionDTO = VariadicStruct<
 		Field<STR_LITERAL("size"),      uint32_t>,
 		Field<STR_LITERAL("signer"),    Key>,
-		Field<STR_LITERAL("version"),   uint16_t>,
+		Field<STR_LITERAL("version"),   uint32_t>,
 		Field<STR_LITERAL("type"),      TransactionType>>;
 	
 	using AggregateTransactionDTO = VariadicStruct<

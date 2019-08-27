@@ -64,7 +64,7 @@ std::string _performHTTPRequest_internal(
 	if (response.result() == http::status::found) {
 		auto path = response.at("Location").to_string();
 		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
-	} else if (response.result() != http::status::ok) {
+	} else if (response.result() != http::status::ok && response.result() != http::status::accepted ) {
 		throw xpx_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
 	}
 

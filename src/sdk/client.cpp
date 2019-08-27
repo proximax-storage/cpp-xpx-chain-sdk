@@ -19,11 +19,12 @@ public:
 			.setPort(_config->port)
 			.setSecurity(_config->useSSL);
 
-		_account    = std::make_shared<AccountService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-		_blockchain = std::make_shared<BlockchainService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-		_mosaic     = std::make_shared<MosaicService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-		_namespace  = std::make_shared<NamespaceService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-		_network    = std::make_shared<NetworkService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_account     = std::make_shared<AccountService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_blockchain  = std::make_shared<BlockchainService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_mosaic      = std::make_shared<MosaicService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_namespace   = std::make_shared<NamespaceService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_network     = std::make_shared<NetworkService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_transaction = std::make_shared<TransactionService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
 	}
 
 	std::shared_ptr<AccountService> account() const override  {
@@ -46,6 +47,10 @@ public:
         return _network;
     }
 
+	std::shared_ptr<TransactionService> transactions() const override {
+		return _transaction;
+	}
+
 private:
 	std::shared_ptr<Config> _config;
 	internal::network::RequestParamsBuilder _builder;
@@ -56,6 +61,7 @@ private:
 	std::shared_ptr<MosaicService> _mosaic;
 	std::shared_ptr<NamespaceService> _namespace;
 	std::shared_ptr<NetworkService> _network;
+	std::shared_ptr<TransactionService> _transaction;
 };
 
 namespace xpx_sdk {

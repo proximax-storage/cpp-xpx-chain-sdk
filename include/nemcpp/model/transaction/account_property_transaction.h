@@ -11,7 +11,7 @@
 #include <utility>
 
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Account property transaction template base class.
 	template<typename TBase, typename TProperty>

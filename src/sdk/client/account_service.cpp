@@ -53,7 +53,7 @@ MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::strin
 
 }
 
-AccountProperty AccountService::getAccountProperties(const std::string& id ){
+AccountProperties AccountService::getAccountProperties(const std::string& id ){
     std::stringstream path;
     path << "account/properties/" << id;
 
@@ -63,7 +63,7 @@ AccountProperty AccountService::getAccountProperties(const std::string& id ){
             .getRequestParams();
 
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    auto result = from_json<AccountProperty, AccountPropertyDto>(response);
+    auto result = from_json<AccountProperties, AccountPropertyDto>(response);
     return result;
 }
 
@@ -112,7 +112,7 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
     return result;
 }
 
-simple_transactions::TransactionContainer AccountService::getAccountTransactions(
+transactions_info::TransactionContainer AccountService::getAccountTransactions(
 		const std::string& publicKey,
 		int pageSize,
 		std::string id,
@@ -133,7 +133,7 @@ simple_transactions::TransactionContainer AccountService::getAccountTransactions
 
 }
 
-simple_transactions::TransactionContainer AccountService::getAccountIncomingTransactions(
+transactions_info::TransactionContainer AccountService::getAccountIncomingTransactions(
 		const std::string& publicKey,
 		int pageSize,
 		std::string id,
@@ -154,7 +154,7 @@ simple_transactions::TransactionContainer AccountService::getAccountIncomingTran
 
 }
 
-simple_transactions::TransactionContainer AccountService::getAccountOutgoingTransactions(
+transactions_info::TransactionContainer AccountService::getAccountOutgoingTransactions(
 		const std::string& publicKey,
 		int pageSize,
 		std::string id,
@@ -175,7 +175,7 @@ simple_transactions::TransactionContainer AccountService::getAccountOutgoingTran
 
 }
 
-simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
+transactions_info::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
 		const std::string& publicKey,
 		int pageSize,
 		std::string id,
@@ -196,7 +196,7 @@ simple_transactions::TransactionContainer AccountService::getAccountUnconfirmedT
 
 }
 
-simple_transactions::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
+transactions_info::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
 		const std::string& publicKey,
 		int pageSize,
 		std::string id,

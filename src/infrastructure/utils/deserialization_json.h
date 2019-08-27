@@ -30,6 +30,9 @@
 #include <nemcpp/model/account/account_properties.h>
 #include <nemcpp/model/network/network_info.h>
 #include <nemcpp/model/transaction_simple/transaction.h>
+#include <nemcpp/model/transaction_simple/transaction_status.h>
+#include <nemcpp/model/transaction_simple/transaction_info.h>
+
 
 
 #include <nemcpp/exceptions.h>
@@ -37,7 +40,7 @@
 #include <nemcpp/model/transaction_simple/transaction_container.h>
 
 
-using namespace xpx_sdk::simple_transactions;
+using namespace xpx_sdk::transactions_info;
 
 namespace xpx_sdk { namespace  internal { namespace json {
     namespace dto {
@@ -56,10 +59,11 @@ namespace xpx_sdk { namespace  internal { namespace json {
             return fromDto<Object, ObjectDto>(dto);
         }
 
+		AggregateTransaction aggregateTransactionFromJson(const std::string& jsonStr);
+
 		TransactionContainer transactions_from_json(const std::string& jsonStr);
 
-
-		std::shared_ptr<BasicTransaction> transaction_from_json(const std::string& jsonStr);
+		std::shared_ptr<transactions_info::BasicTransaction> transaction_from_json(const std::string& jsonStr);
 
         template<>
 		TransactionContainer fromDto<TransactionContainer, TransactionContainerDto>(const TransactionContainerDto& dto);
@@ -131,7 +135,7 @@ namespace xpx_sdk { namespace  internal { namespace json {
         Property fromDto<Property, PropertyDto>(const PropertyDto& dto);
 
         template<>
-        AccountProperty fromDto<AccountProperty, AccountPropertyDto>(const AccountPropertyDto& dto) ;
+        AccountProperties fromDto<AccountProperties, AccountPropertyDto>(const AccountPropertyDto& dto) ;
 
         template<>
         MultipleAccountProperty fromDto<MultipleAccountProperty, MultipleAccountPropertyDto>(const MultipleAccountPropertyDto& dto);
@@ -154,6 +158,20 @@ namespace xpx_sdk { namespace  internal { namespace json {
         template<>
         NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto);
 
+        /// Transaction Meta
+
+        template<>
+		TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto);
+
+		template<>
+		TransactionStatus fromDto<TransactionStatus, TransactionStatusDto>(const TransactionStatusDto& dto);
+
+		template<>
+		MultipleTransactionInfo fromDto<MultipleTransactionInfo, MultipleTransactionInfoDto>(const MultipleTransactionInfoDto& dto);
+
+		template<>
+		MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto);
+
         /// Transactions
         template<>
 		Cosignature fromDto<Cosignature, CosignatureDto>(const CosignatureDto& dto);
@@ -174,7 +192,7 @@ namespace xpx_sdk { namespace  internal { namespace json {
 		Transaction fromDto<Transaction, TransactionDto >(const TransactionDto & dto);
 
 		template<>
-		EmbeddedTransaction fromDto<EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto);
+		transactions_info::EmbeddedTransaction fromDto<transactions_info::EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto);
 
 		template<>
 		AggregateTransaction fromDto<AggregateTransaction, AggregateTransactionDto >(const AggregateTransactionDto & dto);

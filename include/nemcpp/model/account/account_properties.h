@@ -7,6 +7,6 @@
 namespace xpx_sdk {
     class MultipleAccountProperty {
     public:
-        std::vector<AccountProperty> accountProperties;
+        std::vector<AccountProperties> accountProperties;
     };
 }

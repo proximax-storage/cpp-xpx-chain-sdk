@@ -9,7 +9,7 @@
 #include <optional>
 #include <utility>
 
-namespace xpx_sdk::complex_transactions {
+namespace xpx_sdk {
 	
 	/// Lock funds transaction base class.
 	/// \note Currently this transaction is used only for locking funds before announcing aggregate
