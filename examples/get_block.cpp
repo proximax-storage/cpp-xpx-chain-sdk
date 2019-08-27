@@ -44,7 +44,7 @@ int main() {
 	std::cout << "Generation Hash: " << ' ' << client -> blockchain() -> getBlockByHeight(1).meta.generationHash << std::endl;
 
 	auto networkInfo = client -> network() -> getNetworkInfo();
-	std::cout << "Network Info " << networkInfo.description << ' ' << networkInfo.name << std::endl;
+	std::cout << "Network Info " << networkInfo.description << '|' << networkInfo.name << std::endl;
 
 	auto accountInfo = client -> account() -> getAccountInfo(accountAddress);
 	std::cout << accountInfo.publicKey << ' ' << accountInfo.mosaics[0].id << std::endl;
@@ -85,7 +85,11 @@ int main() {
 	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Flags, 12});
 
 	xpx_sdk::MosaicProperties mosaicProperties(propertyContainer);
-	auto mosaicDefinitionTransaction = xpx_sdk::CreateMosaicDefinitionTransaction(0, 182147460384723ll, mosaicProperties);
+
+	auto mosaicDefinitionTransaction = xpx_sdk::CreateMosaicDefinitionTransaction(
+			4,
+			Mosaic::GenerateId(ParseByteArray<Key>(publicKey), 4),
+			mosaicProperties);
 
 	xpx_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
 		if(reason == PrivateKeySupplierReason::Transaction_Signing) {
