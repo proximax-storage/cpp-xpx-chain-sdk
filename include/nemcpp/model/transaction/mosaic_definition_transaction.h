@@ -20,11 +20,13 @@ namespace xpx_sdk {
 		template<typename... TArgs>
 		explicit TMosaicDefinitionTransaction(uint32_t mosaicNonce,
 		                                      MosaicId mosaicId,
+		                                      MosaicFlags flags,
 		                                      MosaicProperties mosaicProperties,
 		                                      TArgs&&... args):
 			TBase(TransactionType::Mosaic_Definition, std::forward<TArgs>(args)...),
 			mosaicNonce_(mosaicNonce),
 			mosaicId_(mosaicId),
+			flags_(flags),
 			mosaicProperties_(std::move(mosaicProperties))
 		{ }
 		
@@ -33,6 +35,9 @@ namespace xpx_sdk {
 		
 		/// Returns generated mosaic id.
 		MosaicId mosaicId() const;
+
+		/// Returns mosaic flags;
+		MosaicFlags flags() const;
 		
 		/// Returns mosaic properties.
 		const MosaicProperties& mosaicProperties() const;
@@ -40,6 +45,7 @@ namespace xpx_sdk {
 	private:
 		uint32_t mosaicNonce_;
 		MosaicId mosaicId_;
+		MosaicFlags flags_;
 		MosaicProperties mosaicProperties_;
 	};
 	
@@ -55,6 +61,7 @@ namespace xpx_sdk {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                  MosaicId mosaicId,
+	                                  MosaicFlags flags,
 	                                  MosaicProperties mosaicProperties,
 	                                  std::optional<Amount> maxFee = std::nullopt,
 	                                  std::optional<NetworkDuration> deadline = std::nullopt,
@@ -66,6 +73,7 @@ namespace xpx_sdk {
 	std::unique_ptr<EmbeddedMosaicDefinitionTransaction>
 	CreateEmbeddedMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                          MosaicId mosaicId,
+	                                          MosaicFlags flags,
 	                                          MosaicProperties mosaicProperties,
 	                                          const Key& signer,
 	                                          std::optional<NetworkIdentifier> networkId = std::nullopt);

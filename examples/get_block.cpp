@@ -55,41 +55,41 @@ int main() {
 //
 	std::cout << "Mosaic Info: " << mosaicInfo.data.amount << std::endl;
 
-	std::vector<uint64_t > ids = {accountInfo.mosaics[0].id};
+//	std::vector<uint64_t > ids = {accountInfo.mosaics[0].id};
+//
+//	auto mosaicInfos = client -> mosaics() -> getMosaicInfos(ids);
+//
+//	std::cout << mosaicInfos.mosaics.size() << std::endl;
 
-	auto mosaicInfos = client -> mosaics() -> getMosaicInfos(ids);
+//	auto namespaces = client -> namespaces() -> getNamespaceInfoByAccount(accountAddress);
+//	std::vector<std::string> namespaceIds;
+//	for(auto x : namespaces.namespaceInfos) {
+//		std::cout << x.data.owner << std::endl;
+//		namespaceIds.push_back(x.meta.id);
+//	}
 
-	std::cout << mosaicInfos.mosaics.size() << std::endl;
-
-	auto namespaces = client -> namespaces() -> getNamespaceInfoByAccount(accountAddress);
-	std::vector<std::string> namespaceIds;
-	for(auto x : namespaces.namespaceInfos) {
-		std::cout << x.data.owner << std::endl;
-		namespaceIds.push_back(x.meta.id);
-	}
-
-	auto transactions = client -> account() -> getAccountTransactions(publicKey);
-	auto transaction = reinterpret_cast<xpx_sdk::transactions_info::TransferTransaction*>(transactions.transactions[0].get());
-
-	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
-	std::cout << "Transaction version " << transaction -> version << std::endl;
-	std::cout << "Message size " << transaction -> message.size() << std::endl;
-	for(auto x : transaction -> message) {
-		std::cout<< x << ' ';
-	}
-	std::cout << std::endl;
+//	auto transactions = client -> account() -> getAccountTransactions(publicKey);
+//	auto transaction = reinterpret_cast<xpx_sdk::transactions_info::TransferTransaction*>(transactions.transactions[0].get());
+//
+//	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
+//	std::cout << "Transaction version " << transaction -> version << std::endl;
+//	std::cout << "Message size " << transaction -> message.size() << std::endl;
+//	for(auto x : transaction -> message) {
+//		std::cout<< x << ' ';
+//	}
+//	std::cout << std::endl;
 
 	xpx_sdk::MosaicPropertyContainer propertyContainer;
 
-	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Divisibility, 12});
-	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Flags, 12});
+	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Divisibility, 6});
+	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Flags, 4});
 
 	xpx_sdk::MosaicProperties mosaicProperties(propertyContainer);
 
 	auto mosaicDefinitionTransaction = xpx_sdk::CreateMosaicDefinitionTransaction(
-			4,
-			Mosaic::GenerateId(ParseByteArray<Key>(publicKey), 4),
-			mosaicProperties);
+			5,
+			Mosaic::GenerateId(ParseByteArray<Key>(publicKey), 5),
+			MosaicFlags::Supply_Mutable, mosaicProperties);
 
 	xpx_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
 		if(reason == PrivateKeySupplierReason::Transaction_Signing) {

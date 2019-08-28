@@ -164,13 +164,13 @@ namespace xpx_sdk {
 			if (properties.size() != dto.template value<"optionalProperties"_>().size()) {
 				return nullptr;
 			}
-			
+
 			properties.insert(MosaicProperty{ MosaicPropertyId::Flags, to_underlying_type(dto.template value<"flags"_>()) });
 			properties.insert(MosaicProperty{ MosaicPropertyId::Divisibility, dto.template value<"divisibility"_>() });
 			
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), MosaicProperties(std::move(properties)));
+				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), dto.template value<"flags"_>(), MosaicProperties(std::move(properties)));
 		}
 		
 		template<

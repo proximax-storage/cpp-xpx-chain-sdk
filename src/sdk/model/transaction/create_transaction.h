@@ -164,6 +164,7 @@ namespace xpx_sdk { namespace internal {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransactionImpl(uint32_t mosaicNonce,
 	                                      MosaicId mosaicId,
+	                                      MosaicFlags flags,
 	                                      MosaicProperties mosaicProperties,
 	                                      std::optional<Amount> maxFee,
 	                                      std::optional<NetworkDuration> deadline,

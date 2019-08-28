@@ -101,7 +101,10 @@ namespace xpx_sdk {
 	
 	NetworkDuration Transaction::GetDefaultDeadline()
 	{
-		return GetConfig().TransactionDeadline;
+
+		auto now = std::chrono::system_clock::now();
+		auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - GetConfig().NetworkEpoch);
+		return diff + GetConfig().TransactionDelta;
 	}
 	
 	void Transaction::initSignature(std::optional<Signature>&)
