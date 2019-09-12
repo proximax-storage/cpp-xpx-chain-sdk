@@ -3,7 +3,7 @@
 #include <infrastructure/utils/variadic_struct.h>
 #include "namespace_dto.h"
 #include <vector>
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
     using MultipleNamespaceDto = std::vector<NamespaceInfoDto>;
 

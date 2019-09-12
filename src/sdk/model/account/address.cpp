@@ -1,12 +1,12 @@
 
-#include <nemcpp/model/account/address.h>
-#include <nemcpp/crypto/hash.h>
-#include <nemcpp/utils/base32.h>
+#include <xpxchaincpp/model/account/address.h>
+#include <xpxchaincpp/crypto/hash.h>
+#include <xpxchaincpp/utils/base32.h>
 
 #include <algorithm>
 #include <cassert>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	namespace {
 		constexpr size_t Checksum_Size = 4;
@@ -18,7 +18,7 @@ namespace xpx_sdk {
 		pretty_(this)
 	{
 		if (!IsValid(data_)) {
-			NEM2_SDK_THROW(account_error, "invalid binary address");
+			XPX_CHAIN_SDK_THROW(account_error, "invalid binary address");
 		}
 	}
 	
@@ -40,7 +40,7 @@ namespace xpx_sdk {
 		pretty_(this)
 	{
 		if (!DecodeAndCheck(encodedAddress, data_)) {
-			NEM2_SDK_THROW(account_error, "invalid encoded address");
+			XPX_CHAIN_SDK_THROW(account_error, "invalid encoded address");
 		}
 	}
 	

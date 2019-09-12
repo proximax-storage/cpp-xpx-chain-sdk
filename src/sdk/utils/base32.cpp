@@ -1,9 +1,9 @@
 
-#include <nemcpp/utils/base32.h>
+#include <xpxchaincpp/utils/base32.h>
 
 #include <cctype>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	namespace {
 		const char* Base32_Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";

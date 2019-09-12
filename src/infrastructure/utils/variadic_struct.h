@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace xpx_sdk { namespace internal {
+namespace xpx_chain_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
 	template<typename... TArgs> class VariadicStruct;
@@ -32,7 +32,7 @@ namespace xpx_sdk { namespace internal {
 	};
 	
 	// Macros for defining compile-time string literal type from c-style string literal.
-#if NEM2_USE_STRING_LITERAL_OPERATOR_TEMPLATE
+#if XPX_CHAIN_USE_STRING_LITERAL_OPERATOR_TEMPLATE
 
 	template<typename T, T... chars>
 	constexpr StringLiteral<chars...> operator""_sl()
@@ -465,12 +465,12 @@ namespace xpx_sdk { namespace internal {
 namespace std {
 	
 	template<typename... TFields>
-	class tuple_size<xpx_sdk::internal::VariadicStruct<TFields...>>:
-		public std::integral_constant<size_t, xpx_sdk::internal::struct_size<xpx_sdk::internal::VariadicStruct<TFields...>>::value>
+	class tuple_size<xpx_chain_sdk::internal::VariadicStruct<TFields...>>:
+		public std::integral_constant<size_t, xpx_chain_sdk::internal::struct_size<xpx_chain_sdk::internal::VariadicStruct<TFields...>>::value>
 	{ };
 	
 	template<size_t I, typename... TFields>
-	struct tuple_element<I, xpx_sdk::internal::VariadicStruct<TFields...>> {
-		using type = typename xpx_sdk::internal::struct_field_by_index<I, xpx_sdk::internal::VariadicStruct<TFields...>>::ValueType;
+	struct tuple_element<I, xpx_chain_sdk::internal::VariadicStruct<TFields...>> {
+		using type = typename xpx_chain_sdk::internal::struct_field_by_index<I, xpx_chain_sdk::internal::VariadicStruct<TFields...>>::ValueType;
 	};
 }

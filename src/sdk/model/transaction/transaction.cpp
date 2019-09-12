@@ -1,10 +1,10 @@
 
-#include <nemcpp/model/transaction/transaction.h>
-#include <nemcpp/config.h>
+#include <xpxchaincpp/model/transaction/transaction.h>
+#include <xpxchaincpp/config.h>
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	Transaction::Transaction(TransactionType type,
 	                         uint32_t fullVersion,
@@ -109,7 +109,7 @@ namespace xpx_sdk {
 	
 	void Transaction::initSignature(std::optional<Signature>&)
 	{
-		NEM2_SDK_THROW(transaction_error, "signature is not initialized");
+		XPX_CHAIN_SDK_THROW(transaction_error, "signature is not initialized");
 	}
 	
 	void Transaction::initHash(std::optional<Hash256>& value)

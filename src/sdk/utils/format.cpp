@@ -1,7 +1,7 @@
 
-#include <nemcpp/utils/format.h>
+#include <xpxchaincpp/utils/format.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	std::string MakeString::str() const
 	{

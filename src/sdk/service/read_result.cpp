@@ -1,7 +1,7 @@
 
-#include <nemcpp/service/read_result.h>
+#include <xpxchaincpp/service/read_result.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	ReadResult::ReadResult(ReadResultCode code, size_t consumed, std::string_view description):
 		code_(code),

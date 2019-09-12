@@ -5,7 +5,7 @@
 
 #include <type_traits>
 
-namespace xpx_sdk { namespace internal { namespace binary {
+namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	namespace desc {
 		

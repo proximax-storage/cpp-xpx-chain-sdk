@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(nem2-sdk-cpp VERSION 1.0.0)
+project(xpx-chain-sdk-cpp VERSION 1.0.0)
 
 # CMP0068: fallback to older policies for macOS
 cmake_policy(SET CMP0068 OLD)
@@ -8,10 +8,10 @@ cmake_policy(SET CMP0068 OLD)
 # options and features
 #-----------------------------------------------------------------------------
 
-option(NEM2_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
-option(NEM2_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
-option(NEM2_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
-option(NEM2_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
+option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
@@ -56,7 +56,7 @@ conan_cmake_run(REQUIRES
 #-----------------------------------------------------------------------------
 
 file(GLOB_RECURSE sources
-	"include/nemcpp/*.h"
+	"include/xpxchaincpp/*.h"
 	"src/infrastructure/*.h"
 	"src/infrastructure/*.cpp"
 	"src/sdk/*.cpp")
@@ -104,43 +104,43 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
 # targets
 #-----------------------------------------------------------------------------
 
-if (NEM2_SDK_BUILD_STATIC)
-	add_library(nemcpp STATIC "")
-	set_target_properties(nemcpp PROPERTIES
-		OUTPUT_NAME "nemcpp-static")
+if (XPX_CHAIN_SDK_BUILD_STATIC)
+	add_library(xpxchaincpp STATIC "")
+	set_target_properties(xpxchaincpp PROPERTIES
+		OUTPUT_NAME "xpxchaincpp-static")
 else()
 
-	add_library(nemcpp SHARED "")
+	add_library(xpxchaincpp SHARED "")
 
-	set_target_properties(nemcpp PROPERTIES
+	set_target_properties(xpxchaincpp PROPERTIES
 		VERSION ${PROJECT_VERSION}
 		SOVERSION ${PROJECT_VERSION_MAJOR})
 
 	if (MSVC)
-		set_target_properties(nemcpp PROPERTIES
+		set_target_properties(xpxchaincpp PROPERTIES
 			WINDOWS_EXPORT_ALL_SYMBOLS ON)
 	endif()
 endif()
 
 include(GNUInstallDirs)
 
-target_sources(nemcpp PRIVATE ${sources})
+target_sources(xpxchaincpp PRIVATE ${sources})
 
-target_compile_definitions(nemcpp PRIVATE
-	NEM2_USE_STRING_LITERAL_OPERATOR_TEMPLATE=${HAVE_STRING_LITERAL_OPERATOR_TEMPLATE})
+target_compile_definitions(xpxchaincpp PRIVATE
+	XPX_CHAIN_USE_STRING_LITERAL_OPERATOR_TEMPLATE=${HAVE_STRING_LITERAL_OPERATOR_TEMPLATE})
 
-target_include_directories(nemcpp
+target_include_directories(xpxchaincpp
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-if(NEM2_SDK_ENABLE_WEBSOCKETS)
-    target_compile_definitions(nemcpp PRIVATE NEM2_SDK_ENABLE_WEBSOCKETS)
+if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
+    target_compile_definitions(xpxchaincpp PRIVATE XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
 endif()
 
-target_link_libraries(nemcpp
+target_link_libraries(xpxchaincpp
 		CONAN_PKG::rapidjson
 		CONAN_PKG::boost
 		CONAN_PKG::OpenSSL)
@@ -154,13 +154,13 @@ include(CMakePackageConfigHelpers)
 set(package_config_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 set(package_config_prefix ${PROJECT_NAME})
 
-if (NEM2_SDK_BUILD_STATIC)
+if (XPX_CHAIN_SDK_BUILD_STATIC)
 	string(APPEND package_config_dir "-static")
 	string(APPEND package_config_prefix "-static")
 endif()
 
 configure_package_config_file(
-	cmake/nem2-sdk-cpp-config.cmake.in
+	cmake/xpx-chain-sdk-cpp-config.cmake.in
 	"${CMAKE_CURRENT_BINARY_DIR}/${package_config_prefix}-config.cmake"
 	INSTALL_DESTINATION "${package_config_dir}"
 	NO_SET_AND_CHECK_MACRO
@@ -169,12 +169,12 @@ configure_package_config_file(
 write_basic_package_version_file(${package_config_prefix}-config-version.cmake
 	COMPATIBILITY SameMajorVersion)
 
-install(TARGETS nemcpp EXPORT ${package_config_prefix}-targets
+install(TARGETS xpxchaincpp EXPORT ${package_config_prefix}-targets
 	ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
-install(DIRECTORY include/nemcpp
+install(DIRECTORY include/xpxchaincpp
 	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 install(EXPORT ${package_config_prefix}-targets
@@ -191,16 +191,16 @@ install(FILES
 # tests
 #-----------------------------------------------------------------------------
 
-if (NEM2_SDK_BUILD_TESTS)
+if (XPX_CHAIN_SDK_BUILD_TESTS)
 	include(CTest)
 	enable_testing()
 	add_subdirectory(tests)
 endif()
 
-if (NEM2_SDK_BUILD_EXAMPLES)
+if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
 	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
 	target_link_libraries(get_block
-			nemcpp
+			xpxchaincpp
 			CONAN_PKG::rapidjson
 			CONAN_PKG::boost
 			CONAN_PKG::OpenSSL)

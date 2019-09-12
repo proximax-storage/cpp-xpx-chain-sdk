@@ -10,10 +10,10 @@
 #include <limits>
 #include <type_traits>
 
-using namespace xpx_sdk::internal;
-using namespace xpx_sdk::internal::binary;
+using namespace xpx_chain_sdk::internal;
+using namespace xpx_chain_sdk::internal::binary;
 
-namespace xpx_sdk { namespace internal {
+namespace xpx_chain_sdk { namespace internal {
 
 	
 	namespace {
@@ -22,7 +22,7 @@ namespace xpx_sdk { namespace internal {
 		void AppendDtoData(const TDto& dto, std::vector<uint8_t>& data)
 		{
 			if (!Parser::Write(dto, data)) {
-				NEM2_SDK_THROW_2(transaction_error, "failed to serialize transaction",
+				XPX_CHAIN_SDK_THROW_2(transaction_error, "failed to serialize transaction",
 				                 GetTransactionName(dto.template value<"type"_>()),
 				                 (std::is_base_of_v<TransactionDTO, TDto> ? "general" : "embedded"));
 			}
@@ -279,7 +279,7 @@ namespace xpx_sdk { namespace internal {
 		                                   TArgs&&... args)
 		{
 			if (secret.empty()) {
-				NEM2_SDK_THROW(transaction_error, "empty secret in secret proof transaction");
+				XPX_CHAIN_SDK_THROW(transaction_error, "empty secret in secret proof transaction");
 			}
 			
 			dto.template set<"hashAlgorithm"_>(secretHashAlgorithm);
@@ -301,11 +301,11 @@ namespace xpx_sdk { namespace internal {
 		                                TArgs&&... args)
 		{
 			if (mosaics.empty()) {
-				NEM2_SDK_THROW(transaction_error, "empty mosaics in transfer transaction");
+				XPX_CHAIN_SDK_THROW(transaction_error, "empty mosaics in transfer transaction");
 			}
 			
 			if (message.empty()) {
-				NEM2_SDK_THROW(transaction_error, "empty message in transfer transaction");
+				XPX_CHAIN_SDK_THROW(transaction_error, "empty message in transfer transaction");
 			}
 			
 			std::vector<MosaicDTO> dtoMosaics;
@@ -330,7 +330,7 @@ namespace xpx_sdk { namespace internal {
 		                                 TArgs&&... args)
 		{
 			if (embeddedTransactions.empty()) {
-				NEM2_SDK_THROW(transaction_error, "no embedded transactions in aggregate transaction");
+				XPX_CHAIN_SDK_THROW(transaction_error, "no embedded transactions in aggregate transaction");
 			}
 			
 			// Serializing embedded transactions and creating aggregate transaction binary payload.
@@ -511,7 +511,7 @@ namespace xpx_sdk { namespace internal {
 					}
 				default:
 					{
-						NEM2_SDK_THROW_1(transaction_error, "unknown embedded transaction type",
+						XPX_CHAIN_SDK_THROW_1(transaction_error, "unknown embedded transaction type",
 						                 to_underlying_type(embedded->type()));
 					}
 				}
@@ -852,7 +852,7 @@ namespace xpx_sdk { namespace internal {
 
 
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransaction(AccountLinkTransactionAction action,

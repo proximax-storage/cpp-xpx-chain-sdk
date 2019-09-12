@@ -6,7 +6,7 @@
 #include <iterator>
 #include <utility>
 
-namespace xpx_sdk { namespace internal {
+namespace xpx_chain_sdk { namespace internal {
 	
 	namespace {
 		template<typename T>

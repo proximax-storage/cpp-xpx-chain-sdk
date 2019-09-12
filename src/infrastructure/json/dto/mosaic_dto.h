@@ -6,15 +6,15 @@
 */
 #pragma once
 
-#include <nemcpp/model/mosaic/mosaic.h>
-#include <nemcpp/model/mosaic/mosaic_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
+#include <xpxchaincpp/model/mosaic/mosaic_property.h>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/uint64.h>
-#include <nemcpp/model/mosaic/mosaic.h>
-#include <nemcpp/model/mosaic/mosaic_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
+#include <xpxchaincpp/model/mosaic/mosaic_property.h>
 #include <stdint.h>
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
     using internal::json::Uint64;
 
     using MyMosaicPropertyDto = VariadicStruct<

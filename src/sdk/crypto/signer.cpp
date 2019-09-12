@@ -1,6 +1,6 @@
 
-#include <nemcpp/crypto/signer.h>
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/crypto/signer.h>
+#include <xpxchaincpp/crypto/hash.h>
 
 extern "C" {
 #include "third-party/ref10/crypto_verify_32.h"
@@ -16,7 +16,7 @@ extern "C" {
 #define RESTRICT __restrict__
 #endif
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	namespace {
 		constexpr size_t Encoded_Size = Signature_Size / 2;
@@ -51,7 +51,7 @@ namespace xpx_sdk {
 		void CheckS(const uint8_t* encodedS)
 		{
 			if (!(GetSFlags(encodedS) & Is_Reduced)) {
-				NEM2_SDK_THROW(crypto_error, "signature s-part invalid");
+				XPX_CHAIN_SDK_THROW(crypto_error, "signature s-part invalid");
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/account_property_transaction.h>
+#include <xpxchaincpp/model/transaction/account_property_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase, typename TProperty>
 	AccountPropertyRule TAccountPropertyTransaction<TBase, TProperty>::propertyRule() const
@@ -27,7 +27,7 @@ namespace xpx_sdk {
 		case AccountPropertyType::Transaction:
 			return TransactionType::Transaction_Property;
 		default:
-			NEM2_SDK_THROW_1(transaction_error, "unknown property for account property transaction",
+			XPX_CHAIN_SDK_THROW_1(transaction_error, "unknown property for account property transaction",
 			                 to_underlying_type(TProperty::GetType()));
 		}
 	}

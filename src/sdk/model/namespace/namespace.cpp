@@ -1,8 +1,8 @@
 
-#include <nemcpp/model/namespace/namespace.h>
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/model/namespace/namespace.h>
+#include <xpxchaincpp/crypto/hash.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	Namespace::Namespace(std::string_view name, NamespaceId parentId):
 		id_(parentId == Namespace_Base_Id ? GenerateRootId(name) : GenerateChildId(name, parentId)),
@@ -38,7 +38,7 @@ namespace xpx_sdk {
 	NamespaceId Namespace::GenerateChildId(std::string_view name, NamespaceId parentId)
 	{
 		if (name.empty()) {
-			NEM2_SDK_THROW_1(namespace_error, "invalid namespace name size", name.size());
+			XPX_CHAIN_SDK_THROW_1(namespace_error, "invalid namespace name size", name.size());
 		}
 		
 		constexpr uint64_t Namespace_Flag = 1ull << 63;

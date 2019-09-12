@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include <nemcpp/model/account/account_info.h>
-#include <nemcpp/model/account/multisig_info.h>
+#include <xpxchaincpp/model/account/account_info.h>
+#include <xpxchaincpp/model/account/multisig_info.h>
 #include <infrastructure/json/uint64.h>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
-#include <nemcpp/model/account/account_property.h>
-#include <nemcpp/model/account/account_properties.h>
+#include <xpxchaincpp/model/account/account_property.h>
+#include <xpxchaincpp/model/account/account_properties.h>
 
 #include <stdint.h>
 #include <string>
@@ -41,7 +41,7 @@
 
 }*/
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
     using AccountInfoDto = VariadicStruct<
             Field<STR_LITERAL("account"),

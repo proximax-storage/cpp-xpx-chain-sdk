@@ -1,8 +1,8 @@
 
-#include <nemcpp/model/mosaic/mosaic.h>
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
+#include <xpxchaincpp/crypto/hash.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	MosaicId Mosaic::GenerateId(const Key& owner, uint32_t nonce)
 	{

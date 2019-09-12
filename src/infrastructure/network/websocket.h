@@ -8,7 +8,7 @@
 //#include <boost/beast/websocket.hpp>
 //#include <boost/beast/ssl.hpp>
 //
-//namespace xpx_sdk::internal::network {
+//namespace xpx_chain_sdk::internal::network {
 //	namespace asio = boost::asio;
 //	namespace ip = boost::asio::ip;
 //	namespace beast = boost::beast;

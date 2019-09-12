@@ -4,17 +4,17 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "nemcpp/client/account_service.h"
+#include "xpxchaincpp/client/account_service.h"
 #include <infrastructure/utils/deserialization_json.h>
 #include <infrastructure/json/parser.h>
 #include <sstream>
 #include <infrastructure/network/http.h>
 
-using namespace xpx_sdk;
-using namespace xpx_sdk::internal::json::dto;
+using namespace xpx_chain_sdk;
+using namespace xpx_chain_sdk::internal::json::dto;
 
-using xpx_sdk::internal::json::Parser;
-using xpx_sdk::internal::json::dto::from_json;
+using xpx_chain_sdk::internal::json::Parser;
+using xpx_chain_sdk::internal::json::dto::from_json;
 
 AccountService::AccountService(
         std::shared_ptr<Config> config,

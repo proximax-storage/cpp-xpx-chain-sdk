@@ -1,8 +1,8 @@
 
-#include <nemcpp/model/transaction/secret_hash_algorithm.h>
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/model/transaction/secret_hash_algorithm.h>
+#include <xpxchaincpp/crypto/hash.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	Hash256 CalculateSecretHash(RawBuffer secret, SecretHashAlgorithm algorithm)
 	{
@@ -23,6 +23,6 @@ namespace xpx_sdk {
 			break;
 		}
 		
-		NEM2_SDK_THROW_1(crypto_error, "unknown secret hash algorithm", to_underlying_type(algorithm));
+		XPX_CHAIN_SDK_THROW_1(crypto_error, "unknown secret hash algorithm", to_underlying_type(algorithm));
 	}
 }

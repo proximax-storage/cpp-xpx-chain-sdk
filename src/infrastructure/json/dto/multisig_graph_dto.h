@@ -2,9 +2,9 @@
 
 
 #include "account_info_dto.h"
-#include <nemcpp/model/account/multisig_graph.h>
+#include <xpxchaincpp/model/account/multisig_graph.h>
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
     using MultisigLevelDto = VariadicStruct<
             Field<STR_LITERAL("level"), uint32_t >,

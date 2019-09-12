@@ -10,7 +10,7 @@
 //namespace beast = boost::beast;
 //namespace websocket = boost::beast::websocket;
 //
-//using namespace xpx_sdk::internal::network;
+//using namespace xpx_chain_sdk::internal::network;
 //
 //template <typename InternetProtocol>
 //void _connectImpl(
@@ -104,7 +104,7 @@
 //	delete _impl;
 //}
 //
-//namespace xpx_sdk::internal::network {
+//namespace xpx_chain_sdk::internal::network {
 //	std::ostream& operator<<(std::ostream &output, const WebSocket &ws) {
 //		output << ws._impl->receive();
 //		return output;

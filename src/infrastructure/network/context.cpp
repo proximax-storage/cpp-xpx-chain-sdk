@@ -2,7 +2,7 @@
 
 namespace ssl = boost::asio::ssl;
 
-using namespace xpx_sdk::internal::network;
+using namespace xpx_chain_sdk::internal::network;
 
 namespace ssl = boost::asio::ssl;
 

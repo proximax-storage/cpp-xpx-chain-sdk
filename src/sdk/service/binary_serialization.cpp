@@ -1,6 +1,6 @@
 
-#include <nemcpp/service/serialization.h>
-#include <nemcpp/utils/format.h>
+#include <xpxchaincpp/service/serialization.h>
+#include <xpxchaincpp/utils/format.h>
 
 #include "sdk/model/transaction/create_transaction.h"
 #include "sdk/model/transaction/transaction_utils.h"
@@ -13,11 +13,11 @@
 #include <utility>
 #include <vector>
 
-using namespace xpx_sdk::internal;
-using namespace xpx_sdk::internal::binary;
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk::internal;
+using namespace xpx_chain_sdk::internal::binary;
+using namespace xpx_chain_sdk;
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	namespace {
 		
@@ -488,7 +488,7 @@ namespace xpx_sdk {
 		ReadResult result = TryCreateTransactionFromBinary(data, transaction);
 		
 		if (!result || result.consumed() != data.size()) {
-			NEM2_SDK_THROW_1(serialization_error, "failed to deserialize transaction from binary data",
+			XPX_CHAIN_SDK_THROW_1(serialization_error, "failed to deserialize transaction from binary data",
 			                 result.description());
 		}
 		

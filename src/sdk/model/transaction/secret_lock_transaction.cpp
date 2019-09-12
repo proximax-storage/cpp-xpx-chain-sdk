@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/secret_lock_transaction.h>
+#include <xpxchaincpp/model/transaction/secret_lock_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase>
 	const Hash256& TSecretLockTransaction<TBase>::secretHash() const

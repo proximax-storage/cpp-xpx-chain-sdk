@@ -4,25 +4,25 @@
 #include "infrastructure/binary/descriptors.h"
 #include "infrastructure/utils/variadic_struct.h"
 
-#include <nemcpp/types.h>
-#include <nemcpp/model/account/account_property.h>
-#include <nemcpp/model/mosaic/mosaic_property.h>
-#include <nemcpp/model/namespace/namespace.h>
-#include <nemcpp/model/transaction/account_link_transaction_types.h>
-#include <nemcpp/model/transaction/account_property_transaction_types.h>
-#include <nemcpp/model/transaction/alias_transaction_types.h>
-#include <nemcpp/model/transaction/modify_multisig_account_transaction_types.h>
-#include <nemcpp/model/transaction/mosaic_supply_change_transaction_types.h>
-#include <nemcpp/model/transaction/secret_hash_algorithm.h>
-#include <nemcpp/model/transaction/transaction_type.h>
+#include <xpxchaincpp/types.h>
+#include <xpxchaincpp/model/account/account_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic_property.h>
+#include <xpxchaincpp/model/namespace/namespace.h>
+#include <xpxchaincpp/model/transaction/account_link_transaction_types.h>
+#include <xpxchaincpp/model/transaction/account_property_transaction_types.h>
+#include <xpxchaincpp/model/transaction/alias_transaction_types.h>
+#include <xpxchaincpp/model/transaction/modify_multisig_account_transaction_types.h>
+#include <xpxchaincpp/model/transaction/mosaic_supply_change_transaction_types.h>
+#include <xpxchaincpp/model/transaction/secret_hash_algorithm.h>
+#include <xpxchaincpp/model/transaction/transaction_type.h>
 
 #include <array>
 #include <string>
 #include <vector>
 
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
-namespace xpx_sdk { namespace internal { namespace binary {
+namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:
 	//

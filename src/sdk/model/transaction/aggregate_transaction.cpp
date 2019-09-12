@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/aggregate_transaction.h>
+#include <xpxchaincpp/model/transaction/aggregate_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 
 	bool AggregateTransaction::isComplete() const
 	{

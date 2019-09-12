@@ -1,12 +1,12 @@
 
-#include "nemcpp/client/network_service.h"
+#include "xpxchaincpp/client/network_service.h"
 #include <infrastructure/utils/deserialization_json.h>
 #include <infrastructure/network/http.h>
 
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
-using xpx_sdk::internal::json::dto::NetworkInfoDto;
-using xpx_sdk::internal::json::dto::from_json;
+using xpx_chain_sdk::internal::json::dto::NetworkInfoDto;
+using xpx_chain_sdk::internal::json::dto::from_json;
 
 
 NetworkService::NetworkService(

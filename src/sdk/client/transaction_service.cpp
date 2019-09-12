@@ -1,11 +1,11 @@
 #include <infrastructure/network/http.h>
-#include "nemcpp/client/transaction_service.h"
+#include "xpxchaincpp/client/transaction_service.h"
 #include <infrastructure/utils/deserialization_json.h>
-#include <nemcpp/utils/bytes_to_string.h>
+#include <xpxchaincpp/utils/bytes_to_string.h>
 #include <iostream>
 
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 
 	using internal::json::dto::from_json;
 	using internal::json::dto::transaction_from_json;

@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-namespace xpx_sdk { namespace internal { namespace binary {
+namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	// Some offsets in transaction binary data.
 	

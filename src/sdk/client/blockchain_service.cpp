@@ -5,15 +5,15 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include <nemcpp/client.h>
-#include <nemcpp/client/blockchain_service.h>
+#include <xpxchaincpp/client.h>
+#include <xpxchaincpp/client/blockchain_service.h>
 #include <infrastructure/network/http.h>
 #include <infrastructure/network/context.h>
 #include <infrastructure/utils/deserialization_json.h>
-#include <nemcpp/model/blockchain/height.h>
+#include <xpxchaincpp/model/blockchain/height.h>
 #include <iostream>
 
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
 using internal::json::dto::from_json;
 using internal::json::dto::transactions_from_json;

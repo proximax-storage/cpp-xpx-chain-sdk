@@ -1,12 +1,12 @@
-#include <nemcpp/sdk.h>
+#include <xpxchaincpp/sdk.h>
 
 #include <iostream>
-#include <nemcpp/model/message/message.h>
+#include <xpxchaincpp/model/message/message.h>
 #include <chrono>
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
 int main() {
-	xpx_sdk::Config config = xpx_sdk::GetConfig();
+	xpx_chain_sdk::Config config = xpx_chain_sdk::GetConfig();
 	config.nodeAddress = "bcstage1.xpxsirius.io";
 	config.nodeAddress = "0.0.0.0";
 	config.port = "3000";
@@ -21,7 +21,7 @@ int main() {
 
 
 
-	auto client = xpx_sdk::getClient(std::make_shared<xpx_sdk::Config>(config));
+	auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
 
 	auto score = client->blockchain()->getCurrentScore();
 	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;
@@ -69,7 +69,7 @@ int main() {
 //	}
 
 //	auto transactions = client -> account() -> getAccountTransactions(publicKey);
-//	auto transaction = reinterpret_cast<xpx_sdk::transactions_info::TransferTransaction*>(transactions.transactions[0].get());
+//	auto transaction = reinterpret_cast<xpx_chain_sdk::transactions_info::TransferTransaction*>(transactions.transactions[0].get());
 //
 //	std::cout << "Transaction number: " << transactions.transactions.size() << std::endl;
 //	std::cout << "Transaction version " << transaction -> version << std::endl;
@@ -79,19 +79,19 @@ int main() {
 //	}
 //	std::cout << std::endl;
 
-	xpx_sdk::MosaicPropertyContainer propertyContainer;
+	xpx_chain_sdk::MosaicPropertyContainer propertyContainer;
 
-	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Divisibility, 6});
-	propertyContainer.insert(xpx_sdk::MosaicProperty{xpx_sdk::MosaicPropertyId::Flags, 4});
+	propertyContainer.insert(xpx_chain_sdk::MosaicProperty{xpx_chain_sdk::MosaicPropertyId::Divisibility, 6});
+	propertyContainer.insert(xpx_chain_sdk::MosaicProperty{xpx_chain_sdk::MosaicPropertyId::Flags, 4});
 
-	xpx_sdk::MosaicProperties mosaicProperties(propertyContainer);
+	xpx_chain_sdk::MosaicProperties mosaicProperties(propertyContainer);
 
-	auto mosaicDefinitionTransaction = xpx_sdk::CreateMosaicDefinitionTransaction(
+	auto mosaicDefinitionTransaction = xpx_chain_sdk::CreateMosaicDefinitionTransaction(
 			5,
 			Mosaic::GenerateId(ParseByteArray<Key>(publicKey), 5),
 			MosaicFlags::Supply_Mutable, mosaicProperties);
 
-	xpx_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
+	xpx_chain_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
 		if(reason == PrivateKeySupplierReason::Transaction_Signing) {
 			Key key;
 			ParseHexStringIntoContainer(privateKeyString.c_str(), privateKeyString.size(), key);

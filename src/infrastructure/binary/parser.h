@@ -5,7 +5,7 @@
 #include "infrastructure/utils/byte_stream.h"
 #include "infrastructure/utils/variadic_struct.h"
 
-#include <nemcpp/utils/hashable_array.h>
+#include <xpxchaincpp/utils/hashable_array.h>
 
 #include <algorithm>
 #include <array>
@@ -15,12 +15,12 @@
 #include <utility>
 #include <vector>
 
-namespace xpx_sdk { namespace internal { namespace binary {
+namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:
 	//
 	// 1. arithmetic (int, double, etc) and enums
-	// 2. std::array or xpx_sdk::HashableArray which have fixed size
+	// 2. std::array or xpx_chain_sdk::HashableArray which have fixed size
 	// 3. std::string which requires size descriptor and treats it as string length
 	// 4. std::vector which requires size descriptor and treats it as elements count
 	// 5. other binary DTOs

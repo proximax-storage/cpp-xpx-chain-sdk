@@ -1,7 +1,7 @@
 
-#include <nemcpp/config.h>
+#include <xpxchaincpp/config.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	Config& GetConfig()
 	{

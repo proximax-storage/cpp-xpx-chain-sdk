@@ -13,36 +13,36 @@
 #include <infrastructure/json/dto/network_info_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
 
-#include <nemcpp/model/blockchain/block.h>
-#include <nemcpp/model/blockchain/score.h>
-#include <nemcpp/model/blockchain/height.h>
-#include <nemcpp/model/blockchain/storage_info.h>
-#include <nemcpp/model/blockchain/multiple_block.h>
-#include <nemcpp/model/mosaic/multiple_mosaic.h>
-#include <nemcpp/model/mosaic/mosaic.h>
-#include <nemcpp/model/account/account_info.h>
-#include <nemcpp/model/mosaic/mosaic_name.h>
-#include <nemcpp/model/mosaic/mosaic_names.h>
-#include <nemcpp/model/namespace/namespace_info.h>
-#include <nemcpp/model/namespace/namespace_name.h>
-#include <nemcpp/model/namespace/namespace_names.h>
-#include <nemcpp/model/namespace/multiple_namespace_info.h>
-#include <nemcpp/model/account/account_properties.h>
-#include <nemcpp/model/network/network_info.h>
-#include <nemcpp/model/transaction_simple/transaction.h>
-#include <nemcpp/model/transaction_simple/transaction_status.h>
-#include <nemcpp/model/transaction_simple/transaction_info.h>
+#include <xpxchaincpp/model/blockchain/block.h>
+#include <xpxchaincpp/model/blockchain/score.h>
+#include <xpxchaincpp/model/blockchain/height.h>
+#include <xpxchaincpp/model/blockchain/storage_info.h>
+#include <xpxchaincpp/model/blockchain/multiple_block.h>
+#include <xpxchaincpp/model/mosaic/multiple_mosaic.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
+#include <xpxchaincpp/model/account/account_info.h>
+#include <xpxchaincpp/model/mosaic/mosaic_name.h>
+#include <xpxchaincpp/model/mosaic/mosaic_names.h>
+#include <xpxchaincpp/model/namespace/namespace_info.h>
+#include <xpxchaincpp/model/namespace/namespace_name.h>
+#include <xpxchaincpp/model/namespace/namespace_names.h>
+#include <xpxchaincpp/model/namespace/multiple_namespace_info.h>
+#include <xpxchaincpp/model/account/account_properties.h>
+#include <xpxchaincpp/model/network/network_info.h>
+#include <xpxchaincpp/model/transaction_simple/transaction.h>
+#include <xpxchaincpp/model/transaction_simple/transaction_status.h>
+#include <xpxchaincpp/model/transaction_simple/transaction_info.h>
 
 
 
-#include <nemcpp/exceptions.h>
-#include <nemcpp/model/account/multiple_account_info.h>
-#include <nemcpp/model/transaction_simple/transaction_container.h>
+#include <xpxchaincpp/exceptions.h>
+#include <xpxchaincpp/model/account/multiple_account_info.h>
+#include <xpxchaincpp/model/transaction_simple/transaction_container.h>
 
 
-using namespace xpx_sdk::transactions_info;
+using namespace xpx_chain_sdk::transactions_info;
 
-namespace xpx_sdk { namespace  internal { namespace json {
+namespace xpx_chain_sdk { namespace  internal { namespace json {
     namespace dto {
         template<typename Object, typename ObjectDto>
         Object fromDto(const ObjectDto& dto);
@@ -53,7 +53,7 @@ namespace xpx_sdk { namespace  internal { namespace json {
 
             auto result = Parser::Read(dto, jsonStr);
             if (!result) {
-                NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+                XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
             }
 
             return fromDto<Object, ObjectDto>(dto);

@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/account/public_account.h>
+#include <xpxchaincpp/model/account/public_account.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	PublicAccount::PublicAccount(const Key& publicKey, NetworkIdentifier networkId):
 		publicKey_(publicKey),

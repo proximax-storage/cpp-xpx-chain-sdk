@@ -1,8 +1,8 @@
 
-#include <nemcpp/model/account/account.h>
-#include <nemcpp/model/transaction/transaction_signing.h>
+#include <xpxchaincpp/model/account/account.h>
+#include <xpxchaincpp/model/transaction/transaction_signing.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	Account::Account(PrivateKeySupplier privateKeySupplier, NetworkIdentifier networkId):
 		privateKeySupplier_(privateKeySupplier),
@@ -46,7 +46,7 @@ namespace xpx_sdk {
 	void Account::signTransaction(Transaction* transaction) const
 	{
 		if (networkId_ != transaction->networkId()) {
-			NEM2_SDK_THROW_2(account_error, "account and transaction network ids do not match",
+			XPX_CHAIN_SDK_THROW_2(account_error, "account and transaction network ids do not match",
 			                 to_underlying_type(networkId_),
 			                 to_underlying_type(transaction->networkId()));
 		}
@@ -58,7 +58,7 @@ namespace xpx_sdk {
 	Signature Account::cosignAggregateTransaction(const AggregateTransaction* transaction) const
 	{
 		if (networkId_ != transaction->networkId()) {
-			NEM2_SDK_THROW_2(account_error, "account and transaction network ids do not match",
+			XPX_CHAIN_SDK_THROW_2(account_error, "account and transaction network ids do not match",
 			                 to_underlying_type(networkId_),
 			                 to_underlying_type(transaction->networkId()));
 		}
@@ -72,7 +72,7 @@ namespace xpx_sdk {
 		auto privateKey = privateKeySupplier_(reason, std::move(param));
 		
 		if (!privateKey) {
-			NEM2_SDK_THROW(account_error, "failed to obtain private key");
+			XPX_CHAIN_SDK_THROW(account_error, "failed to obtain private key");
 		}
 		
 		if (!publicAccount_) {

@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace xpx_sdk { namespace internal { namespace json {
+namespace xpx_chain_sdk { namespace internal { namespace json {
 
 	template<typename T>
 	class Hex {

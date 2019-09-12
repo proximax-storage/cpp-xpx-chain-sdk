@@ -4,7 +4,7 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "nemcpp/client/namespace_service.h"
+#include "xpxchaincpp/client/namespace_service.h"
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/multiple_namespace_dto.h>
 
@@ -14,11 +14,11 @@
 #include <infrastructure/utils/deserialization_json.h>
 #include <infrastructure/network/http.h>
 
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
 
-using xpx_sdk::internal::json::Parser;
-using xpx_sdk::internal::json::dto::from_json;
+using xpx_chain_sdk::internal::json::Parser;
+using xpx_chain_sdk::internal::json::dto::from_json;
 
 NamespaceService::NamespaceService(
         std::shared_ptr<Config> config,

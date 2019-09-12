@@ -11,13 +11,13 @@
 #include <vector>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/uint64.h>
-#include <nemcpp/model/namespace/namespace_info.h>
+#include <xpxchaincpp/model/namespace/namespace_info.h>
 #include <infrastructure/json/descriptors.h>
 
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
-    using xpx_sdk::internal::json::Uint64;
+    using xpx_chain_sdk::internal::json::Uint64;
 
     using AliasDto = VariadicStruct<
             Field<STR_LITERAL("type"), uint64_t>,

@@ -1,6 +1,6 @@
 
-#include <nemcpp/crypto/key_pair.h>
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/crypto/key_pair.h>
+#include <xpxchaincpp/crypto/hash.h>
 
 extern "C" {
 #include "third-party/ref10/ge.h"
@@ -8,7 +8,7 @@ extern "C" {
 
 #include <utility>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	KeyPair::KeyPair(PrivateKey&& privateKey):
 		privateKey_(std::move(privateKey))

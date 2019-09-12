@@ -43,9 +43,9 @@
 }
  */
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
-	using Uint64 = xpx_sdk::internal::json::Uint64;
+	using Uint64 = xpx_chain_sdk::internal::json::Uint64;
 
     using BlockMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,

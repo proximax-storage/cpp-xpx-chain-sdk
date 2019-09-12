@@ -5,8 +5,8 @@
 */
 
 #include <infrastructure/json/dto/mosaic_dto.h>
-#include <nemcpp/client.h>
-#include <nemcpp/client/mosaic_service.h>
+#include <xpxchaincpp/client.h>
+#include <xpxchaincpp/client/mosaic_service.h>
 
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
 #include <infrastructure/json/parser.h>
@@ -16,8 +16,8 @@
 #include <sdk/utils/hex_processing.h>
 #include <infrastructure/network/http.h>
 
-using namespace xpx_sdk;
-using xpx_sdk::internal::json::Parser;
+using namespace xpx_chain_sdk;
+using xpx_chain_sdk::internal::json::Parser;
 using internal::json::dto::from_json;
 
 using internal::json::dto::MosaicInfoDto;

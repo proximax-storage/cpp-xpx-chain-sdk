@@ -1,17 +1,17 @@
 
-#include <nemcpp/crypto/private_key.h>
-#include <nemcpp/crypto/secure_zero.h>
+#include <xpxchaincpp/crypto/private_key.h>
+#include <xpxchaincpp/crypto/secure_zero.h>
 
 #include <algorithm>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	PrivateKey::PrivateKey(uint8_t* data, size_t size)
 	{
 		SecureZeroGuard guard({ data, size });
 		
 		if (size != key_.size()) {
-			NEM2_SDK_THROW_1(crypto_error, "invalid private key size", size);
+			XPX_CHAIN_SDK_THROW_1(crypto_error, "invalid private key size", size);
 		}
 		
 		std::copy(data, data + size, key_.begin());

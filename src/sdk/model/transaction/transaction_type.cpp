@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/transaction_type.h>
+#include <xpxchaincpp/model/transaction/transaction_type.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	const char* GetTransactionName(TransactionType type)
 	{

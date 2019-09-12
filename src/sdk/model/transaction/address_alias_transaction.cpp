@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/address_alias_transaction.h>
+#include <xpxchaincpp/model/transaction/address_alias_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase>
 	const Address& TAddressAliasTransaction<TBase>::aliasedAddress() const

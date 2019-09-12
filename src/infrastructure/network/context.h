@@ -2,7 +2,7 @@
 
 #include <boost/asio/ssl.hpp>
 
-namespace xpx_sdk::internal::network {
+namespace xpx_chain_sdk::internal::network {
 	class Context {
 	public:
 		Context();

@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/register_namespace_transaction.h>
+#include <xpxchaincpp/model/transaction/register_namespace_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase>
 	const Namespace& TRegisterNamespaceTransaction<TBase>::ns() const

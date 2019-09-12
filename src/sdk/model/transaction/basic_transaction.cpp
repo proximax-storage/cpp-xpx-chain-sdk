@@ -1,10 +1,10 @@
 
-#include <nemcpp/model/transaction/basic_transaction.h>
-#include <nemcpp/config.h>
+#include <xpxchaincpp/model/transaction/basic_transaction.h>
+#include <xpxchaincpp/config.h>
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	BasicTransaction::BasicTransaction(TransactionType type, uint32_t fullVersion, const std::optional<Key>& signer):
 		signer_(this, signer),
@@ -61,6 +61,6 @@ namespace xpx_sdk {
 	
 	void BasicTransaction::initSigner(std::optional<PublicAccount>& value)
 	{
-		NEM2_SDK_THROW(transaction_error, "signer is not initialized");
+		XPX_CHAIN_SDK_THROW(transaction_error, "signer is not initialized");
 	}
 }

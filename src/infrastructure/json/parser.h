@@ -6,9 +6,9 @@
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/utils/variadic_struct.h"
 
-#include <nemcpp/utils/format.h>
-#include <nemcpp/utils/hashable_array.h>
-#include <nemcpp/utils/noncopyable.h>
+#include <xpxchaincpp/utils/format.h>
+#include <xpxchaincpp/utils/hashable_array.h>
+#include <xpxchaincpp/utils/noncopyable.h>
 
 #include <rapidjson/document.h>
 #include <rapidjson/pointer.h>
@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-namespace xpx_sdk { namespace internal { namespace json {
+namespace xpx_chain_sdk { namespace internal { namespace json {
 	
 	enum class OutputMode: uint8_t {
 		Default = 0,

@@ -1,7 +1,7 @@
 
 #include "infrastructure/binary/parser.h"
 
-namespace xpx_sdk { namespace internal { namespace binary {
+namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	ParseResult::ParseResult(bool result, size_t processedSize):
 		result_(result),

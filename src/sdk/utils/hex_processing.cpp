@@ -1,7 +1,7 @@
 #include "hex_processing.h"
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	std::string int_to_hex(uint64_t id) {
 		std::stringstream stream;
 		stream << std::hex << id;

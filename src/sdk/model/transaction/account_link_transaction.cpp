@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/account_link_transaction.h>
+#include <xpxchaincpp/model/transaction/account_link_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase>
 	AccountLinkTransactionAction TAccountLinkTransaction<TBase>::action() const

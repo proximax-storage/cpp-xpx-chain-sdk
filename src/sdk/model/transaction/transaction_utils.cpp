@@ -2,13 +2,13 @@
 #include "sdk/model/transaction/transaction_utils.h"
 #include "infrastructure/binary/offsets.h"
 
-#include <nemcpp/crypto/hash.h>
-#include <nemcpp/model/transaction/aggregate_transaction.h>
+#include <xpxchaincpp/crypto/hash.h>
+#include <xpxchaincpp/model/transaction/aggregate_transaction.h>
 
 #include <cassert>
 
-using namespace xpx_sdk;
-namespace xpx_sdk { namespace internal {
+using namespace xpx_chain_sdk;
+namespace xpx_chain_sdk { namespace internal {
 	
 	uint32_t MakeTransactionFullVersion(uint32_t version, NetworkIdentifier networkId)
 	{
@@ -27,7 +27,7 @@ namespace xpx_sdk { namespace internal {
 
 	RawBuffer GetTransactionSignedData(const Transaction* transaction)
 	{
-		using namespace xpx_sdk::internal::binary;
+		using namespace xpx_chain_sdk::internal::binary;
 
 		const auto& data = transaction->binary();
 		assert(data.size() >= Tx_Signed_Data_Start);

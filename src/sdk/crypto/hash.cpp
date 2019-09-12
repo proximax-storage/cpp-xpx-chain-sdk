@@ -1,5 +1,5 @@
 
-#include <nemcpp/crypto/hash.h>
+#include <xpxchaincpp/crypto/hash.h>
 
 extern "C" {
 #include "third-party/ripemd160/ripemd160.h"
@@ -9,7 +9,7 @@ extern "C" {
 
 #include <cstring>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	namespace {
 		Keccak_HashInstance* CastToKeccakHashInstance(uint8_t* hashInstance)

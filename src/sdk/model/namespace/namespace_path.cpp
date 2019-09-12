@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/namespace/namespace_path.h>
+#include <xpxchaincpp/model/namespace/namespace_path.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	NamespacePath::NamespacePath(std::string_view fullName): fullName_{ fullName }
 	{
@@ -42,7 +42,7 @@ namespace xpx_sdk {
 	const Namespace& NamespacePath::operator[](size_t pos) const
 	{
 		if (pos >= size()) {
-			NEM2_SDK_THROW_2(namespace_error, "namespace path index is out of range", pos, size());
+			XPX_CHAIN_SDK_THROW_2(namespace_error, "namespace path index is out of range", pos, size());
 		}
 		
 		return subnamespaces_[pos];

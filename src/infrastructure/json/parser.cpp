@@ -5,7 +5,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
-namespace xpx_sdk { namespace internal { namespace json {
+namespace xpx_chain_sdk { namespace internal { namespace json {
 	
 	ParseResult::ParseResult(bool result, std::string_view invalidField):
 		result_(result),

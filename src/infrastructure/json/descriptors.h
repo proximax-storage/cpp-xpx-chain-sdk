@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace xpx_sdk { namespace internal { namespace json {
+namespace xpx_chain_sdk { namespace internal { namespace json {
 	
 	namespace desc {
 		

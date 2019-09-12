@@ -1,0 +1,20 @@
+# The following import targets are created in NEM2:: namespace:
+#
+#  xpxchaincpp
+#
+# This module also sets the following variables in your project:
+#
+#   xpx-chain-sdk-cpp_FOUND
+#   xpx-chain-sdk-cpp_INCLUDE_DIR
+#   xpx-chain-sdk-cpp_LIBRARY
+
+@PACKAGE_INIT@
+
+if (NOT TARGET xpxchaincpp)
+	include("${CMAKE_CURRENT_LIST_DIR}/@package_config_prefix@-targets.cmake")
+	
+	if (TARGET NEM2::xpxchaincpp)
+		get_target_property(@PROJECT_NAME@_INCLUDE_DIR NEM2::xpxchaincpp INTERFACE_INCLUDE_DIRECTORIES)
+		get_target_property(@PROJECT_NAME@_LIBRARY NEM2::xpxchaincpp LOCATION)
+	endif()
+endif()

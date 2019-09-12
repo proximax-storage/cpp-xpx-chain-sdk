@@ -18,10 +18,10 @@
 *** along with Catapult. If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include <nemcpp/utils/HexParser.h>
+#include <xpxchaincpp/utils/HexParser.h>
 #include <string>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 
 	namespace {
 		bool TryParseNibble(const char ch, int& nibble) {
@@ -42,7 +42,7 @@ namespace xpx_sdk {
 		uint8_t by;
 		if (!TryParseByte(ch1, ch2, by)) {
 			auto byteString = std::string{ ch1, ch2 };
-			NEM2_SDK_THROW_1(format_error, "unknown hex character in string", byteString);
+			XPX_CHAIN_SDK_THROW_1(format_error, "unknown hex character in string", byteString);
 		}
 
 		return by;

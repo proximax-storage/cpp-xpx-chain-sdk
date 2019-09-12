@@ -1,9 +1,9 @@
 
-#include <nemcpp/model/mosaic/mosaic_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic_property.h>
 
 #include <utility>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	bool operator==(const MosaicProperty& lhs, const MosaicProperty& rhs)
 	{
@@ -20,7 +20,7 @@ namespace xpx_sdk {
 	{
 		for (uint32_t i = 0; i < to_underlying_type(MosaicPropertyId::Divisibility); ++i) {
 			if (!hasProperty(static_cast<MosaicPropertyId>(i))) {
-				NEM2_SDK_THROW_1(mosaic_error, "required property is not found", i);
+				XPX_CHAIN_SDK_THROW_1(mosaic_error, "required property is not found", i);
 			}
 		}
 	}

@@ -1,13 +1,13 @@
 
-#include <nemcpp/model/transaction/transaction_signing.h>
-#include <nemcpp/crypto/signer.h>
-#include <nemcpp/utils/HexParser.h>
+#include <xpxchaincpp/model/transaction/transaction_signing.h>
+#include <xpxchaincpp/crypto/signer.h>
+#include <xpxchaincpp/utils/HexParser.h>
 
 #include "sdk/model/transaction/transaction_utils.h"
 #include "infrastructure/binary/offsets.h"
 #include "infrastructure/utils/byte_stream.h"
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 
 	Signature CalculateTransactionSignature(const Transaction* transaction,
 	                                        const KeyPair& keyPair)

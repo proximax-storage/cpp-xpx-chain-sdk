@@ -1,13 +1,13 @@
 #include "infrastructure/network/context.h"
 #include "infrastructure/network/http.h"
-#include <nemcpp/client.h>
-#include <nemcpp/client/blockchain_service.h>
-#include <nemcpp/client/mosaic_service.h>
-#include <nemcpp/client/namespace_service.h>
-#include <nemcpp/client/network_service.h>
-#include <nemcpp/client/account_service.h>
+#include <xpxchaincpp/client.h>
+#include <xpxchaincpp/client/blockchain_service.h>
+#include <xpxchaincpp/client/mosaic_service.h>
+#include <xpxchaincpp/client/namespace_service.h>
+#include <xpxchaincpp/client/network_service.h>
+#include <xpxchaincpp/client/account_service.h>
 
-using namespace xpx_sdk;
+using namespace xpx_chain_sdk;
 
 class Client : public IClient {
 public:
@@ -64,7 +64,7 @@ private:
 	std::shared_ptr<TransactionService> _transaction;
 };
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config) {
 		return std::make_shared<Client>(config);
 	}

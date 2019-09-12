@@ -1,5 +1,5 @@
 #define __STDC_WANT_LIB_EXT1__ 1
-#include <nemcpp/crypto/secure_zero.h>
+#include <xpxchaincpp/crypto/secure_zero.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -7,7 +7,7 @@
 #include <string.h>
 #endif
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	void SecureZero(MutableRawBuffer buffer)
 	{

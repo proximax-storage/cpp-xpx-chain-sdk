@@ -1,9 +1,9 @@
 #include "deserialization_json.h"
 
-using namespace xpx_sdk::internal::json;
-using namespace xpx_sdk::internal::json::dto;
+using namespace xpx_chain_sdk::internal::json;
+using namespace xpx_chain_sdk::internal::json::dto;
 
-using namespace xpx_sdk::transactions_info;
+using namespace xpx_chain_sdk::transactions_info;
 
 
 #define EXTRACT_TRANSACTION(transaction, dto) \
@@ -19,7 +19,7 @@ transaction.signer = dto.value<"signer"_>(); \
 transaction.version = dto.value<"version"_>(); \
 transaction.type = dto.value<"type"_>();
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 
 
 	std::vector<std::string> parseJsonArray(const std::string& jsonStr, const char lbrace = '{', const char rbrace = '}') {
@@ -94,7 +94,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), TransferTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 
 				auto transaction = fromDto<TransferTransaction, TransferTransactionDto>(t_dto.value<"transaction"_>());
@@ -106,7 +106,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicDefinitionTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<MosaicDefinitionTransaction, MosaicDefinitionTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -118,7 +118,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicSupplyChangeTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<MosaicSupplyChangeTransaction, MosaicSupplyChangeTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -130,7 +130,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), RegisterNamespaceTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<RegisterNamespaceTransaction, RegisterNamespaceTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -142,7 +142,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AddressAliasTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<AddressAliasTransaction, AddressAliasTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -154,7 +154,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), MosaicAliasTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -166,7 +166,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), ModifyMultisigAccountTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<ModifyMultisigAccountTransaction, ModifyMultisigAccountTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -184,7 +184,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AggregateTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<AggregateTransaction, AggregateTransactionDto>(
 						t_dto.value<"transaction"_>()); /// Don't know the difference between this two, so need to check.
@@ -196,7 +196,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), LockFundsTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<LockFundsTransaction, LockFundsTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -208,7 +208,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AccountAddressPropertyTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -220,7 +220,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AccountMosaicPropertyTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<AccountMosaicPropertyTransaction, AccountMosaicPropertyTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -232,7 +232,7 @@ namespace xpx_sdk::internal::json::dto {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AccountTransactionPropertyTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 				auto transaction = fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto>(
 						t_dto.value<"transaction"_>());
@@ -245,7 +245,7 @@ namespace xpx_sdk::internal::json::dto {
 
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 
 				auto transaction = fromDto<SecretLockTransaction, SecretLockTransactionDto>(
@@ -259,7 +259,7 @@ namespace xpx_sdk::internal::json::dto {
 
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 
 				auto transaction = fromDto<SecretProofTransaction, SecretProofTransactionDto>(
@@ -273,7 +273,7 @@ namespace xpx_sdk::internal::json::dto {
 
 				auto err = Parser::Read(t_dto, jsonStr);
 				if (!err) {
-					NEM2_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
 				}
 
 				auto transaction = fromDto<AccountLinkTransaction, AccountLinkTransactionDto>(
@@ -371,7 +371,7 @@ namespace xpx_sdk::internal::json::dto {
         mosaicData.height = dto.value<"height"_>();
         mosaicData.owner = dto.value<"owner"_>();
         for (auto& property : dto.value<"properties"_>()) {
-            xpx_sdk::MosaicProperty tmp = {MosaicPropertyId(property.value<"id"_>()), property.value<"value"_>()};
+            xpx_chain_sdk::MosaicProperty tmp = {MosaicPropertyId(property.value<"id"_>()), property.value<"value"_>()};
             mosaicData.properties.push_back(tmp);
         }
         return mosaicData;
@@ -712,7 +712,7 @@ namespace xpx_sdk::internal::json::dto {
 
 	template<>
 	transactions_info::EmbeddedTransaction fromDto<transactions_info::EmbeddedTransaction, EmbeddedTransactionDto >(const EmbeddedTransactionDto & dto) {
-		xpx_sdk::transactions_info::EmbeddedTransaction transaction;
+		xpx_chain_sdk::transactions_info::EmbeddedTransaction transaction;
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 		return transaction;
 	}

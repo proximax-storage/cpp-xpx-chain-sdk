@@ -1,7 +1,7 @@
 
-#include <nemcpp/model/transaction/transfer_transaction.h>
+#include <xpxchaincpp/model/transaction/transfer_transaction.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	template<typename TBase>
 	const Address& TTransferTransaction<TBase>::recipient() const

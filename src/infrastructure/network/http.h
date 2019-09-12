@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace xpx_sdk::internal::network {
+namespace xpx_chain_sdk::internal::network {
 
 	enum class HTTPRequestMethod {
 		GET,

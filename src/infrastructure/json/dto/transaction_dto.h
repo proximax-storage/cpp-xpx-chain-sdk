@@ -4,18 +4,18 @@
 #include "infrastructure/json/descriptors.h"
 #include "infrastructure/utils/variadic_struct.h"
 
-#include <nemcpp/types.h>
-#include <nemcpp/model/account/account_property.h>
-#include <nemcpp/model/mosaic/mosaic_property.h>
-#include <nemcpp/model/mosaic/mosaic.h>
-#include <nemcpp/model/namespace/namespace.h>
-#include <nemcpp/model/transaction/account_link_transaction_types.h>
-#include <nemcpp/model/transaction/account_property_transaction_types.h>
-#include <nemcpp/model/transaction/alias_transaction_types.h>
-#include <nemcpp/model/transaction/modify_multisig_account_transaction_types.h>
-#include <nemcpp/model/transaction/mosaic_supply_change_transaction_types.h>
-#include <nemcpp/model/transaction/secret_hash_algorithm.h>
-#include <nemcpp/model/transaction/transaction_type.h>
+#include <xpxchaincpp/types.h>
+#include <xpxchaincpp/model/account/account_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic_property.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
+#include <xpxchaincpp/model/namespace/namespace.h>
+#include <xpxchaincpp/model/transaction/account_link_transaction_types.h>
+#include <xpxchaincpp/model/transaction/account_property_transaction_types.h>
+#include <xpxchaincpp/model/transaction/alias_transaction_types.h>
+#include <xpxchaincpp/model/transaction/modify_multisig_account_transaction_types.h>
+#include <xpxchaincpp/model/transaction/mosaic_supply_change_transaction_types.h>
+#include <xpxchaincpp/model/transaction/secret_hash_algorithm.h>
+#include <xpxchaincpp/model/transaction/transaction_type.h>
 #include "mosaic_dto.h"
 #include <infrastructure/json/hex.h>
 
@@ -24,7 +24,7 @@
 #include <vector>
 
 
-namespace xpx_sdk::internal::json::dto {
+namespace xpx_chain_sdk::internal::json::dto {
 	// Json Dtos should contain only following types:
 	//
 	// 1. arithmetic (int, double, etc) and enums

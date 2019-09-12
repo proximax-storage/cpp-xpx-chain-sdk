@@ -1,8 +1,8 @@
 
-#include <nemcpp/utils/network_time.h>
-#include <nemcpp/config.h>
+#include <xpxchaincpp/utils/network_time.h>
+#include <xpxchaincpp/config.h>
 
-namespace xpx_sdk {
+namespace xpx_chain_sdk {
 	
 	network_clock::time_point network_clock::now()
 	{
