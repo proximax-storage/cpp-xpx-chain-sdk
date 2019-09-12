@@ -64,10 +64,10 @@ You can also use this variables (not recommended):
 
 ## Contribution ##
 
-We'd love to get more people involved in the project. Please feel free to [raise issue](https://github.com/proximax-storage/java-xpx-chain-sdk/issues/new) or PR and we'll review your contribution.
+We'd love to get more people involved in the project. Please feel free to [raise issue](https://github.com/proximax-storage/cpp-xpx-chain-sdk/issues/new) or PR and we'll review your contribution.
     
 ## License ##
 
-Project is licensed under Apache License Version 2.0. See [LICENSE](https://github.com/proximax-storage/java-xpx-chain-sdk/blob/master/LICENSE) file for details.
+Project is licensed under Apache License Version 2.0. See [LICENSE](https://github.com/proximax-storage/cpp-xpx-chain-sdk/blob/master/LICENSE) file for details.
 
 <p align="right"><i><sub>Copyright (c) 2019 ProximaX Limited</sub></i></p>
