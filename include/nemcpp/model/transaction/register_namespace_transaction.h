@@ -11,7 +11,7 @@
 #include <string_view>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Namespace registration transaction base class.
 	template<typename TBase>

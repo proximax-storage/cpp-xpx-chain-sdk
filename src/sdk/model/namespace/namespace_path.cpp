@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/namespace/namespace_path.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	NamespacePath::NamespacePath(std::string_view fullName): fullName_{ fullName }
 	{

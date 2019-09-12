@@ -1,13 +1,13 @@
 
 #pragma once
 
-#include <cstdint>
 #include <limits>
+#include <cstdint>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
 	template<typename... TArgs> class VariadicStruct;
@@ -234,7 +234,7 @@ namespace nem2_sdk { namespace internal {
 	private:
 		template<typename... TArgs, size_t... Idx>
 		constexpr VariadicStruct(std::tuple<TArgs...> args, std::index_sequence<Idx...>):
-			TFields(std::forward<TArgs>(std::get<Idx>(args)))...
+				TFields(std::forward<TArgs>(std::get<Idx>(args)))...
 		{ }
 		
 	private:
@@ -370,7 +370,7 @@ namespace nem2_sdk { namespace internal {
 	template<size_t I> struct struct_field_by_index<I, NullStruct> {
 		static_assert(I < 0, "variadic struct field index is out of range");
 	};
-
+	
 	template<uint64_t Id, typename TName, typename TValue, typename TDescriptor, typename... TFields>
 	struct struct_field_by_id<Id, VariadicStruct<Field<TName, TValue, TDescriptor>, TFields...>>:
 		public std::conditional<Id == FnvHash(TName::Value),
@@ -465,12 +465,12 @@ namespace nem2_sdk { namespace internal {
 namespace std {
 	
 	template<typename... TFields>
-	class tuple_size<nem2_sdk::internal::VariadicStruct<TFields...>>:
-		public std::integral_constant<size_t, nem2_sdk::internal::struct_size<nem2_sdk::internal::VariadicStruct<TFields...>>::value>
+	class tuple_size<xpx_sdk::internal::VariadicStruct<TFields...>>:
+		public std::integral_constant<size_t, xpx_sdk::internal::struct_size<xpx_sdk::internal::VariadicStruct<TFields...>>::value>
 	{ };
 	
 	template<size_t I, typename... TFields>
-	struct tuple_element<I, nem2_sdk::internal::VariadicStruct<TFields...>> {
-		using type = typename nem2_sdk::internal::struct_field_by_index<I, nem2_sdk::internal::VariadicStruct<TFields...>>::ValueType;
+	struct tuple_element<I, xpx_sdk::internal::VariadicStruct<TFields...>> {
+		using type = typename xpx_sdk::internal::struct_field_by_index<I, xpx_sdk::internal::VariadicStruct<TFields...>>::ValueType;
 	};
 }

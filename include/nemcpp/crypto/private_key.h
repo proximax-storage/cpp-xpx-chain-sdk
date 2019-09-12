@@ -4,7 +4,7 @@
 #include <nemcpp/types.h>
 #include <nemcpp/utils/noncopyable.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Private key.
 	/// \note Only a single copy of private key is allowed in memory.

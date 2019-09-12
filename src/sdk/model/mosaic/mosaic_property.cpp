@@ -3,7 +3,7 @@
 
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	bool operator==(const MosaicProperty& lhs, const MosaicProperty& rhs)
 	{

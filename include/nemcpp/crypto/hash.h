@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Tag to generate Sha3 hashes.
 	struct Sha3Mode {};

@@ -4,7 +4,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Compares two data members of user-defined type.
 	/// \tparam TType User-defined type.

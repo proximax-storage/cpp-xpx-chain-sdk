@@ -9,7 +9,7 @@ extern "C" {
 
 #include <cstring>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		Keccak_HashInstance* CastToKeccakHashInstance(uint8_t* hashInstance)

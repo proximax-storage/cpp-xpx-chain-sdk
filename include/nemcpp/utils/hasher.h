@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <typeindex>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Calculates hash for data member of user-defined type.
 	/// \tparam TType User-defined type.

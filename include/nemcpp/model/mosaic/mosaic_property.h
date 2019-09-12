@@ -9,7 +9,7 @@
 #include <optional>
 #include <set>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Mosaic property ids.
 	enum class MosaicPropertyId: uint8_t {

@@ -87,17 +87,17 @@ int Sponge(unsigned int rate, unsigned int capacity, const unsigned char *input,
     #endif
     /* Last few bits, whose delimiter coincides with first bit of padding */
     SnP_AddByte(state, suffix, partialBlock);
-    /* If the first bit of padding is at position rate-1, we need a whole new block for the second bit of padding */
+    /* If the first bit of padding is at position rate-1, we need a whole new data for the second bit of padding */
     if ((suffix >= 0x80) && (partialBlock == (rateInBytes-1)))
         SnP_Permute(state);
     /* Second bit of padding */
     SnP_AddByte(state, 0x80, rateInBytes-1);
     #ifdef KeccakReference
     {
-        unsigned char block[SnP_width/8];
-        memset(block, 0, SnP_width/8);
-        block[rateInBytes-1] = 0x80;
-        displayBytes(1, "Second bit of padding", block, rateInBytes);
+        unsigned char data[SnP_width/8];
+        memset(data, 0, SnP_width/8);
+        data[rateInBytes-1] = 0x80;
+        displayBytes(1, "Second bit of padding", data, rateInBytes);
     }
     #endif
     SnP_Permute(state);
@@ -110,7 +110,7 @@ int Sponge(unsigned int rate, unsigned int capacity, const unsigned char *input,
         SnP_ExtractBytes(state, curOutput, 0, rateInBytes);
         SnP_Permute(state);
         #ifdef KeccakReference
-        displayBytes(1, "Squeezed block", curOutput, rateInBytes);
+        displayBytes(1, "Squeezed data", curOutput, rateInBytes);
         #endif
         curOutput += rateInBytes;
         outputByteLen -= rateInBytes;
@@ -120,7 +120,7 @@ int Sponge(unsigned int rate, unsigned int capacity, const unsigned char *input,
     partialBlock = (unsigned int)outputByteLen;
     SnP_ExtractBytes(state, curOutput, 0, partialBlock);
     #ifdef KeccakReference
-    displayBytes(1, "Squeezed block (part)", curOutput, partialBlock);
+    displayBytes(1, "Squeezed data (part)", curOutput, partialBlock);
     #endif
 
     return 0;
@@ -226,17 +226,17 @@ int SpongeAbsorbLastFewBits(SpongeInstance *instance, unsigned char delimitedDat
     #endif
     /* Last few bits, whose delimiter coincides with first bit of padding */
     SnP_AddByte(instance->state, delimitedData, instance->byteIOIndex);
-    /* If the first bit of padding is at position rate-1, we need a whole new block for the second bit of padding */
+    /* If the first bit of padding is at position rate-1, we need a whole new data for the second bit of padding */
     if ((delimitedData >= 0x80) && (instance->byteIOIndex == (rateInBytes-1)))
         SnP_Permute(instance->state);
     /* Second bit of padding */
     SnP_AddByte(instance->state, 0x80, rateInBytes-1);
     #ifdef KeccakReference
     {
-        unsigned char block[SnP_width/8];
-        memset(block, 0, SnP_width/8);
-        block[rateInBytes-1] = 0x80;
-        displayBytes(1, "Second bit of padding", block, rateInBytes);
+        unsigned char data[SnP_width/8];
+        memset(data, 0, SnP_width/8);
+        data[rateInBytes-1] = 0x80;
+        displayBytes(1, "Second bit of padding", data, rateInBytes);
     }
     #endif
     SnP_Permute(instance->state);
@@ -268,7 +268,7 @@ int SpongeSqueeze(SpongeInstance *instance, unsigned char *data, size_t dataByte
                 SnP_Permute(instance->state);
                 SnP_ExtractBytes(instance->state, curData, 0, rateInBytes);
                 #ifdef KeccakReference
-                displayBytes(1, "Squeezed block", curData, rateInBytes);
+                displayBytes(1, "Squeezed data", curData, rateInBytes);
                 #endif
                 curData+=rateInBytes;
             }
@@ -287,7 +287,7 @@ int SpongeSqueeze(SpongeInstance *instance, unsigned char *data, size_t dataByte
 
             SnP_ExtractBytes(instance->state, curData, instance->byteIOIndex, partialBlock);
             #ifdef KeccakReference
-            displayBytes(1, "Squeezed block (part)", curData, partialBlock);
+            displayBytes(1, "Squeezed data (part)", curData, partialBlock);
             #endif
             curData += partialBlock;
             instance->byteIOIndex += partialBlock;

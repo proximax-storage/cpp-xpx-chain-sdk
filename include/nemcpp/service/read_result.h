@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Result code for read operation.
 	enum class ReadResultCode: uint8_t {

@@ -10,7 +10,7 @@
 #include <string_view>
 #include <typeindex> // provides 'hash' declaration and is much cheaper to include than <functional>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Client address.
 	class Address {
@@ -94,10 +94,10 @@ namespace nem2_sdk {
 namespace std {
 	
 	template<>
-	struct hash<nem2_sdk::Address> {
-		size_t operator()(const nem2_sdk::Address& address) const
+	struct hash<xpx_sdk::Address> {
+		size_t operator()(const xpx_sdk::Address& address) const
 		{
-			return std::hash<nem2_sdk::AddressData>{}(address.binary());
+			return std::hash<xpx_sdk::AddressData>{}(address.binary());
 		}
 	};
 }

@@ -2,7 +2,7 @@
 #include <nemcpp/utils/network_time.h>
 #include <nemcpp/config.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	network_clock::time_point network_clock::now()
 	{

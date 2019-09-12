@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace nem2_sdk { namespace internal { namespace json { 
+namespace xpx_sdk { namespace internal { namespace json {
 
 	template<typename T>
 	class Hex {

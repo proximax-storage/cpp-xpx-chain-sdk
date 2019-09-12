@@ -5,7 +5,7 @@
 #include <optional>
 #include <type_traits>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Wrapper for lazy-initialized data member of user-defined type.
 	/// \tparam TMemberType Data member type.

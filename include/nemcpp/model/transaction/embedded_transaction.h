@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	class EmbeddedTransaction;
 	

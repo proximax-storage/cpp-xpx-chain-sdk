@@ -2,7 +2,8 @@
 
 #include <string>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
+
 	class BlockMeta {
 	public:
 		std::string hash;
@@ -27,6 +28,6 @@ namespace nem2_sdk {
 	class Block {
 	public:
 		BlockMeta meta;
-		BlockData block;
+		BlockData data;
 	};
 }

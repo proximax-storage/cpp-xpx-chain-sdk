@@ -322,7 +322,7 @@ void ripemd160_done(struct ripemd160_ctx *ctx, struct ripemd160 *res)
 	size_t i;
 
 	sizedesc = cpu_to_le64(ctx->bytes << 3);
-	/* Add '1' bit to terminate, then all 0 bits, up to next block - 8. */
+	/* Add '1' bit to terminate, then all 0 bits, up to next data - 8. */
 	add(ctx, pad, 1 + ((119 - (ctx->bytes % 64)) % 64));
 	/* Add number of bits of data (big endian) */
 	add(ctx, &sizedesc, 8);

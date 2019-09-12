@@ -13,10 +13,11 @@
 #include <utility>
 #include <vector>
 
-using namespace nem2_sdk::internal;
-using namespace nem2_sdk::internal::binary;
+using namespace xpx_sdk::internal;
+using namespace xpx_sdk::internal::binary;
+using namespace xpx_sdk;
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		
@@ -163,13 +164,13 @@ namespace nem2_sdk {
 			if (properties.size() != dto.template value<"optionalProperties"_>().size()) {
 				return nullptr;
 			}
-			
+
 			properties.insert(MosaicProperty{ MosaicPropertyId::Flags, to_underlying_type(dto.template value<"flags"_>()) });
 			properties.insert(MosaicProperty{ MosaicPropertyId::Divisibility, dto.template value<"divisibility"_>() });
 			
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), MosaicProperties(std::move(properties)));
+				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), dto.template value<"flags"_>(), MosaicProperties(std::move(properties)));
 		}
 		
 		template<
@@ -243,7 +244,7 @@ namespace nem2_sdk {
 			                                    EmbeddedTransferTransactionImpl>>
 		std::unique_ptr<TImpl> CreateTransferTransaction(const TDto& dto, RawBuffer binaryData)
 		{
-			Mosaics mosaics;
+			MosaicContainer mosaics;
 			
 			for (const auto& mosaicDTO:  dto.template value<"mosaics"_>()) {
 				mosaics.insert(Mosaic{ mosaicDTO.template value<"id"_>(), mosaicDTO.template value<"amount"_>() });

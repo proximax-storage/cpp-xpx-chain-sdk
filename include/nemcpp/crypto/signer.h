@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Signer/verifier for Curve25519 and 512-bit Sha3/Keccak.
 	class Ed25519 {

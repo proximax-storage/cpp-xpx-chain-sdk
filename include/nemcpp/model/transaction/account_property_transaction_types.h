@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <set>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Account property modification type.
 	enum class AccountPropertyModificationType: uint8_t {
@@ -30,6 +30,15 @@ namespace nem2_sdk {
 		         data_comparator<AccountPropertyModification<TValue>,
 		                         TValue,
 		                         &AccountPropertyModification<TValue>::value>>;
+
+	/// Account address property modification.
+	using AccountAddressPropertyModification = AccountPropertyModification<std::string>;
+
+	/// Account mosaic property modification.
+	using AccountMosaicPropertyModification = AccountPropertyModification<MosaicId>;
+
+	/// Account transaction property modification.
+	using AccountTransactionPropertyModification = AccountPropertyModification<TransactionType>;
 	
 	/// Account address property modifications.
 	using AccountAddressPropertyModifications = AccountPropertyModifications<AddressData>;

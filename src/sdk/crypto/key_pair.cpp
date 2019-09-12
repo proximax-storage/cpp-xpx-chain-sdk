@@ -8,7 +8,7 @@ extern "C" {
 
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	KeyPair::KeyPair(PrivateKey&& privateKey):
 		privateKey_(std::move(privateKey))

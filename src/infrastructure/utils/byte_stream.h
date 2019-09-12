@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	static constexpr size_t Stream_Npos = -1;
 	template<int64_t N> struct skip {};
