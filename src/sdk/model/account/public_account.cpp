@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/account/public_account.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	PublicAccount::PublicAccount(const Key& publicKey, NetworkIdentifier networkId):
 		publicKey_(publicKey),
@@ -17,7 +17,7 @@ namespace nem2_sdk {
 		address_ = rhs.address_;
 	}
 	
-	PublicAccount::PublicAccount(PublicAccount&& rhs):
+	PublicAccount::PublicAccount(PublicAccount&& rhs) noexcept:
 		publicKey_(std::move(rhs.publicKey_)),
 		networkId_(rhs.networkId_),
 		address_(this)

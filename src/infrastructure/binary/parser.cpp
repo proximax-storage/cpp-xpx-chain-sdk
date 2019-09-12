@@ -1,7 +1,7 @@
 
 #include "infrastructure/binary/parser.h"
 
-namespace nem2_sdk { namespace internal { namespace binary {
+namespace xpx_sdk { namespace internal { namespace binary {
 	
 	ParseResult::ParseResult(bool result, size_t processedSize):
 		result_(result),

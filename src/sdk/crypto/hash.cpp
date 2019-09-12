@@ -9,7 +9,7 @@ extern "C" {
 
 #include <cstring>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		Keccak_HashInstance* CastToKeccakHashInstance(uint8_t* hashInstance)
@@ -61,7 +61,7 @@ namespace nem2_sdk {
 	typename Keccak<TMode, HashSize>::Type Keccak<TMode, HashSize>::finalize()
 	{
 		Type hash;
-		KeccakFinalize(hashInstance_, hash.data(), hash.size(), TMode{});
+		KeccakFinalize(hashInstance_, hash.data(), static_cast<uint32_t>(hash.size()), TMode{});
 		return hash;
 	}
 	

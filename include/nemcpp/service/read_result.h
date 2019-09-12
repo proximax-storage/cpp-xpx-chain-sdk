@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Result code for read operation.
 	enum class ReadResultCode: uint8_t {
@@ -17,10 +17,7 @@ namespace nem2_sdk {
 	class ReadResult {
 	public:
 		/// Creates result.
-		ReadResult(ReadResultCode code, size_t consumed, const std::string& description = {});
-		
-		/// Creates result.
-		//ReadResult(ReadResultCode code, size_t consumed, std::string_view description = {});
+		ReadResult(ReadResultCode code, size_t consumed, std::string_view description = {});
 		
 		/// Returns read operation result code.
 		ReadResultCode code() const;

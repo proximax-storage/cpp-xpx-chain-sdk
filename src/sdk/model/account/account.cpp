@@ -2,7 +2,7 @@
 #include <nemcpp/model/account/account.h>
 #include <nemcpp/model/transaction/transaction_signing.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Account::Account(PrivateKeySupplier privateKeySupplier, NetworkIdentifier networkId):
 		privateKeySupplier_(privateKeySupplier),
@@ -62,7 +62,7 @@ namespace nem2_sdk {
 			                 to_underlying_type(networkId_),
 			                 to_underlying_type(transaction->networkId()));
 		}
-		
+
 		KeyPair keyPair(requestPrivateKey(PrivateKeySupplierReason::Aggregate_Transaction_Cosigning, transaction));
 		return CalculateAggregateTransactionCosignature(transaction, keyPair);
 	}

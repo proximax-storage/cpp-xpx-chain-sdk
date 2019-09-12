@@ -9,7 +9,7 @@
 
 #include <typeindex> // provides 'hash' declaration and is much cheaper to include than <functional>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Blockchain public account.
 	class PublicAccount {
@@ -21,7 +21,7 @@ namespace nem2_sdk {
 		PublicAccount(const PublicAccount& rhs);
 		
 		/// Move constructor.
-		PublicAccount(PublicAccount&& rhs);
+		PublicAccount(PublicAccount&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		PublicAccount& operator=(const PublicAccount&) = default;
@@ -58,10 +58,10 @@ namespace nem2_sdk {
 namespace std {
 	
 	template<>
-	struct hash<nem2_sdk::PublicAccount> {
-		size_t operator()(const nem2_sdk::PublicAccount& publicAccount) const
+	struct hash<xpx_sdk::PublicAccount> {
+		size_t operator()(const xpx_sdk::PublicAccount& publicAccount) const
 		{
-			using namespace nem2_sdk;
+			using namespace xpx_sdk;
 			using HasherType = compound_hasher<method_hasher<PublicAccount, NetworkIdentifier, &PublicAccount::networkId>,
 			                                   method_hasher<PublicAccount, const Key&, &PublicAccount::publicKey>>;
 			return HasherType{}(publicAccount);

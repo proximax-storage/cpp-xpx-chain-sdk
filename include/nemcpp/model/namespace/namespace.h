@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Namespace type.
 	enum class NamespaceType : uint8_t {

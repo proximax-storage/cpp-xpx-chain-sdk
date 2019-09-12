@@ -1,12 +1,13 @@
 
 #pragma once
 
+#include <limits>
 #include <cstdint>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-namespace nem2_sdk { namespace internal {
+namespace xpx_sdk { namespace internal {
 	
 	template<typename TName, typename TValue, typename TDescriptor> class Field;
 	template<typename... TArgs> class VariadicStruct;
@@ -17,27 +18,28 @@ namespace nem2_sdk { namespace internal {
 	template<size_t I, typename TStruct> struct struct_field_by_index;
 	template<uint64_t Id, typename TStruct> struct struct_field_by_id;
 	template<typename TLiteral, typename TStruct> struct struct_field_by_name;
-	
+
 	// Compile-time FNV-1a hash.
 	constexpr uint64_t FnvHash(const char *str, uint64_t hash = 14695981039346656037ull)
 	{
 		return *str ? FnvHash(str + 1, (hash ^ *str) * 109951162821ull) : hash;
 	}
-	
+
 	// Compile-time string literal (used as variadic struct field name).
 	template<char... chars>
 	struct StringLiteral {
 		static constexpr const char Value[sizeof...(chars) + 1] = {chars..., '\0'};
 	};
 	
-	// Macros for defining compile-time string literal from c-style string literal.
-#ifdef HAS_EXT_STRING_LITERAL_SUPPORT
+	// Macros for defining compile-time string literal type from c-style string literal.
+#if NEM2_USE_STRING_LITERAL_OPERATOR_TEMPLATE
+
 	template<typename T, T... chars>
 	constexpr StringLiteral<chars...> operator""_sl()
 	{
 		return {};
 	}
-	
+
 #define STR_LITERAL(STR) decltype(STR##_sl)
 #else
 #define EXTRACT_CHAR(STR, IDX) (IDX < sizeof(STR)) ? STR[IDX] : '\0'
@@ -154,9 +156,12 @@ namespace nem2_sdk { namespace internal {
 				                     sizeof(Type) > sizeof(TValue)) {
 					static_assert(sizeof(TArg) == 0, "dangerous argument conversion to field value");
 				}
+				
+				value_ = result ? static_cast<TValue>(value) : TValue{};
+			} else {
+				value_ = std::forward<TArg>(value);
 			}
 			
-			value_ = result ? std::forward<TArg>(value) : TValue{};
 			isSet_ = result;
 			return result;
 		}
@@ -229,7 +234,7 @@ namespace nem2_sdk { namespace internal {
 	private:
 		template<typename... TArgs, size_t... Idx>
 		constexpr VariadicStruct(std::tuple<TArgs...> args, std::index_sequence<Idx...>):
-			TFields(std::forward<TArgs>(std::get<Idx>(args)))...
+				TFields(std::forward<TArgs>(std::get<Idx>(args)))...
 		{ }
 		
 	private:
@@ -363,7 +368,7 @@ namespace nem2_sdk { namespace internal {
 	{ };
 	
 	template<size_t I> struct struct_field_by_index<I, NullStruct> {
-		static_assert(sizeof(I) == 0, "variadic struct field index is out of range");
+		static_assert(I < 0, "variadic struct field index is out of range");
 	};
 	
 	template<uint64_t Id, typename TName, typename TValue, typename TDescriptor, typename... TFields>
@@ -460,12 +465,12 @@ namespace nem2_sdk { namespace internal {
 namespace std {
 	
 	template<typename... TFields>
-	class tuple_size<nem2_sdk::internal::VariadicStruct<TFields...>>:
-		public std::integral_constant<size_t, nem2_sdk::internal::struct_size<nem2_sdk::internal::VariadicStruct<TFields...>>::value>
+	class tuple_size<xpx_sdk::internal::VariadicStruct<TFields...>>:
+		public std::integral_constant<size_t, xpx_sdk::internal::struct_size<xpx_sdk::internal::VariadicStruct<TFields...>>::value>
 	{ };
 	
 	template<size_t I, typename... TFields>
-	struct tuple_element<I, nem2_sdk::internal::VariadicStruct<TFields...>> {
-		using type = typename nem2_sdk::internal::struct_field_by_index<I, nem2_sdk::internal::VariadicStruct<TFields...>>::ValueType;
+	struct tuple_element<I, xpx_sdk::internal::VariadicStruct<TFields...>> {
+		using type = typename xpx_sdk::internal::struct_field_by_index<I, xpx_sdk::internal::VariadicStruct<TFields...>>::ValueType;
 	};
 }

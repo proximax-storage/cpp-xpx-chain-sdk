@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Alias transaction action.
 	enum class AliasTransactionAction: uint8_t {

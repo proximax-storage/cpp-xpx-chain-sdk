@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/mosaic_definition_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	uint32_t TMosaicDefinitionTransaction<TBase>::mosaicNonce() const
@@ -13,6 +13,12 @@ namespace nem2_sdk {
 	MosaicId TMosaicDefinitionTransaction<TBase>::mosaicId() const
 	{
 		return mosaicId_;
+	}
+
+	template<typename TBase>
+	MosaicFlags TMosaicDefinitionTransaction<TBase>::flags() const
+	{
+		return flags_;
 	}
 	
 	template<typename TBase>

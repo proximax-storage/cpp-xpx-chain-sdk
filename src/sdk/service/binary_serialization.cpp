@@ -4,8 +4,8 @@
 
 #include "sdk/model/transaction/create_transaction.h"
 #include "sdk/model/transaction/transaction_utils.h"
-#include "infrastructure/binary/transaction_dto.h"
 #include "infrastructure/binary/parser.h"
+#include "infrastructure/binary/dto/transaction_dto.h"
 
 #include <iterator>
 #include <type_traits>
@@ -13,10 +13,11 @@
 #include <utility>
 #include <vector>
 
-using namespace nem2_sdk::internal;
-using namespace nem2_sdk::internal::binary;
+using namespace xpx_sdk::internal;
+using namespace xpx_sdk::internal::binary;
+using namespace xpx_sdk;
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		
@@ -163,13 +164,13 @@ namespace nem2_sdk {
 			if (properties.size() != dto.template value<"optionalProperties"_>().size()) {
 				return nullptr;
 			}
-			
+
 			properties.insert(MosaicProperty{ MosaicPropertyId::Flags, to_underlying_type(dto.template value<"flags"_>()) });
 			properties.insert(MosaicProperty{ MosaicPropertyId::Divisibility, dto.template value<"divisibility"_>() });
 			
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), MosaicProperties(std::move(properties)));
+				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), dto.template value<"flags"_>(), MosaicProperties(std::move(properties)));
 		}
 		
 		template<
@@ -243,7 +244,7 @@ namespace nem2_sdk {
 			                                    EmbeddedTransferTransactionImpl>>
 		std::unique_ptr<TImpl> CreateTransferTransaction(const TDto& dto, RawBuffer binaryData)
 		{
-			Mosaics mosaics;
+			MosaicContainer mosaics;
 			
 			for (const auto& mosaicDTO:  dto.template value<"mosaics"_>()) {
 				mosaics.insert(Mosaic{ mosaicDTO.template value<"id"_>(), mosaicDTO.template value<"amount"_>() });
@@ -476,7 +477,6 @@ namespace nem2_sdk {
 	}
 	
 	
-	
 	std::vector<uint8_t> TransactionToBinary(const Transaction* transaction)
 	{
 		return transaction->binary();
@@ -508,7 +508,7 @@ namespace nem2_sdk {
 		description << "'" << GetTransactionName(header.value<"type"_>()) << "': ";
 		
 		if (ExtractTransactionVersion(header.value<"version"_>()) != GetTransactionVersion(header.value<"type"_>())) {
-			return { ReadResultCode::Failure, header.value<"size"_>(), description << "incorrect version" };
+			return { ReadResultCode::Failure, header.value<"size"_>(), (description << "incorrect version").str() };
 		}
 		
 		switch (header.value<"type"_>()) {
@@ -704,133 +704,7 @@ namespace nem2_sdk {
 		if (transaction) {
 			return { ReadResultCode::Success, header.value<"size"_>() };
 		} else {
-			return { ReadResultCode::Failure, header.value<"size"_>(), description << "incorrect data" };
+			return { ReadResultCode::Failure, header.value<"size"_>(), (description << "incorrect data").str() };
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		/*bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
-		{
-			EmbeddedTransactionHeaderDTO header;
-			
-			size_t startPos = 0;
-			ParseResult result = Parser::Read(header, data, startPos);
-			
-			while (result) {
-				
-				if (ExtractTransactionVersion(header.value<"version"_>()) != GetTransactionVersion(header.value<"type"_>())) {
-					result = { false, result.processedSize() };
-					break;
-				}
-				
-				EmbeddedTransactionPtr embeddedTransaction;
-				
-				switch (header.value<"type"_>()) {
-				case TransactionType::Account_Link:
-					{
-						EmbeddedAccountLinkTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Address_Property:
-					{
-						EmbeddedAccountAddressPropertyTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Mosaic_Property:
-					{
-						EmbeddedAccountMosaicPropertyTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Transaction_Property:
-					{
-						EmbeddedAccountTransactionPropertyTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Address_Alias:
-					{
-						EmbeddedAddressAliasTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Lock_Funds:
-					{
-						EmbeddedLockFundsTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Modify_Multisig_Account:
-					{
-						EmbeddedModifyMultisigAccountTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Mosaic_Alias:
-					{
-						EmbeddedMosaicAliasTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Mosaic_Definition:
-					{
-						EmbeddedMosaicDefinitionTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Mosaic_Supply_Change:
-					{
-						EmbeddedMosaicSupplyChangeTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Register_Namespace:
-					{
-						EmbeddedRegisterNamespaceTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Secret_Lock:
-					{
-						EmbeddedSecretLockTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Secret_Proof:
-					{
-						EmbeddedSecretProofTransactionDTO dto;
-						break;
-					}
-				case TransactionType::Transfer:
-					{
-						EmbeddedTransferTransactionDTO dto;
-						break;
-					}
-				default:
-					{
-						return false;
-					}
-				}
-				
-				if (result) {
-					embeddedTransactions.push_back(std::move(embeddedTransaction));
-					startPos += result.processedSize();
-					
-					if (startPos != data.size()) {
-						result = Parser::Read(header, data, startPos);
-					} else {
-						break;
-					}
-				}
-			}
-			
-			return result;
-		}*/

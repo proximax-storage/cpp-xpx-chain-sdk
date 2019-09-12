@@ -1,14 +1,14 @@
 
 #include <nemcpp/model/transaction/transfer_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	const Address& TTransferTransaction<TBase>::recipient() const
 	{
 		return recipient_;
 	}
-	
+
 	template<typename TBase>
 	const RawBuffer& TTransferTransaction<TBase>::message() const
 	{
@@ -18,26 +18,26 @@ namespace nem2_sdk {
 		// on different buffer objects (though it's currently will work).
 		return messageBuffer_;
 	}
-	
+
 	template<typename TBase>
 	const std::string& TTransferTransaction<TBase>::messageStr() const
 	{
 		return message_;
 	}
-	
+
 	template<typename TBase>
-	const Mosaics& TTransferTransaction<TBase>::mosaics() const
+	const MosaicContainer& TTransferTransaction<TBase>::mosaics() const
 	{
 		return mosaics_;
 	}
-	
+
 	template<typename TBase>
 	Amount TTransferTransaction<TBase>::getAmount(MosaicId mosaicId) const
 	{
 		auto it = mosaics_.find(mosaicId);
 		return it != mosaics_.end() ? it->amount : 0;
 	}
-	
+
 	template class TTransferTransaction<Transaction>;
 	template class TTransferTransaction<EmbeddedTransaction>;
 }

@@ -7,7 +7,7 @@
 
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Base class for alias transactions.
 	template<typename TBase>

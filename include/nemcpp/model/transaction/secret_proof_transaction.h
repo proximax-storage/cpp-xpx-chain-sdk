@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Secret proof transaction base class.
 	/// \note Unlocks funds locked with secret lock transaction for some recipient.

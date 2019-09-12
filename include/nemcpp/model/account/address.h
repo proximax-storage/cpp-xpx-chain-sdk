@@ -10,7 +10,7 @@
 #include <string_view>
 #include <typeindex> // provides 'hash' declaration and is much cheaper to include than <functional>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Client address.
 	class Address {
@@ -31,7 +31,7 @@ namespace nem2_sdk {
 		Address(const Address& rhs);
 		
 		/// Move constructor.
-		Address(Address&& rhs);
+		Address(Address&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		Address& operator=(const Address&) = default;
@@ -46,11 +46,17 @@ namespace nem2_sdk {
 		const AddressData& binary() const;
 		
 		/// Returns base32-encoded address.
-		const std::string& encoded() const;
-		
+		const std::string& encoded() const&;
+
+		/// Returns base32-encoded address.
+		std::string&& encoded() &&;
+
 		/// Returns pretty-print address.
-		const std::string& pretty() const;
-		
+		const std::string& pretty() const&;
+
+		/// Returns pretty-print address.
+		std::string&& pretty() &&;
+
 		/// Returns binary address.
 		const uint8_t* data() const;
 		
@@ -88,10 +94,10 @@ namespace nem2_sdk {
 namespace std {
 	
 	template<>
-	struct hash<nem2_sdk::Address> {
-		size_t operator()(const nem2_sdk::Address& address) const
+	struct hash<xpx_sdk::Address> {
+		size_t operator()(const xpx_sdk::Address& address) const
 		{
-			return std::hash<nem2_sdk::AddressData>{}(address.binary());
+			return std::hash<xpx_sdk::AddressData>{}(address.binary());
 		}
 	};
 }

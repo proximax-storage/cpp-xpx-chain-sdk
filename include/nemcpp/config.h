@@ -4,17 +4,20 @@
 #include <nemcpp/types.h>
 #include <nemcpp/utils/network_time.h>
 
+#include <string>
 #include <chrono>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
-	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Public;
-	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::seconds(1459468800));
+	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Mijin_Test;
+	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::milliseconds(1459468800ll * 1000));
 	
 	constexpr uint32_t Block_Avg_Fee_Multiplier = 20;
 	
 	constexpr double Transaction_Fee_Multiplier = 1.0;
-	constexpr NetworkDuration Transaction_Deadline = std::chrono::hours(1);
+	constexpr NetworkDuration Transaction_Deadline = std::chrono::minutes(10);
+	constexpr NetworkDuration Transaction_Delta = std::chrono::milliseconds(10 * 60 * 1000);
+
 	
 	/// SDK configuration.
 	struct Config {
@@ -41,6 +44,16 @@ namespace nem2_sdk {
 		
 		/// Determines transaction deadline which is used by default.
 		NetworkDuration TransactionDeadline = Transaction_Deadline;
+
+		NetworkDuration TransactionDelta = Transaction_Delta;
+
+		/// Generation Hash of the first block in the network required for signing transactions.
+		std::string GenerationHash = "7B631D803F912B00DC0CBED3014BBD17A302BA50B99D233B9C2D9533B842ABDF";
+
+		std::string nodeAddress = "localhost";
+		std::string port = "80";
+		bool useSSL = false;
+		std::string basePath = "/";
 	};
 	
 	/// Returns SDK config.

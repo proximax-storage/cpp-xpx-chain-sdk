@@ -15,12 +15,12 @@
 #include <utility>
 #include <vector>
 
-namespace nem2_sdk { namespace internal { namespace binary {
+namespace xpx_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:
 	//
 	// 1. arithmetic (int, double, etc) and enums
-	// 2. std::array or nem2_sdk::HashableArray which have fixed size
+	// 2. std::array or xpx_sdk::HashableArray which have fixed size
 	// 3. std::string which requires size descriptor and treats it as string length
 	// 4. std::vector which requires size descriptor and treats it as elements count
 	// 5. other binary DTOs
@@ -118,7 +118,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		template<typename TStruct, size_t... Idx>
 		static size_t CalculateStructSize(const TStruct& obj, std::index_sequence<Idx...>)
 		{
-			if constexpr (struct_size<TStruct>::value) {
+			if constexpr (struct_size<TStruct>::value != 0) {
 				return (Impl<typename struct_field_by_index<Idx, TStruct>::ValueType>::CalculateSize(obj.template value<Field_Id<Idx, TStruct>>()) + ...);
 			} else {
 				return 0;

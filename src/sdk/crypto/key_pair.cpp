@@ -8,7 +8,7 @@ extern "C" {
 
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	KeyPair::KeyPair(PrivateKey&& privateKey):
 		privateKey_(std::move(privateKey))
@@ -16,12 +16,12 @@ namespace nem2_sdk {
 		publicKey_ = GeneratePublicKey(privateKey_);
 	}
 	
-	KeyPair::KeyPair(KeyPair&& rhs):
+	KeyPair::KeyPair(KeyPair&& rhs) noexcept:
 		privateKey_(std::move(rhs.privateKey_)),
 		publicKey_(std::move(rhs.publicKey_))
 	{ }
 	
-	KeyPair& KeyPair::operator=(KeyPair&& rhs)
+	KeyPair& KeyPair::operator=(KeyPair&& rhs) noexcept
 	{
 		privateKey_ = std::move(rhs.privateKey_);
 		publicKey_ = std::move(rhs.publicKey_);

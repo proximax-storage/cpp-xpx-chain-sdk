@@ -5,7 +5,7 @@
 
 #include <type_traits>
 
-namespace nem2_sdk { namespace internal { namespace binary {
+namespace xpx_sdk { namespace internal { namespace binary {
 	
 	namespace desc {
 		
