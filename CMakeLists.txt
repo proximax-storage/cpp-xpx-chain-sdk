@@ -8,13 +8,13 @@ cmake_policy(SET CMP0068 OLD)
 # options and features
 #-----------------------------------------------------------------------------
 
-option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of NEM2 SDK library." OFF)
-option(XPX_CHAIN_SDK_BUILD_TESTS "Build NEM2 SDK tests." OFF)
-option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build NEM2 SDK examples." OFF)
+option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NEM2 SDK build type." FORCE)
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "XPX-CHAIN SDK build type." FORCE)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
 		"Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 endif()
@@ -180,7 +180,7 @@ install(DIRECTORY include/xpxchaincpp
 install(EXPORT ${package_config_prefix}-targets
 	FILE ${package_config_prefix}-targets.cmake
 	DESTINATION "${package_config_dir}"
-	NAMESPACE NEM2::)
+	NAMESPACE XPX_CHAIN::)
 
 install(FILES
 	"${CMAKE_CURRENT_BINARY_DIR}/${package_config_prefix}-config.cmake"

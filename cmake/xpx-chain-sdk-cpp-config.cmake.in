@@ -1,4 +1,4 @@
-# The following import targets are created in NEM2:: namespace:
+# The following import targets are created in XPX_CHAIN:: namespace:
 #
 #  xpxchaincpp
 #
@@ -13,8 +13,8 @@
 if (NOT TARGET xpxchaincpp)
 	include("${CMAKE_CURRENT_LIST_DIR}/@package_config_prefix@-targets.cmake")
 	
-	if (TARGET NEM2::xpxchaincpp)
-		get_target_property(@PROJECT_NAME@_INCLUDE_DIR NEM2::xpxchaincpp INTERFACE_INCLUDE_DIRECTORIES)
-		get_target_property(@PROJECT_NAME@_LIBRARY NEM2::xpxchaincpp LOCATION)
+	if (TARGET XPX_CHAIN::xpxchaincpp)
+		get_target_property(@PROJECT_NAME@_INCLUDE_DIR XPX_CHAIN::xpxchaincpp INTERFACE_INCLUDE_DIRECTORIES)
+		get_target_property(@PROJECT_NAME@_LIBRARY XPX_CHAIN::xpxchaincpp LOCATION)
 	endif()
 endif()

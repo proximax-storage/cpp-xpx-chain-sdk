@@ -44,7 +44,7 @@ msbuild.exe INSTALL.vcxproj
 
 ## Usage
 
-Use the following command to find shared or static version of NEM2 SDK library:
+Use the following command to find shared or static version of XPX-CHAIN SDK library:
 ```
 find_package(xpx-chain-sdk-cpp)
 ```
@@ -53,7 +53,7 @@ or
 find_package(xpx-chain-sdk-cpp-static)
 ```
 
-NEM2 SDK package config exports the following target in _NEM2::_ namespace:
+XPX-CHAIN SDK package config exports the following target in _XPX_CHAIN::_ namespace:
 * xpxchaincpp
 
 You can also use this variables (not recommended):
