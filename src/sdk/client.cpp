@@ -1,3 +1,8 @@
+/**
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+**/
 #include "infrastructure/network/context.h"
 #include "infrastructure/network/http.h"
 #include <xpxchaincpp/client.h>

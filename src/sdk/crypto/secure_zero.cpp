@@ -1,3 +1,8 @@
+/**
+*** Copyright 2019 ProximaX Limited. All rights reserved.
+*** Use of this source code is governed by the Apache 2.0
+*** license that can be found in the LICENSE file.
+**/
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <xpxchaincpp/crypto/secure_zero.h>
 
