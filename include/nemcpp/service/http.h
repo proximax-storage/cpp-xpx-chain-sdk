@@ -2,8 +2,8 @@
 
 #include <boost/asio/ip/tcp.hpp>
 
-namespace nem2_sdk::http {
-	typedef int StatusCode;
+namespace xpx_sdk::http {
+	using StatusCode = int;
 
 	enum class ContextStatus {
 		Ready,

@@ -8,7 +8,8 @@
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
 
-using namespace nem2_sdk::internal::network;
+
+using namespace xpx_sdk::internal::network;
 
 namespace asio = boost::asio;
 namespace ip = boost::asio::ip;
@@ -28,6 +29,7 @@ std::string _performHTTPRequest_internal(
 		const std::string& path,
 		const std::string& request_body
 ) {
+
 	http::verb verb;
 	switch (method) {
 		case HTTPRequestMethod::GET:
@@ -44,9 +46,13 @@ std::string _performHTTPRequest_internal(
 	http::request<http::string_body> request{verb, path, HTTP_VERSION};
 	request.set(http::field::host, host);
 	request.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+	request.set(http::field::content_type, "application/json");
 
 	if (method == HTTPRequestMethod::PUT || method == HTTPRequestMethod::POST) {
-		request.set(http::field::body, request_body);
+		request.set(http::field::content_length, request_body.size());
+//		request.set(http::field::body, request_body);
+		request.body() = request_body;
+		request.prepare_payload();
 	}
 
 	http::write(stream, request);
@@ -58,8 +64,8 @@ std::string _performHTTPRequest_internal(
 	if (response.result() == http::status::found) {
 		auto path = response.at("Location").to_string();
 		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
-	} else if (response.result() != http::status::ok) {
-		throw nem2_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
+	} else if (response.result() != http::status::ok && response.result() != http::status::accepted ) {
+		throw xpx_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
 	}
 
 	return response.body();
@@ -74,6 +80,7 @@ std::string _performHTTPRequest(
 		const std::string& path,
 		const std::string& request_body
 ) {
+
 	asio::io_context ioc;
 
 	ip::tcp::resolver resolver(ioc);
@@ -135,7 +142,7 @@ RequestParamsBuilder& RequestParamsBuilder::setPath(const std::string& path) {
 }
 
 RequestParamsBuilder& RequestParamsBuilder::setRequestBody(const std::string& requestBody) {
-	_request_body;
+	_request_body = requestBody;
 	return *this;
 }
 
@@ -150,7 +157,7 @@ RequestParams RequestParamsBuilder::getRequestParams() {
 	};
 }
 
-namespace nem2_sdk::internal::network {
+namespace xpx_sdk::internal::network {
 	std::string performHTTPRequest(std::shared_ptr<Context> context, const RequestParams &requestParams) {
 		std::string port;
 		if (requestParams.port.empty()) {
@@ -162,15 +169,14 @@ namespace nem2_sdk::internal::network {
 		} else {
 			port = requestParams.port;
 		}
-
 		std::string path;
-		if (requestParams.path.empty()) {
-			path = "/";
-		} else {
-			path = requestParams.path;
-		}
+        if (requestParams.path.empty()) {
+            path = "/";
+        } else {
+            path = requestParams.path;
+        }
 
-		return _performHTTPRequest(
+        return _performHTTPRequest(
 				context,
 				requestParams.method,
 				requestParams.secure,
@@ -179,5 +185,5 @@ namespace nem2_sdk::internal::network {
 				path,
 				requestParams.request_body
 		);
-	}
+    }
 }

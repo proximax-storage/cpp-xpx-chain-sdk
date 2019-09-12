@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-namespace nem2_sdk { namespace internal { namespace json {
+namespace xpx_sdk { namespace internal { namespace json {
 	
 	enum class OutputMode: uint8_t {
 		Default = 0,
@@ -381,7 +381,7 @@ namespace nem2_sdk { namespace internal { namespace json {
 				fieldPtr.c_str());
 			
 			obj.template isSet<TTraits::Id()>() =
-				it != jsonValue->MemberEnd() && !(it->value.IsNull()) ? result : false;
+				it != jsonValue->MemberEnd() && !(it->value.IsNull()) ? result : ParseResult(false);
 			
 			if (result) {
 				bool isSet = it != jsonValue->MemberEnd() && !(it->value.IsNull());
@@ -432,11 +432,12 @@ namespace nem2_sdk { namespace internal { namespace json {
 		{
 			std::array<uint32_t, 2> data;
 			auto result = Impl<decltype(data)>::Read(data, jsonValue, jsonPtr);
-			
+
+			//changed order
 			if (result) {
-				value = data[0];
+				value = data[1];
 				value <<= 32;
-				value |= data[1];
+				value |= data[0];
 			}
 			
 			return result;

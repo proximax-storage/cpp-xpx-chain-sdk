@@ -1,21 +1,21 @@
 
 #include <nemcpp/model/transaction/account_property_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase, typename TProperty>
 	AccountPropertyRule TAccountPropertyTransaction<TBase, TProperty>::propertyRule() const
 	{
 		return propertyRule_;
 	}
-	
+
 	template<typename TBase, typename TProperty>
 	const typename TAccountPropertyTransaction<TBase, TProperty>::PropertyModifications&
 	TAccountPropertyTransaction<TBase, TProperty>::propertyModifications() const
 	{
 		return propertyModifications_;
 	}
-	
+
 	template<typename TBase, typename TProperty>
 	TransactionType TAccountPropertyTransaction<TBase, TProperty>::getTransactionType()
 	{
@@ -31,7 +31,7 @@ namespace nem2_sdk {
 			                 to_underlying_type(TProperty::GetType()));
 		}
 	}
-	
+
 	template class TAccountPropertyTransaction<Transaction, AccountAddressProperty>;
 	template class TAccountPropertyTransaction<EmbeddedTransaction, AccountAddressProperty>;
 	template class TAccountPropertyTransaction<Transaction, AccountMosaicProperty>;

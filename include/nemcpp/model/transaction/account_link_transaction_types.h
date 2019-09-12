@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Account link transaction action.
 	enum class AccountLinkTransactionAction: uint8_t {

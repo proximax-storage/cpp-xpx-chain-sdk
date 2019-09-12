@@ -7,8 +7,9 @@
 
 #include <string>
 #include <vector>
-
-namespace nem2_sdk {
+using xpx_sdk::TransactionPtr;
+using xpx_sdk::Transaction;
+namespace xpx_sdk {
 	
 	/// Converts \a transaction to binary representation.
 	std::vector<uint8_t> TransactionToBinary(const Transaction* transaction);

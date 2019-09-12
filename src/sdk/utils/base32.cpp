@@ -3,7 +3,7 @@
 
 #include <cctype>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		const char* Base32_Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";

@@ -20,7 +20,9 @@
 #include <string>
 #include <vector>
 
-namespace nem2_sdk { namespace internal { namespace binary {
+using namespace xpx_sdk;
+
+namespace xpx_sdk { namespace internal { namespace binary {
 	
 	// Binary DTOs should contain only following types:
 	//
@@ -54,9 +56,9 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("value"),            TValue>,
 		Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 	
-	using AddressPropertyModificationDTO = TAccountPropertyModificationDTO<AccountAddressProperty::ValueType>;
-	using MosaicPropertyModificationDTO = TAccountPropertyModificationDTO<AccountMosaicProperty::ValueType>;
-	using TransactionPropertyModificationDTO = TAccountPropertyModificationDTO<AccountTransactionProperty::ValueType>;
+//	using AddressPropertyModificationDTO = TAccountPropertyModificationDTO<AccountAddressProperty::ValueType>;
+//	using MosaicPropertyModificationDTO = TAccountPropertyModificationDTO<AccountMosaicProperty::ValueType>;
+//	using TransactionPropertyModificationDTO = TAccountPropertyModificationDTO<AccountTransactionProperty::ValueType>;
 	
 	// Transaction DTOs
 	//==========================================================================
@@ -65,7 +67,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("size"),      uint32_t>,
 		Field<STR_LITERAL("signature"), Signature>,
 		Field<STR_LITERAL("signer"),    Key>,
-		Field<STR_LITERAL("version"),   uint16_t>,
+		Field<STR_LITERAL("version"),   uint32_t>,
 		Field<STR_LITERAL("type"),      TransactionType>,
 		Field<STR_LITERAL("maxFee"),    Amount>,
 		Field<STR_LITERAL("deadline"),  int64_t>>;
@@ -73,7 +75,7 @@ namespace nem2_sdk { namespace internal { namespace binary {
 	using EmbeddedTransactionDTO = VariadicStruct<
 		Field<STR_LITERAL("size"),      uint32_t>,
 		Field<STR_LITERAL("signer"),    Key>,
-		Field<STR_LITERAL("version"),   uint16_t>,
+		Field<STR_LITERAL("version"),   uint32_t>,
 		Field<STR_LITERAL("type"),      TransactionType>>;
 	
 	using AggregateTransactionDTO = VariadicStruct<

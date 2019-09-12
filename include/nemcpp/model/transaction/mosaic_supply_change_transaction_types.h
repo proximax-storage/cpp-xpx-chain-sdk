@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Direction of supply change.
 	enum class MosaicSupplyChangeDirection: uint8_t {

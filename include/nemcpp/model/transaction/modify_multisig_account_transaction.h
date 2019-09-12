@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Multisig account modification transaction base class.
 	template<typename TBase>

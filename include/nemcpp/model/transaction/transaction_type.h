@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Transaction type.
 	enum class TransactionType: uint16_t {

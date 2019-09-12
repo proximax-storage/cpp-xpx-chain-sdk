@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cassert>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		constexpr size_t Checksum_Size = 4;

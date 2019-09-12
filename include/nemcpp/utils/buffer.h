@@ -6,7 +6,7 @@
 #include <iterator>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TElement, template<typename, typename> class TConversionTrait> class Buffer;
 	
@@ -89,8 +89,8 @@ namespace nem2_sdk {
 		constexpr Buffer(TContainer& container): Buffer(container.data(), container.size())
 		{ }
 		
-		/// Makes buffer point to the same data as \a rhs.
-		template<typename TSomeElement, template<typename, typename> typename TSomeConversionTrait>
+		/// Makes buffer point to the same data as \a rhs.ю.
+		template<typename TSomeElement, template<typename, typename> class TSomeConversionTrait>
 		Buffer& operator=(const Buffer<TSomeElement, TSomeConversionTrait>& rhs)
 		{
 			data_ = convertData(rhs.data());

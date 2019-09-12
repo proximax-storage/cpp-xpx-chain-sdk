@@ -1,7 +1,7 @@
 
 #include <nemcpp/service/read_result.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	ReadResult::ReadResult(ReadResultCode code, size_t consumed, std::string_view description):
 		code_(code),

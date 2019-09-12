@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	PrivateKey::PrivateKey(uint8_t* data, size_t size)
 	{

@@ -16,8 +16,8 @@
 #include <nemcpp/model/transaction/transfer_transaction.h>
 
 #include <utility>
-
-namespace nem2_sdk { namespace internal {
+using namespace xpx_sdk;
+namespace xpx_sdk { namespace internal {
 	
 	template<typename TTransaction>
 	class TTransactionImpl: public TTransaction {
@@ -164,6 +164,7 @@ namespace nem2_sdk { namespace internal {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransactionImpl(uint32_t mosaicNonce,
 	                                      MosaicId mosaicId,
+	                                      MosaicFlags flags,
 	                                      MosaicProperties mosaicProperties,
 	                                      std::optional<Amount> maxFee,
 	                                      std::optional<NetworkDuration> deadline,
@@ -229,7 +230,7 @@ namespace nem2_sdk { namespace internal {
 	
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
-	                              Mosaics mosaics,
+	                              MosaicContainer mosaics,
 	                              RawBuffer message,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,

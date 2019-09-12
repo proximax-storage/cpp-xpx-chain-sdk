@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Constant to be used as empty message in transfer transaction.
 	constexpr uint8_t Empty_Message[] = {0};
@@ -24,7 +24,7 @@ namespace nem2_sdk {
 		/// Creates transfer transaction.
 		template<typename... TArgs>
 		explicit TTransferTransaction(const Address& recipient,
-		                              Mosaics mosaics,
+		                              MosaicContainer mosaics,
 		                              RawBuffer message,
 		                              TArgs&&... args):
 			TBase(TransactionType::Transfer, std::forward<TArgs>(args)...),
@@ -44,7 +44,7 @@ namespace nem2_sdk {
 		const std::string& messageStr() const;
 		
 		/// Returns mosaics.
-		const Mosaics& mosaics() const;
+		const MosaicContainer& mosaics() const;
 		
 		/// Returns amount of mosaic with specified \a mosaicId.
 		Amount getAmount(MosaicId mosaicId) const;
@@ -53,7 +53,7 @@ namespace nem2_sdk {
 		Address recipient_;
 		std::string message_;
 		RawBuffer messageBuffer_;
-		Mosaics mosaics_;
+		MosaicContainer mosaics_;
 	};
 	
 	extern template class TTransferTransaction<Transaction>;
@@ -67,7 +67,7 @@ namespace nem2_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransaction(const Address& recipient,
-	                          Mosaics mosaics,
+	                          MosaicContainer mosaics,
 	                          RawBuffer message,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,
@@ -79,7 +79,7 @@ namespace nem2_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedTransferTransaction>
 	CreateEmbeddedTransferTransaction(const Address& recipient,
-	                                  Mosaics mosaics,
+	                                  MosaicContainer mosaics,
 	                                  RawBuffer message,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);

@@ -1,7 +1,7 @@
 
 #include <nemcpp/utils/format.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	std::string MakeString::str() const
 	{

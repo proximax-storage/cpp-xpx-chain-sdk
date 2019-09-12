@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <ctime>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Network clock which starts from nemesis block timestamp.
 	class network_clock {
