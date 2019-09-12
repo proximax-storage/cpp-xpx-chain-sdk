@@ -14,9 +14,9 @@ Official ProximaX Sirius Blockchain SDK Library in C++.
 ## Common notes ##
 
 Following variables can be used to control build process:
-* NEM2_SDK_BUILD_STATIC - build static version of library (default - OFF)
-* NEM2_SDK_BUILD_TESTS - set to ON if you want to build tests (default - OFF)
-* NEM2_SDK_BUILD_EXAMPLES - set to ON if you want to build the example programs (default - OFF)
+* XPX_CHAIN_SDK_BUILD_STATIC - build static version of library (default - OFF)
+* XPX_CHAIN_SDK_BUILD_TESTS - set to ON if you want to build tests (default - OFF)
+* XPX_CHAIN_SDK_BUILD_EXAMPLES - set to ON if you want to build the example programs (default - OFF)
 * other well-known CMake variables (CMAKE_INSTALL_PREFIX, CMAKE_BUILD_TYPE, etc.)
 
 ## Building ##
@@ -38,7 +38,7 @@ make install
 
 ### Building with Visual Studio ###
 
-You can open _nem2-sdk-cpp.sln_ file with VS and build from its GUI or use Microsoft Build Engine:
+You can open _cpp-xpx-chain-sdk.sln_ file with VS and build from its GUI or use Microsoft Build Engine:
 ```
 msbuild.exe /p:Configuration=Release ALL_BUILD.vcxproj
 msbuild.exe INSTALL.vcxproj
@@ -46,21 +46,21 @@ msbuild.exe INSTALL.vcxproj
 
 ## Usage ##
 
-Use the following command to find shared or static version of NEM2 SDK library:
+Use the following command to find shared or static version of XPX-CHAIN SDK library:
 ```
-find_package(nem2-sdk-cpp)
+find_package(cpp-xpx-chain-sdk)
 ```
 or
 ```
-find_package(nem2-sdk-cpp-static)
+find_package(cpp-xpx-chain-sdk-static)
 ```
 
-NEM2 SDK package config exports the following target in _NEM2::_ namespace:
-* nemcpp
+XPX-CHAIN SDK package config exports the following target in _XPX_CHAIN::_ namespace:
+* xpxchaincpp
 
 You can also use this variables (not recommended):
-* nem2-sdk-cpp_INCLUDE_DIR
-* nem2-sdk-cpp_LIBRARY
+* cpp-xpx-chain-sdk_INCLUDE_DIR
+* cpp-xpx-chain-sdk_LIBRARY
 
 ## Contribution ##
 

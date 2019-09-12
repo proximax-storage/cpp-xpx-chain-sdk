@@ -4,9 +4,9 @@
 #
 # This module also sets the following variables in your project:
 #
-#   xpx-chain-sdk-cpp_FOUND
-#   xpx-chain-sdk-cpp_INCLUDE_DIR
-#   xpx-chain-sdk-cpp_LIBRARY
+#   cpp-xpx-chain-sdk_FOUND
+#   cpp-xpx-chain-sdk_INCLUDE_DIR
+#   cpp-xpx-chain-sdk_LIBRARY
 
 @PACKAGE_INIT@
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(xpx-chain-sdk-cpp VERSION 1.0.0)
+project(cpp-xpx-chain-sdk VERSION 1.0.0)
 
 # CMP0068: fallback to older policies for macOS
 cmake_policy(SET CMP0068 OLD)
@@ -160,7 +160,7 @@ if (XPX_CHAIN_SDK_BUILD_STATIC)
 endif()
 
 configure_package_config_file(
-	cmake/xpx-chain-sdk-cpp-config.cmake.in
+	cmake/cpp-xpx-chain-sdk-config.cmake.in
 	"${CMAKE_CURRENT_BINARY_DIR}/${package_config_prefix}-config.cmake"
 	INSTALL_DESTINATION "${package_config_dir}"
 	NO_SET_AND_CHECK_MACRO
