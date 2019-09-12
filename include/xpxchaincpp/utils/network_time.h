@@ -7,7 +7,7 @@
 
 namespace xpx_chain_sdk {
 	
-	/// Network clock which starts from nemesis block timestamp.
+	/// Network clock which starts from genesis block timestamp.
 	class network_clock {
 	public:
 		using duration = std::chrono::duration<int64_t, std::milli>;
