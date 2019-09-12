@@ -4,10 +4,10 @@
 
 #include "sdk/model/transaction/transaction_utils.h"
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Transaction::Transaction(TransactionType type,
-	                         uint16_t fullVersion,
+	                         uint32_t fullVersion,
 	                         Amount maxFee,
 	                         int64_t deadline,
 	                         std::vector<uint8_t> binaryData,
@@ -40,7 +40,7 @@ namespace nem2_sdk {
 		hash_ = rhs.hash_;
 	}
 	
-	Transaction::Transaction(Transaction&& rhs):
+	Transaction::Transaction(Transaction&& rhs) noexcept:
 		BasicTransaction(std::move(rhs)),
 		signature_(this),
 		maxFee_(rhs.maxFee_),
@@ -96,12 +96,15 @@ namespace nem2_sdk {
 	Amount Transaction::GetDefaultFee(size_t transactionSize)
 	{
 		const auto& config = GetConfig();
-		return transactionSize * config.BlockAvgFeeMultiplier * config.TransactionFeeMultiplier;
+		return static_cast<Amount>(transactionSize * config.BlockAvgFeeMultiplier * config.TransactionFeeMultiplier);
 	}
 	
 	NetworkDuration Transaction::GetDefaultDeadline()
 	{
-		return GetConfig().TransactionDeadline;
+
+		auto now = std::chrono::system_clock::now();
+		auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - GetConfig().NetworkEpoch);
+		return diff + GetConfig().TransactionDelta;
 	}
 	
 	void Transaction::initSignature(std::optional<Signature>&)

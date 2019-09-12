@@ -1,7 +1,7 @@
 
 #include <nemcpp/config.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Config& GetConfig()
 	{

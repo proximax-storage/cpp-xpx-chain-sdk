@@ -11,7 +11,7 @@
 #include <optional>
 #include <vector>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	class Transaction;
 	
@@ -23,7 +23,7 @@ namespace nem2_sdk {
 	public:
 		/// Creates general transaction.
 		Transaction(TransactionType type,
-		            uint16_t fullVersion,
+		            uint32_t fullVersion,
 		            Amount maxFee,
 		            int64_t deadline,
 		            std::vector<uint8_t> binaryData,
@@ -35,7 +35,7 @@ namespace nem2_sdk {
 		Transaction(const Transaction& rhs);
 		
 		/// Move constructor.
-		Transaction(Transaction&& rhs);
+		Transaction(Transaction&& rhs) noexcept;
 		
 		/// Default copy assignment operator.
 		Transaction& operator=(const Transaction&) = default;

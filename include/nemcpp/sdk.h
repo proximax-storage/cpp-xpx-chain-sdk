@@ -1,10 +1,11 @@
-
 #pragma once
 
 #include <nemcpp/config.h>
+#include <nemcpp/client.h>
 #include <nemcpp/crypto/hash.h>
 #include <nemcpp/crypto/signer.h>
 #include <nemcpp/model/account/account.h>
+#include <nemcpp/model/blockchain/block.h>
 #include <nemcpp/model/transaction/account_link_transaction.h>
 #include <nemcpp/model/transaction/account_property_transaction.h>
 #include <nemcpp/model/transaction/address_alias_transaction.h>
@@ -20,3 +21,4 @@
 #include <nemcpp/model/transaction/transfer_transaction.h>
 #include <nemcpp/model/transaction/transaction_signing.h>
 #include <nemcpp/service/serialization.h>
+#include <nemcpp/utils/HexParser.h>

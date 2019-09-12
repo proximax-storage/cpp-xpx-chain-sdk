@@ -15,7 +15,9 @@
 #include <utility>
 #include <variant>
 
-namespace nem2_sdk {
+using xpx_sdk::Transaction;
+//using xpx_sdk::AggregateTransaction;
+namespace xpx_sdk {
 	
 	/// Private key supplier call reason.
 	enum class PrivateKeySupplierReason: uint8_t {

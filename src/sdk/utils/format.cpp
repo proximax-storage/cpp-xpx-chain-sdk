@@ -1,10 +1,15 @@
 
 #include <nemcpp/utils/format.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
-	MakeString::operator std::string() const
+	std::string MakeString::str() const
 	{
 		return stream_.str();
+	}
+
+	MakeString::operator std::string() const
+	{
+		return str();
 	}
 }

@@ -1,7 +1,7 @@
 
 #pragma once
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	class TransactionInfo {
 	};

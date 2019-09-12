@@ -2,7 +2,7 @@
 #include <nemcpp/model/transaction/secret_hash_algorithm.h>
 #include <nemcpp/crypto/hash.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	Hash256 CalculateSecretHash(RawBuffer secret, SecretHashAlgorithm algorithm)
 	{

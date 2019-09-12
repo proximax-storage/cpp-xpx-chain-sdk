@@ -5,7 +5,7 @@
 #include <optional>
 #include <type_traits>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Wrapper for lazy-initialized data member of user-defined type.
 	/// \tparam TMemberType Data member type.
@@ -18,20 +18,20 @@ namespace nem2_sdk {
 	class Lazy {
 	public:
 		/// User-defined type.
-		using Type = TType;
+		using ClassType = TType;
 		
 		/// User-defined type data member type.
 		using MemberType = TMemberType;
 		
 	public:
 		/// Creates wrapper for lazy-initialized data member of \a obj using \a value as initial value.
-		explicit Lazy(Type* obj, const std::optional<MemberType>& value = std::nullopt):
+		explicit Lazy(ClassType* obj, const std::optional<MemberType>& value = std::nullopt):
 			initialize_(std::bind(initialize, obj, std::placeholders::_1)),
 			value_(value)
 		{ }
 		
 		/// Creates wrapper for lazy-initialized data member of \a obj using \a value as initial value.
-		explicit Lazy(Type* obj, std::optional<MemberType>&& value):
+		explicit Lazy(ClassType* obj, std::optional<MemberType>&& value):
 			initialize_(std::bind(initialize, obj, std::placeholders::_1)),
 			value_(std::move(value))
 		{ }
@@ -57,7 +57,7 @@ namespace nem2_sdk {
 		/// Sets wrapped value.
 		template<
 			typename T,
-			typename = typename std::enable_if<std::is_constructible_v<MemberType, T&&>>::type>
+			typename = typename std::enable_if<std::is_assignable_v<MemberType, T&&>>::type>
 		Lazy& operator=(T&& value)
 		{
 			value_ = std::forward<T>(value);
@@ -73,7 +73,7 @@ namespace nem2_sdk {
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		MemberType& value()
+		MemberType& value() &
 		{
 			if (!value_) {
 				initialize_(value_);
@@ -83,7 +83,7 @@ namespace nem2_sdk {
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		const MemberType& value() const
+		const MemberType& value() const&
 		{
 			if (!value_) {
 				initialize_(value_);
@@ -91,19 +91,51 @@ namespace nem2_sdk {
 			
 			return *value_;
 		}
-		
+
 		/// Returns wrapped value initializing it if necessary.
-		MemberType& operator*()
+		MemberType&& value() &&
+		{
+			if (!value_) {
+				initialize_(value_);
+			}
+
+			return *std::move(value_);
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		const MemberType&& value() const&&
+		{
+			if (!value_) {
+				initialize_(value_);
+			}
+
+			return *std::move(value_);
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		MemberType& operator*() &
 		{
 			return value();
 		}
 		
 		/// Returns wrapped value initializing it if necessary.
-		const MemberType& operator*() const
+		const MemberType& operator*() const&
 		{
 			return value();
 		}
-		
+
+		/// Returns wrapped value initializing it if necessary.
+		MemberType&& operator*() &&
+		{
+			return std::move(*this).value();
+		}
+
+		/// Returns wrapped value initializing it if necessary.
+		const MemberType&& operator*() const&&
+		{
+			return std::move(*this).value();
+		}
+
 		/// Returns wrapped value initializing it if necessary.
 		MemberType* operator->()
 		{

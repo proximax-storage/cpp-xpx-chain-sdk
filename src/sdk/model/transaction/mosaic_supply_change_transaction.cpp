@@ -1,7 +1,7 @@
 
 #include <nemcpp/model/transaction/mosaic_supply_change_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	MosaicId TMosaicSupplyChangeTransaction<TBase>::mosaicId() const

@@ -1,20 +1,20 @@
 
 #include <nemcpp/model/transaction/secret_proof_transaction.h>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	template<typename TBase>
 	SecretHashAlgorithm TSecretProofTransaction<TBase>::secretHashAlgorithm() const
 	{
 		return secretHashAlgorithm_;
 	}
-	
+
 	template<typename TBase>
 	const Hash256& TSecretProofTransaction<TBase>::secretHash() const
 	{
 		return secretHash_;
 	}
-	
+
 	template<typename TBase>
 	const RawBuffer& TSecretProofTransaction<TBase>::secret() const
 	{
@@ -24,7 +24,7 @@ namespace nem2_sdk {
 		// on different buffer objects (though it's currently will work).
 		return secretBuffer_;
 	}
-	
+
 	template class TSecretProofTransaction<Transaction>;
 	template class TSecretProofTransaction<EmbeddedTransaction>;
 }

@@ -8,7 +8,7 @@
 #include <optional>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Address alias transaction base class.
 	template<typename TBase>

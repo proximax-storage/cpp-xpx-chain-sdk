@@ -7,7 +7,7 @@
 #include <optional>
 #include <utility>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	/// Mosaic alias transaction base class.
 	template<typename TBase>

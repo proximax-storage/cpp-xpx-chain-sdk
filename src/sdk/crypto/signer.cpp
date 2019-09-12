@@ -16,7 +16,7 @@ extern "C" {
 #define RESTRICT __restrict__
 #endif
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		constexpr size_t Encoded_Size = Signature_Size / 2;

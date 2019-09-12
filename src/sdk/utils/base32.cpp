@@ -3,7 +3,7 @@
 
 #include <cctype>
 
-namespace nem2_sdk {
+namespace xpx_sdk {
 	
 	namespace {
 		const char* Base32_Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -73,7 +73,7 @@ namespace nem2_sdk {
 			uint32_t decodedIndex = 0;
 			
 			for (size_t i = 0; i < encoded.size(); ++i) {
-				char ch = std::toupper(encoded[i]);
+				char ch = encoded[i];
 				blocksBuffer <<= Base32_Block_Size;
 				
 				if (ch >= 'A' && ch <= 'Z') {
