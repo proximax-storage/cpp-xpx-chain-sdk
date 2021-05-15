@@ -352,8 +352,7 @@ namespace xpx_chain_sdk { namespace internal { namespace json {
 		{
 			ParseResult result = true;
 			
-			( ( result = ReadField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr),
-			    result ) && ... );
+			( ( result = ReadField<struct_field_by_index<Idx, StructType>>(value, jsonValue, jsonPtr) ) && ... );
 			
 			return result;
 		}

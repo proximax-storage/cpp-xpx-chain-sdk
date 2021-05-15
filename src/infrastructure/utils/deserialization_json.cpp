@@ -286,6 +286,14 @@ namespace xpx_chain_sdk::internal::json::dto {
 				result = std::make_shared<AccountLinkTransaction>(transaction);
 				break;
 			}
+
+			case TransactionType::Mosaic_Levy_Change: {
+				XPX_CHAIN_SDK_THROW(serialization_error, "Mosaic levy transaction deserialization is not implemented");
+			}
+
+			case TransactionType::Unknown: {
+				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
+			}
 		};
 		return result;
 	}

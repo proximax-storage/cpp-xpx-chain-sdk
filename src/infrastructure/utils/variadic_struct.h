@@ -10,6 +10,8 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <cstddef>
+#include <limits>
 
 namespace xpx_chain_sdk { namespace internal {
 	

@@ -45,8 +45,8 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_cmake_run(REQUIRES
 		rapidjson/1.1.0@bincrafters/stable
-		boost/1.70.0@conan/stable
-        OpenSSL/1.1.1c@conan/stable
+		boost/1.71.0
+		openssl/1.1.1k
 	BASIC_SETUP
 	CMAKE_TARGETS
 	BUILD missing)
@@ -143,7 +143,7 @@ endif()
 target_link_libraries(xpxchaincpp
 		CONAN_PKG::rapidjson
 		CONAN_PKG::boost
-		CONAN_PKG::OpenSSL)
+		CONAN_PKG::openssl)
 
 #-----------------------------------------------------------------------------
 # install
@@ -203,5 +203,5 @@ if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
 			xpxchaincpp
 			CONAN_PKG::rapidjson
 			CONAN_PKG::boost
-			CONAN_PKG::OpenSSL)
+			CONAN_PKG::openssl)
 endif()
