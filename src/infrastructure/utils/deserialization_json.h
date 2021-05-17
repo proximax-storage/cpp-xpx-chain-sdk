@@ -226,6 +226,7 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransactionDto >(const SecretProofTransactionDto & dto);
+
 		template<>
 		TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto);
 
@@ -237,6 +238,24 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		MosaicAliasTransaction fromDto<MosaicAliasTransaction, MosaicAliasTransactionDto >(const MosaicAliasTransactionDto & dto);
+
+		template<>
+		PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto);
+
+		template<>
+		DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto);
+
+		template<>
+		DownloadTransaction fromDto<DownloadTransaction, DownloadTransactionDto >(const DownloadTransactionDto & dto);
+
+		template<>
+		DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto);
+
+		template<>
+		DataModificationCancelTransaction fromDto<DataModificationCancelTransaction, DataModificationCancelTransactionDto >(const DataModificationCancelTransactionDto & dto);
+
+		template<>
+		ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto);
 
 		/// Account Property Transactions
 		template<>
@@ -285,6 +304,24 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedMosaicAliasTransaction fromDto<EmbeddedMosaicAliasTransaction, EmbeddedMosaicAliasTransactionDto >(const EmbeddedMosaicAliasTransactionDto & dto);
+
+		template<>
+		EmbeddedPrepareBcDriveTransaction fromDto<EmbeddedPrepareBcDriveTransaction, EmbeddedPrepareBcDriveTransactionDto >(const EmbeddedPrepareBcDriveTransactionDto & dto);
+
+		template<>
+		EmbeddedDataModificationTransaction fromDto<EmbeddedDataModificationTransaction, EmbeddedDataModificationTransactionDto >(const EmbeddedDataModificationTransactionDto & dto);
+
+		template<>
+		EmbeddedDownloadTransaction fromDto<EmbeddedDownloadTransaction, EmbeddedDownloadTransactionDto >(const EmbeddedDownloadTransactionDto & dto);
+
+		template<>
+		EmbeddedDataModificationApprovalTransaction fromDto<EmbeddedDataModificationApprovalTransaction, EmbeddedDataModificationApprovalTransactionDto >(const EmbeddedDataModificationApprovalTransactionDto & dto);
+
+		template<>
+		EmbeddedDataModificationCancelTransaction fromDto<EmbeddedDataModificationCancelTransaction, EmbeddedDataModificationCancelTransactionDto >(const EmbeddedDataModificationCancelTransactionDto & dto);
+
+		template<>
+		EmbeddedReplicatorOnboardingTransaction fromDto<EmbeddedReplicatorOnboardingTransaction, EmbeddedReplicatorOnboardingTransactionDto >(const EmbeddedReplicatorOnboardingTransactionDto & dto);
 
 		/// Account Property Transactions
 		template<>

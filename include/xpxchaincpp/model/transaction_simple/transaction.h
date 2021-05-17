@@ -56,7 +56,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
         uint32_t size;
         std::string signer;
-        uint16_t version;
+		uint32_t version;
     };
 
 	class TransactionContainer {
@@ -188,6 +188,58 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::vector<AccountPropertyModification<T>> modifications;
     };
 
+    template<typename TBase>
+    class TPrepareBcDriveTransaction: public TBase {
+    public:
+		uint64_t driveSize;
+        uint16_t replicatorCount;
+
+    };
+
+    template<typename TBase>
+    class TDataModificationTransaction: public TBase {
+    public:
+		Key driveKey;
+		Hash256 downloadDataCdi;
+		uint64_t uploadSize;
+
+    };
+
+    template<typename TBase>
+    class TDownloadTransaction: public TBase {
+    public:
+		Key driveKey;
+		uint64_t downloadSize;
+		Amount transactionFee;
+
+    };
+
+    template<typename TBase>
+    class TDataModificationApprovalTransaction: public TBase {
+    public:
+		Key driveKey;
+		Hash256 dataModificationId;
+		Hash256 fileStructureCdi;
+		uint64_t fileStructureSize;
+		uint64_t usedDriveSize;
+
+    };
+
+    template<typename TBase>
+    class TDataModificationCancelTransaction: public TBase {
+    public:
+		Key driveKey;
+		Hash256 dataModificationId;
+
+    };
+
+    template<typename TBase>
+    class TReplicatorOnboardingTransaction: public TBase {
+    public:
+		Amount capacity;
+
+    };
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -235,6 +287,24 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using AliasTransactionBase = TAliasTransactionBase<Transaction>;
     using EmbeddedAliasTransactionBase = TAliasTransactionBase<EmbeddedTransaction>;
+
+    using PrepareBcDriveTransaction = TPrepareBcDriveTransaction <Transaction>;
+    using EmbeddedPrepareBcDriveTransaction = TPrepareBcDriveTransaction<EmbeddedTransaction>;
+
+    using DataModificationTransaction = TDataModificationTransaction <Transaction>;
+    using EmbeddedDataModificationTransaction = TDataModificationTransaction<EmbeddedTransaction>;
+
+    using DownloadTransaction = TDownloadTransaction <Transaction>;
+    using EmbeddedDownloadTransaction = TDownloadTransaction<EmbeddedTransaction>;
+
+    using DataModificationApprovalTransaction = TDataModificationApprovalTransaction <Transaction>;
+    using EmbeddedDataModificationApprovalTransaction = TDataModificationApprovalTransaction<EmbeddedTransaction>;
+
+    using DataModificationCancelTransaction = TDataModificationCancelTransaction <Transaction>;
+    using EmbeddedDataModificationCancelTransaction = TDataModificationCancelTransaction<EmbeddedTransaction>;
+
+    using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
+    using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
 }}
 
 

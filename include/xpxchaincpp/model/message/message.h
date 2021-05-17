@@ -79,13 +79,13 @@ namespace xpx_chain_sdk {
         return std::make_shared<PlainMessage>(payload);
     }
 
-    std::shared_ptr<PlainMessage> NewPlainMessageFromEncodedData(
-            ByteArray encodedData,
-            PrivateKey recipient,
-            PublicKey sender) {
-
-		/// TODO: Implement this method;
-    }
+//    std::shared_ptr<PlainMessage> NewPlainMessageFromEncodedData(
+//            ByteArray encodedData,
+//            PrivateKey recipient,
+//            PublicKey sender) {
+//
+//		/// TODO: Implement this method;
+//    }
 
 
     class SecureMessage : public Message {
@@ -123,14 +123,14 @@ namespace xpx_chain_sdk {
         return std::make_shared<SecureMessage>(std::move(encodedData));
     }
 
-    std::shared_ptr<SecureMessage> NewSecureMessageFromPlaintText(
-            const std::string& plaintText,
-            PrivateKey sender,
-            PublicKey recipient) {
-
-
-        /// TODO: Implement this method;
-    }
+//    std::shared_ptr<SecureMessage> NewSecureMessageFromPlaintText(
+//            const std::string& plaintText,
+//            PrivateKey sender,
+//            PublicKey recipient) {
+//
+//
+//        /// TODO: Implement this method;
+//    }
 
     std::string ByteArrayToString(const ByteArray& data ) {
         std::ostringstream result;

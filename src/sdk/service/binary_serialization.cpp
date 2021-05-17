@@ -282,6 +282,79 @@ namespace xpx_chain_sdk {
 			return CreateTransaction<AggregateTransactionImpl>(
 				dto, binaryData, isComplete, embeddedTransactions, cosignatures, dto.value<"payload"_>().size());
 		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    PrepareBcDriveTransactionImpl,
+			                                    EmbeddedPrepareBcDriveTransactionImpl>>
+		std::unique_ptr<TImpl> CreatePrepareBcDriveTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveSize"_>(), dto.template value<"replicatorCount"_>());
+		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    DataModificationTransactionImpl,
+			                                    EmbeddedDataModificationTransactionImpl>>
+		std::unique_ptr<TImpl> CreateDataModificationTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveKey"_>(), dto.template value<"downloadDataCdi"_>(), dto.template value<"uploadSize"_>());
+		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    DownloadTransactionImpl,
+			                                    EmbeddedDownloadTransactionImpl>>
+		std::unique_ptr<TImpl> CreateDownloadTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveKey"_>(), dto.template value<"downloadSize"_>(), dto.template value<"transactionFee"_>());
+		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    DataModificationApprovalTransactionImpl,
+			                                    EmbeddedDataModificationApprovalTransactionImpl>>
+		std::unique_ptr<TImpl> CreateDataModificationApprovalTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>(), dto.template value<"fileStructureCdi"_>(),
+				dto.template value<"fileStructureSize"_>(), dto.template value<"usedDriveSize"_>());
+		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    DataModificationCancelTransactionImpl,
+			                                    EmbeddedDataModificationCancelTransactionImpl>>
+		std::unique_ptr<TImpl> CreateDataModificationCancelTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>());
+		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    ReplicatorOnboardingTransactionImpl,
+			                                    EmbeddedReplicatorOnboardingTransactionImpl>>
+		std::unique_ptr<TImpl> CreateReplicatorOnboardingTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"capacity"_>());
+		}
 		
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
 		{
@@ -454,6 +527,72 @@ namespace xpx_chain_sdk {
 							embeddedTransaction = CreateTransferTransaction(dto, RawBuffer{});
 						}
 						
+						break;
+					}
+				case TransactionType::Prepare_Bc_Drive:
+					{
+						EmbeddedPrepareBcDriveTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreatePrepareBcDriveTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Data_Modification:
+					{
+						EmbeddedDataModificationTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateDataModificationTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Download:
+					{
+						EmbeddedDownloadTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateDownloadTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Data_Modification_Approval:
+					{
+						EmbeddedDataModificationApprovalTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateDataModificationApprovalTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Data_Modification_Cancel:
+					{
+						EmbeddedDataModificationCancelTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateDataModificationCancelTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Replicator_Onboarding:
+					{
+						EmbeddedReplicatorOnboardingTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateReplicatorOnboardingTransaction(dto, RawBuffer{});
+						}
+
 						break;
 					}
 				default:
@@ -697,6 +836,78 @@ namespace xpx_chain_sdk {
 					transaction = CreateTransferTransaction(dto, binaryData);
 				}
 				
+				break;
+			}
+		case TransactionType::Prepare_Bc_Drive:
+			{
+				PrepareBcDriveTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreatePrepareBcDriveTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Data_Modification:
+			{
+				DataModificationTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateDataModificationTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Download:
+			{
+				DownloadTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateDownloadTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Data_Modification_Approval:
+			{
+				DataModificationApprovalTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateDataModificationApprovalTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Data_Modification_Cancel:
+			{
+				DataModificationCancelTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateDataModificationCancelTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Replicator_Onboarding:
+			{
+				ReplicatorOnboardingTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateReplicatorOnboardingTransaction(dto, binaryData);
+				}
+
 				break;
 			}
 		default:

@@ -291,6 +291,78 @@ namespace xpx_chain_sdk::internal::json::dto {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Mosaic levy transaction deserialization is not implemented");
 			}
 
+			case TransactionType::Prepare_Bc_Drive: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), PrepareBcDriveTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<PrepareBcDriveTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Data_Modification: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DataModificationTransaction, DataModificationTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DataModificationTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Download: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DownloadTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DownloadTransaction, DownloadTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DownloadTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Data_Modification_Approval: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationApprovalTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DataModificationApprovalTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Data_Modification_Cancel: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationCancelTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DataModificationCancelTransaction, DataModificationCancelTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DataModificationCancelTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Replicator_Onboarding: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorOnboardingTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<ReplicatorOnboardingTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1186,4 +1258,79 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+	template<>
+	PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto) {
+		PrepareBcDriveTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveSize = dto.value<"driveSize"_>();
+		transaction.replicatorCount = dto.value<"replicatorCount"_>();
+
+		return transaction;
+	}
+
+	template<>
+	DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto) {
+		DataModificationTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+		transaction.uploadSize = dto.value<"uploadSize"_>();
+
+		return transaction;
+	}
+
+	template<>
+	DownloadTransaction fromDto<DownloadTransaction, DownloadTransactionDto >(const DownloadTransactionDto & dto) {
+		DownloadTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.downloadSize = dto.value<"downloadSize"_>();
+		transaction.transactionFee = dto.value<"transactionFee"_>();
+
+		return transaction;
+	}
+
+	template<>
+	DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto) {
+		DataModificationApprovalTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.dataModificationId = dto.value<"dataModificationId"_>();
+		transaction.fileStructureCdi = dto.value<"fileStructureCdi"_>();
+		transaction.fileStructureSize = dto.value<"fileStructureSize"_>();
+		transaction.usedDriveSize = dto.value<"usedDriveSize"_>();
+
+		return transaction;
+	}
+
+	template<>
+	DataModificationCancelTransaction fromDto<DataModificationCancelTransaction, DataModificationCancelTransactionDto >(const DataModificationCancelTransactionDto & dto) {
+		DataModificationCancelTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.dataModificationId = dto.value<"dataModificationId"_>();
+
+		return transaction;
+	}
+
+	template<>
+	ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto) {
+		ReplicatorOnboardingTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.capacity = dto.value<"capacity"_>();
+
+		return transaction;
+	}
 }

@@ -24,7 +24,7 @@ namespace xpx_chain_sdk { namespace internal {
 		return static_cast<uint32_t>(fullVersion);
 	}
 
-	NetworkIdentifier ExtractTransactionNetworkId(uint16_t fullVersion)
+	NetworkIdentifier ExtractTransactionNetworkId(uint32_t fullVersion)
 	{
 		return static_cast<NetworkIdentifier>(fullVersion >> 24);
 	}

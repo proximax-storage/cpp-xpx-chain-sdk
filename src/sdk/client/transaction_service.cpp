@@ -101,7 +101,7 @@ namespace xpx_chain_sdk {
 
 		std::cout << requestJson << std::endl;
 
-		std::string path = "transaction";
+		std::string path = "transactions";
 
 		auto requestParams = _builder
 				->setPath(path)
