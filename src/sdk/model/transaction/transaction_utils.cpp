@@ -8,6 +8,7 @@
 
 #include <xpxchaincpp/crypto/hash.h>
 #include <xpxchaincpp/model/transaction/aggregate_transaction.h>
+#include <xpxchaincpp/utils/HexParser.h>
 
 #include <cassert>
 
@@ -52,9 +53,11 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		RawBuffer signatureData = { transaction->signature().data(), transaction->signature().size() / 2 };
 		RawBuffer signedData = GetTransactionSignedData(transaction);
+		auto signer = transaction->signer().publicKey();
+		auto generationHash = ParseByteArray<Key>(GetConfig().GenerationHash);
 
 		Sha3_256 builder;
-		builder.update(signatureData, signedData);
+		builder.update(signatureData, signer, generationHash, signedData);
 		return builder.finalize();
 	}
 }}
