@@ -62,7 +62,7 @@ namespace xpx_chain_sdk {
 
 	TransactionStatus TransactionService::getTransactionStatus(const std::string &id) {
 		std::stringstream path;
-		path << "transaction/" << id << "/status";
+        path << "transactionStatus/" << id;
 
 		auto requestParams = _builder
 				->setPath(path.str())

@@ -66,8 +66,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		        Field<STR_LITERAL("group"), std::string>,
 				Field<STR_LITERAL("status"), std::string>,
 				Field<STR_LITERAL("hash"), std::string>,
-				Field<STR_LITERAL("deadline"), Uint64 >,
-				Field<STR_LITERAL("height"), Uint64 > >;
+				Field<STR_LITERAL("deadline"), Uint64 > >;
 
 		using MultipleTransactionInfoDto = std::vector<TransactionInfoDto>;
 		using MultipleTransactionStatusDto = std::vector<TransactionStatusDto>;

@@ -706,7 +706,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transactionStatus.status = dto.value<"status"_>();
 		transactionStatus.hash = dto.value<"hash"_>();
 		transactionStatus.deadline = dto.value<"deadline"_>();
-		transactionStatus.height = dto.value<"height"_>();
 		return transactionStatus;
 	}
 
