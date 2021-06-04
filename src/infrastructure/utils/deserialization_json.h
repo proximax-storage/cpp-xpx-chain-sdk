@@ -17,6 +17,9 @@
 #include <infrastructure/json/dto/multisig_graph_dto.h>
 #include <infrastructure/json/dto/network_info_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
+#include <infrastructure/json/dto/transaction_status_notification_dto.h>
+#include <infrastructure/json/dto/uid_dto.h>
+#include <infrastructure/json/dto/meta_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -37,6 +40,9 @@
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
+#include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <sdk/model/notification/uid.h>
+#include <sdk/model/notification/meta.h>
 
 
 

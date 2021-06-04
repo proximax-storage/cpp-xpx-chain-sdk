@@ -60,7 +60,15 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		//Transaction meta Dtos
 
-		using TransactionInfoDto = VariadicStruct<>;
+		using TransactionInfoDto = VariadicStruct<
+                Field<STR_LITERAL("height"), Uint64>,
+                Field<STR_LITERAL("index"), Uint32>,
+                Field<STR_LITERAL("id"), std::string>,
+                Field<STR_LITERAL("hash"), std::string>,
+                Field<STR_LITERAL("merkleComponentHash"), std::string>,
+                Field<STR_LITERAL("aggregateHash"), std::string>,
+                Field<STR_LITERAL("uniqueAggregateHash"), std::string>,
+                Field<STR_LITERAL("aggregateId"), std::string>>;
 
 		using TransactionStatusDto = VariadicStruct<
 		        Field<STR_LITERAL("group"), std::string>,

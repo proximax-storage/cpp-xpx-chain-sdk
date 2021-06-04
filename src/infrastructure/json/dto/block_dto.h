@@ -7,6 +7,7 @@
 #pragma once
 
 #include "infrastructure/utils/variadic_struct.h"
+#include "infrastructure/json/uint32.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/json/descriptors.h"
 #include <stdint.h>
@@ -45,6 +46,7 @@
 
 namespace xpx_chain_sdk::internal::json::dto {
 
+    using Uint32 = xpx_chain_sdk::internal::json::Uint32;
 	using Uint64 = xpx_chain_sdk::internal::json::Uint64;
 
     using BlockMetaDto = VariadicStruct<

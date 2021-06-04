@@ -624,6 +624,14 @@ namespace xpx_chain_sdk::internal::json::dto {
 	template<>
 	TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto) {
 		TransactionInfo transactionInfo;
+        transactionInfo.height = dto.value<"height"_>();
+        transactionInfo.index = dto.value<"index"_>();
+        transactionInfo.id = dto.value<"id"_>();
+        transactionInfo.hash = dto.value<"hash"_>();
+        transactionInfo.merkleComponentHash = dto.value<"merkleComponentHash"_>();
+        transactionInfo.aggregateHash = dto.value<"aggregateHash"_>();
+        transactionInfo.uniqueAggregateHash = dto.value<"uniqueAggregateHash"_>();
+        transactionInfo.aggregateId = dto.value<"aggregateId"_>();
 		return transactionInfo;
 	}
 
@@ -1186,4 +1194,29 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    Uid fromDto<Uid, UidDto>(const UidDto &dto) {
+        return { dto.value<"uid"_>() };
+    }
+
+    template<>
+    WebsocketMeta fromDto<WebsocketMeta, WebsocketMetaDto>(const WebsocketMetaDto &dto) {
+        WebsocketMeta meta;
+        meta.channelName = dto.value<"channelName"_>();
+        meta.address = dto.value<"address"_>();
+        return meta;
+    }
+
+    template<>
+    WebsocketInfo fromDto<WebsocketInfo, WebsocketInfoDto>(const WebsocketInfoDto &dto) {
+        return { fromDto<WebsocketMeta, WebsocketMetaDto>(dto.value<"meta"_>()) };
+    }
+
+    template<>
+    TransactionStatusNotification fromDto<TransactionStatusNotification, TransactionStatusNotificationDto>(const TransactionStatusNotificationDto &dto) {
+        TransactionStatusNotification transactionStatusNotification;
+        transactionStatusNotification.hash = dto.value<"hash"_>();
+        transactionStatusNotification.status = dto.value<"status"_>();
+        return transactionStatusNotification;
+    }
 }
