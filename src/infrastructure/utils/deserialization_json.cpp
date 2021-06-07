@@ -1219,4 +1219,21 @@ namespace xpx_chain_sdk::internal::json::dto {
         transactionStatusNotification.status = dto.value<"status"_>();
         return transactionStatusNotification;
     }
+
+    template<>
+    SignerInfoNotification fromDto<SignerInfoNotification, SignerInfoNotificationDto>(const SignerInfoNotificationDto &dto) {
+        SignerInfoNotification signerInfoNotification;
+        signerInfoNotification.signer = dto.value<"signer"_>();
+        signerInfoNotification.signature = dto.value<"signature"_>();
+        signerInfoNotification.hash = dto.value<"hash"_>();
+        return signerInfoNotification;
+    }
+
+    template<>
+    DriveStateNotification fromDto<DriveStateNotification, DriveStateNotificationDto>(const DriveStateNotificationDto &dto) {
+        DriveStateNotification driveStateNotification;
+        driveStateNotification.driveKey = dto.value<"driveKey"_>();
+        driveStateNotification.state = dto.value<"state"_>();
+        return driveStateNotification;
+    }
 }

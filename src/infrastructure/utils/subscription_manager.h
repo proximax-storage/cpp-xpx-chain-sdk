@@ -20,7 +20,7 @@ namespace xpx_chain_sdk::internal {
     const std::string pathPartialAdded = "partialAdded";
     const std::string pathPartialRemoved = "partialRemoved";
     const std::string pathCosignature = "cosignature";
-    const std::string driveState = "driveState";
+    const std::string pathDriveState = "driveState";
 
     class SubscriptionManager {
     public:
