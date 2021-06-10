@@ -6,6 +6,7 @@
 #pragma once
 
 #include <memory>
+#include <xpxchaincpp/model/account/address.h>
 #include "../network/websocket.h"
 
 namespace xpx_chain_sdk::internal {
@@ -24,12 +25,17 @@ namespace xpx_chain_sdk::internal {
 
     class SubscriptionManager {
     public:
-        SubscriptionManager(std::shared_ptr<WsClient> wsClient);
+        explicit SubscriptionManager(std::shared_ptr<WsClient> wsClient);
         ~SubscriptionManager() = default;
 
     public:
         void subscribe(const std::string& uid, const std::string& path);
+        void subscribe(const std::string& uid, const std::string& path, const Address& address);
         void unsubscribe(const std::string& uid, const std::string& path);
+        void unsubscribe(const std::string& uid, const std::string& path, const Address& address);
+
+    private:
+        static std::string createJson(const std::string &uid, const std::string &path, const std::string& type) ;
 
     private:
         std::shared_ptr<WsClient> _wsClient;

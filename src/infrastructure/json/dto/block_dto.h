@@ -10,7 +10,7 @@
 #include "infrastructure/json/uint32.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/json/descriptors.h"
-#include <stdint.h>
+#include <cstdint>
 
 
 
@@ -52,29 +52,29 @@ namespace xpx_chain_sdk::internal::json::dto {
     using BlockMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,
             Field<STR_LITERAL("generationHash"), std::string>,
-            Field<STR_LITERAL("totalFee"), Uint64>,
-            Field<STR_LITERAL("numTransactions"), uint64_t >,
-            Field<STR_LITERAL("numStatements"), uint64_t, desc::Optional >>;
+            Field<STR_LITERAL("totalFee"), Uint64, desc::Optional>,
+            Field<STR_LITERAL("numTransactions"), Uint64, desc::Optional>,
+            Field<STR_LITERAL("numStatements"), Uint64, desc::Optional >>;
 
     using BlockDataDto = VariadicStruct<
             Field<STR_LITERAL("signature"), std::string>,
             Field<STR_LITERAL("timestamp"), Uint64 >,
             Field<STR_LITERAL("difficulty"), Uint64 >,
-            Field<STR_LITERAL("feeMultiplier"), uint64_t >,
+            Field<STR_LITERAL("feeMultiplier"), Uint32 >,
             Field<STR_LITERAL("previousBlockHash"), std::string>,
             Field<STR_LITERAL("blockTransactionsHash"), std::string>,
-            Field<STR_LITERAL("blockReceiptsHash"), std::string>,
-            Field<STR_LITERAL("stateHash"), std::string>,
-            Field<STR_LITERAL("beneficiary"), std::string> >;
+            Field<STR_LITERAL("blockReceiptsHash"), std::string, desc::Optional>,
+            Field<STR_LITERAL("stateHash"), std::string, desc::Optional>,
+            Field<STR_LITERAL("beneficiary"), std::string, desc::Optional> >;
 
     using BlockDto = VariadicStruct<
             Field<STR_LITERAL("meta"), BlockMetaDto>,
             Field<STR_LITERAL("block"), BlockDataDto > >;
 
     using StorageInfoDto = VariadicStruct<
-            Field<STR_LITERAL("numBlocks"), uint64_t>,
-            Field<STR_LITERAL("numTransactions"), uint64_t>,
-            Field<STR_LITERAL("numAccounts"), uint64_t> >;
+            Field<STR_LITERAL("numBlocks"), Uint64>,
+            Field<STR_LITERAL("numTransactions"), Uint64>,
+            Field<STR_LITERAL("numAccounts"), Uint64> >;
 
     using ScoreInfoDto = VariadicStruct<
             Field<STR_LITERAL("scoreHigh"), Uint64>,

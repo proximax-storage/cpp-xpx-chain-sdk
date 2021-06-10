@@ -4,13 +4,16 @@
 *** license that can be found in the LICENSE file.
 */
 
-#include "xpxchaincpp/client/notification_service.h"
-#include <infrastructure/utils/deserialization_json.h>
+#include <xpxchaincpp/client/notification_service.h>
+#include <xpxchaincpp/exceptions.h>
 #include <infrastructure/json/parser.h>
-#include <infrastructure/network/websocket.h>
+#include <infrastructure/utils/deserialization_json.h>
 #include <infrastructure/utils/subscription_manager.h>
-#include <sdk/model/notification/uid.h>
-#include <sdk/model/notification/meta.h>
+#include <infrastructure/network/websocket.h>
+#include <sdk/model/notification/websocket_uid.h>
+#include <sdk/model/notification/websocket_meta.h>
+#include <chrono>
+#include <thread>
 
 using namespace xpx_chain_sdk;
 
@@ -20,9 +23,6 @@ using xpx_chain_sdk::internal::json::Parser;
 using xpx_chain_sdk::internal::json::dto::from_json;
 
 namespace xpx_chain_sdk {
-
-    template<typename Data, typename DataDto, typename ContainerKey, typename ContainerValue>
-    void runNotifiers(const std::string& path, const std::string& json, const std::map<ContainerKey, ContainerValue>& container);
 
     NotificationService::NotificationService(
             std::shared_ptr<Config> config,
@@ -35,7 +35,7 @@ namespace xpx_chain_sdk {
             _isInitialized(false) {}
 
     NotificationService::~NotificationService() {
-        // TODO unsubscribe all
+        finalize();
     }
 
     void NotificationService::addMutexIfNotExist(const std::string& mutexKey) {
@@ -46,84 +46,181 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::initialize(std::function<void()> initializeCallback) {
-        auto connectionCallback = [pThis = shared_from_this(), initializeCallback](const auto& json, const auto& errorCode) {
-            if (errorCode) {
-                pThis->_isInitialized = false;
-                // call initializeCallback
-                // throw exception
-            }
-
+        std::unique_lock<std::mutex> lock(_initializeMutex);
+        auto connectionCallback = [pThis = shared_from_this(), initializeCallback](const auto& json) {
             Uid uid = from_json<Uid, UidDto>(json);
             pThis->_uid = uid.value;
 
-            std::cout << "uid str: " << uid.value << std::endl;
-
             pThis->_subscriptionManager = std::make_shared<internal::SubscriptionManager>(pThis->_wsClient);
+            pThis->_isInitialized = true;
             initializeCallback();
+            pThis->_initializeCheck.notify_all();
         };
 
-        auto receiverCallback = [pThis = shared_from_this()](const auto& json, const auto& errorCode) {
-            if (errorCode) {
-                pThis->_isInitialized = false;
-                // throw exception
-            }
-
+        auto receiverCallback = [pThis = shared_from_this()](const auto& json) {
             pThis->notificationsHandler(json);
         };
 
-        _wsClient = std::make_shared<internal::network::WsClient>(_config, _context, connectionCallback, receiverCallback);
-        _wsClient->connect();
+        auto errorCallback = [pThis = shared_from_this()](const boost::beast::error_code& errorCode) {
+            if (errorCode) {
+                std::string errorMessage = errorCode.message();
+                if (boost::asio::error::eof == errorCode) {
+                    errorMessage = "connection closed by server side";
+                }
 
-        _isInitialized = true;
+                pThis->_isInitialized = false;
+                pThis->_initializeCheck.notify_all();
+                XPX_CHAIN_SDK_THROW_1(notification_error, errorMessage, errorCode.value())
+            }
+        };
+
+        _wsClient = std::make_shared<internal::network::WsClient>(_config, _context, connectionCallback, receiverCallback, errorCallback);
+        _wsClient->connect();
+        _initializeCheck.wait_for(lock, std::chrono::seconds(60), [pThis = shared_from_this()]() {
+            return pThis->_wsClient->isConnected();
+        });
+    }
+
+    void NotificationService::finalize() {
+        if (_isInitialized) {
+            _subscriptionManager->unsubscribe(_uid, internal::pathBlock);
+
+            for (auto const& item : _confirmedAddedNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _unconfirmedAddedNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _unconfirmedRemovedNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _partialAddedNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _partialRemovedNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _statusNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _cosignatureNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(item.first));
+            }
+
+            for (auto const& item : _driveStateNotifiers)
+            {
+                _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(item.first));
+            }
+
+            _wsClient->disconnect();
+        }
     }
 
     void NotificationService::notificationsHandler(const std::string &json) {
-        std::cout << json << std::endl;
-
-        const auto websocketInfo = from_json<WebsocketInfo, WebsocketInfoDto>(json);
+        auto websocketInfo = from_json<WebsocketInfo, WebsocketInfoDto>(json);
+        
         if (internal::pathBlock == websocketInfo.meta.channelName) {
-            std::lock_guard<std::mutex> lock(*_notifiersMutexes[internal::pathBlock]);
-            auto block = from_json<Block, BlockDto>(json);
-            for (const auto& notifier : _blockNotifiers) {
-                notifier(block);
+            if (_blockNotifiers.empty()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathBlock);
+            } else {
+                auto block = from_json<Block, BlockDto>(json);
+                for (const auto& notifier : _blockNotifiers) {
+                    notifier(block);
+                }
             }
         } else if (internal::pathConfirmedAdded == websocketInfo.meta.channelName) {
-            std::lock_guard<std::mutex> lock(*_notifiersMutexes[internal::pathConfirmedAdded]);
-
-            runNotifiers<transactions_info::Transaction, TransactionDto, std::string, std::vector<ConfirmedAddedNotifier>>(
-                    internal::pathConfirmedAdded, json, _confirmedAddedNotifiers);
+            if (_confirmedAddedNotifiers.find(websocketInfo.meta.address) == _confirmedAddedNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transaction = from_json<TransactionNotification, TransactionNotificationDto>(json);
+                for (const auto& notifier : _confirmedAddedNotifiers[websocketInfo.meta.address]) {
+                    notifier(transaction);
+                }
+            }
         } else if (internal::pathUnconfirmedAdded == websocketInfo.meta.channelName) {
-            std::lock_guard<std::mutex> lock(*_notifiersMutexes[internal::pathUnconfirmedAdded]);
-
-            runNotifiers<transactions_info::Transaction, TransactionDto, std::string, std::vector<UnconfirmedAddedNotifier>>(
-                    internal::pathUnconfirmedAdded, json, _unconfirmedAddedNotifiers);
+            if (_unconfirmedAddedNotifiers.find(websocketInfo.meta.address) == _unconfirmedAddedNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transaction = from_json<TransactionNotification, TransactionNotificationDto>(json);
+                for (const auto& notifier : _unconfirmedAddedNotifiers[websocketInfo.meta.address]) {
+                    notifier(transaction);
+                }
+            }
         } else if (internal::pathUnconfirmedRemoved == websocketInfo.meta.channelName) {
-            std::lock_guard<std::mutex> lock(*_notifiersMutexes[internal::pathUnconfirmedRemoved]);
-
-            runNotifiers<transactions_info::TransactionInfo, TransactionInfoDto , std::string, std::vector<UnconfirmedRemovedNotifier>>(
-                    internal::pathUnconfirmedRemoved, json, _unconfirmedRemovedNotifiers);
+            if (_unconfirmedRemovedNotifiers.find(websocketInfo.meta.address) == _unconfirmedRemovedNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transactionInfo = from_json<transactions_info::TransactionInfo, TransactionInfoDto>(json);
+                for (const auto& notifier : _unconfirmedRemovedNotifiers[websocketInfo.meta.address]) {
+                    notifier(transactionInfo);
+                }
+            }
         } else if (internal::pathStatus == websocketInfo.meta.channelName) {
-            std::lock_guard<std::mutex> lock(*_notifiersMutexes[internal::pathStatus]);
-
-            runNotifiers<TransactionStatusNotification, TransactionStatusNotificationDto, std::string, std::vector<StatusNotifier>>(
-                    internal::pathStatus, json, _statusNotifiers);
+            if (_statusNotifiers.find(websocketInfo.meta.address) == _statusNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transactionStatus = from_json<TransactionStatusNotification, TransactionStatusNotificationDto>(json);
+                for (const auto& notifier : _statusNotifiers[websocketInfo.meta.address]) {
+                    notifier(transactionStatus);
+                }
+            }
         } else if (internal::pathPartialAdded == websocketInfo.meta.channelName) {
-
+            if (_partialAddedNotifiers.find(websocketInfo.meta.address) == _partialAddedNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transaction = transaction_from_json(json);
+                for (const auto& notifier : _partialAddedNotifiers[websocketInfo.meta.address]) {
+                    notifier(transaction);
+                }
+            }
         } else if (internal::pathPartialRemoved == websocketInfo.meta.channelName) {
-
+            if (_partialRemovedNotifiers.find(websocketInfo.meta.address) == _partialRemovedNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto transactionInfo = from_json<transactions_info::TransactionInfo, TransactionInfoDto>(json);
+                for (const auto& notifier : _partialRemovedNotifiers[websocketInfo.meta.address]) {
+                    notifier(transactionInfo);
+                }
+            }
         } else if (internal::pathCosignature == websocketInfo.meta.channelName) {
-
+            if (_cosignatureNotifiers.find(websocketInfo.meta.address) == _cosignatureNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto signerInfo = from_json<SignerInfoNotification, SignerInfoNotificationDto>(json);
+                for (const auto& notifier : _cosignatureNotifiers[websocketInfo.meta.address]) {
+                    notifier(signerInfo);
+                }
+            }
         } else if (internal::pathDriveState == websocketInfo.meta.channelName) {
-
+            if (_driveStateNotifiers.find(websocketInfo.meta.address) == _driveStateNotifiers.end()) {
+                _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(websocketInfo.meta.address));
+            } else {
+                auto driveState = from_json<DriveStateNotification, DriveStateNotificationDto>(json);
+                for (const auto& notifier : _driveStateNotifiers[websocketInfo.meta.address]) {
+                    notifier(driveState);
+                }
+            }
         } else {
-            // unknown channel, throw exception
+            std::cout << "notifications: received notification from unsupported channel: " << json << " (Ignored)" << std::endl;
         }
     }
 
     void NotificationService::addBlockNotifiers(const std::initializer_list<BlockNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathBlock);
@@ -164,10 +261,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addConfirmedAddedNotifiers(const std::string &address, const std::initializer_list<ConfirmedAddedNotifier> &notifiers) {
+    void NotificationService::addConfirmedAddedNotifiers(const Address& address, const std::initializer_list<ConfirmedAddedNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathConfirmedAdded);
@@ -175,11 +271,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathConfirmedAdded]);
 
-            if ( pThis->_confirmedAddedNotifiers.find(address) != pThis->_confirmedAddedNotifiers.end() ) {
-                pThis->_confirmedAddedNotifiers[address].insert(pThis->_confirmedAddedNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_confirmedAddedNotifiers.find(hexAddress) != pThis->_confirmedAddedNotifiers.end() ) {
+                pThis->_confirmedAddedNotifiers[hexAddress].insert(pThis->_confirmedAddedNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_confirmedAddedNotifiers.insert(std::pair<std::string, std::vector<ConfirmedAddedNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathConfirmedAdded + "/" + address);
+                pThis->_confirmedAddedNotifiers.insert(std::pair<std::string, std::vector<ConfirmedAddedNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathConfirmedAdded, address);
             }
         };
 
@@ -190,14 +287,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeConfirmedAddedNotifiers(const std::string &address) {
+    void NotificationService::removeConfirmedAddedNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathConfirmedAdded);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathConfirmedAdded]);
 
-            if (pThis->_confirmedAddedNotifiers.find(address) != pThis->_confirmedAddedNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathConfirmedAdded + "/" + address);
-                pThis->_confirmedAddedNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_confirmedAddedNotifiers.find(hexAddress) != pThis->_confirmedAddedNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathConfirmedAdded, address);
+                pThis->_confirmedAddedNotifiers.erase(hexAddress);
             }
         };
 
@@ -208,10 +306,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addUnconfirmedAddedNotifiers(const std::string &address, const std::initializer_list<UnconfirmedAddedNotifier> &notifiers) {
+    void NotificationService::addUnconfirmedAddedNotifiers(const Address& address, const std::initializer_list<UnconfirmedAddedNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathUnconfirmedAdded);
@@ -219,11 +316,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathUnconfirmedAdded]);
 
-            if ( pThis->_unconfirmedAddedNotifiers.find(address) != pThis->_unconfirmedAddedNotifiers.end() ) {
-                pThis->_unconfirmedAddedNotifiers[address].insert(pThis->_unconfirmedAddedNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_unconfirmedAddedNotifiers.find(hexAddress) != pThis->_unconfirmedAddedNotifiers.end() ) {
+                pThis->_unconfirmedAddedNotifiers[hexAddress].insert(pThis->_unconfirmedAddedNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_unconfirmedAddedNotifiers.insert(std::pair<std::string, std::vector<ConfirmedAddedNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathUnconfirmedAdded + "/" + address);
+                pThis->_unconfirmedAddedNotifiers.insert(std::pair<std::string, std::vector<ConfirmedAddedNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathUnconfirmedAdded, address);
             }
         };
 
@@ -234,14 +332,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeUnconfirmedAddedNotifiers(const std::string &address) {
+    void NotificationService::removeUnconfirmedAddedNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathUnconfirmedAdded);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathUnconfirmedAdded]);
 
-            if (pThis->_unconfirmedAddedNotifiers.find(address) != pThis->_unconfirmedAddedNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathUnconfirmedAdded + "/" + address);
-                pThis->_unconfirmedAddedNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_unconfirmedAddedNotifiers.find(hexAddress) != pThis->_unconfirmedAddedNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathUnconfirmedAdded, address);
+                pThis->_unconfirmedAddedNotifiers.erase(hexAddress);
             }
         };
 
@@ -252,10 +351,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addUnconfirmedRemovedNotifiers(const std::string &address, const std::initializer_list<UnconfirmedRemovedNotifier> &notifiers) {
+    void NotificationService::addUnconfirmedRemovedNotifiers(const Address& address, const std::initializer_list<UnconfirmedRemovedNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathUnconfirmedRemoved);
@@ -263,11 +361,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathUnconfirmedRemoved]);
 
-            if ( pThis->_unconfirmedRemovedNotifiers.find(address) != pThis->_unconfirmedRemovedNotifiers.end() ) {
-                pThis->_unconfirmedRemovedNotifiers[address].insert(pThis->_unconfirmedRemovedNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_unconfirmedRemovedNotifiers.find(hexAddress) != pThis->_unconfirmedRemovedNotifiers.end() ) {
+                pThis->_unconfirmedRemovedNotifiers[hexAddress].insert(pThis->_unconfirmedRemovedNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_unconfirmedRemovedNotifiers.insert(std::pair<std::string, std::vector<UnconfirmedRemovedNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathUnconfirmedRemoved + "/" + address);
+                pThis->_unconfirmedRemovedNotifiers.insert(std::pair<std::string, std::vector<UnconfirmedRemovedNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathUnconfirmedRemoved, address);
             }
         };
 
@@ -278,14 +377,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeUnconfirmedRemovedNotifiers(const std::string &address) {
+    void NotificationService::removeUnconfirmedRemovedNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathUnconfirmedRemoved);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathUnconfirmedRemoved]);
 
-            if (pThis->_unconfirmedRemovedNotifiers.find(address) != pThis->_unconfirmedRemovedNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathUnconfirmedRemoved + "/" + address);
-                pThis->_unconfirmedRemovedNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_unconfirmedRemovedNotifiers.find(hexAddress) != pThis->_unconfirmedRemovedNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathUnconfirmedRemoved, address);
+                pThis->_unconfirmedRemovedNotifiers.erase(hexAddress);
             }
         };
 
@@ -296,10 +396,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addPartialAddedNotifiers(const std::string &address, const std::initializer_list<PartialAddedNotifier> &notifiers) {
+    void NotificationService::addPartialAddedNotifiers(const Address& address, const std::initializer_list<PartialAddedNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathPartialAdded);
@@ -307,11 +406,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathPartialAdded]);
 
-            if ( pThis->_partialAddedNotifiers.find(address) != pThis->_partialAddedNotifiers.end() ) {
-                pThis->_partialAddedNotifiers[address].insert(pThis->_partialAddedNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_partialAddedNotifiers.find(hexAddress) != pThis->_partialAddedNotifiers.end() ) {
+                pThis->_partialAddedNotifiers[hexAddress].insert(pThis->_partialAddedNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_partialAddedNotifiers.insert(std::pair<std::string, std::vector<PartialAddedNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathPartialAdded + "/" + address);
+                pThis->_partialAddedNotifiers.insert(std::pair<std::string, std::vector<PartialAddedNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathPartialAdded, address);
             }
         };
 
@@ -322,14 +422,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removePartialAddedNotifiers(const std::string &address) {
+    void NotificationService::removePartialAddedNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathPartialAdded);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathPartialAdded]);
 
-            if (pThis->_partialAddedNotifiers.find(address) != pThis->_partialAddedNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathPartialAdded + "/" + address);
-                pThis->_partialAddedNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_partialAddedNotifiers.find(hexAddress) != pThis->_partialAddedNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathPartialAdded, address);
+                pThis->_partialAddedNotifiers.erase(hexAddress);
             }
         };
 
@@ -340,10 +441,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addPartialRemovedNotifiers(const std::string &address, const std::initializer_list<PartialRemovedNotifier> &notifiers) {
+    void NotificationService::addPartialRemovedNotifiers(const Address& address, const std::initializer_list<PartialRemovedNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathPartialRemoved);
@@ -351,11 +451,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathPartialRemoved]);
 
-            if ( pThis->_partialRemovedNotifiers.find(address) != pThis->_partialRemovedNotifiers.end() ) {
-                pThis->_partialRemovedNotifiers[address].insert(pThis->_partialRemovedNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_partialRemovedNotifiers.find(hexAddress) != pThis->_partialRemovedNotifiers.end() ) {
+                pThis->_partialRemovedNotifiers[hexAddress].insert(pThis->_partialRemovedNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_partialRemovedNotifiers.insert(std::pair<std::string, std::vector<PartialRemovedNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathPartialRemoved + "/" + address);
+                pThis->_partialRemovedNotifiers.insert(std::pair<std::string, std::vector<PartialRemovedNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathPartialRemoved, address);
             }
         };
 
@@ -366,14 +467,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removePartialRemovedNotifiers(const std::string &address) {
+    void NotificationService::removePartialRemovedNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathPartialRemoved);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathPartialRemoved]);
 
-            if (pThis->_partialRemovedNotifiers.find(address) != pThis->_partialRemovedNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathPartialRemoved + "/" + address);
-                pThis->_partialRemovedNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_partialRemovedNotifiers.find(hexAddress) != pThis->_partialRemovedNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathPartialRemoved, address);
+                pThis->_partialRemovedNotifiers.erase(hexAddress);
             }
         };
 
@@ -384,10 +486,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addStatusNotifiers(const std::string& address, const std::initializer_list<StatusNotifier>& notifiers) {
+    void NotificationService::addStatusNotifiers(const Address& address, const std::initializer_list<StatusNotifier>& notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathStatus);
@@ -395,11 +496,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathStatus]);
 
-            if ( pThis->_statusNotifiers.find(address) != pThis->_statusNotifiers.end() ) {
-                pThis->_statusNotifiers[address].insert(pThis->_statusNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_statusNotifiers.find(hexAddress) != pThis->_statusNotifiers.end() ) {
+                pThis->_statusNotifiers[hexAddress].insert(pThis->_statusNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_statusNotifiers.insert(std::pair<std::string, std::vector<StatusNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathStatus + "/" + address);
+                pThis->_statusNotifiers.insert(std::pair<std::string, std::vector<StatusNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathStatus, address);
             }
         };
 
@@ -410,14 +512,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeStatusNotifiers(const std::string &address) {
+    void NotificationService::removeStatusNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathStatus);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathStatus]);
 
-            if (pThis->_statusNotifiers.find(address) != pThis->_statusNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathStatus + "/" + address);
-                pThis->_statusNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_statusNotifiers.find(hexAddress) != pThis->_statusNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathStatus, address);
+                pThis->_statusNotifiers.erase(hexAddress);
             }
         };
 
@@ -428,10 +531,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addCosignatureNotifiers(const std::string &address, const std::initializer_list<CosignatureNotifier> &notifiers) {
+    void NotificationService::addCosignatureNotifiers(const Address& address, const std::initializer_list<CosignatureNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathCosignature);
@@ -439,11 +541,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathCosignature]);
 
-            if ( pThis->_cosignatureNotifiers.find(address) != pThis->_cosignatureNotifiers.end() ) {
-                pThis->_cosignatureNotifiers[address].insert(pThis->_cosignatureNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_cosignatureNotifiers.find(hexAddress) != pThis->_cosignatureNotifiers.end() ) {
+                pThis->_cosignatureNotifiers[hexAddress].insert(pThis->_cosignatureNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_cosignatureNotifiers.insert(std::pair<std::string, std::vector<CosignatureNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathCosignature + "/" + address);
+                pThis->_cosignatureNotifiers.insert(std::pair<std::string, std::vector<CosignatureNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathCosignature, address);
             }
         };
 
@@ -454,14 +557,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeCosignatureNotifiers(const std::string &address) {
+    void NotificationService::removeCosignatureNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathCosignature);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathCosignature]);
 
-            if (pThis->_cosignatureNotifiers.find(address) != pThis->_cosignatureNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathCosignature + "/" + address);
-                pThis->_cosignatureNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_cosignatureNotifiers.find(hexAddress) != pThis->_cosignatureNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathCosignature, address);
+                pThis->_cosignatureNotifiers.erase(hexAddress);
             }
         };
 
@@ -472,10 +576,9 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addDriveStateNotifiers(const std::string &address, const std::initializer_list<DriveStateNotifier> &notifiers) {
+    void NotificationService::addDriveStateNotifiers(const Address& address, const std::initializer_list<DriveStateNotifier> &notifiers) {
         if (empty(notifiers)) {
-            // throw exception
-            return;
+            XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
         addMutexIfNotExist(internal::pathDriveState);
@@ -483,11 +586,12 @@ namespace xpx_chain_sdk {
         auto callback = [pThis = shared_from_this(), address, notifiers]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathDriveState]);
 
-            if ( pThis->_driveStateNotifiers.find(address) != pThis->_driveStateNotifiers.end() ) {
-                pThis->_driveStateNotifiers[address].insert(pThis->_driveStateNotifiers[address].end(), notifiers.begin(), notifiers.end());
+            const std::string hexAddress = ToHex(address.binary());
+            if ( pThis->_driveStateNotifiers.find(hexAddress) != pThis->_driveStateNotifiers.end() ) {
+                pThis->_driveStateNotifiers[hexAddress].insert(pThis->_driveStateNotifiers[hexAddress].end(), notifiers.begin(), notifiers.end());
             } else {
-                pThis->_driveStateNotifiers.insert(std::pair<std::string, std::vector<DriveStateNotifier>>(address, notifiers));
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathDriveState + "/" + address);
+                pThis->_driveStateNotifiers.insert(std::pair<std::string, std::vector<DriveStateNotifier>>(hexAddress, notifiers));
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathDriveState, address);
             }
         };
 
@@ -498,14 +602,15 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::removeDriveStateNotifiers(const std::string &address) {
+    void NotificationService::removeDriveStateNotifiers(const Address& address) {
         addMutexIfNotExist(internal::pathDriveState);
         auto callback = [pThis = shared_from_this(), address]() {
             std::lock_guard<std::mutex> lock(*pThis->_notifiersMutexes[internal::pathDriveState]);
 
-            if (pThis->_driveStateNotifiers.find(address) != pThis->_driveStateNotifiers.end()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathDriveState + "/" + address);
-                pThis->_driveStateNotifiers.erase(address);
+            const std::string hexAddress = ToHex(address.binary());
+            if (pThis->_driveStateNotifiers.find(hexAddress) != pThis->_driveStateNotifiers.end()) {
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathDriveState, address);
+                pThis->_driveStateNotifiers.erase(hexAddress);
             }
         };
 
@@ -513,16 +618,6 @@ namespace xpx_chain_sdk {
             initialize(callback);
         } else {
             callback();
-        }
-    }
-
-    template<typename Data, typename DataDto, typename ContainerKey, typename ContainerValue>
-    void runNotifiers(const std::string& path, const std::string& json, const std::map<ContainerKey, ContainerValue>& container) {
-        auto transactionStatus = from_json<TransactionStatusNotification, TransactionStatusNotificationDto>(json);
-        for (auto const& notifiers : container) {
-            for (const auto& notifier : notifiers.second) {
-                notifier(transactionStatus);
-            }
         }
     }
 }

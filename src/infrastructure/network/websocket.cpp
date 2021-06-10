@@ -12,12 +12,14 @@ namespace xpx_chain_sdk::internal::network {
             std::shared_ptr<Config> config,
             std::shared_ptr<internal::network::Context> context,
             Callback connectionCallback,
-            Callback receiverCallback) :
+            Callback receiverCallback,
+            ErrorCallback errorCallback) :
             _config(config), _context(context), _io_context(boost::asio::io_context()),
             _resolver(boost::asio::ip::tcp::resolver(_io_context)),
             _ws(boost::asio::make_strand(_io_context)),
             _connectionCallback(connectionCallback),
-            _receiverCallback(receiverCallback) {}
+            _receiverCallback(receiverCallback),
+            _errorCallback(errorCallback) {}
 
     WsClient::~WsClient() {
         disconnect();
@@ -66,7 +68,7 @@ namespace xpx_chain_sdk::internal::network {
             const boost::asio::ip::tcp::resolver::results_type& resultsType,
             uint64_t onResolveHostTimeoutSec) {
         if (errorCode) {
-            return onError(errorCode, _connectionCallback);
+            return _errorCallback(errorCode);
         }
 
         boost::beast::get_lowest_layer(_ws).expires_after(std::chrono::seconds(onResolveHostTimeoutSec));
@@ -80,7 +82,7 @@ namespace xpx_chain_sdk::internal::network {
             boost::beast::error_code errorCode,
             const boost::asio::ip::tcp::resolver::results_type::endpoint_type&) {
         if (errorCode) {
-            return onError(errorCode, _connectionCallback);
+            return _errorCallback(errorCode);
         }
 
         // Turn off the timeout on the tcp_stream, because
@@ -91,20 +93,19 @@ namespace xpx_chain_sdk::internal::network {
         _ws.set_option(boost::beast::websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
 
         const std::string host = _config->nodeAddress + ":" + _config->port;
-        const std::string path = _config->basePath + "ws";
+
+        std::cout << "websocket: connection established: " << host << std::endl;
 
         // Perform the websocket handshake
-        _ws.async_handshake(host, path,[pThis = shared_from_this()](auto ec){
+        _ws.async_handshake(host, _config->baseWsPath,[pThis = shared_from_this()](auto ec){
             pThis->onHandshake(ec);
         });
     }
 
     void WsClient::onHandshake(boost::beast::error_code errorCode) {
         if (errorCode) {
-            return onError(errorCode, _connectionCallback);
+            return _errorCallback(errorCode);
         } else {
-            std::cout << "Successful handshake" << std::endl;
-
             std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
             _ws.async_read(
                     *pBuffer,
@@ -112,59 +113,53 @@ namespace xpx_chain_sdk::internal::network {
                             boost::beast::error_code ec,
                             std::size_t bytesTransferred) {
                         if (ec) {
-                            return pThis->onError(ec, pThis->_connectionCallback);
+                            return pThis->_errorCallback(ec);
                         }
 
                         boost::ignore_unused(bytesTransferred);
                         const std::string json = boost::beast::buffers_to_string(pBuffer->data());
-                        pThis->_connectionCallback(json, ec);
+                        pThis->_connectionCallback(json);
+                        pThis->readNext();
                     });
         }
     }
 
-    void WsClient::onRead(boost::beast::error_code errorCode, std::shared_ptr<boost::beast::flat_buffer> data, std::size_t bytesTransferred) {
+    void WsClient::onRead(boost::beast::error_code errorCode, std::shared_ptr<boost::beast::flat_buffer> pData, std::size_t bytesTransferred) {
         if (errorCode) {
-            return onError(errorCode, _receiverCallback);
+            return _errorCallback(errorCode);
         }
 
         boost::ignore_unused(bytesTransferred);
 
-        const std::string json = boost::beast::buffers_to_string(data->data());
-        _receiverCallback(json, errorCode);
+        const std::string json = boost::beast::buffers_to_string(pData->data());
+        _receiverCallback(json);
 
-        std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
-        _ws.async_read(
-                *pBuffer,
-                [pThis = shared_from_this(), pBuffer](boost::beast::error_code ec, std::size_t bytesTransferred) {
-                    pThis->onRead(ec, pBuffer, bytesTransferred);
-                });
+        readNext();
     }
 
     void WsClient::onWrite(boost::beast::error_code errorCode, std::size_t bytesTransferred) {
         if (errorCode) {
-            return onError(errorCode, _receiverCallback);
+            return _errorCallback(errorCode);
         }
 
         boost::ignore_unused(bytesTransferred);
-
-        std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
-        _ws.async_read(
-                *pBuffer,
-                [pThis = shared_from_this(), pBuffer](boost::beast::error_code errorCode, std::size_t bytesTransferred) {
-                    pThis->onRead(errorCode, pBuffer, bytesTransferred);
-                });
-    }
-
-    void WsClient::onError(boost::beast::error_code errorCode, Callback callback) {
-        std::cout << "error code: " << errorCode.value() << " message: " << errorCode.message() << std::endl;
-        callback(errorCode.message(), errorCode);
     }
 
     void WsClient::onClose(boost::beast::error_code errorCode) {
         if (errorCode) {
-            return onError(errorCode, [](auto, auto){});
+            return _errorCallback(errorCode);
         } else {
-            std::cout << "Connection is closed gracefully" << std::endl;
+            std::cout << "websocket: connection is closed gracefully" << std::endl;
         }
+    }
+
+    void WsClient::readNext() {
+        std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
+        _ws.async_read(
+                *pBuffer,
+                [pThis = shared_from_this(), pBuffer](boost::beast::error_code errorCode,
+                                                      std::size_t bytesTransferred) {
+                    pThis->onRead(errorCode, pBuffer, bytesTransferred);
+                });
     }
 }

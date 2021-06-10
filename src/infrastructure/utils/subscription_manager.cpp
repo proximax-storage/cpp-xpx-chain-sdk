@@ -11,27 +11,33 @@
 
 namespace xpx_chain_sdk::internal {
 
-    SubscriptionManager::SubscriptionManager(std::shared_ptr<WsClient> wsClient) : _wsClient(wsClient) {}
+    SubscriptionManager::SubscriptionManager(std::shared_ptr<WsClient> wsClient)
+        : _wsClient(wsClient) {}
 
     void SubscriptionManager::subscribe(const std::string &uid, const std::string &path) {
-        boost::property_tree::ptree ptree;
-        ptree.put("uid", uid);
-        ptree.put("subscribe", path);
+        _wsClient->send(createJson(uid, path, "subscribe"));
+    }
 
-        std::ostringstream oss;
-        boost::property_tree::write_json(oss, ptree);
-
-        _wsClient->send(oss.str());
+    void SubscriptionManager::subscribe(const std::string &uid, const std::string &path, const Address& address) {
+        _wsClient->send(createJson(uid, path + "/" + address.encoded(), "subscribe"));
     }
 
     void SubscriptionManager::unsubscribe(const std::string &uid, const std::string &path) {
+        _wsClient->send(createJson(uid, path, "unsubscribe"));
+    }
+
+    void SubscriptionManager::unsubscribe(const std::string &uid, const std::string &path, const Address &address) {
+        _wsClient->send(createJson(uid, path + "/" + address.encoded(), "unsubscribe"));
+    }
+
+    std::string SubscriptionManager::createJson(const std::string &uid, const std::string &path, const std::string& type) {
         boost::property_tree::ptree ptree;
         ptree.put("uid", uid);
-        ptree.put("unsubscribe", path);
+        ptree.put(type, path);
 
         std::ostringstream oss;
         boost::property_tree::write_json(oss, ptree);
 
-        _wsClient->send(oss.str());
+        return oss.str();
     }
 }

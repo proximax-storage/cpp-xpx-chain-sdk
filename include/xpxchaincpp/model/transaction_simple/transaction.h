@@ -47,7 +47,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint32_t size;
         std::string signature;
         std::string signer;
-        int64_t version;
+        int32_t version;
         Amount maxFee;
         int64_t deadline;
     };
