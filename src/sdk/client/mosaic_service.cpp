@@ -49,10 +49,9 @@ MosaicInfo MosaicService::getMosaicInfo(const MosaicId& id) {
 }
 
 MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<MosaicId>& ids){
-
 	std::string requestJson;
     std::vector<std::string> hexIds;
-
+    hexIds.reserve(ids.size());
     for(auto& mosaicId : ids) {
     	hexIds.push_back(int_to_hex(mosaicId));
     }
@@ -75,15 +74,17 @@ MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<MosaicId>& id
 }
 
 MosaicNames MosaicService::getMosaicsNames(const std::vector<MosaicId>& ids) {
-	std::vector<std::string> hexIds;
-	for(auto& mosaicId : ids) {
-		hexIds.push_back(int_to_hex(mosaicId));
-	}
+    std::string requestJson;
+    std::vector<std::string> hexIds;
+    hexIds.reserve(ids.size());
+    for(auto& mosaicId : ids) {
+        hexIds.push_back(int_to_hex(mosaicId));
+    }
 
-	std::string requestJson;
-    Parser::Write(ids, requestJson);
+    Parser::Write(hexIds, requestJson);
+    requestJson = "{\"mosaicIds\":" + requestJson + "}";
 
-    std::string path = "mosaicIds/";
+    const std::string path = "mosaic/names";
 
     auto requestParams = _builder
             ->setPath(path)

@@ -5,23 +5,102 @@
 **/
 
 #include <gtest/gtest.h>
-#include <xpxchaincpp/sdk.h>
+#include "../config.h"
 
 namespace xpx_chain_sdk::tests {
 
 #define TEST_CLASS AccountService
 
-    TEST(TEST_CLASS, Start) {
-        xpx_chain_sdk::Config config = xpx_chain_sdk::GetConfig();
-        config.nodeAddress = "127.0.0.1";
-        config.port = "3000";
+    auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
+    ClientData clientData;
 
-        std::string accountAddress = "SD2L2LRSBZUMYV2T34C4UXOIAAWX4TWQSQGBPMQO";
-        std::string publicKey = "0455F5326D5C380115E4BAE4B6EB2CEF4F83C3E5C4517494BFE11F5554135CF7";
-        std::string privateKey = "819F72066B17FFD71B8B4142C5AEAE4B997B0882ABDF2C263B02869382BD93A0";
+    TEST(TEST_CLASS, getAccountInfo) {
+        xpx_chain_sdk::AccountInfo ai = client->account()->getAccountInfo(clientData.accountAddress);
+        EXPECT_EQ(ai.publicKey, clientData.publicKey);
 
-        auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
+        xpx_chain_sdk::AddressData addressData;
+        xpx_chain_sdk::ParseHexStringIntoContainer(ai.address.c_str(), ai.address.size(), addressData);
+        xpx_chain_sdk::Address address(addressData);
 
-        EXPECT_TRUE(client->blockchain()->getBlockchainHeight() == 0);
+        EXPECT_EQ(address.encoded(), clientData.accountAddress);
+    }
+
+    TEST(TEST_CLASS, getAccountsInfo) {
+        std::vector<std::string> addresses = { clientData.accountAddress };
+        MultipleAccountInfo multipleAccountInfo = client->account()->getAccountsInfo(addresses);
+
+        EXPECT_FALSE(multipleAccountInfo.accountInfos.empty());
+
+        const int size = (int)multipleAccountInfo.accountInfos.size();
+        for (int i = 0; i < size; i++) {
+            xpx_chain_sdk::AddressData addressData;
+            xpx_chain_sdk::ParseHexStringIntoContainer(
+                    multipleAccountInfo.accountInfos[i].address.c_str(),
+                    multipleAccountInfo.accountInfos[i].address.size(), addressData);
+            xpx_chain_sdk::Address address(addressData);
+
+            EXPECT_EQ(address.encoded(), addresses[i]);
+        }
+    }
+
+    TEST(TEST_CLASS, getAccountProperties) {
+        AccountProperties accountProperties = client->account()->getAccountProperties(clientData.publicKey);
+        EXPECT_EQ(clientData.accountAddress, accountProperties.address);
+        EXPECT_FALSE(accountProperties.properties.empty());
+    }
+
+    TEST(TEST_CLASS, getAccountsProperties) {
+        std::vector<std::string> publicKeys = { clientData.publicKey };
+        std::vector<std::string> addresses = { clientData.accountAddress };
+        MultipleAccountProperty multipleAccountProperty = client->account()->getAccountsProperties(publicKeys);
+        EXPECT_FALSE(multipleAccountProperty.accountProperties.empty());
+
+        const int size = (int)multipleAccountProperty.accountProperties.size();
+        for (int i = 0; i < size; i++) {
+            AccountProperties accountProperties = multipleAccountProperty.accountProperties[i];
+            EXPECT_EQ(addresses[i], accountProperties.address);
+            EXPECT_FALSE(accountProperties.properties.empty());
+        }
+    }
+
+    TEST(TEST_CLASS, getMultisigInfo) {
+        MultisigInfo multisigInfo = client->account()->getMultisigInfo(clientData.accountAddress);
+        EXPECT_EQ(clientData.accountAddress, multisigInfo.accountAddress);
+        EXPECT_FALSE(multisigInfo.cosignatories.empty());
+        EXPECT_FALSE(multisigInfo.multisigAccounts.empty());
+    }
+
+    TEST(TEST_CLASS, getMultisigAccountGraphInfo) {
+        MultisigGraph multisigGraph = client->account()->getMultisigAccountGraphInfo(clientData.accountAddress);
+        EXPECT_FALSE(multisigGraph.multisigLevels.empty());
+
+        const int size = (int)multisigGraph.multisigLevels.size();
+        for (int i = 0; i < size; i++) {
+            MultisigLevel multisigLevel = multisigGraph.multisigLevels[i];
+            EXPECT_FALSE(multisigLevel.multisigEntries.empty());
+
+            const int multisigEntriesCount = (int)multisigLevel.multisigEntries.size();
+            for (int i = 0; i < multisigEntriesCount; i++) {
+                MultisigInfo multisigInfo = multisigLevel.multisigEntries[i];
+                EXPECT_FALSE(multisigInfo.multisigAccounts.empty());
+                EXPECT_FALSE(multisigInfo.cosignatories.empty());
+            }
+        }
+    }
+
+    TEST(TEST_CLASS, getAccountNames) {
+        std::vector<std::string> addresses = { clientData.accountAddress };
+        AccountNames accountNames = client->account()->getAccountNames(addresses);
+        EXPECT_FALSE(accountNames.names.empty());
+
+        const int size = (int)accountNames.names.size();
+        for (int i = 0; i < size; i++) {
+            xpx_chain_sdk::AddressData addressData;
+            xpx_chain_sdk::ParseHexStringIntoContainer(
+                    accountNames.names[i].address.c_str(),
+                    accountNames.names[i].address.size(), addressData);
+            xpx_chain_sdk::Address address(addressData);
+            EXPECT_EQ(addresses[i], address.encoded());
+        }
     }
 }

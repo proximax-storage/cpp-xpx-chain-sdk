@@ -413,11 +413,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     template<>
     MosaicName fromDto<MosaicName, MosaicNameDto>(const MosaicNameDto &dto) {
-
         MosaicName mosaicName = {
-                dto.value<"parentid"_>(),
-                dto.value<"mosaicid"_>(),
-                dto.value<"name"_>()
+                dto.value<"mosaicId"_>(),
+                dto.value<"names"_>()
         };
         return mosaicName;
     }
@@ -425,7 +423,6 @@ namespace xpx_chain_sdk::internal::json::dto {
     template<>
     MosaicNames fromDto<MosaicNames, MosaicNamesDto>(const MosaicNamesDto &dto) {
         MosaicNames names;
-
         for (auto &nameDto: dto) {
             MosaicName mosaic = fromDto<MosaicName, MosaicNameDto>(nameDto);
             names.names.push_back(mosaic);
@@ -591,6 +588,23 @@ namespace xpx_chain_sdk::internal::json::dto {
 	}
 
     template<>
+    AccountName fromDto<AccountName, AccountNameDto>(const AccountNameDto& dto) {
+        AccountName accountName;
+        accountName.address = dto.value<"address"_>();
+        accountName.names = dto.value<"names"_>();
+        return accountName;
+    }
+
+    template<>
+    AccountNames fromDto<AccountNames, AccountNamesDto>(const AccountNamesDto & dto) {
+        AccountNames accountNames;
+        for(auto & accountNameDto : dto) {
+            accountNames.names.push_back(fromDto<AccountName, AccountNameDto>(accountNameDto));
+        }
+        return accountNames;
+    }
+
+    template<>
     MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto) {
         MultisigLevel multisigLevel;
         multisigLevel.level = dto.value<"level"_>();
@@ -617,6 +631,33 @@ namespace xpx_chain_sdk::internal::json::dto {
                 dto.value<"description"_>()
         };
         return networkInfo;
+    }
+
+    template<>
+    NetworkConfigData fromDto<NetworkConfigData, NetworkConfigDataDto> (const NetworkConfigDataDto& dto) {
+        NetworkConfigData networkConfigData;
+        networkConfigData.height = dto.value<"height"_>();
+        networkConfigData.config = dto.value<"networkConfig"_>();
+        networkConfigData.supportedEntityVersions = dto.value<"supportedEntityVersions"_>();
+        return networkConfigData;
+    }
+
+    template<>
+    NetworkConfig fromDto<NetworkConfig, NetworkConfigDto>(const NetworkConfigDto &dto) {
+        return {fromDto<NetworkConfigData, NetworkConfigDataDto>(dto.value<"networkConfig"_>())};
+    }
+
+    template<>
+    NetworkVersionData fromDto<NetworkVersionData, NetworkVersionDataDto> (const NetworkVersionDataDto& dto) {
+        NetworkVersionData networkVersionData;
+        networkVersionData.height = dto.value<"height"_>();
+        networkVersionData.version = dto.value<"blockChainVersion"_>();
+        return networkVersionData;
+    }
+
+    template<>
+    NetworkVersion fromDto<NetworkVersion, NetworkVersionDto> (const NetworkVersionDto& dto) {
+        return {fromDto<NetworkVersionData, NetworkVersionDataDto>(dto.value<"blockchainUpgrade"_>())};
     }
 
 	/// Transaction Meta

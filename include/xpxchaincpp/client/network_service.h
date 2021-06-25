@@ -8,7 +8,9 @@
 #include <memory>
 #include <xpxchaincpp/config.h>
 #include <xpxchaincpp/client/blockchain_service.h>
+#include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
+#include <xpxchaincpp/model/network/network_version.h>
 
 namespace xpx_chain_sdk::internal::network {
 	class Context;
@@ -28,7 +30,12 @@ namespace xpx_chain_sdk {
 				std::shared_ptr<RequestParamsBuilder> builder
         );
         ~NetworkService() = default;
+        NetworkConfig getNetworkConfig();
+        NetworkConfig getNetworkConfigAtHeight(uint64_t height);
         NetworkInfo getNetworkInfo();
+        NetworkVersion getNetworkVersion();
+        NetworkVersion getNetworkVersionAtHeight(uint64_t height);
+
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

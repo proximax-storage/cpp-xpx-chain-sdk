@@ -38,7 +38,6 @@ namespace xpx_chain_sdk {
         ScoreInfo getCurrentScore();
         StorageInfo getStorageInfo();
 		Block getBlockByHeight(uint64_t height);
-		TransactionContainer getBlockTransactions(uint64_t height);
         MultipleBlock getBlocksByHeightWithLimit(uint64_t height, uint64_t limit);
 
 

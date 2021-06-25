@@ -28,7 +28,7 @@ namespace xpx_chain_sdk {
 				std::shared_ptr<RequestParamsBuilder> builder);
 		~TransactionService() = default;
 		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(const std::string& id);
-		transactions_info::TransactionContainer getTransactionInfos(const std::vector<std::string>& id );
+		transactions_info::TransactionContainer getTransactionInfos(const std::vector<std::string>& id);
 		transactions_info::TransactionStatus getTransactionStatus(const std::string& id);
 		transactions_info::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
 		bool announceNewTransaction(const std::vector<uint8_t> &payload);

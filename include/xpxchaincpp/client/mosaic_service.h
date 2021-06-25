@@ -35,11 +35,10 @@ namespace xpx_chain_sdk {
         MosaicInfo getMosaicInfo(const MosaicId& id);
         MultipleMosaicInfo getMosaicInfos(const std::vector<MosaicId>& ids);
         MosaicNames getMosaicsNames(const std::vector<MosaicId>& ids);
+
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
 		std::shared_ptr<RequestParamsBuilder> _builder;
     };
-
-
 };

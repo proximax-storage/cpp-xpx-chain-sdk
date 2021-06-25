@@ -11,11 +11,13 @@
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/height.h>
 #include <infrastructure/json/dto/account_info_dto.h>
+#include <infrastructure/json/dto/account_names_dto.h>
 #include <infrastructure/json/dto/multiple_namespace_dto.h>
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
-#include <infrastructure/json/dto/account_info_dto.h>
 #include <infrastructure/json/dto/multisig_graph_dto.h>
+#include <infrastructure/json/dto/network_config_dto.h>
 #include <infrastructure/json/dto/network_info_dto.h>
+#include <infrastructure/json/dto/network_version_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
@@ -26,6 +28,7 @@
 #include <xpxchaincpp/model/mosaic/multiple_mosaic.h>
 #include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <xpxchaincpp/model/account/account_info.h>
+#include <xpxchaincpp/model/account/account_names.h>
 #include <xpxchaincpp/model/mosaic/mosaic_name.h>
 #include <xpxchaincpp/model/mosaic/mosaic_names.h>
 #include <xpxchaincpp/model/namespace/namespace_info.h>
@@ -33,7 +36,9 @@
 #include <xpxchaincpp/model/namespace/namespace_names.h>
 #include <xpxchaincpp/model/namespace/multiple_namespace_info.h>
 #include <xpxchaincpp/model/account/account_properties.h>
+#include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
+#include <xpxchaincpp/model/network/network_version.h>
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>

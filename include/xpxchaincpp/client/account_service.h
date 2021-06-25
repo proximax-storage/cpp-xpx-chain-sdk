@@ -6,6 +6,7 @@
 #pragma once
 
 #include <xpxchaincpp/model/account/account_info.h>
+#include <xpxchaincpp/model/account/account_names.h>
 #include <xpxchaincpp/model/account/multiple_account_info.h>
 #include <xpxchaincpp/model/account/account_properties.h>
 #include <xpxchaincpp/model/account/multisig_info.h>
@@ -37,31 +38,8 @@ namespace xpx_chain_sdk {
         MultipleAccountProperty getAccountsProperties(const std::vector<std::string>& ids);
         MultisigInfo getMultisigInfo(const std::string& id);
         MultisigGraph getMultisigAccountGraphInfo(const std::string& id);
-		TransactionContainer getAccountTransactions(
-				const std::string& publicKey,
-				int pageSize =10,
-				std::string id = "underfined",
-				std::string ordering = "-id");
-		TransactionContainer getAccountIncomingTransactions(
-				const std::string& publicKey,
-				int pageSize =10,
-				std::string id = "underfined",
-				std::string ordering = "-id");
-		TransactionContainer getAccountOutgoingTransactions(
-				const std::string& publicKey,
-				int pageSize =10,
-				std::string id = "underfined",
-				std::string ordering = "-id");
-		TransactionContainer getAccountUnconfirmedTransactions(
-				const std::string& publicKey,
-				int pageSize =10,
-				std::string id = "underfined",
-				std::string ordering = "-id");
-		TransactionContainer getAccountAggregateBoundedTransactions(
-				const std::string& publicKey,
-				int pageSize =10,
-				std::string id = "underfined",
-				std::string ordering = "-id");
+        AccountNames getAccountNames(const std::vector<std::string>& addresses);
+
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;

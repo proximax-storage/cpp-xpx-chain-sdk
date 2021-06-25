@@ -38,10 +38,9 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
     std::string response = internal::network::performHTTPRequest(_context, requestParams);
     auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
     return result;
-
 }
 
-NamespaceInfo NamespaceService::getNamespaceInfoById(const std::string& id) {
+NamespaceInfo NamespaceService::getNamespaceInfoByHexId(const std::string& id) {
 	std::stringstream path;
 	path << "namespace/" << id;
 
@@ -53,7 +52,6 @@ NamespaceInfo NamespaceService::getNamespaceInfoById(const std::string& id) {
 	std::string response = internal::network::performHTTPRequest(_context, requestParams);
 	auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
 	return result;
-
 }
 
 
@@ -74,6 +72,7 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds){
     std::string requestJson;
     Parser::Write(accountIds, requestJson);
+    requestJson = "{\"publicKeys\":" + requestJson + "}";
 
     std::string path = "account/namespaces";
 
@@ -91,6 +90,7 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::ve
 NamespaceNames NamespaceService::getNamespaceNames(const std::vector<std::string> & namespaceIds) {
     std::string requestJson;
     Parser::Write(namespaceIds, requestJson);
+    requestJson = "{\"namespaceIds\":" + requestJson + "}";
 
     std::string path = "namespace/names";
 
