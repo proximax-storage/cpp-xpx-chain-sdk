@@ -74,6 +74,8 @@ namespace xpx_chain_sdk {
 		/// Returns \c true if \a encodedAddress is valid base32-encoded address.
 		/// \note Accepts both strict base32 and pretty-print version of encoded address.
 		static bool IsValidEncoded(std::string_view encodedAddress);
+
+		static Address FromHex(const std::string& hexAddress);
 		
 	private:
 		// Decodes base32-encoded string to address and performs all checks.

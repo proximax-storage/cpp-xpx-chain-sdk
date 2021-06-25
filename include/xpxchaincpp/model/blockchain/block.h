@@ -22,7 +22,7 @@ namespace xpx_chain_sdk {
 		std::string signature;
 		uint64_t timestamp;
 		uint64_t difficulty;
-		uint64_t feeMultiplier;
+		uint32_t feeMultiplier;
 		std::string previousBlockHash;
 		std::string blockTransactionsHash;
 		std::string blockReceiptsHash;

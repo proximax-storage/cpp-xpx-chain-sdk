@@ -7,6 +7,7 @@
 
 #include <infrastructure/json/parser.h>
 #include <infrastructure/json/dto/block_dto.h>
+#include <infrastructure/json/dto/drive_state_notification_dto.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/height.h>
@@ -16,7 +17,12 @@
 #include <infrastructure/json/dto/account_info_dto.h>
 #include <infrastructure/json/dto/multisig_graph_dto.h>
 #include <infrastructure/json/dto/network_info_dto.h>
+#include <infrastructure/json/dto/signer_info_notification_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
+#include <infrastructure/json/dto/transaction_notification_dto.h>
+#include <infrastructure/json/dto/transaction_status_notification_dto.h>
+#include <infrastructure/json/dto/uid_dto.h>
+#include <infrastructure/json/dto/meta_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -37,6 +43,12 @@
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
+#include <xpxchaincpp/model/notification/drive_state_notification.h>
+#include <xpxchaincpp/model/notification/signer_info_notification.h>
+#include <xpxchaincpp/model/notification/transaction_notification.h>
+#include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <sdk/model/notification/websocket_uid.h>
+#include <sdk/model/notification/websocket_meta.h>
 
 
 

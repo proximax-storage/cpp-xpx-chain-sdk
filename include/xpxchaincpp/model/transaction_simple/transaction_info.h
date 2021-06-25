@@ -12,7 +12,14 @@ namespace xpx_chain_sdk::transactions_info {
 
 	class TransactionInfo {
 	public:
-		std::string something;
+        uint64_t height;
+        uint32_t index;
+        std::string id;
+        std::string hash;
+        std::string merkleComponentHash;
+        std::string aggregateHash;
+        std::string uniqueAggregateHash;
+        std::string aggregateId;
 	};
 
 	class MultipleTransactionInfo {
