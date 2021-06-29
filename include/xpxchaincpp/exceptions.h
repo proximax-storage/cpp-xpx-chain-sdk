@@ -42,6 +42,9 @@ namespace xpx_chain_sdk {
 	
 	/// Namespace error.
 	XPX_CHAIN_SDK_DEFINE_EXCEPTION(namespace_error);
+
+    /// Notification error.
+    XPX_CHAIN_SDK_DEFINE_EXCEPTION(notification_error);
 	
 	/// Transaction error.
 	XPX_CHAIN_SDK_DEFINE_EXCEPTION(transaction_error);

@@ -58,6 +58,7 @@ namespace xpx_chain_sdk {
 		std::string port = "80";
 		bool useSSL = false;
 		std::string basePath = "/";
+        std::string baseWsPath = "/ws";
 	};
 	
 	/// Returns SDK config.

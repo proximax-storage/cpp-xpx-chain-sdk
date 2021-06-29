@@ -7,6 +7,7 @@
 
 #include "infrastructure/json/descriptors.h"
 #include "infrastructure/json/hex.h"
+#include "infrastructure/json/uint32.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/utils/variadic_struct.h"
 
@@ -154,7 +155,16 @@ namespace xpx_chain_sdk { namespace internal { namespace json {
 							value = jsonValue->GetBool();
 							return true;
 						}
-					} else if constexpr (std::is_unsigned_v<TField>) {
+					} else if constexpr (std::is_same_v<TField, uint32_t>) {
+                        if (jsonValue->IsUint()) {
+                            auto v = jsonValue->GetUint();
+
+                            if (v >= std::numeric_limits<TField>::min() && v <= std::numeric_limits<TField>::max()) {
+                                value = static_cast<TField>(v);
+                                return true;
+                            }
+                        }
+                    } else if constexpr (std::is_unsigned_v<TField>) {
 						if (jsonValue->IsUint64()) {
 							auto v = jsonValue->GetUint64();
 							
@@ -427,6 +437,32 @@ namespace xpx_chain_sdk { namespace internal { namespace json {
 			return result;
 		}
 	};
+
+    template<>
+    class Parser::Impl<Uint32> {
+    public:
+        static ParseResult Read(Uint32& value, const rapidjson::Value* jsonValue, const char* jsonPtr)
+        {
+            uint32_t data;
+            auto result = Impl<decltype(data)>::Read(data, jsonValue, jsonPtr);
+
+            if (result) {
+                value = data;
+            }
+
+            return result;
+        }
+
+        static ParseResult Write(const Uint32& value,
+                                 rapidjson::Value& jsonValue,
+                                 const char* jsonPtr,
+                                 rapidjson::Document& document)
+        {
+            uint32_t data;
+            data = static_cast<uint32_t>(value);
+            return Impl<decltype(data)>::Write(data, jsonValue, jsonPtr, document);
+        }
+    };
 	
 	template<>
 	class Parser::Impl<Uint64> {

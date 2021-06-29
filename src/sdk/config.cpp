@@ -9,7 +9,7 @@ namespace xpx_chain_sdk {
 	
 	Config& GetConfig()
 	{
-		static Config config;;
+		static Config config;
 		return config;
 	}
 }
