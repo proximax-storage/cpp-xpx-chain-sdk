@@ -14,44 +14,13 @@ namespace xpx_chain_sdk {
 
 	using internal::json::dto::from_json;
 	using internal::json::dto::transaction_from_json;
+    using internal::json::dto::transactions_from_json;
 	using internal::json::dto::TransactionContainerDto;
 	using ParserJson = internal::json::Parser;
 	using transactions_info::TransactionContainer;
 	using internal::json::dto::TransactionStatusDto;
 	using internal::json::dto::transactions_page::TransactionsPageDto;
 	using internal::json::dto::MultipleTransactionStatusDto;
-
-    static std::string transactionGroupToString(TransactionGroup group) {
-        std::string result;
-        switch(group) {
-            case TransactionGroup::Confirmed:
-                result = "confirmed";
-                break;
-            case TransactionGroup::Unconfirmed:
-                result = "unconfirmed";
-                break;
-            case TransactionGroup::Partial: {
-                result = "partial";
-            } break;
-            default: {
-                XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
-            }
-        }
-
-        return result;
-    }
-
-    static TransactionGroup transactionGroupFromString(const std::string& group) {
-        if (group == "confirmed") {
-            return TransactionGroup::Confirmed;
-        } else if (group == "unconfirmed") {
-            return TransactionGroup::Unconfirmed;
-        } else if (group == "partial") {
-            return TransactionGroup::Partial;
-        } else {
-            XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
-        }
-    }
 
 	TransactionService::TransactionService(
 			std::shared_ptr<Config> config,
@@ -75,22 +44,22 @@ namespace xpx_chain_sdk {
         return getTransactionInfo(group, id);
     }
 
-	TransactionContainer TransactionService::getTransactionInfos(const std::vector<std::string> &ids) {
+    transactions_info::TransactionContainer TransactionService::getTransactionInfos(TransactionGroup group, const std::vector<std::string> &ids) {
 		std::string requestJson;
 
 		ParserJson::Write(ids, requestJson);
-		requestJson = "{\"transactionIds\":" + requestJson + "}";
+		requestJson = "{\"hashes\":" + requestJson + "}";
 
-		std::string path = "transaction";
+        std::stringstream path;
+        path << "transactions/" << transactionGroupToString(group);
 
 		RequestParamsBuilder builder(_config);
-        builder.setPath(path);
+        builder.setPath(path.str());
         builder.setMethod(internal::network::HTTPRequestMethod::POST);
         builder.setRequestBody(requestJson);
 
 		std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
-
+		auto result = transactions_from_json(response);
 		return result;
 	}
 
@@ -111,9 +80,9 @@ namespace xpx_chain_sdk {
 		std::string requestJson;
 
 		ParserJson::Write(ids, requestJson);
-		requestJson = "{\"transactionIds\":" + requestJson + "}";
+		requestJson = "{\"hashes\":" + requestJson + "}";
 
-		std::string path = "transaction/status";
+		std::string path = "transactionStatus";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
@@ -203,5 +172,37 @@ namespace xpx_chain_sdk {
         std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
         auto result = from_json<transactions_page::TransactionsPage, TransactionsPageDto>(response);
         return result;
+    }
+
+    std::string TransactionService::transactionGroupToString(TransactionGroup group) {
+        std::string result;
+        switch(group) {
+            case TransactionGroup::Confirmed:
+                result = "confirmed";
+                break;
+            case TransactionGroup::Unconfirmed:
+                result = "unconfirmed";
+                break;
+            case TransactionGroup::Partial: {
+                result = "partial";
+            } break;
+            default: {
+                XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
+            }
+        }
+
+        return result;
+    }
+
+    TransactionGroup TransactionService::transactionGroupFromString(const std::string& group) {
+        if (group == "confirmed") {
+            return TransactionGroup::Confirmed;
+        } else if (group == "unconfirmed") {
+            return TransactionGroup::Unconfirmed;
+        } else if (group == "partial") {
+            return TransactionGroup::Partial;
+        } else {
+            XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
+        }
     }
 }

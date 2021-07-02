@@ -29,15 +29,18 @@ namespace xpx_chain_sdk {
 				std::shared_ptr<internal::network::Context> context);
 		~TransactionService() = default;
 
-		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(TransactionGroup group, const std::string& id);
         std::shared_ptr<transactions_info::BasicTransaction> getAnyTransactionInfo(const std::string& id);
-		transactions_info::TransactionContainer getTransactionInfos(const std::vector<std::string>& id);
+		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(TransactionGroup group, const std::string& id);
+        transactions_info::TransactionContainer getTransactionInfos(TransactionGroup group, const std::vector<std::string>& id);
 		transactions_info::TransactionStatus getTransactionStatus(const std::string& id);
 		transactions_info::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
 		transactions_page::TransactionsPage getTransactionsByGroup(TransactionGroup group, const TransactionsPageOptions& options = TransactionsPageOptions());
 		bool announceNewTransaction(const std::vector<uint8_t> &payload);
 		bool announceAggregateBoundedTransaction(const std::vector<uint8_t> &payload);
 		bool announceCosignatureTransaction(const std::vector<uint8_t> &payload);
+
+        static std::string transactionGroupToString(TransactionGroup group) ;
+        static TransactionGroup transactionGroupFromString(const std::string& group) ;
 
 	private:
 		std::shared_ptr<Config> _config;
