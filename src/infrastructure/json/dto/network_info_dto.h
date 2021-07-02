@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/uint64.h>

@@ -53,8 +53,8 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("hash"), std::string>,
             Field<STR_LITERAL("generationHash"), std::string>,
             Field<STR_LITERAL("totalFee"), Uint64, desc::Optional>,
-            Field<STR_LITERAL("numTransactions"), Uint64, desc::Optional>,
-            Field<STR_LITERAL("numStatements"), Uint64, desc::Optional >>;
+            Field<STR_LITERAL("numTransactions"), uint64_t , desc::Optional>,
+            Field<STR_LITERAL("numStatements"), uint64_t, desc::Optional >>;
 
     using BlockDataDto = VariadicStruct<
             Field<STR_LITERAL("signature"), std::string>,
@@ -72,9 +72,9 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("block"), BlockDataDto > >;
 
     using StorageInfoDto = VariadicStruct<
-            Field<STR_LITERAL("numBlocks"), Uint64>,
-            Field<STR_LITERAL("numTransactions"), Uint64>,
-            Field<STR_LITERAL("numAccounts"), Uint64> >;
+            Field<STR_LITERAL("numBlocks"), uint64_t>,
+            Field<STR_LITERAL("numTransactions"), uint64_t>,
+            Field<STR_LITERAL("numAccounts"), uint64_t> >;
 
     using ScoreInfoDto = VariadicStruct<
             Field<STR_LITERAL("scoreHigh"), Uint64>,

@@ -13,7 +13,7 @@ namespace xpx_chain_sdk { namespace internal {
 	
 	uint32_t MakeTransactionFullVersion(uint32_t version, NetworkIdentifier networkId);
 	uint32_t ExtractTransactionVersion(uint32_t fullVersion);
-	NetworkIdentifier ExtractTransactionNetworkId(uint16_t fullVersion);
+	NetworkIdentifier ExtractTransactionNetworkId(uint32_t fullVersion);
 
 	RawBuffer GetTransactionSignedData(const Transaction* transaction);
 	Hash256 CalculateTransactionHash(const Transaction* transaction);

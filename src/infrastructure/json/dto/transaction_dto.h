@@ -76,8 +76,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		        Field<STR_LITERAL("group"), std::string>,
 				Field<STR_LITERAL("status"), std::string>,
 				Field<STR_LITERAL("hash"), std::string>,
-				Field<STR_LITERAL("deadline"), Uint64 >,
-				Field<STR_LITERAL("height"), Uint64 > >;
+				Field<STR_LITERAL("deadline"), Uint64 > >;
 
 		using MultipleTransactionInfoDto = std::vector<TransactionInfoDto>;
 		using MultipleTransactionStatusDto = std::vector<TransactionStatusDto>;
@@ -98,7 +97,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using EmbeddedTransactionDto = VariadicStruct<
 				Field<STR_LITERAL("signer"),    std::string>,
-				Field<STR_LITERAL("version"),   uint16_t>,
+				Field<STR_LITERAL("version"),   uint32_t>,
 				Field<STR_LITERAL("type"),      TransactionType>>;
 
 		using AggregateTransactionDto = VariadicStruct<
@@ -169,11 +168,15 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("secret"),        std::string >,
 				Field<STR_LITERAL("proof"),         std::vector<uint8_t> > >;
 
+		using TransferTransactionMessageDto = VariadicStruct<
+                Field<STR_LITERAL("type"),        std::uint32_t >,
+                Field<STR_LITERAL("payload"),     std::string > >;
+
 		template<typename TBase>
 		using TTransferTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("recipient"),    std::string>,
-				Field<STR_LITERAL("message"),      std::vector<uint8_t>, desc::Optional>,
+				Field<STR_LITERAL("message"),      TransferTransactionMessageDto, desc::Optional>,
 				Field<STR_LITERAL("mosaics"),      std::vector<MosaicDto> > >;
 
 		template<typename TBase>

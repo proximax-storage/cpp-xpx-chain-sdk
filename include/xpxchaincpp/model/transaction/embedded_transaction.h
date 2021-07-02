@@ -20,7 +20,7 @@ namespace xpx_chain_sdk {
 	class EmbeddedTransaction: public BasicTransaction {
 	public:
 		/// Creates embedded transaction.
-		EmbeddedTransaction(TransactionType type, uint16_t fullVersion, const Key& signer);
+		EmbeddedTransaction(TransactionType type, uint32_t fullVersion, const Key& signer);
 		
 		/// Returns \c true.
 		bool isEmbedded() const final;

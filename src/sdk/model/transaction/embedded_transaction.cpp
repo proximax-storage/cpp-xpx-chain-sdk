@@ -7,7 +7,7 @@
 
 namespace xpx_chain_sdk {
 	
-	EmbeddedTransaction::EmbeddedTransaction(TransactionType type, uint16_t fullVersion, const Key& signer):
+	EmbeddedTransaction::EmbeddedTransaction(TransactionType type, uint32_t fullVersion, const Key& signer):
 		BasicTransaction(type, fullVersion, signer)
 	{ }
 	
