@@ -9,6 +9,8 @@
 #include <xpxchaincpp/model/transaction_simple/transaction_container.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
+#include <xpxchaincpp/model/transaction_simple/transactions_page.h>
+#include <xpxchaincpp/model/transaction_simple/transactions_page_options.h>
 
 namespace xpx_chain_sdk::internal::network {
 	class Context;
@@ -24,13 +26,15 @@ namespace xpx_chain_sdk {
 	public:
 		TransactionService(
 				std::shared_ptr<Config> config,
-				std::shared_ptr<internal::network::Context> context,
-				std::shared_ptr<RequestParamsBuilder> builder);
+				std::shared_ptr<internal::network::Context> context);
 		~TransactionService() = default;
-		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(const std::string& id);
+
+		std::shared_ptr<transactions_info::BasicTransaction> getTransactionInfo(TransactionGroup group, const std::string& id);
+        std::shared_ptr<transactions_info::BasicTransaction> getAnyTransactionInfo(const std::string& id);
 		transactions_info::TransactionContainer getTransactionInfos(const std::vector<std::string>& id);
 		transactions_info::TransactionStatus getTransactionStatus(const std::string& id);
 		transactions_info::MultipleTransactionStatus getTransactionStatuses(const std::vector<std::string>& id);
+		transactions_page::TransactionsPage getTransactionsByGroup(TransactionGroup group, const TransactionsPageOptions& options = TransactionsPageOptions());
 		bool announceNewTransaction(const std::vector<uint8_t> &payload);
 		bool announceAggregateBoundedTransaction(const std::vector<uint8_t> &payload);
 		bool announceCosignatureTransaction(const std::vector<uint8_t> &payload);
@@ -38,6 +42,5 @@ namespace xpx_chain_sdk {
 	private:
 		std::shared_ptr<Config> _config;
 		std::shared_ptr<internal::network::Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
 	};
 }

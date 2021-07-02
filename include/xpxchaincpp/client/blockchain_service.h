@@ -30,10 +30,9 @@ namespace xpx_chain_sdk {
 	public:
 		BlockchainService(
 				std::shared_ptr<Config> config,
-				std::shared_ptr<internal::network::Context> context,
-				std::shared_ptr<RequestParamsBuilder>  builder
-		);
+				std::shared_ptr<internal::network::Context> context);
 		~BlockchainService() = default;
+
 		uint64_t getBlockchainHeight();
         ScoreInfo getCurrentScore();
         StorageInfo getStorageInfo();
@@ -44,7 +43,6 @@ namespace xpx_chain_sdk {
 	private:
 		std::shared_ptr<Config> _config;
 		std::shared_ptr<Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
 	};
 
 }

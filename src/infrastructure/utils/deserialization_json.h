@@ -21,6 +21,7 @@
 #include <infrastructure/json/dto/network_version_dto.h>
 #include <infrastructure/json/dto/signer_info_notification_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
+#include <infrastructure/json/dto/transactions_page_dto.h>
 #include <infrastructure/json/dto/transaction_notification_dto.h>
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
@@ -48,6 +49,7 @@
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
+#include <xpxchaincpp/model/transaction_simple/transactions_page.h>
 #include <xpxchaincpp/model/notification/drive_state_notification.h>
 #include <xpxchaincpp/model/notification/signer_info_notification.h>
 #include <xpxchaincpp/model/notification/transaction_notification.h>
@@ -75,7 +77,7 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
             auto result = Parser::Read(dto, jsonStr);
             if (!result) {
-                XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+                XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField())
             }
 
             return fromDto<Object, ObjectDto>(dto);

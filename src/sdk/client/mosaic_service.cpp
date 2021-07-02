@@ -5,7 +5,6 @@
 */
 
 #include <infrastructure/json/dto/mosaic_dto.h>
-#include <xpxchaincpp/client.h>
 #include <xpxchaincpp/client/mosaic_service.h>
 
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
@@ -26,24 +25,21 @@ using internal::json::dto::MultipleMosaicInfoDto;
 
 MosaicService::MosaicService(
         std::shared_ptr<Config> config,
-        std::shared_ptr<internal::network::Context> context,
-		std::shared_ptr<RequestParamsBuilder> builder
+        std::shared_ptr<internal::network::Context> context
 ):
         _config(config),
-        _context(context),
-        _builder(builder)
+        _context(context)
 {}
 
 MosaicInfo MosaicService::getMosaicInfo(const MosaicId& id) {
     std::stringstream path;
     path << "mosaic/" << int_to_hex(id);
 
-    auto requestParams = _builder
-            ->setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MosaicInfo, MosaicInfoDto>(response);
     return result;
 }
@@ -61,13 +57,12 @@ MultipleMosaicInfo MosaicService::getMosaicInfos(const std::vector<MosaicId>& id
 
     std::string path = "mosaic";
 
-    auto requestParams = _builder
-            ->setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultipleMosaicInfo, MultipleMosaicInfoDto>(response);
 
     return result;
@@ -86,13 +81,12 @@ MosaicNames MosaicService::getMosaicsNames(const std::vector<MosaicId>& ids) {
 
     const std::string path = "mosaic/names";
 
-    auto requestParams = _builder
-            ->setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MosaicNames, MosaicNamesDto>(response);
     return result;
 }

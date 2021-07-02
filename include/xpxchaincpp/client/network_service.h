@@ -26,10 +26,9 @@ namespace xpx_chain_sdk {
     public:
         NetworkService(
                 std::shared_ptr<Config> config,
-                std::shared_ptr<internal::network::Context> context,
-				std::shared_ptr<RequestParamsBuilder> builder
-        );
+                std::shared_ptr<internal::network::Context> context);
         ~NetworkService() = default;
+
         NetworkConfig getNetworkConfig();
         NetworkConfig getNetworkConfigAtHeight(uint64_t height);
         NetworkInfo getNetworkInfo();
@@ -39,7 +38,6 @@ namespace xpx_chain_sdk {
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
     };
 }
 

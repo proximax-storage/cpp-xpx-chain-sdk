@@ -28,8 +28,7 @@ namespace xpx_chain_sdk {
     public:
         AccountService(
                 std::shared_ptr<Config> config,
-                std::shared_ptr<internal::network::Context> context,
-				std::shared_ptr<RequestParamsBuilder> builder);
+                std::shared_ptr<internal::network::Context> context);
         ~AccountService() = default;
 
         AccountInfo getAccountInfo(const std::string& id);
@@ -43,7 +42,6 @@ namespace xpx_chain_sdk {
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
     };
 }
 
