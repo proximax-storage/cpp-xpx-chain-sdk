@@ -28,7 +28,13 @@ namespace xpx_chain_sdk {
 		Transaction_Property = 0x4350,
 		Secret_Lock = 0x4152,
 		Secret_Proof = 0x4252,
-		Account_Link = 0x414C
+		Account_Link = 0x414C,
+		Prepare_Bc_Drive = 0x4162,
+		Data_Modification = 0x4262,
+		Download = 0x4362,
+		Data_Modification_Approval = 0x4462,
+		Data_Modification_Cancel = 0x4562,
+		Replicator_Onboarding = 0x4662,
 	};
 	
 	/// Returns transaction name by \a type.

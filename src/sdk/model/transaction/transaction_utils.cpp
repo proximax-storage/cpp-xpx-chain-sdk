@@ -51,10 +51,10 @@ namespace xpx_chain_sdk { namespace internal {
 
 	Hash256 CalculateTransactionHash(const Transaction* transaction)
 	{
-        RawBuffer signatureData = { transaction->signature().data(), transaction->signature().size() / 2 };
-        RawBuffer signedData = GetTransactionSignedData(transaction);
-        auto signer = transaction->signer().publicKey();
-        auto generationHash = ParseByteArray<Key>(GetConfig().GenerationHash);
+		RawBuffer signatureData = { transaction->signature().data(), transaction->signature().size() / 2 };
+		RawBuffer signedData = GetTransactionSignedData(transaction);
+		auto signer = transaction->signer().publicKey();
+		auto generationHash = ParseByteArray<Key>(GetConfig().GenerationHash);
 
         Sha3_256 builder;
         builder.update(signatureData, signer, generationHash, signedData);

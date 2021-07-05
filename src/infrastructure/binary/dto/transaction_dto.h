@@ -184,7 +184,47 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("propertyType"),       uint8_t>,
 		Field<STR_LITERAL("modificationsCount"), uint8_t>,
 		Field<STR_LITERAL("modifications"),      std::vector<TAccountPropertyModificationDTO<T>>, desc::VariableSize<STR_LITERAL("modificationsCount")>>>;
+
+	template<typename TBase>
+	using TPrepareBcDriveTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveSize"),			uint64_t>,
+		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
 	
+	template<typename TBase>
+	using TDataModificationTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveKey"),				Key>,
+		Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
+		Field<STR_LITERAL("uploadSize"),			uint64_t>>;
+
+	template<typename TBase>
+	using TDownloadTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveKey"),				Key>,
+		Field<STR_LITERAL("downloadSize"),			uint64_t>,
+		Field<STR_LITERAL("transactionFee"),		Amount>>;
+
+	template<typename TBase>
+	using TDataModificationApprovalTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveKey"),				Key>,
+		Field<STR_LITERAL("dataModificationId"),	Hash256>,
+		Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
+		Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
+		Field<STR_LITERAL("usedDriveSize"),			uint64_t>>;
+
+	template<typename TBase>
+	using TDataModificationCancelTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveKey"),				Key>,
+		Field<STR_LITERAL("dataModificationId"),	Hash256>>;
+
+	template<typename TBase>
+	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("capacity"),				Amount>>;
+
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
 	
@@ -226,4 +266,22 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	using AccountTransactionPropertyTransactionDTO = TAccountPropertyTransactionDTO<TransactionDTO, TransactionType>;
 	using EmbeddedAccountTransactionPropertyTransactionDTO = TAccountPropertyTransactionDTO<EmbeddedTransactionDTO, TransactionType>;
+
+	using PrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<TransactionDTO>;
+	using EmbeddedPrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<EmbeddedTransactionDTO>;
+
+	using DataModificationTransactionDTO = TDataModificationTransactionDTO<TransactionDTO>;
+	using EmbeddedDataModificationTransactionDTO = TDataModificationTransactionDTO<EmbeddedTransactionDTO>;
+
+	using DownloadTransactionDTO = TDownloadTransactionDTO<TransactionDTO>;
+	using EmbeddedDownloadTransactionDTO = TDownloadTransactionDTO<EmbeddedTransactionDTO>;
+
+	using DataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<TransactionDTO>;
+	using EmbeddedDataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<EmbeddedTransactionDTO>;
+
+	using DataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<TransactionDTO>;
+	using EmbeddedDataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<EmbeddedTransactionDTO>;
+
+	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
+	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;
 }}}

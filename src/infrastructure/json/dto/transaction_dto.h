@@ -202,6 +202,46 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("modificationsCount"), uint8_t>,
 				Field<STR_LITERAL("modifications"),      std::vector<TAccountPropertyModificationDto<T>> > >;
 
+		template<typename TBase>
+		using TPrepareBcDriveTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveSize"),				uint64_t>,
+				Field<STR_LITERAL("replicatorCount"),		uint16_t> >;
+
+		template<typename TBase>
+		using TDataModificationTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveKey"),				Key>,
+				Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
+				Field<STR_LITERAL("uploadSize"),			uint64_t> >;
+
+		template<typename TBase>
+		using TDownloadTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveKey"),				Key>,
+				Field<STR_LITERAL("downloadSize"),			uint64_t>,
+				Field<STR_LITERAL("transactionFee"),		Amount> >;
+
+		template<typename TBase>
+		using TDataModificationApprovalTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveKey"),				Key>,
+				Field<STR_LITERAL("dataModificationId"),	Hash256>,
+				Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
+				Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
+				Field<STR_LITERAL("usedDriveSize"),			uint64_t>>;
+
+		template<typename TBase>
+		using TDataModificationCancelTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveKey"),				Key>,
+				Field<STR_LITERAL("dataModificationId"),	Hash256>>;
+
+		template<typename TBase>
+		using TReplicatorOnboardingTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("capacity"),				Amount>>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -252,4 +292,22 @@ namespace xpx_chain_sdk::internal::json::dto {
 		using AddressPropertyModificationDto = TAccountPropertyModificationDto<std::string>; // AddressData
 		using MosaicPropertyModificationDto = TAccountPropertyModificationDto<MosaicId>;
 		using TransactionPropertyModificationDto = TAccountPropertyModificationDto<TransactionType>;
+
+		using PrepareBcDriveTransactionDto = TPrepareBcDriveTransactionDto<TransactionDto>;
+		using EmbeddedPrepareBcDriveTransactionDto = TPrepareBcDriveTransactionDto<EmbeddedTransactionDto>;
+
+		using DataModificationTransactionDto = TDataModificationTransactionDto<TransactionDto>;
+		using EmbeddedDataModificationTransactionDto = TDataModificationTransactionDto<EmbeddedTransactionDto>;
+
+		using DownloadTransactionDto = TDownloadTransactionDto<TransactionDto>;
+		using EmbeddedDownloadTransactionDto = TDownloadTransactionDto<EmbeddedTransactionDto>;
+
+		using DataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<TransactionDto>;
+		using EmbeddedDataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<EmbeddedTransactionDto>;
+
+		using DataModificationCancelTransactionDto = TDataModificationCancelTransactionDto<TransactionDto>;
+		using EmbeddedDataModificationCancelTransactionDto = TDataModificationCancelTransactionDto<EmbeddedTransactionDto>;
+
+		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
+		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;
 	}

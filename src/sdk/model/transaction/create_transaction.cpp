@@ -9,9 +9,7 @@
 #include "infrastructure/binary/dto/transaction_dto.h"
 
 #include <algorithm>
-#include <cassert>
 #include <iterator>
-#include <limits>
 #include <type_traits>
 
 using namespace xpx_chain_sdk::internal;
@@ -537,6 +535,86 @@ namespace xpx_chain_sdk { namespace internal {
 			                                             : TransactionType::Aggregate_Bonded;
 			InitTransactionDTO(dto, transactionType, std::forward<TArgs>(args)...);
 		}
+
+		template<typename TDto, typename... TArgs>
+		void InitPrepareBcDriveTransactionDTO(TDto& dto,
+										uint64_t driveSize,
+										uint16_t replicatorCount,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveSize"_>(driveSize);
+			dto.template set<"replicatorCount"_>(replicatorCount);
+
+			InitTransactionDTO(dto, TransactionType::Prepare_Bc_Drive, std::forward<TArgs>(args)...);
+		}
+
+		template<typename TDto, typename... TArgs>
+		void InitDataModificationTransactionDTO(TDto& dto,
+										const Key& driveKey,
+										const Hash256& downloadDataCdi,
+										uint64_t uploadSize,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveKey"_>(driveKey);
+			dto.template set<"downloadDataCdi"_>(downloadDataCdi);
+			dto.template set<"uploadSize"_>(uploadSize);
+
+			InitTransactionDTO(dto, TransactionType::Data_Modification, std::forward<TArgs>(args)...);
+		}
+
+		template<typename TDto, typename... TArgs>
+		void InitDownloadTransactionDTO(TDto& dto,
+										const Key& driveKey,
+										uint64_t downloadSize,
+										const Amount& transactionFee,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveKey"_>(driveKey);
+			dto.template set<"downloadSize"_>(downloadSize);
+			dto.template set<"transactionFee"_>(transactionFee);
+
+			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
+		}
+
+		template<typename TDto, typename... TArgs>
+		void InitDataModificationApprovalTransactionDTO(TDto& dto,
+										const Key& driveKey,
+										const Hash256& dataModificationId,
+										const Hash256& fileStructureCdi,
+										uint64_t fileStructureSize,
+										uint64_t usedDriveSize,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveKey"_>(driveKey);
+			dto.template set<"dataModificationId"_>(dataModificationId);
+			dto.template set<"fileStructureCdi"_>(fileStructureCdi);
+			dto.template set<"fileStructureSize"_>(fileStructureSize);
+			dto.template set<"usedDriveSize"_>(usedDriveSize);
+
+			InitTransactionDTO(dto, TransactionType::Data_Modification_Approval, std::forward<TArgs>(args)...);
+		}
+
+		template<typename TDto, typename... TArgs>
+		void InitDataModificationCancelTransactionDTO(TDto& dto,
+										const Key& driveKey,
+										const Hash256& dataModificationId,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveKey"_>(driveKey);
+			dto.template set<"dataModificationId"_>(dataModificationId);
+
+			InitTransactionDTO(dto, TransactionType::Data_Modification_Cancel, std::forward<TArgs>(args)...);
+		}
+
+		template<typename TDto, typename... TArgs>
+		void InitReplicatorOnboardingTransactionDTO(TDto& dto,
+										const Amount& capacity,
+		                                TArgs&&... args)
+		{
+			dto.template set<"capacity"_>(capacity);
+
+			InitTransactionDTO(dto, TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...);
+		}
 	}
 	
 	
@@ -851,6 +929,118 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<AggregateTransactionImpl>(
 			dto, signer, signature, info,
 			isComplete, embeddedTransactions, cosignatures, dto.value<"payloadSize"_>());
+	}
+
+	std::unique_ptr<PrepareBcDriveTransaction>
+	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
+	                              uint16_t replicatorCount,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		PrepareBcDriveTransactionDTO dto;
+		InitPrepareBcDriveTransactionDTO(
+			dto, driveSize, replicatorCount, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<PrepareBcDriveTransactionImpl>(
+			dto, signer, signature, info, driveSize, replicatorCount);
+	}
+
+	std::unique_ptr<DataModificationTransaction>
+	CreateDataModificationTransactionImpl(const Key& driveKey,
+	                              const Hash256& downloadDataCdi,
+	                              uint64_t uploadSize,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		DataModificationTransactionDTO dto;
+		InitDataModificationTransactionDTO(
+			dto, driveKey, downloadDataCdi, uploadSize, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<DataModificationTransactionImpl>(
+			dto, signer, signature, info, driveKey, downloadDataCdi, uploadSize);
+	}
+
+	std::unique_ptr<DownloadTransaction>
+	CreateDownloadTransactionImpl(const Key& driveKey,
+	                              uint64_t downloadSize,
+	                              const Amount& transactionFee,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		DownloadTransactionDTO dto;
+		InitDownloadTransactionDTO(
+			dto, driveKey, downloadSize, transactionFee, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<DownloadTransactionImpl>(
+			dto, signer, signature, info, driveKey, downloadSize, transactionFee);
+	}
+
+	std::unique_ptr<DataModificationApprovalTransaction>
+	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
+	                              const Hash256& dataModificationId,
+	                              const Hash256& fileStructureCdi,
+	                              uint64_t fileStructureSize,
+	                              uint64_t usedDriveSize,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		DataModificationApprovalTransactionDTO dto;
+		InitDataModificationApprovalTransactionDTO(
+			dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<DataModificationApprovalTransactionImpl>(
+			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+	}
+
+	std::unique_ptr<DataModificationCancelTransaction>
+	CreateDataModificationCancelTransactionImpl(const Key& driveKey,
+	                              const Hash256& dataModificationId,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		DataModificationCancelTransactionDTO dto;
+		InitDataModificationCancelTransactionDTO(
+			dto, driveKey, dataModificationId, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<DataModificationCancelTransactionImpl>(
+			dto, signer, signature, info, driveKey, dataModificationId);
+	}
+
+	std::unique_ptr<ReplicatorOnboardingTransaction>
+	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		ReplicatorOnboardingTransactionDTO dto;
+		InitReplicatorOnboardingTransactionDTO(
+			dto, capacity, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<ReplicatorOnboardingTransactionImpl>(
+			dto, signer, signature, info, capacity);
 	}
 }}
 
@@ -1263,5 +1453,139 @@ namespace xpx_chain_sdk {
 	                                 std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateAggregateTransactionImpl(false, embeddedTransactions, cosignatures, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<PrepareBcDriveTransaction>
+	CreatePrepareBcDriveTransaction(uint64_t driveSize,
+	                          uint16_t replicatorCount,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreatePrepareBcDriveTransactionImpl(driveSize, replicatorCount, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedPrepareBcDriveTransaction>
+	CreateEmbeddedPrepareBcDriveTransaction(uint64_t driveSize,
+	                                  uint16_t replicatorCount,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedPrepareBcDriveTransactionDTO dto;
+		InitPrepareBcDriveTransactionDTO(dto, driveSize, replicatorCount, signer, networkId);
+		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, replicatorCount);
+	}
+
+	std::unique_ptr<DataModificationTransaction>
+	CreateDataModificationTransaction(const Key& driveKey,
+	                          const Hash256& downloadDataCdi,
+	                          uint64_t uploadSize,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateDataModificationTransactionImpl(driveKey, downloadDataCdi, uploadSize, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedDataModificationTransaction>
+	CreateEmbeddedDataModificationTransaction(const Key& driveKey,
+	                                  const Hash256& downloadDataCdi,
+	                                  uint64_t uploadSize,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedDataModificationTransactionDTO dto;
+		InitDataModificationTransactionDTO(dto, driveKey, downloadDataCdi, uploadSize, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationTransactionImpl>(dto, driveKey, downloadDataCdi, uploadSize);
+	}
+
+	std::unique_ptr<DownloadTransaction>
+	CreateDownloadTransaction(const Key& driveKey,
+	                          uint64_t downloadSize,
+	                          const Amount& transactionFee,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateDownloadTransactionImpl(driveKey, downloadSize, transactionFee, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedDownloadTransaction>
+	CreateEmbeddedDownloadTransaction(const Key& driveKey,
+	                                  uint64_t downloadSize,
+	                                  const Amount& transactionFee,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedDownloadTransactionDTO dto;
+		InitDownloadTransactionDTO(dto, driveKey, downloadSize, transactionFee, signer, networkId);
+		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, transactionFee);
+	}
+
+	std::unique_ptr<DataModificationApprovalTransaction>
+	CreateDataModificationApprovalTransaction(const Key& driveKey,
+	                          const Hash256& dataModificationId,
+	                          const Hash256& fileStructureCdi,
+	                          uint64_t fileStructureSize,
+	                          uint64_t usedDriveSize,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedDataModificationApprovalTransaction>
+	CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
+	                                  const Hash256& dataModificationId,
+	                                  const Hash256& fileStructureCdi,
+	                                  uint64_t fileStructureSize,
+	                                  uint64_t usedDriveSize,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedDataModificationApprovalTransactionDTO dto;
+		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+	}
+
+	std::unique_ptr<DataModificationCancelTransaction>
+	CreateDataModificationCancelTransaction(const Key& driveKey,
+	                          const Hash256& dataModificationId,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateDataModificationCancelTransactionImpl(driveKey, dataModificationId, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedDataModificationCancelTransaction>
+	CreateEmbeddedDataModificationCancelTransaction(const Key& driveKey,
+	                                  const Hash256& dataModificationId,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedDataModificationCancelTransactionDTO dto;
+		InitDataModificationCancelTransactionDTO(dto, driveKey, dataModificationId, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationCancelTransactionImpl>(dto, driveKey, dataModificationId);
+	}
+
+	std::unique_ptr<ReplicatorOnboardingTransaction>
+	CreateReplicatorOnboardingTransaction(const Amount& capacity,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateReplicatorOnboardingTransactionImpl(capacity, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
+	CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedReplicatorOnboardingTransactionDTO dto;
+		InitReplicatorOnboardingTransactionDTO(dto, capacity, signer, networkId);
+		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto, capacity);
 	}
 }
