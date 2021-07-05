@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <xpxchaincpp/utils/HexParser.h>
 
 namespace xpx_chain_sdk {
 	
@@ -131,6 +132,12 @@ namespace xpx_chain_sdk {
 	{
 		AddressData addressData;
 		return DecodeAndCheck(encodedAddress, addressData);
+	}
+
+	Address Address::FromHex(const std::string& hexAddress) {
+        AddressData addressData;
+        ParseHexStringIntoContainer(hexAddress.c_str(), hexAddress.size(), addressData);
+        return Address(addressData);
 	}
 	
 	bool Address::DecodeAndCheck(std::string_view encodedAddress, AddressData& addressData)

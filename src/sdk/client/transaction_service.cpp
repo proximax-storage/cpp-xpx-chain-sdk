@@ -14,49 +14,52 @@ namespace xpx_chain_sdk {
 
 	using internal::json::dto::from_json;
 	using internal::json::dto::transaction_from_json;
+    using internal::json::dto::transactions_from_json;
 	using internal::json::dto::TransactionContainerDto;
 	using ParserJson = internal::json::Parser;
 	using transactions_info::TransactionContainer;
 	using internal::json::dto::TransactionStatusDto;
+	using internal::json::dto::transactions_page::TransactionsPageDto;
 	using internal::json::dto::MultipleTransactionStatusDto;
-
 
 	TransactionService::TransactionService(
 			std::shared_ptr<Config> config,
-			std::shared_ptr<internal::network::Context> context,
-			std::shared_ptr<RequestParamsBuilder> builder):_config(config), _context(context), _builder(builder) {}
+			std::shared_ptr<internal::network::Context> context) :_config(config), _context(context) {}
 
-	std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getTransactionInfo(const std::string &id) {
+	std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getTransactionInfo(TransactionGroup group, const std::string &id) {
 		std::stringstream path;
-		path << "transaction/" << id;
+		path << "transactions/" << transactionGroupToString(group) << "/" << id;
 
-		auto requestParams = _builder
-				->setPath(path.str())
-				.setMethod(internal::network::HTTPRequestMethod::GET)
-				.getRequestParams();
+        RequestParamsBuilder builder(_config);
+        builder.setPath(path.str());
+        builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-		std::string response = internal::network::performHTTPRequest(_context, requestParams);
+		std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		auto result = transaction_from_json(response);
 		return result;
 	}
 
-	TransactionContainer TransactionService::getTransactionInfos(const std::vector<std::string> &ids) {
+    std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getAnyTransactionInfo(const std::string &id) {
+        TransactionGroup group = transactionGroupFromString(getTransactionStatus(id).group);
+        return getTransactionInfo(group, id);
+    }
+
+    transactions_info::TransactionContainer TransactionService::getTransactionInfos(TransactionGroup group, const std::vector<std::string> &ids) {
 		std::string requestJson;
 
 		ParserJson::Write(ids, requestJson);
-		requestJson = "{\"transactionIds\":" + requestJson + "}";
+		requestJson = "{\"hashes\":" + requestJson + "}";
 
-		std::string path = "transaction";
+        std::stringstream path;
+        path << "transactions/" << transactionGroupToString(group);
 
-		auto requestParams = _builder
-				->setPath(path)
-				.setMethod(internal::network::HTTPRequestMethod::POST)
-				.setRequestBody(requestJson)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path.str());
+        builder.setMethod(internal::network::HTTPRequestMethod::POST);
+        builder.setRequestBody(requestJson);
 
-		std::string response = internal::network::performHTTPRequest(_context, requestParams);
-		auto result = from_json<TransactionContainer, TransactionContainerDto>(response);
-
+		std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+		auto result = transactions_from_json(response);
 		return result;
 	}
 
@@ -64,12 +67,11 @@ namespace xpx_chain_sdk {
 		std::stringstream path;
         path << "transactionStatus/" << id;
 
-		auto requestParams = _builder
-				->setPath(path.str())
-				.setMethod(internal::network::HTTPRequestMethod::GET)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path.str());
+        builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-		std::string response = internal::network::performHTTPRequest(_context, requestParams);
+		std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		auto result = from_json<TransactionStatus, TransactionStatusDto>(response);
 		return result;
 	}
@@ -78,17 +80,16 @@ namespace xpx_chain_sdk {
 		std::string requestJson;
 
 		ParserJson::Write(ids, requestJson);
-		requestJson = "{\"transactionIds\":" + requestJson + "}";
+		requestJson = "{\"hashes\":" + requestJson + "}";
 
-		std::string path = "transaction/status";
+		std::string path = "transactionStatus";
 
-		auto requestParams = _builder
-				->setPath(path)
-				.setMethod(internal::network::HTTPRequestMethod::POST)
-				.setRequestBody(requestJson)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path);
+        builder.setMethod(internal::network::HTTPRequestMethod::POST);
+        builder.setRequestBody(requestJson);
 
-		std::string response = internal::network::performHTTPRequest(_context, requestParams);
+		std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		auto result = from_json<MultipleTransactionStatus, MultipleTransactionStatusDto>(response);
 
 		return result;
@@ -97,19 +98,19 @@ namespace xpx_chain_sdk {
 	bool TransactionService::announceNewTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":\"" + payloadStr + "\"}";
+		requestJson = R"({"payload":")" + payloadStr + "\"}";
 
 		std::cout << requestJson << std::endl;
 
 		std::string path = "transactions";
 
-		auto requestParams = _builder
-				->setPath(path)
-				.setMethod(internal::network::HTTPRequestMethod::PUT)
-				.setRequestBody(requestJson)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path);
+        builder.setMethod(internal::network::HTTPRequestMethod::PUT);
+        builder.setRequestBody(requestJson);
+
 		try {
-			internal::network::performHTTPRequest(_context, requestParams);
+			internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		}
 		catch(std::exception& e) {
 			std::cout << e.what() << std::endl;
@@ -125,13 +126,13 @@ namespace xpx_chain_sdk {
 
 		std::string path = "transaction/partial";
 
-		auto requestParams = _builder
-				->setPath(path)
-				.setMethod(internal::network::HTTPRequestMethod::PUT)
-				.setRequestBody(requestJson)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path);
+        builder.setMethod(internal::network::HTTPRequestMethod::PUT);
+        builder.setRequestBody(requestJson);
+
 		try {
-			internal::network::performHTTPRequest(_context, requestParams);
+			internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		}
 		catch(std::exception& e) {
 			throw e;
@@ -146,17 +147,62 @@ namespace xpx_chain_sdk {
 
 		std::string path = "transaction/cosignature";
 
-		auto requestParams = _builder
-				->setPath(path)
-				.setMethod(internal::network::HTTPRequestMethod::PUT)
-				.setRequestBody(requestJson)
-				.getRequestParams();
+		RequestParamsBuilder builder(_config);
+        builder.setPath(path);
+        builder.setMethod(internal::network::HTTPRequestMethod::PUT);
+        builder.setRequestBody(requestJson);
+
 		try {
-			internal::network::performHTTPRequest(_context, requestParams);
+			internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		}
 		catch(std::exception& e) {
 			throw e;
 		}
 		return true;
 	}
+
+    transactions_page::TransactionsPage TransactionService::getTransactionsByGroup(TransactionGroup group, const TransactionsPageOptions &options) {
+        std::stringstream path;
+        path << "transactions/" << transactionGroupToString(group);
+
+        RequestParamsBuilder builder(_config);
+        builder.setPath(path.str(), options.toMap());
+        builder.setMethod(internal::network::HTTPRequestMethod::GET);
+
+        std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+        auto result = from_json<transactions_page::TransactionsPage, TransactionsPageDto>(response);
+        return result;
+    }
+
+    std::string TransactionService::transactionGroupToString(TransactionGroup group) {
+        std::string result;
+        switch(group) {
+            case TransactionGroup::Confirmed:
+                result = "confirmed";
+                break;
+            case TransactionGroup::Unconfirmed:
+                result = "unconfirmed";
+                break;
+            case TransactionGroup::Partial: {
+                result = "partial";
+            } break;
+            default: {
+                XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
+            }
+        }
+
+        return result;
+    }
+
+    TransactionGroup TransactionService::transactionGroupFromString(const std::string& group) {
+        if (group == "confirmed") {
+            return TransactionGroup::Confirmed;
+        } else if (group == "unconfirmed") {
+            return TransactionGroup::Unconfirmed;
+        } else if (group == "partial") {
+            return TransactionGroup::Partial;
+        } else {
+            XPX_CHAIN_SDK_THROW_1(transaction_error, "unsupported transaction group", group)
+        }
+    }
 }

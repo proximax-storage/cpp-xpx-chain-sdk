@@ -56,8 +56,8 @@ namespace xpx_chain_sdk { namespace internal {
 		auto signer = transaction->signer().publicKey();
 		auto generationHash = ParseByteArray<Key>(GetConfig().GenerationHash);
 
-		Sha3_256 builder;
-		builder.update(signatureData, signer, generationHash, signedData);
-		return builder.finalize();
+        Sha3_256 builder;
+        builder.update(signatureData, signer, generationHash, signedData);
+        return builder.finalize();
 	}
 }}

@@ -28,18 +28,15 @@ namespace xpx_chain_sdk {
     public:
         MosaicService(
                 std::shared_ptr<Config> config,
-                std::shared_ptr<internal::network::Context> context,
-				std::shared_ptr<RequestParamsBuilder> builder
-        );
+                std::shared_ptr<internal::network::Context> context);
         ~MosaicService() = default;
+
         MosaicInfo getMosaicInfo(const MosaicId& id);
         MultipleMosaicInfo getMosaicInfos(const std::vector<MosaicId>& ids);
         MosaicNames getMosaicsNames(const std::vector<MosaicId>& ids);
+
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
     };
-
-
 };

@@ -12,7 +12,6 @@
 #include <infrastructure/json/uint64.h>
 #include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <xpxchaincpp/model/mosaic/mosaic_property.h>
-#include <stdint.h>
 
 namespace xpx_chain_sdk::internal::json::dto {
     using internal::json::Uint64;
@@ -44,9 +43,8 @@ namespace xpx_chain_sdk::internal::json::dto {
     using MultipleMosaicDto = std::vector<MosaicDto>;
 
     using MosaicNameDto = VariadicStruct<
-            Field<STR_LITERAL("parentid"), Uint64>,
-            Field<STR_LITERAL("mosaicid"), Uint64>,
-            Field<STR_LITERAL("name"), std::string> >;
+            Field<STR_LITERAL("mosaicId"), Uint64>,
+            Field<STR_LITERAL("names"), std::vector<std::string>> >;
 
     using MosaicNamesDto = std::vector<MosaicNameDto>;
 }

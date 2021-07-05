@@ -6,6 +6,7 @@
 #pragma once
 
 #include "infrastructure/json/descriptors.h"
+#include "infrastructure/json/uint32.h"
 #include "infrastructure/utils/variadic_struct.h"
 
 #include <xpxchaincpp/types.h>
@@ -59,8 +60,17 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 
 		//Transaction meta Dtos
+        using Uint32 = xpx_chain_sdk::internal::json::Uint32;
 
-		using TransactionInfoDto = VariadicStruct<>;
+		using TransactionInfoDto = VariadicStruct<
+                Field<STR_LITERAL("height"), Uint64>,
+                Field<STR_LITERAL("index"), Uint32>,
+                Field<STR_LITERAL("id"), std::string>,
+                Field<STR_LITERAL("hash"), std::string>,
+                Field<STR_LITERAL("merkleComponentHash"), std::string>,
+                Field<STR_LITERAL("aggregateHash"), std::string>,
+                Field<STR_LITERAL("uniqueAggregateHash"), std::string>,
+                Field<STR_LITERAL("aggregateId"), std::string>>;
 
 		using TransactionStatusDto = VariadicStruct<
 		        Field<STR_LITERAL("group"), std::string>,
@@ -80,7 +90,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		using TransactionDto = VariadicStruct<
 				Field<STR_LITERAL("signature"), std::string>,
 				Field<STR_LITERAL("signer"),    std::string>,
-				Field<STR_LITERAL("version"),   int64_t>,
+				Field<STR_LITERAL("version"),   Uint32>,
 				Field<STR_LITERAL("type"),      TransactionType>,
 				Field<STR_LITERAL("maxFee"),    Uint64 >,
 				Field<STR_LITERAL("deadline"),  Uint64> >;
@@ -158,11 +168,15 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("secret"),        std::string >,
 				Field<STR_LITERAL("proof"),         std::vector<uint8_t> > >;
 
+		using TransferTransactionMessageDto = VariadicStruct<
+                Field<STR_LITERAL("type"),        std::uint32_t >,
+                Field<STR_LITERAL("payload"),     std::string > >;
+
 		template<typename TBase>
 		using TTransferTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("recipient"),    std::string>,
-				Field<STR_LITERAL("message"),      std::vector<uint8_t>, desc::Optional>,
+				Field<STR_LITERAL("message"),      TransferTransactionMessageDto, desc::Optional>,
 				Field<STR_LITERAL("mosaics"),      std::vector<MosaicDto> > >;
 
 		template<typename TBase>

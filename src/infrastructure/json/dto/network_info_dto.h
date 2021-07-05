@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <infrastructure/utils/variadic_struct.h>
 #include <infrastructure/json/uint64.h>
@@ -17,5 +17,4 @@ namespace xpx_chain_sdk::internal::json::dto {
     using NetworkInfoDto = VariadicStruct<
             Field<STR_LITERAL("name"), std::string>,
             Field<STR_LITERAL("description"), std::string> >;
-
 }

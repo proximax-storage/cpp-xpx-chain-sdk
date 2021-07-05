@@ -7,16 +7,25 @@
 
 #include <infrastructure/json/parser.h>
 #include <infrastructure/json/dto/block_dto.h>
+#include <infrastructure/json/dto/drive_state_notification_dto.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/height.h>
 #include <infrastructure/json/dto/account_info_dto.h>
+#include <infrastructure/json/dto/account_names_dto.h>
 #include <infrastructure/json/dto/multiple_namespace_dto.h>
 #include <infrastructure/json/dto/multiple_blocks_dto.h>
-#include <infrastructure/json/dto/account_info_dto.h>
 #include <infrastructure/json/dto/multisig_graph_dto.h>
+#include <infrastructure/json/dto/network_config_dto.h>
 #include <infrastructure/json/dto/network_info_dto.h>
+#include <infrastructure/json/dto/network_version_dto.h>
+#include <infrastructure/json/dto/signer_info_notification_dto.h>
 #include <infrastructure/json/dto/transaction_dto.h>
+#include <infrastructure/json/dto/transactions_page_dto.h>
+#include <infrastructure/json/dto/transaction_notification_dto.h>
+#include <infrastructure/json/dto/transaction_status_notification_dto.h>
+#include <infrastructure/json/dto/uid_dto.h>
+#include <infrastructure/json/dto/meta_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -26,6 +35,7 @@
 #include <xpxchaincpp/model/mosaic/multiple_mosaic.h>
 #include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <xpxchaincpp/model/account/account_info.h>
+#include <xpxchaincpp/model/account/account_names.h>
 #include <xpxchaincpp/model/mosaic/mosaic_name.h>
 #include <xpxchaincpp/model/mosaic/mosaic_names.h>
 #include <xpxchaincpp/model/namespace/namespace_info.h>
@@ -33,10 +43,19 @@
 #include <xpxchaincpp/model/namespace/namespace_names.h>
 #include <xpxchaincpp/model/namespace/multiple_namespace_info.h>
 #include <xpxchaincpp/model/account/account_properties.h>
+#include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
+#include <xpxchaincpp/model/network/network_version.h>
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
+#include <xpxchaincpp/model/transaction_simple/transactions_page.h>
+#include <xpxchaincpp/model/notification/drive_state_notification.h>
+#include <xpxchaincpp/model/notification/signer_info_notification.h>
+#include <xpxchaincpp/model/notification/transaction_notification.h>
+#include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <sdk/model/notification/websocket_uid.h>
+#include <sdk/model/notification/websocket_meta.h>
 
 
 
@@ -58,7 +77,7 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
             auto result = Parser::Read(dto, jsonStr);
             if (!result) {
-                XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField());
+                XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", result.invalidField())
             }
 
             return fromDto<Object, ObjectDto>(dto);

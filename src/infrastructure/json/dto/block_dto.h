@@ -7,9 +7,10 @@
 #pragma once
 
 #include "infrastructure/utils/variadic_struct.h"
+#include "infrastructure/json/uint32.h"
 #include "infrastructure/json/uint64.h"
 #include "infrastructure/json/descriptors.h"
-#include <stdint.h>
+#include <cstdint>
 
 
 
@@ -45,25 +46,26 @@
 
 namespace xpx_chain_sdk::internal::json::dto {
 
+    using Uint32 = xpx_chain_sdk::internal::json::Uint32;
 	using Uint64 = xpx_chain_sdk::internal::json::Uint64;
 
     using BlockMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,
             Field<STR_LITERAL("generationHash"), std::string>,
-            Field<STR_LITERAL("totalFee"), Uint64>,
-            Field<STR_LITERAL("numTransactions"), uint64_t >,
+            Field<STR_LITERAL("totalFee"), Uint64, desc::Optional>,
+            Field<STR_LITERAL("numTransactions"), uint64_t , desc::Optional>,
             Field<STR_LITERAL("numStatements"), uint64_t, desc::Optional >>;
 
     using BlockDataDto = VariadicStruct<
             Field<STR_LITERAL("signature"), std::string>,
             Field<STR_LITERAL("timestamp"), Uint64 >,
             Field<STR_LITERAL("difficulty"), Uint64 >,
-            Field<STR_LITERAL("feeMultiplier"), uint64_t >,
+            Field<STR_LITERAL("feeMultiplier"), Uint32 >,
             Field<STR_LITERAL("previousBlockHash"), std::string>,
             Field<STR_LITERAL("blockTransactionsHash"), std::string>,
-            Field<STR_LITERAL("blockReceiptsHash"), std::string>,
-            Field<STR_LITERAL("stateHash"), std::string>,
-            Field<STR_LITERAL("beneficiary"), std::string> >;
+            Field<STR_LITERAL("blockReceiptsHash"), std::string, desc::Optional>,
+            Field<STR_LITERAL("stateHash"), std::string, desc::Optional>,
+            Field<STR_LITERAL("beneficiary"), std::string, desc::Optional> >;
 
     using BlockDto = VariadicStruct<
             Field<STR_LITERAL("meta"), BlockMetaDto>,

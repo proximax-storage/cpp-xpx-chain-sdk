@@ -22,38 +22,33 @@ using xpx_chain_sdk::internal::json::dto::from_json;
 
 NamespaceService::NamespaceService(
         std::shared_ptr<Config> config,
-        std::shared_ptr<internal::network::Context> context,
-		std::shared_ptr<RequestParamsBuilder> builder
-) : _config(config), _context(context), _builder(builder) {}
+        std::shared_ptr<internal::network::Context> context
+) : _config(config), _context(context) {}
 
 NamespaceInfo NamespaceService::getNamespaceInfoById(const NamespaceId& id) {
     std::stringstream path;
     path << "namespace/" << int_to_hex(id);
 
-    auto requestParams = _builder
-            ->setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
     return result;
-
 }
 
-NamespaceInfo NamespaceService::getNamespaceInfoById(const std::string& id) {
+NamespaceInfo NamespaceService::getNamespaceInfoByHexId(const std::string& id) {
 	std::stringstream path;
 	path << "namespace/" << id;
 
-	auto requestParams = _builder
-			->setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
+	RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
+	std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
 	auto result = from_json<NamespaceInfo, internal::json::dto::NamespaceInfoDto>(response);
 	return result;
-
 }
 
 
@@ -61,12 +56,11 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
     std::stringstream path;
     path << "account/" << accountId << "/namespaces";
 
-    auto requestParams = _builder
-            ->setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultipleNamespaceInfo, internal::json::dto::MultipleNamespaceDto>(response);
     return result;
 }
@@ -74,16 +68,16 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccount(const std::str
 MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds){
     std::string requestJson;
     Parser::Write(accountIds, requestJson);
+    requestJson = "{\"publicKeys\":" + requestJson + "}";
 
     std::string path = "account/namespaces";
 
-    auto requestParams = _builder
-            ->setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto namespaceInfos = from_json<MultipleNamespaceInfo, internal::json::dto::MultipleNamespaceDto>(response);
     return namespaceInfos;
 }
@@ -91,16 +85,16 @@ MultipleNamespaceInfo NamespaceService::getNamespaceInfoByAccounts(const std::ve
 NamespaceNames NamespaceService::getNamespaceNames(const std::vector<std::string> & namespaceIds) {
     std::string requestJson;
     Parser::Write(namespaceIds, requestJson);
+    requestJson = "{\"namespaceIds\":" + requestJson + "}";
 
     std::string path = "namespace/names";
 
-    auto requestParams = _builder
-            ->setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<NamespaceNames, internal::json::dto::NamespaceNamesDto>(response);
     return result;
 }
