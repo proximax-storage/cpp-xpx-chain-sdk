@@ -21,8 +21,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     using AliasDto = VariadicStruct<
             Field<STR_LITERAL("type"), uint64_t>,
-            Field<STR_LITERAL("mosaicId"), std::string,desc::Optional>,
-            Field<STR_LITERAL("address"), std::string, desc::Optional> >;
+            Field<STR_LITERAL("mosaicId"), Uint64,desc::Optional>,
+            Field<STR_LITERAL("address"), std::string,desc::Optional>>;
 
     using NamespaceMetaDto = VariadicStruct<
             Field<STR_LITERAL("active"), bool>,
@@ -50,7 +50,4 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("name"), std::string> >;
 
     using NamespaceNamesDto = std::vector<NamespaceNameDto>;
-
-
-
 }

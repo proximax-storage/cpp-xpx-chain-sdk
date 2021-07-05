@@ -5,14 +5,14 @@
 **/
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 namespace xpx_chain_sdk {
     class Alias {
     public:
         uint64_t type;
-        std::string mosaicId;
+        uint64_t mosaicId;
         std::string address;
     };
 

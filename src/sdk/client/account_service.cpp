@@ -18,20 +18,19 @@ using xpx_chain_sdk::internal::json::dto::from_json;
 
 AccountService::AccountService(
         std::shared_ptr<Config> config,
-        std::shared_ptr<internal::network::Context> context,
-		std::shared_ptr<RequestParamsBuilder> builder):_config(config), _context(context), _builder(builder) {}
+        std::shared_ptr<internal::network::Context> context)
+        : _config(config), _context(context) {}
 
 AccountInfo AccountService::getAccountInfo(const std::string& id) {
     std::stringstream path;
     path << "account/" << id;
 
-    auto requestParams = _builder
-            -> setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
-    AccountInfo result = from_json<AccountInfo, AccountInfoDto>(response);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+    auto result = from_json<AccountInfo, AccountInfoDto>(response);
     return result;
 
 }
@@ -39,30 +38,28 @@ AccountInfo AccountService::getAccountInfo(const std::string& id) {
 MultipleAccountInfo AccountService::getAccountsInfo(const std::vector<std::string>& ids){
     std::string requestJson;
     Parser::Write(ids, requestJson);
-    std::string path = "account/";
+    requestJson = "{\"addresses\":" + requestJson + "}";
+    std::string path = "account";
 
-    auto requestParams = _builder
-            -> setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultipleAccountInfo, MultipleAccountInfoDto>(response);
     return result;
-
 }
 
 AccountProperties AccountService::getAccountProperties(const std::string& id ){
     std::stringstream path;
-    path << "account/properties/" << id;
+    path << "account/" << id << "/properties";
 
-    auto requestParams = _builder
-            -> setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<AccountProperties, AccountPropertyDto>(response);
     return result;
 }
@@ -73,13 +70,12 @@ MultipleAccountProperty AccountService::getAccountsProperties(const std::vector<
 
     std::string path = "account/properties";
 
-    auto requestParams = _builder
-            -> setPath(path)
-            .setMethod(internal::network::HTTPRequestMethod::POST)
-            .setRequestBody(requestJson)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultipleAccountProperty, MultipleAccountPropertyDto>(response);
     return result;
 }
@@ -88,12 +84,11 @@ MultisigInfo AccountService::getMultisigInfo(const std::string& id) {
     std::stringstream path;
     path << "account/" << id << "/multisig";
 
-    auto requestParams = _builder
-            -> setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultisigInfo, MultisigInfoDto>(response);
     return result;
 }
@@ -102,117 +97,28 @@ MultisigGraph AccountService::getMultisigAccountGraphInfo(const std::string& id)
     std::stringstream path;
     path << "account/" << id << "/multisig/graph";
 
-    auto requestParams = _builder
-            -> setPath(path.str())
-            .setMethod(internal::network::HTTPRequestMethod::GET)
-            .getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-    std::string response = internal::network::performHTTPRequest(_context, requestParams);
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
     auto result = from_json<MultisigGraph, MultisigGraphDto>(response);
     return result;
 }
 
-transactions_info::TransactionContainer AccountService::getAccountTransactions(
-		const std::string& publicKey,
-		int pageSize,
-		std::string id,
-		std::string ordering) {
+AccountNames AccountService::getAccountNames(const std::vector<std::string> &addresses) {
+    std::string requestJson;
+    Parser::Write(addresses, requestJson);
+    requestJson = "{\"addresses\":" + requestJson + "}";
 
-	std::stringstream path;
-	path << "account/" << publicKey << "/transactions?pageSize=" << pageSize << "&ordering=" << ordering;
-	if(id != "underfined") path << "&id=" << id;
+    std::string path = "account/names";
 
-	auto requestParams = _builder
-			-> setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path);
+    builder.setMethod(internal::network::HTTPRequestMethod::POST);
+    builder.setRequestBody(requestJson);
 
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = transactions_from_json(response);
-	return result;
-
-}
-
-transactions_info::TransactionContainer AccountService::getAccountIncomingTransactions(
-		const std::string& publicKey,
-		int pageSize,
-		std::string id,
-		std::string ordering) {
-
-	std::stringstream path;
-	path << "account/" << publicKey << "/transactions/incoming?pageSize=" << pageSize << "&ordering=" << ordering;
-	if(id != "underfined") path << "&id=" << id;
-
-	auto requestParams = _builder
-			-> setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
-
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = transactions_from_json(response);
-	return result;
-
-}
-
-transactions_info::TransactionContainer AccountService::getAccountOutgoingTransactions(
-		const std::string& publicKey,
-		int pageSize,
-		std::string id,
-		std::string ordering) {
-
-	std::stringstream path;
-	path << "account/" << publicKey << "/transactions/outgoing?pageSize=" << pageSize << "&ordering=" << ordering;
-	if(id != "underfined") path << "&id=" << id;
-
-	auto requestParams = _builder
-			-> setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
-
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = transactions_from_json(response);
-	return result;
-
-}
-
-transactions_info::TransactionContainer AccountService::getAccountUnconfirmedTransactions(
-		const std::string& publicKey,
-		int pageSize,
-		std::string id,
-		std::string ordering) {
-
-	std::stringstream path;
-	path << "account/" << publicKey << "/transactions/unconfirmed?pageSize=" << pageSize << "&ordering=" << ordering;
-	if(id != "underfined") path << "&id=" << id;
-
-	auto requestParams = _builder
-			-> setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
-
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = transactions_from_json(response);
-	return result;
-
-}
-
-transactions_info::TransactionContainer AccountService::getAccountAggregateBoundedTransactions(
-		const std::string& publicKey,
-		int pageSize,
-		std::string id,
-		std::string ordering) {
-
-	std::stringstream path;
-	path << "account/" << publicKey << "/transactions/partial?pageSize=" << pageSize << "&ordering=" << ordering;
-	if(id != "underfined") path << "&id=" << id;
-
-	auto requestParams = _builder
-			-> setPath(path.str())
-			.setMethod(internal::network::HTTPRequestMethod::GET)
-			.getRequestParams();
-
-	std::string response = internal::network::performHTTPRequest(_context, requestParams);
-	auto result = transactions_from_json(response);
-	return result;
-
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+    auto result = from_json<AccountNames, AccountNamesDto>(response);
+    return result;
 }

@@ -76,7 +76,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-		for(auto cosignaturesDto : dto.value<"cosignatures"_>()) {
+		for(const auto& cosignaturesDto : dto.value<"cosignatures"_>()) {
 			transaction.cosignatures.push_back(fromDto<Cosignature, CosignatureDto>(cosignaturesDto));
 		}
 
@@ -411,11 +411,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     template<>
     MosaicName fromDto<MosaicName, MosaicNameDto>(const MosaicNameDto &dto) {
-
         MosaicName mosaicName = {
-                dto.value<"parentid"_>(),
-                dto.value<"mosaicid"_>(),
-                dto.value<"name"_>()
+                dto.value<"mosaicId"_>(),
+                dto.value<"names"_>()
         };
         return mosaicName;
     }
@@ -423,7 +421,6 @@ namespace xpx_chain_sdk::internal::json::dto {
     template<>
     MosaicNames fromDto<MosaicNames, MosaicNamesDto>(const MosaicNamesDto &dto) {
         MosaicNames names;
-
         for (auto &nameDto: dto) {
             MosaicName mosaic = fromDto<MosaicName, MosaicNameDto>(nameDto);
             names.names.push_back(mosaic);
@@ -589,6 +586,23 @@ namespace xpx_chain_sdk::internal::json::dto {
 	}
 
     template<>
+    AccountName fromDto<AccountName, AccountNameDto>(const AccountNameDto& dto) {
+        AccountName accountName;
+        accountName.address = dto.value<"address"_>();
+        accountName.names = dto.value<"names"_>();
+        return accountName;
+    }
+
+    template<>
+    AccountNames fromDto<AccountNames, AccountNamesDto>(const AccountNamesDto & dto) {
+        AccountNames accountNames;
+        for(auto & accountNameDto : dto) {
+            accountNames.names.push_back(fromDto<AccountName, AccountNameDto>(accountNameDto));
+        }
+        return accountNames;
+    }
+
+    template<>
     MultisigLevel fromDto<MultisigLevel, MultisigLevelDto>(const MultisigLevelDto& dto) {
         MultisigLevel multisigLevel;
         multisigLevel.level = dto.value<"level"_>();
@@ -617,6 +631,33 @@ namespace xpx_chain_sdk::internal::json::dto {
         return networkInfo;
     }
 
+    template<>
+    NetworkConfigData fromDto<NetworkConfigData, NetworkConfigDataDto> (const NetworkConfigDataDto& dto) {
+        NetworkConfigData networkConfigData;
+        networkConfigData.height = dto.value<"height"_>();
+        networkConfigData.config = dto.value<"networkConfig"_>();
+        networkConfigData.supportedEntityVersions = dto.value<"supportedEntityVersions"_>();
+        return networkConfigData;
+    }
+
+    template<>
+    NetworkConfig fromDto<NetworkConfig, NetworkConfigDto>(const NetworkConfigDto &dto) {
+        return {fromDto<NetworkConfigData, NetworkConfigDataDto>(dto.value<"networkConfig"_>())};
+    }
+
+    template<>
+    NetworkVersionData fromDto<NetworkVersionData, NetworkVersionDataDto> (const NetworkVersionDataDto& dto) {
+        NetworkVersionData networkVersionData;
+        networkVersionData.height = dto.value<"height"_>();
+        networkVersionData.version = dto.value<"blockChainVersion"_>();
+        return networkVersionData;
+    }
+
+    template<>
+    NetworkVersion fromDto<NetworkVersion, NetworkVersionDto> (const NetworkVersionDto& dto) {
+        return {fromDto<NetworkVersionData, NetworkVersionDataDto>(dto.value<"blockchainUpgrade"_>())};
+    }
+
 	/// Transaction Meta
 
 	template<>
@@ -640,7 +681,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transactionStatus.status = dto.value<"status"_>();
 		transactionStatus.hash = dto.value<"hash"_>();
 		transactionStatus.deadline = dto.value<"deadline"_>();
-		transactionStatus.height = dto.value<"height"_>();
 		return transactionStatus;
 	}
 
@@ -663,6 +703,57 @@ namespace xpx_chain_sdk::internal::json::dto {
 		}
 		return transactionStatuses;
 	}
+
+    template<>
+    xpx_chain_sdk::transactions_page::TransactionMeta
+    fromDto<xpx_chain_sdk::transactions_page::TransactionMeta, dto::transactions_page::TransactionMetaDto>(
+            const dto::transactions_page::TransactionMetaDto &dto) {
+        xpx_chain_sdk::transactions_page::TransactionMeta transactionMeta;
+        transactionMeta.hash = dto.value<"hash"_>();
+        transactionMeta.height = dto.value<"height"_>();
+        transactionMeta.merkleComponentHash = dto.value<"merkleComponentHash"_>();
+        transactionMeta.index = dto.value<"index"_>();
+        return transactionMeta;
+    }
+
+    template<>
+    xpx_chain_sdk::transactions_page::Transaction
+    fromDto<xpx_chain_sdk::transactions_page::Transaction, dto::transactions_page::TransactionDto>(
+            const dto::transactions_page::TransactionDto &dto) {
+        xpx_chain_sdk::transactions_page::Transaction transaction;
+        transaction.id = dto.value<"id"_>();
+        transaction.data = fromDto<Transaction, TransactionDto>(dto.value<"transaction"_>());
+        transaction.meta = fromDto<xpx_chain_sdk::transactions_page::TransactionMeta, dto::transactions_page::TransactionMetaDto>(dto.value<"meta"_>());
+        return transaction;
+    }
+
+    template<>
+    xpx_chain_sdk::transactions_page::Pagination fromDto<
+        xpx_chain_sdk::transactions_page::Pagination,
+        dto::transactions_page::PaginationDto>(
+        const dto::transactions_page::PaginationDto &dto) {
+        xpx_chain_sdk::transactions_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::transactions_page::TransactionsPage fromDto<
+            xpx_chain_sdk::transactions_page::TransactionsPage,
+            dto::transactions_page::TransactionsPageDto>(
+            const dto::transactions_page::TransactionsPageDto& dto) {
+        xpx_chain_sdk::transactions_page::TransactionsPage transactionsPage;
+        transactionsPage.pagination = fromDto<xpx_chain_sdk::transactions_page::Pagination, dto::transactions_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& itemDto : dto.value<"data"_>()) {
+            transactionsPage.transactions.push_back(fromDto<xpx_chain_sdk::transactions_page::Transaction, dto::transactions_page::TransactionDto>(itemDto));
+        }
+        return transactionsPage;
+    }
 
     // Transactions
 
@@ -873,6 +964,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+	template<>
+	TransferTransactionMessage fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(const TransferTransactionMessageDto & dto) {
+		TransferTransactionMessage message;
+		message.type = dto.value<"type"_>();
+		message.payload = dto.value<"payload"_>();
+		return message;
+	}
 
 	template<>
 	TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto) {
@@ -881,7 +979,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.message = dto.value<"message"_>();
+		transaction.message = fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(dto.value<"message"_>());
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {
 			transaction.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));
 		}
@@ -1102,7 +1200,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 
 		transaction.recipient = dto.value<"recipient"_>();
-		transaction.message = dto.value<"message"_>();
+		transaction.message = fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(dto.value<"message"_>());
 
 		for(auto& mosaicDto : dto.value<"mosaics"_>()) {
 			transaction.mosaics.push_back(fromDto<Mosaic, MosaicDto>(mosaicDto));

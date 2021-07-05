@@ -4,7 +4,6 @@
 *** license that can be found in the LICENSE file.
 **/
 #include "infrastructure/network/context.h"
-#include "infrastructure/network/http.h"
 #include <xpxchaincpp/client.h>
 #include <xpxchaincpp/client/blockchain_service.h>
 #include <xpxchaincpp/client/mosaic_service.h>
@@ -17,20 +16,14 @@ using namespace xpx_chain_sdk;
 class Client : public IClient {
 public:
 	explicit Client(std::shared_ptr<Config> config) : _config(config) {
-		_context = std::make_shared<internal::network::Context>();
-		_builder = _builder
-			.setBasePath(_config->basePath)
-			.setHost(_config->nodeAddress)
-			.setPort(_config->port)
-			.setSecurity(_config->useSSL);
-
-        _account        = std::make_shared<AccountService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-        _blockchain     = std::make_shared<BlockchainService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-        _mosaic         = std::make_shared<MosaicService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-        _namespace      = std::make_shared<NamespaceService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-        _notification  = std::make_shared<NotificationService>(config, _context);
-        _network        = std::make_shared<NetworkService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
-        _transaction    = std::make_shared<TransactionService>(config, _context, std::make_shared<RequestParamsBuilder>(_builder));
+		_context        = std::make_shared<internal::network::Context>();
+        _account        = std::make_shared<AccountService>(config, _context);
+        _blockchain     = std::make_shared<BlockchainService>(config, _context);
+        _mosaic         = std::make_shared<MosaicService>(config, _context);
+        _namespace      = std::make_shared<NamespaceService>(config, _context);
+        _notification   = std::make_shared<NotificationService>(config, _context);
+        _network        = std::make_shared<NetworkService>(config, _context);
+        _transaction    = std::make_shared<TransactionService>(config, _context);
 	}
 
 	std::shared_ptr<AccountService> account() const override  {
@@ -63,7 +56,6 @@ public:
 
 private:
 	std::shared_ptr<Config> _config;
-	internal::network::RequestParamsBuilder _builder;
 	std::shared_ptr<internal::network::Context> _context;
 
 	std::shared_ptr<AccountService> _account;

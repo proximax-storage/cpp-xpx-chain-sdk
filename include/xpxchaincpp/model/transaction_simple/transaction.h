@@ -56,7 +56,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
         uint32_t size;
         std::string signer;
-        uint16_t version;
+        uint32_t version;
     };
 
 	class TransactionContainer {
@@ -149,15 +149,20 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::vector<uint8_t> proof;
     };
 
+    class TransferTransactionMessage {
+    public:
+        std::uint32_t type;
+        std::string payload;
+    };
+
     template<typename TBase>
     class TTransferTransaction: public TBase {
     public:
         std::string recipient;
         uint16_t messageSize;
         uint8_t mosaicsCount;
-        std::vector<uint8_t> message;
+        TransferTransactionMessage message;
         std::vector<Mosaic> mosaics;
-
     };
 
     template<typename TBase>

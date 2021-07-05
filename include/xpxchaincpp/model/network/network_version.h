@@ -8,9 +8,14 @@
 #include <string>
 
 namespace xpx_chain_sdk {
-    class MosaicName {
+    class NetworkVersionData {
     public:
-        uint64_t mosaicId;
-        std::vector<std::string> names;
+        uint64_t height;
+        uint64_t version;
+    };
+
+    class NetworkVersion {
+    public:
+        NetworkVersionData data;
     };
 }

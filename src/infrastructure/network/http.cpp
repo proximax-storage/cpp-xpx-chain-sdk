@@ -108,12 +108,12 @@ std::string _performHTTPRequest(
 	}
 }
 
-RequestParamsBuilder::RequestParamsBuilder() :
+RequestParamsBuilder::RequestParamsBuilder(std::shared_ptr<xpx_chain_sdk::Config> config) :
 	_method(HTTPRequestMethod::GET),
-	_secure(false),
-	_host("localhost"),
-	_port("3000"),
-	_basePath("/")
+	_secure(config->useSSL),
+	_host(config->nodeAddress),
+	_port(config->port),
+	_basePath(config->basePath)
 {}
 
 RequestParamsBuilder& RequestParamsBuilder::setMethod(HTTPRequestMethod method) {
@@ -141,9 +141,23 @@ RequestParamsBuilder& RequestParamsBuilder::setBasePath(const std::string& baseP
 	return *this;
 }
 
-RequestParamsBuilder& RequestParamsBuilder::setPath(const std::string& path) {
-	_path = path;
-	return *this;
+RequestParamsBuilder &RequestParamsBuilder::setPath(
+        const std::string &path,
+        const std::map<std::string, std::string> &options) {
+    _path = path;
+
+    const int size = static_cast<int>(options.size());
+    auto it = options.begin();
+    for (int i = 0; i < size; i++) {
+        if (i == 0) {
+            _path += "?" + it->first + "=" + it->second;
+        } else {
+            _path += "&" + it->first + "=" + it->second;
+        }
+        it++;
+    }
+
+    return *this;
 }
 
 RequestParamsBuilder& RequestParamsBuilder::setRequestBody(const std::string& requestBody) {

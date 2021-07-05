@@ -20,7 +20,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         Field<STR_LITERAL("type"), TransactionType>,
         Field<STR_LITERAL("maxFee"), Uint64>,
         Field<STR_LITERAL("deadline"), Uint64>,
-        Field<STR_LITERAL("hash"), std::string>>;
+        Field<STR_LITERAL("hash"), std::string, desc::Optional>>;
 
     using TransactionMetaDto = VariadicStruct<
             Field<STR_LITERAL("hash"), std::string>,

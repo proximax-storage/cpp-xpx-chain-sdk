@@ -30,19 +30,18 @@ namespace xpx_chain_sdk {
     public:
         NamespaceService(
                 std::shared_ptr<Config> config,
-                std::shared_ptr<internal::network::Context> context,
-                std::shared_ptr<RequestParamsBuilder> builder
-        );
+                std::shared_ptr<internal::network::Context> context);
         ~NamespaceService() = default;
+
         NamespaceInfo getNamespaceInfoById(const NamespaceId& id);
-		NamespaceInfo getNamespaceInfoById(const std::string& id);
+		NamespaceInfo getNamespaceInfoByHexId(const std::string& id);
 		MultipleNamespaceInfo getNamespaceInfoByAccount(const std::string& accountId);
         MultipleNamespaceInfo getNamespaceInfoByAccounts(const std::vector<std::string>& accountIds);
         NamespaceNames getNamespaceNames(const std::vector<std::string> & namespaceIds);
+
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
-		std::shared_ptr<RequestParamsBuilder> _builder;
     };
 }
 

@@ -35,7 +35,7 @@ namespace xpx_chain_sdk {
 	using BlockDuration = uint64_t;
 	constexpr BlockDuration Eternal_Duration = 0;
 	
-	using NamespaceId = uint64_t;
+	using NamespaceId = int64_t;
 	constexpr NamespaceId Namespace_Base_Id = 0;
 	
 	/// Blockchain network identifier.

@@ -8,6 +8,7 @@
 #include "context.h"
 
 #include <string>
+#include <xpxchaincpp/config.h>
 
 namespace xpx_chain_sdk::internal::network {
 
@@ -28,14 +29,15 @@ namespace xpx_chain_sdk::internal::network {
 
 	class RequestParamsBuilder {
 	public:
-		RequestParamsBuilder();
+		explicit RequestParamsBuilder(std::shared_ptr<xpx_chain_sdk::Config> config);
 
 		RequestParamsBuilder& setMethod(HTTPRequestMethod method);
 		RequestParamsBuilder& setSecurity(bool secure);
 		RequestParamsBuilder& setHost(const std::string& host);
 		RequestParamsBuilder& setPort(const std::string& port);
 		RequestParamsBuilder& setBasePath(const std::string& basePath);
-		RequestParamsBuilder& setPath(const std::string& path);
+		RequestParamsBuilder& setPath(const std::string& path,
+                                      const std::map<std::string, std::string> &options = std::map<std::string, std::string>());
 		RequestParamsBuilder& setRequestBody(const std::string& requestBody);
 
 		RequestParams getRequestParams();
