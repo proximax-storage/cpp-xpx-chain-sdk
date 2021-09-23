@@ -1437,6 +1437,17 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+    template<>
+    UnconfirmedRemovedTransactionNotificationMeta fromDto<UnconfirmedRemovedTransactionNotificationMeta, UnconfirmedRemovedTransactionMetaDto>(const UnconfirmedRemovedTransactionMetaDto &dto) {
+        return { dto.value<"hash"_>() };
+    }
+
+    template<>
+    UnconfirmedRemovedTransactionNotification fromDto<UnconfirmedRemovedTransactionNotification, UnconfirmedRemovedTransactionDto>(const UnconfirmedRemovedTransactionDto &dto) {
+        return { fromDto<UnconfirmedRemovedTransactionNotificationMeta, UnconfirmedRemovedTransactionMetaDto>(dto.value<"meta"_>()) };
+    }
+
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };

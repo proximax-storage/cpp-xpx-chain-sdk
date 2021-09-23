@@ -11,6 +11,9 @@
 
 namespace xpx_chain_sdk::internal::json::dto {
 
-    using UnconfirmedRemovedTransactionDto = VariadicStruct<
+    using UnconfirmedRemovedTransactionMetaDto = VariadicStruct<
         Field<STR_LITERAL("hash"), std::string>>;
+
+    using UnconfirmedRemovedTransactionDto = VariadicStruct<
+        Field<STR_LITERAL("meta"), UnconfirmedRemovedTransactionMetaDto>>;
 }

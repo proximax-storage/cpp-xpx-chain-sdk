@@ -10,10 +10,7 @@
 
 #include <boost/asio.hpp>
 #include <chrono>
-#include <iostream>
 #include <boost/date_time/posix_time/posix_time.hpp>
-
-typedef boost::asio::basic_waitable_timer< boost::asio::chrono::system_clock > system_timer;
 
 namespace xpx_chain_sdk::tests {
 
@@ -58,7 +55,6 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
        
         timer.async_wait([&isReceived, &recipient] ( ... ) {
-            return isReceived;
             client->notifications()->removeConfirmedAddedNotifiers(recipient);
             EXPECT_TRUE(isReceived);
         });
@@ -97,7 +93,6 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
         timer.async_wait([&isReceived, &recipient] ( ... ) {
-            return isReceived;
             client->notifications()->removeUnconfirmedAddedNotifiers(recipient);
             EXPECT_TRUE(isReceived);
         });
@@ -121,12 +116,9 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         
         // Handler, this one still copied from Transaction
-        UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const transactions_info::TransactionInfo& info){
-            if (info.hash == ToHex(transferTransaction->hash())){
-                EXPECT_EQ(ToHex(transferTransaction->hash()), info.hash);
-
-                // auto transactionInfo = client->transactions()->getAnyTransactionInfo(info.hash);
-                // EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
+        UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const UnconfirmedRemovedTransactionNotification& transaction){
+            if (transaction.meta.hash == ToHex(transferTransaction->hash())){
+                EXPECT_EQ(ToHex(transferTransaction->hash()), transaction.meta.hash);
 
                 isReceived = true;
             }
@@ -136,9 +128,8 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
         timer.async_wait([&isReceived, &recipient] ( ... ) {
-            return isReceived;
             client->notifications()->removeUnconfirmedRemovedNotifiers(recipient);
-            EXPECT_FALSE(isReceived);
+            EXPECT_TRUE(isReceived);
         });      
 
         io.run();

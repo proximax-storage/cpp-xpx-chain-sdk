@@ -163,9 +163,9 @@ namespace xpx_chain_sdk {
             if (_unconfirmedRemovedNotifiers.find(websocketInfo.meta.address) == _unconfirmedRemovedNotifiers.end()) {
                 _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(websocketInfo.meta.address));
             } else {
-                auto transactionInfo = from_json<transactions_info::TransactionInfo, TransactionInfoDto>(json);
+                auto transaction = from_json<UnconfirmedRemovedTransactionNotification, UnconfirmedRemovedTransactionDto>(json);
                 for (const auto& notifier : _unconfirmedRemovedNotifiers[websocketInfo.meta.address]) {
-                    notifier(transactionInfo);
+                    notifier(transaction);
                 }
             }
         } else if (internal::pathStatus == websocketInfo.meta.channelName) {

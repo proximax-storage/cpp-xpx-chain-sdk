@@ -13,6 +13,7 @@
 #include <xpxchaincpp/model/notification/signer_info_notification.h>
 #include <xpxchaincpp/model/notification/transaction_notification.h>
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <xpxchaincpp/model/notification/unconfirmed_removed_notification.h>
 #include <condition_variable>
 #include <functional>
 #include <memory>
@@ -36,7 +37,7 @@ namespace xpx_chain_sdk {
     using BlockNotifier = std::function<void(const Block& block)>;
     using ConfirmedAddedNotifier = std::function<void(const TransactionNotification& transactionNotification)>;
     using UnconfirmedAddedNotifier = std::function<void(const TransactionNotification& transactionNotification)>;
-    using UnconfirmedRemovedNotifier = std::function<void(const transactions_info::TransactionInfo& transactionInfo)>;
+    using UnconfirmedRemovedNotifier = std::function<void(const UnconfirmedRemovedTransactionNotification& transaction)>;
     using PartialAddedNotifier = std::function<void(std::shared_ptr<transactions_info::BasicTransaction> transaction)>;
     using PartialRemovedNotifier = std::function<void(const transactions_info::TransactionInfo& transactionInfo)>;
     using StatusNotifier = std::function<void(const TransactionStatusNotification& status)>;

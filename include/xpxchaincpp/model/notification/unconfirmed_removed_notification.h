@@ -9,8 +9,13 @@
 
 namespace xpx_chain_sdk {
 
-    class UnconfirmedRemovedTransactionNotification {
+    class UnconfirmedRemovedTransactionNotificationMeta {
     public:
         std::string hash;
+    };
+
+    class UnconfirmedRemovedTransactionNotification {
+    public:
+        UnconfirmedRemovedTransactionNotificationMeta meta;
     };
 }
