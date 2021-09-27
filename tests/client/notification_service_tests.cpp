@@ -77,12 +77,12 @@ namespace xpx_chain_sdk::tests {
         std::mutex receivedMutex;
         std::unique_lock<std::mutex> lock(receivedMutex);
         
-        //Handler, this one still copied from Transaction
+        //Handler
         UnconfirmedAddedNotifier notifier = [&transferTransaction, &isReceived](const TransactionNotification& notification){
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
-                auto transactionInfo = client->transactions()->getAnyTransactionInfo(notification.meta.hash);
+                auto transactionInfo = client->transactions()->getTransactionInfo(TransactionGroup::Unconfirmed, notification.meta.hash);
                 EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
 
                 isReceived = true;
@@ -115,10 +115,13 @@ namespace xpx_chain_sdk::tests {
         std::mutex receivedMutex;
         std::unique_lock<std::mutex> lock(receivedMutex);
         
-        // Handler, this one still copied from Transaction
+        //Handler
         UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const UnconfirmedRemovedTransactionNotification& transaction){
             if (transaction.meta.hash == ToHex(transferTransaction->hash())){
                 EXPECT_EQ(ToHex(transferTransaction->hash()), transaction.meta.hash);
+
+                auto transactionInfo = client->transactions()->getAnyTransactionInfo(transaction.meta.hash);
+                EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
 
                 isReceived = true;
             }
@@ -133,5 +136,5 @@ namespace xpx_chain_sdk::tests {
         });      
 
         io.run();
-    }
+    }   
 }

@@ -25,6 +25,8 @@ namespace xpx_chain_sdk::tests {
     static xpx_chain_sdk::Config getTestConfiguration() {
         xpx_chain_sdk::Config config = xpx_chain_sdk::GetConfig();
         config.nodeAddress = "127.0.0.1";
+        // config.nodeAddress = "18.141.208.138";
+        // config.nodeAddress = "13.214.31.95";
         config.port = "3000";
 
         return config;
