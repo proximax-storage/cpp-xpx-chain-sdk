@@ -13,6 +13,7 @@ namespace xpx_chain_sdk::transactions_page {
 
     class TransactionMeta {
     public:
+        std::string id;
         uint64_t height;
         std::string hash;
         std::string merkleComponentHash;
@@ -23,7 +24,6 @@ namespace xpx_chain_sdk::transactions_page {
     public:
         TransactionMeta meta;
         transactions_info::Transaction data;
-        std::string id;
     };
 
 	class Pagination {

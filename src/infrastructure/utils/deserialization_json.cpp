@@ -781,6 +781,7 @@ namespace xpx_chain_sdk::internal::json::dto {
     fromDto<xpx_chain_sdk::transactions_page::TransactionMeta, dto::transactions_page::TransactionMetaDto>(
             const dto::transactions_page::TransactionMetaDto &dto) {
         xpx_chain_sdk::transactions_page::TransactionMeta transactionMeta;
+        transactionMeta.id = dto.value<"id"_>();
         transactionMeta.hash = dto.value<"hash"_>();
         transactionMeta.height = dto.value<"height"_>();
         transactionMeta.merkleComponentHash = dto.value<"merkleComponentHash"_>();
@@ -793,7 +794,6 @@ namespace xpx_chain_sdk::internal::json::dto {
     fromDto<xpx_chain_sdk::transactions_page::Transaction, dto::transactions_page::TransactionDto>(
             const dto::transactions_page::TransactionDto &dto) {
         xpx_chain_sdk::transactions_page::Transaction transaction;
-        transaction.id = dto.value<"id"_>();
         transaction.data = fromDto<Transaction, TransactionDto>(dto.value<"transaction"_>());
         transaction.meta = fromDto<xpx_chain_sdk::transactions_page::TransactionMeta, dto::transactions_page::TransactionMetaDto>(dto.value<"meta"_>());
         return transaction;

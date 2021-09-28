@@ -15,6 +15,7 @@
 namespace xpx_chain_sdk::internal::json::dto::transactions_page {
 
     using TransactionMetaDto = VariadicStruct<
+            Field<STR_LITERAL("id"), std::string>,
             Field<STR_LITERAL("height"), Uint64>,
             Field<STR_LITERAL("hash"), std::string>,
             Field<STR_LITERAL("merkleComponentHash"), std::string>,
@@ -22,8 +23,7 @@ namespace xpx_chain_sdk::internal::json::dto::transactions_page {
 
     using TransactionDto = VariadicStruct<
             Field<STR_LITERAL("meta"), TransactionMetaDto>,
-            Field<STR_LITERAL("transaction"), TransactionDto>,
-            Field<STR_LITERAL("id"), std::string>>;
+            Field<STR_LITERAL("transaction"), TransactionDto>>;
 
     using PaginationDto = VariadicStruct<
             Field<STR_LITERAL("totalEntries"), uint64_t>,
