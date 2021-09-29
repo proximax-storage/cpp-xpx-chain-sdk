@@ -34,7 +34,7 @@ namespace xpx_chain_sdk {
             }
 
             if (sortDirection.has_value()) {
-                options.insert(std::pair<std::string, std::string>("sortDirection",sortDirection.value()));
+                options.insert(std::pair<std::string, std::string>("order",sortDirection.value()));
             }
 
             if (sortField.has_value()) {
