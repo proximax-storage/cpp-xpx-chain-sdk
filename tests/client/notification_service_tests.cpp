@@ -160,6 +160,7 @@ namespace xpx_chain_sdk::tests {
         timer.async_wait(boost::bind(wait_UnconfirmedAdded, boost::asio::placeholders::error, &count, &isReceived, recipient, &timer));
 
         io.run();
+        EXPECT_TRUE(isReceived);
     }
 
     void wait_UnconfirmedRemoved(const boost::system::error_code&, int* count, bool* isReceived, Address recipient, boost::asio::deadline_timer* timer){
@@ -213,5 +214,6 @@ namespace xpx_chain_sdk::tests {
         timer.async_wait(boost::bind(wait_UnconfirmedRemoved, boost::asio::placeholders::error, &count, &isReceived, recipient, &timer));  
 
         io.run();
+        EXPECT_TRUE(isReceived);
     } 
 }
