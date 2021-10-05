@@ -21,14 +21,14 @@ namespace xpx_chain_sdk::tests {
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
     auto account = getTestAccount(clientData.privateKey);
 
-    void wait_Block(const boost::system::error_code&, int* count, bool* isReceived, boost::asio::deadline_timer* timer){
-        if (*count < 120){
-            ++(*count);
-            if (*isReceived) {
+    void waitBlock(const boost::system::error_code&, int count, bool isReceived, boost::asio::deadline_timer *timer){
+        if (count < 15){
+            ++count;
+            if (isReceived) {
                 client->notifications()->removeBlockNotifiers();
             } else {
                 timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(wait_Block, boost::asio::placeholders::error, count, isReceived, timer));
+                timer->async_wait(boost::bind(waitBlock, boost::asio::placeholders::error, count, isReceived, timer));
             }
         }
     }
@@ -49,20 +49,20 @@ namespace xpx_chain_sdk::tests {
 
         client->notifications()->addBlockNotifiers ({notifier});
 
-        timer.async_wait(boost::bind(wait_Block, boost::asio::placeholders::error, &count, &isReceived, &timer));
+        timer.async_wait(boost::bind(waitBlock, boost::asio::placeholders::error, count, isReceived, &timer));
 
         io.run();
         EXPECT_TRUE(isReceived);
     }
 
-    void wait_ConfirmedAdded(const boost::system::error_code&, int* count, bool* isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (*count < 120){
-            ++(*count);
-            if (*isReceived) {
+    void waitConfirmedAdded(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
+        if (count < 15){
+            ++count;
+            if (isReceived) {
                 client->notifications()->removeConfirmedAddedNotifiers(recipient);
             } else {
                 timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(wait_ConfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer->async_wait(boost::bind(waitConfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
             }
         }
     }
@@ -103,20 +103,20 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
        
-        timer.async_wait(boost::bind(wait_ConfirmedAdded, boost::asio::placeholders::error, &count, &isReceived, recipient, &timer));
+        timer.async_wait(boost::bind(waitConfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, &timer));
     
         io.run();
         EXPECT_TRUE(isReceived);
     }
 
-    void wait_UnconfirmedAdded(const boost::system::error_code&, int* count, bool* isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (*count < 120){
-            ++(*count);
-            if (*isReceived) {
+    void waitUnconfirmedAdded(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
+        if (count < 15){
+            ++count;
+            if (isReceived) {
                 client->notifications()->removeUnconfirmedAddedNotifiers(recipient);
             } else {
                 timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(wait_UnconfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer->async_wait(boost::bind(waitUnconfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
             }
         }
     }
@@ -157,20 +157,20 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedAddedNotifiers (recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait(boost::bind(wait_UnconfirmedAdded, boost::asio::placeholders::error, &count, &isReceived, recipient, &timer));
+        timer.async_wait(boost::bind(waitUnconfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, &timer));
 
         io.run();
         EXPECT_TRUE(isReceived);
     }
 
-    void wait_UnconfirmedRemoved(const boost::system::error_code&, int* count, bool* isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (*count < 120){
-            ++(*count);
-            if (*isReceived) {
+    void waitUnconfirmedRemoved(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
+        if (count < 15){
+            ++count;
+            if (isReceived) {
                 client->notifications()->removeUnconfirmedRemovedNotifiers(recipient);
             } else {
                 timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(wait_UnconfirmedRemoved, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer->async_wait(boost::bind(waitUnconfirmedRemoved, boost::asio::placeholders::error, count, isReceived, recipient, timer));
             }
         }
     }
@@ -211,9 +211,9 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedRemovedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait(boost::bind(wait_UnconfirmedRemoved, boost::asio::placeholders::error, &count, &isReceived, recipient, &timer));  
+        timer.async_wait(boost::bind(waitUnconfirmedRemoved, boost::asio::placeholders::error, count, isReceived, recipient, &timer));  
 
         io.run();
         EXPECT_TRUE(isReceived);
-    } 
+    }  
 }
