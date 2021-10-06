@@ -55,14 +55,17 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(isReceived);
     }
 
-    void waitConfirmedAdded(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (count < 15){
-            ++count;
+    void waitConfirmedAdded(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
             if (isReceived) {
                 client->notifications()->removeConfirmedAddedNotifiers(recipient);
             } else {
-                timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(waitConfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitConfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
             }
         }
     }
@@ -83,10 +86,9 @@ namespace xpx_chain_sdk::tests {
         account->signTransaction(transferTransaction.get());
 
         //Variables
-        int count = 0;
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
 
         //Handler
         ConfirmedAddedNotifier notifier = [&transferTransaction, &isReceived](const TransactionNotification& notification) {
@@ -102,8 +104,11 @@ namespace xpx_chain_sdk::tests {
 
         client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
-       
-        timer.async_wait(boost::bind(waitConfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, &timer));
+
+        timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitConfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+        });
     
         io.run();
         EXPECT_TRUE(isReceived);
