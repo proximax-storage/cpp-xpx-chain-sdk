@@ -21,14 +21,17 @@ namespace xpx_chain_sdk::tests {
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
     auto account = getTestAccount(clientData.privateKey);
 
-    void waitBlock(const boost::system::error_code&, int count, bool isReceived, boost::asio::deadline_timer *timer){
-        if (count < 15){
-            ++count;
+    void waitBlock(int currentIteration, const int maxIterations, const bool& isReceived, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
             if (isReceived) {
                 client->notifications()->removeBlockNotifiers();
             } else {
-                timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(waitBlock, boost::asio::placeholders::error, count, isReceived, timer));
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitBlock(currentIteration, maxIterations, isReceived, timer);
+                });
             }
         }
     }
@@ -39,7 +42,8 @@ namespace xpx_chain_sdk::tests {
         boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
 
         //Variables
-        int count = 0;
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
         
         //Handler
@@ -49,7 +53,10 @@ namespace xpx_chain_sdk::tests {
 
         client->notifications()->addBlockNotifiers ({notifier});
 
-        timer.async_wait(boost::bind(waitBlock, boost::asio::placeholders::error, count, isReceived, &timer));
+        timer.async_wait([currentIteration, &isReceived, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitBlock(currentIteration, maxIterations, isReceived, timer);
+        });
 
         io.run();
         EXPECT_TRUE(isReceived);
@@ -114,14 +121,17 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(isReceived);
     }
 
-    void waitUnconfirmedAdded(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (count < 15){
-            ++count;
+    void waitUnconfirmedAdded(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
             if (isReceived) {
                 client->notifications()->removeUnconfirmedAddedNotifiers(recipient);
             } else {
-                timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(waitUnconfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitUnconfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
             }
         }
     }
@@ -142,10 +152,9 @@ namespace xpx_chain_sdk::tests {
         account->signTransaction(transferTransaction.get());
 
         //Variables
-        int count = 0;
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
         
         //Handler
         UnconfirmedAddedNotifier notifier = [&transferTransaction, &isReceived](const TransactionNotification& notification){
@@ -162,20 +171,25 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedAddedNotifiers (recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait(boost::bind(waitUnconfirmedAdded, boost::asio::placeholders::error, count, isReceived, recipient, &timer));
-
+        timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitUnconfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+        });
         io.run();
         EXPECT_TRUE(isReceived);
     }
 
-    void waitUnconfirmedRemoved(const boost::system::error_code&, int &count, bool &isReceived, Address recipient, boost::asio::deadline_timer* timer){
-        if (count < 15){
-            ++count;
+    void waitUnconfirmedRemoved(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
             if (isReceived) {
                 client->notifications()->removeUnconfirmedRemovedNotifiers(recipient);
             } else {
-                timer->expires_from_now(boost::posix_time::seconds(1));
-                timer->async_wait(boost::bind(waitUnconfirmedRemoved, boost::asio::placeholders::error, count, isReceived, recipient, timer));
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitUnconfirmedRemoved(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
             }
         }
     }
@@ -196,10 +210,9 @@ namespace xpx_chain_sdk::tests {
         account->signTransaction(transferTransaction.get());
 
         //Variables
-        int count = 0;
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
         
         //Handler
         UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const UnconfirmedRemovedTransactionNotification& transaction){
@@ -216,7 +229,10 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedRemovedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait(boost::bind(waitUnconfirmedRemoved, boost::asio::placeholders::error, count, isReceived, recipient, &timer));  
+         timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitUnconfirmedRemoved(currentIteration, maxIterations, isReceived, recipient, timer);
+        });  
 
         io.run();
         EXPECT_TRUE(isReceived);
