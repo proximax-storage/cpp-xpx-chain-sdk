@@ -9,6 +9,7 @@
 #include <string>
 
 #include <boost/asio.hpp>
+#include <boost/bind/bind.hpp>
 #include <chrono>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -16,28 +17,85 @@ namespace xpx_chain_sdk::tests {
 
 #define TEST_CLASS NotificationService
 
-    boost::asio::io_context io;
-    boost::asio::deadline_timer timer(io, boost::posix_time::seconds(60));
-
     ClientData clientData;
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
     auto account = getTestAccount(clientData.privateKey);
 
-    TEST(TEST_CLASS, addConfirmedAddedNotifier) {
+    void waitBlock(int currentIteration, const int maxIterations, const bool& isReceived, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
+            if (isReceived) {
+                client->notifications()->removeBlockNotifiers();
+            } else {
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitBlock(currentIteration, maxIterations, isReceived, timer);
+                });
+            }
+        }
+    }
 
-        //create transaction
+    TEST(TEST_CLASS, addBlockNotifiers){
+        //Timer
+        boost::asio::io_context io;
+        boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
+
+        //Variables
+        const int maxIterations = 15;
+        int currentIteration = 0;
+        bool isReceived = false;
+        
+        //Handler
+        BlockNotifier notifier = [&isReceived](const Block& block){
+            isReceived = true;
+        }; 
+
+        client->notifications()->addBlockNotifiers ({notifier});
+
+        timer.async_wait([currentIteration, &isReceived, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitBlock(currentIteration, maxIterations, isReceived, timer);
+        });
+
+        io.run();
+        EXPECT_TRUE(isReceived);
+    }
+
+    void waitConfirmedAdded(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
+            if (isReceived) {
+                client->notifications()->removeConfirmedAddedNotifiers(recipient);
+            } else {
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitConfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
+            }
+        }
+    }
+    
+    TEST(TEST_CLASS, addConfirmedAddedNotifier) {
+        //Timer
+        boost::asio::io_context io;
+        boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
+
+        //Create transaction
         Address recipient(clientData.publicKeyContainer);
         Mosaic mosaic(-4613020131619586570, 100);
         MosaicContainer mosaics{ mosaic };
         RawBuffer message("test message");
 
-        //sign transaction
+        //Sign transaction
         std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
         account->signTransaction(transferTransaction.get());
 
+        //Variables
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
 
         //Handler
         ConfirmedAddedNotifier notifier = [&transferTransaction, &isReceived](const TransactionNotification& notification) {
@@ -53,29 +111,50 @@ namespace xpx_chain_sdk::tests {
 
         client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
-       
-        timer.async_wait([&isReceived, &recipient] ( ... ) {
-            client->notifications()->removeConfirmedAddedNotifiers(recipient);
-            EXPECT_TRUE(isReceived);
+
+        timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitConfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
         });
     
         io.run();
+        EXPECT_TRUE(isReceived);
+    }
+
+    void waitUnconfirmedAdded(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
+            if (isReceived) {
+                client->notifications()->removeUnconfirmedAddedNotifiers(recipient);
+            } else {
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitUnconfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
+            }
+        }
     }
 
     TEST(TEST_CLASS, addUnconfirmedAddedNotifiers){
-        //create transaction
+        //Timer
+        boost::asio::io_context io;
+        boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
+
+        //Create transaction
         Address recipient(clientData.publicKeyContainer);
         Mosaic mosaic(-4613020131619586570, 100);
         MosaicContainer mosaics{ mosaic };
         RawBuffer message("test message");
 
-        //sign transaction
+        //Sign transaction
         std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
         account->signTransaction(transferTransaction.get());
 
+        //Variables
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
         
         //Handler
         UnconfirmedAddedNotifier notifier = [&transferTransaction, &isReceived](const TransactionNotification& notification){
@@ -92,28 +171,48 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedAddedNotifiers (recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait([&isReceived, &recipient] ( ... ) {
-            client->notifications()->removeUnconfirmedAddedNotifiers(recipient);
-            EXPECT_TRUE(isReceived);
+        timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitUnconfirmedAdded(currentIteration, maxIterations, isReceived, recipient, timer);
         });
-
         io.run();
+        EXPECT_TRUE(isReceived);
+    }
+
+    void waitUnconfirmedRemoved(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+        if (currentIteration < maxIterations){
+            ++currentIteration;
+            if (isReceived) {
+                client->notifications()->removeUnconfirmedRemovedNotifiers(recipient);
+            } else {
+                timer.expires_from_now(boost::posix_time::seconds(1));
+                timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+                    EXPECT_FALSE(errorCode.value());
+                    waitUnconfirmedRemoved(currentIteration, maxIterations, isReceived, recipient, timer);
+                });
+            }
+        }
     }
 
    TEST(TEST_CLASS, addUnconfirmedRemovedNotifiers){
-        //create transaction
+        //Timer
+        boost::asio::io_context io;
+        boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
+
+        //Create transaction
         Address recipient(clientData.publicKeyContainer);
         Mosaic mosaic(-4613020131619586570, 100);
         MosaicContainer mosaics{ mosaic };
         RawBuffer message("test message");
 
-        //sign transaction
+        //Sign transaction
         std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
         account->signTransaction(transferTransaction.get());
 
+        //Variables
+        const int maxIterations = 15;
+        int currentIteration = 0;
         bool isReceived = false;
-        std::mutex receivedMutex;
-        std::unique_lock<std::mutex> lock(receivedMutex);
         
         //Handler
         UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const UnconfirmedRemovedTransactionNotification& transaction){
@@ -130,11 +229,12 @@ namespace xpx_chain_sdk::tests {
         client->notifications()->addUnconfirmedRemovedNotifiers(recipient, {notifier});
         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
-        timer.async_wait([&isReceived, &recipient] ( ... ) {
-            client->notifications()->removeUnconfirmedRemovedNotifiers(recipient);
-            EXPECT_TRUE(isReceived);
-        });      
+         timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+            EXPECT_FALSE(errorCode.value());
+            waitUnconfirmedRemoved(currentIteration, maxIterations, isReceived, recipient, timer);
+        });  
 
         io.run();
-    }   
+        EXPECT_TRUE(isReceived);
+    }  
 }
