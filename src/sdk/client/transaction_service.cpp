@@ -119,22 +119,24 @@ namespace xpx_chain_sdk {
 		return true;
 	}
 
-	bool TransactionService::announceAggregateBoundedTransaction(const std::vector<uint8_t > &payload) {
+bool TransactionService::announceAggregateBoundedTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+        requestJson = R"({"payload":")" + payloadStr + "\"}";
+        std::cout << requestJson << std::endl;
 
-		std::string path = "transaction/partial";
+		std::string path = "transactions/partial";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
-
+		
 		try {
 			internal::network::performHTTPRequest(_context, builder.getRequestParams());
 		}
 		catch(std::exception& e) {
+            std::cout << e.what() << std::endl;
 			throw e;
 		}
 		return true;
