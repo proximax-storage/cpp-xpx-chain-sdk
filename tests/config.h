@@ -37,14 +37,13 @@ namespace xpx_chain_sdk::tests {
                 [&privateKey](xpx_chain_sdk::PrivateKeySupplierReason reason,
                               xpx_chain_sdk::PrivateKeySupplierParam param) {
                     xpx_chain_sdk::Key key;
-                    if (reason == xpx_chain_sdk::PrivateKeySupplierReason::Transaction_Signing) {
+                    if (reason == xpx_chain_sdk::PrivateKeySupplierReason::Transaction_Signing ||
+                        reason == xpx_chain_sdk::PrivateKeySupplierReason::Aggregate_Transaction_Cosigning) {
                         xpx_chain_sdk::ParseHexStringIntoContainer(privateKey.c_str(),
                                                                    privateKey.size(), key);
                     }
-
                     return xpx_chain_sdk::PrivateKey(key.data(), key.size());
                 });
-
         return account;
     }
 }
