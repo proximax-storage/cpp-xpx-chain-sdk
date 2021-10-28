@@ -240,7 +240,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("capacity"),				Amount>>;
+				Field<STR_LITERAL("capacity"),				Amount>,
+				Field<STR_LITERAL("blskey"),				BLSPublicKey>>;
+
+		template<typename TBase>
+		using TReplicatorOffboardingTransactionDto = VariadicStruct<
+				TBase;
 
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
@@ -310,4 +315,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;
+
+		using ReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<TransactionDto>;
+		using EmbeddedReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<EmbeddedTransactionDto>;
 	}

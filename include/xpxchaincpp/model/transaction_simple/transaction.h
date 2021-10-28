@@ -242,6 +242,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+        BLSPublicKey blskey;
+
+    };
+
+    template<typename TBase>
+    class TReplicatorOffboardingTransaction: public TBase {
+    public:
 
     };
 
@@ -310,6 +317,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
+    using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
 }}
 
 

@@ -24,16 +24,22 @@ namespace xpx_chain_sdk {
 		template<typename... TArgs>
 		explicit TReplicatorOnboardingTransaction(
 				const Amount& capacity,
+				const BLSPublicKey& blskey,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
-			capacity_(capacity)
+			TBase(TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...),
+			capacity_(capacity),
+			blskey_(blskey)
 		{ }
 
 		/// Returns capacity that the replicator is willing to contribute.
 		const Amount& capacity() const;
 
+		/// Returns blskey of the replicator.
+		const BLSPublicKey& blskey() const;
+
 	private:
 		Amount capacity_;
+		BLSPublicKey blskey_;
 	};
 
 	extern template class TReplicatorOnboardingTransaction<Transaction>;
@@ -47,6 +53,7 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<ReplicatorOnboardingTransaction>
 	CreateReplicatorOnboardingTransaction(const Amount& capacity,
+							  const BLSPublicKey& blskey,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,
 	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
@@ -57,6 +64,7 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
 	CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
+									  const BLSPublicKey& blskey,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

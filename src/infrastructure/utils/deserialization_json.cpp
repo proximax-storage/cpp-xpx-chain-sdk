@@ -363,6 +363,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+			case TransactionType::Replicator_Offboarding: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorOffboardingTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<ReplicatorOffboardingTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1434,9 +1446,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.capacity = dto.value<"capacity"_>();
+		transaction.blskey = dto.value<"blskey"_>();
 
 		return transaction;
 	}
+
+	template<>
+	ReplicatorOffboardingTransaction fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto >(const ReplicatorOffboardingTransactionDto & dto) {
+		ReplicatorOffboardingTransaction transaction;
+
+		return transaction;
+	}
+
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };

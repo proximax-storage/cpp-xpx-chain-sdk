@@ -13,6 +13,12 @@ namespace xpx_chain_sdk {
 		return capacity_;
 	}
 
+	template<typename TBase>
+	const BLSPublicKey& TReplicatorOnboardingTransaction<TBase>::blskey() const
+	{
+		return blskey_;
+	}
+
 	template class TReplicatorOnboardingTransaction<Transaction>;
 	template class TReplicatorOnboardingTransaction<EmbeddedTransaction>;
 }

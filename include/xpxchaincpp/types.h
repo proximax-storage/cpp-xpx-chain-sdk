@@ -21,6 +21,7 @@ namespace xpx_chain_sdk {
 	constexpr size_t Signature_Size = 64;
 	constexpr size_t Address_Size = 25;
 	constexpr size_t Address_Encoded_Size = 40;
+	constexpr size_t BLS_Public_Key_Size = 48;
 	
 	using Hash160 = HashableArray<uint8_t, Hash160_Size>;
 	using Hash256 = HashableArray<uint8_t, Hash256_Size>;
@@ -28,6 +29,7 @@ namespace xpx_chain_sdk {
 	using Key = HashableArray<uint8_t, Key_Size>;
 	using Signature = HashableArray<uint8_t, Signature_Size>;
 	using AddressData = HashableArray<uint8_t, Address_Size>;
+	using BLSPublicKey = HashableArray<uint8_t, BLS_Public_Key_Size>;
 	
 	using MosaicId = uint64_t;
 	using Amount = uint64_t;
@@ -37,7 +39,7 @@ namespace xpx_chain_sdk {
 	
 	using NamespaceId = int64_t;
 	constexpr NamespaceId Namespace_Base_Id = 0;
-	
+
 	/// Blockchain network identifier.
 	enum class NetworkIdentifier: uint8_t {
 		Unknown = 0x00,

@@ -35,6 +35,7 @@ namespace xpx_chain_sdk {
 		Data_Modification_Approval = 0x4462,
 		Data_Modification_Cancel = 0x4562,
 		Replicator_Onboarding = 0x4662,
+		Replicator_Offboarding = 0x4762
 	};
 	
 	/// Returns transaction name by \a type.
