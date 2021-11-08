@@ -22,9 +22,9 @@ namespace xpx_chain_sdk {
 	public:
 		/// Creates download transaction.
 		template<typename... TArgs>
-		explicit TReplicatorOnboardingTransaction(
+		explicit TReplicatorOffboardingTransaction(
 		        TArgs&&... args):
-			TBase(TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...)
 		{ }
 	};
 	extern template class TReplicatorOffboardingTransaction<Transaction>;

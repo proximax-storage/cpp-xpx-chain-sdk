@@ -245,7 +245,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		template<typename TBase>
 		using TReplicatorOffboardingTransactionDto = VariadicStruct<
-				TBase;
+				TBase>;
 
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;

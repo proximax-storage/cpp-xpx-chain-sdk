@@ -353,7 +353,7 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"capacity"_>()), dto.template value<"blskey"_>());
+				dto.template value<"capacity"_>(), dto.template value<"blskey"_>());
 		}
 
 		template<
@@ -364,7 +364,7 @@ namespace xpx_chain_sdk {
 		std::unique_ptr<TImpl> CreateReplicatorOffboardingTransaction(const TDto& dto, RawBuffer binaryData)
 		{
 			return CreateTransaction<TImpl>(
-				dto, binaryData;
+				dto, binaryData);
 		}
 		
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)

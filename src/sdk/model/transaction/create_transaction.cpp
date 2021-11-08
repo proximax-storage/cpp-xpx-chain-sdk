@@ -1614,7 +1614,7 @@ namespace xpx_chain_sdk {
 	{
 		EmbeddedReplicatorOnboardingTransactionDTO dto;
 		InitReplicatorOnboardingTransactionDTO(dto, capacity, blskey, signer, networkId);
-		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto);
+		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto, capacity, blskey);
 	}
 
 	std::unique_ptr<ReplicatorOffboardingTransaction>
