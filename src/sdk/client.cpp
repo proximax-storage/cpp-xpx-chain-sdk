@@ -10,6 +10,7 @@
 #include <xpxchaincpp/client/namespace_service.h>
 #include <xpxchaincpp/client/network_service.h>
 #include <xpxchaincpp/client/account_service.h>
+#include <xpxchaincpp/client/storagev2_service.h>
 
 using namespace xpx_chain_sdk;
 
@@ -24,6 +25,7 @@ public:
         _notification   = std::make_shared<NotificationService>(config, _context);
         _network        = std::make_shared<NetworkService>(config, _context);
         _transaction    = std::make_shared<TransactionService>(config, _context);
+        _storagev2    	= std::make_shared<StorageV2Service>(config, _context);
 	}
 
 	std::shared_ptr<AccountService> account() const override  {
@@ -53,6 +55,10 @@ public:
 	std::shared_ptr<TransactionService> transactions() const override {
 		return _transaction;
 	}
+	
+	std::shared_ptr<StorageV2Service> storagev2() const override {
+		return _storagev2;
+	}
 
 private:
 	std::shared_ptr<Config> _config;
@@ -65,6 +71,7 @@ private:
     std::shared_ptr<NotificationService> _notification;
 	std::shared_ptr<NetworkService> _network;
 	std::shared_ptr<TransactionService> _transaction;
+	std::shared_ptr<StorageV2Service> _storagev2;
 };
 
 namespace xpx_chain_sdk {

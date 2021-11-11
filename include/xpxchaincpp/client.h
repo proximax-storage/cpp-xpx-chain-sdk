@@ -13,6 +13,7 @@
 #include <xpxchaincpp/client/account_service.h>
 #include <xpxchaincpp/client/network_service.h>
 #include <xpxchaincpp/client/transaction_service.h>
+#include <xpxchaincpp/client/storagev2_service.h>
 
 #include <memory>
 
@@ -42,6 +43,7 @@ namespace xpx_chain_sdk {
         virtual std::shared_ptr<NotificationService> notifications() const = 0;
         virtual std::shared_ptr<NetworkService> network() const = 0;
         virtual std::shared_ptr<TransactionService> transactions() const = 0;
+        virtual std::shared_ptr<StorageV2Service> storagev2() const = 0;
         virtual ~IClient() = default;
 	};
 

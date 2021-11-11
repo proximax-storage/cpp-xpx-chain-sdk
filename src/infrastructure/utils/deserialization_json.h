@@ -26,6 +26,8 @@
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
+#include <infrastructure/json/dto/bcdrive_dto.h>
+#include <infrastructure/json/dto/replicator_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -56,6 +58,8 @@
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
+#include <xpxchaincpp/model/storagev2/bcdrive_info.h>
+#include <xpxchaincpp/model/storagev2/replicator_info.h>
 
 
 
@@ -181,6 +185,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
         template<>
         NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto);
+        
+		template<>
+        BcDrive fromDto<BcDrive, BcDriveDto> (const BcDriveDto& dto);
+		
+		template<>
+        Replicator fromDto<Replicator, ReplicatorDto> (const ReplicatorDto& dto);
 
         /// Transaction Meta
 
