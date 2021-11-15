@@ -15,7 +15,7 @@
 
 namespace xpx_chain_sdk::internal::json::dto {
 
-    using BcDriveInfoDto = VariadicStruct<
+    using DriveInfoDto = VariadicStruct<
             Field<STR_LITERAL("drive"), std::string>,
             Field<STR_LITERAL("lastApprovedDataModificationId"), std::string>,
             Field<STR_LITERAL("dataModificationIdIsValid"), bool>,
@@ -26,6 +26,6 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("version"), Uint64>,
             Field<STR_LITERAL("capacity"), Uint64>,
             Field<STR_LITERAL("blskey"), std::string>,
-            Field<STR_LITERAL("drives"), std::vector<BcDriveInfoDto> > >;
+            Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> > >;
     
 }

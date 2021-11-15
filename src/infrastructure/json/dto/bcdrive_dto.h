@@ -22,9 +22,13 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("downloadDataCdi"), std::string>,
             Field<STR_LITERAL("uploadSize"), Uint64> >;
     
+    using ActiveDataModificationsDto = std::vector<ActiveDataModificationDto>;
+
     using CompletedDataModificationDto = VariadicStruct<
-            Field<STR_LITERAL("activeDataModification"), std::vector<ActiveDataModificationDto> >,
+            Field<STR_LITERAL("activeDataModification"), ActiveDataModificationDto >,
             Field<STR_LITERAL("state"), DataModificationState> >;
+
+    using CompletedDataModificationsDto = std::vector<CompletedDataModificationDto>;
 
     using BcDriveDto = VariadicStruct<
             Field<STR_LITERAL("driveKey"), std::string>,
@@ -34,6 +38,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("usedSize"), Uint64>,
             Field<STR_LITERAL("metaFilesSize"), Uint64>,
             Field<STR_LITERAL("replicatorCount"), Uint64>,
-            Field<STR_LITERAL("activeDataModifications"), std::vector<ActiveDataModificationDto> >,
-            Field<STR_LITERAL("completedDataModifications"), std::vector<CompletedDataModificationDto> > >;
+            Field<STR_LITERAL("activeDataModifications"), ActiveDataModificationsDto >,
+            Field<STR_LITERAL("completedDataModifications"), CompletedDataModificationsDto > >;
+
 }

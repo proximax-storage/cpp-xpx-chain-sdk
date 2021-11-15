@@ -742,6 +742,85 @@ namespace xpx_chain_sdk::internal::json::dto {
         return {fromDto<NetworkVersionData, NetworkVersionDataDto>(dto.value<"blockchainUpgrade"_>())};
     }
 
+	//StorageV2
+	template<>
+    ActiveDataModification fromDto<ActiveDataModification, ActiveDataModificationDto>(const ActiveDataModificationDto& dto) {
+        ActiveDataModification activeDataModification;
+        activeDataModification.id = dto.value<"id"_>();
+        activeDataModification.owner = dto.value<"owner"_>();
+        activeDataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+        activeDataModification.uploadSize = dto.value<"uploadSize"_>();
+        return activeDataModification;
+    }
+
+	template<>
+    ActiveDataModifications fromDto<ActiveDataModifications, ActiveDataModificationsDto>(const ActiveDataModificationsDto& dto) {
+        ActiveDataModifications activeDataModifications;
+        for(auto & adm : dto) {
+            activeDataModifications.active.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
+        }
+        return activeDataModifications;
+    }
+
+	template<>
+    CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto& dto) {
+        CompletedDataModification completedDataModification;
+        completedDataModification.activeDataModification = fromDto<ActiveDataModification, ActiveDataModificationDto>(dto.value<"activeDataModification"_>());
+        completedDataModification.State = dto.value<"state"_>();
+        return completedDataModification;
+    }
+
+	template<>
+    CompletedDataModifications fromDto<CompletedDataModifications, CompletedDataModificationsDto>(const CompletedDataModificationsDto& dto) {
+        CompletedDataModifications completedDataModifications;
+        for(auto & cdm : dto) {
+            completedDataModifications.complete.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
+        }
+        return completedDataModifications;
+    }
+
+	template<>
+    BcDrive fromDto<BcDrive, BcDriveDto> (const BcDriveDto& dto) {
+        BcDrive bcDrive;
+        bcDrive.bcDriveAccount = dto.value<"driveKey"_>();
+        bcDrive.owner = dto.value<"owner"_>();
+        bcDrive.rootHash = dto.value<"rootHash"_>();
+        bcDrive.size = dto.value<"size"_>();
+        bcDrive.usedSize = dto.value<"usedSize"_>();
+        bcDrive.metaFilesSize = dto.value<"metaFilesSize"_>();
+        bcDrive.replicatorCount = dto.value<"replicatorCount"_>();
+		for(auto& adm : dto.value<"activeDataModifications"_>()) {
+            bcDrive.activeDataModifications.active.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
+        }
+        for(auto& cdm : dto.value<"activeDataModifications"_>()) {
+            bcDrive.completedDataModifications.complete.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
+        }
+        return bcDrive;
+    }
+
+	template<>
+    DriveInfo fromDto<DriveInfo, DriveInfoDto>(const DriveInfoDto& dto) {
+        DriveInfo driveInfo;
+        driveInfo.drive = dto.value<"drive"_>();
+        driveInfo.LastApprovedDataModificationId = dto.value<"lastApprovedDataModificationId"_>();
+        driveInfo.DataModificationIdIsValid = dto.value<"dataModificationIdIsValid"_>();
+        driveInfo.InitialDownloadWork = dto.value<"initialDownloadWork"_>();
+        return driveInfo;
+    }
+
+	template<>
+    Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto& dto) {
+        Replicator replicator;
+        replicator.replicatorKey = dto.value<"replicatorKey"_>();
+        replicator.version = dto.value<"version"_>();
+        replicator.capacity = dto.value<"capacity"_>();
+        replicator.blskey = dto.value<"blskey"_>();
+		for(auto& drive : dto.value<"drives"_>()) {
+            replicator.drives.push_back(fromDto<DriveInfo, DriveInfoDto>(drive));
+        }
+        return replicator;
+    }
+	
 	/// Transaction Meta
 
 	template<>

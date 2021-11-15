@@ -18,32 +18,29 @@ namespace xpx_chain_sdk {
 		Cancelled
 	};
 
-    struct ActiveDataModification {
-		/// Id of data modification.
+    class ActiveDataModification {
+	public:
 		std::string id;
-
-		/// Public key of the drive owner.
 		std::string owner;
-
-		/// CDI of download data.
 		std::string downloadDataCdi;
-
-		/// Upload size of data.
 		uint64_t uploadSize;
 	};
 
-    struct CompletedDataModification : ActiveDataModification {
-		CompletedDataModification(const ActiveDataModification& modification, DataModificationState state)
-			: ActiveDataModification(modification)
-			, State(state)
-		{}
-
-		/// Completion state.
+    class CompletedDataModification {
+	public:
+		ActiveDataModification activeDataModification;
 		DataModificationState State;
 	};
 
-    using ActiveDataModifications = std::vector<ActiveDataModification>;
-    using CompletedDataModifications = std::vector<CompletedDataModification>;
+    class ActiveDataModifications {
+	public:
+		std::vector<ActiveDataModification> active;
+	};
+
+	class CompletedDataModifications {
+	public:
+		std::vector<CompletedDataModification> complete;
+	};
 
     class BcDrive {
     public:

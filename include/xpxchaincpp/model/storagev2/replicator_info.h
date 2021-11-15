@@ -11,20 +11,12 @@
 
 namespace xpx_chain_sdk {
 
-    struct DriveInfo {
-		/// Identifier of the most recent data modification of the drive approved by the replicator.
+    class DriveInfo {
+	public:
+		std::string drive;
 		std::string LastApprovedDataModificationId;
-
-		/// Indicates if \p LastApprovedDataModificationId is an identifier of an existing data modification.
-		/// Can be \b false only if the drive had no approved data modifications when the replicator joined it.
-		/// Set to \b true after replicator’s first data modification approval.
 		bool DataModificationIdIsValid;
-
-		/// Used drive size at the time of the replicator’s onboarding excluding metafiles size.
-		/// Set to \p 0 after replicator’s first data modification approval.
 		uint64_t InitialDownloadWork;
-
-        uint16_t index;
 	};
 
     class Replicator {
@@ -32,7 +24,7 @@ namespace xpx_chain_sdk {
         std::string replicatorKey;
 		int32_t version;
 		uint64_t capacity;
-		BLSPublicKey blskey;
+		std::string blskey;
 		std::vector<DriveInfo> drives;
     };
 }
