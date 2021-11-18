@@ -289,6 +289,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		ReplicatorOffboardingTransaction fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto >(const ReplicatorOffboardingTransactionDto & dto);
 
+		template<>
+		DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto);
+
 		/// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
@@ -357,6 +360,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedReplicatorOffboardingTransaction fromDto<EmbeddedReplicatorOffboardingTransaction, EmbeddedReplicatorOffboardingTransactionDto >(const EmbeddedReplicatorOffboardingTransactionDto & dto);
+
+		template<>
+		EmbeddedDriveClosureTransaction fromDto<EmbeddedDriveClosureTransaction, EmbeddedDriveClosureTransactionDto >(const EmbeddedDriveClosureTransactionDto & dto);
 
 		/// Account Property Transactions
 		template<>

@@ -31,6 +31,7 @@
 #include <xpxchaincpp/model/transaction/data_modification_cancel_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_offboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/drive_closure_transaction.h>
 #include <xpxchaincpp/model/transaction/transaction_signing.h>
 #include <xpxchaincpp/model/storagev2/bcdrive_info.h>
 #include <xpxchaincpp/model/storagev2/replicator_info.h>

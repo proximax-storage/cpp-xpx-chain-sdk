@@ -375,6 +375,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+			case TransactionType::Drive_Closure: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DriveClosureTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DriveClosureTransaction, DriveClosureTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DriveClosureTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1537,6 +1549,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+	template<>
+	DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto) {
+		DriveClosureTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+
+		return transaction;
+	}
+
 
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {

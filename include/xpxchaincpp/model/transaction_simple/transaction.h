@@ -253,6 +253,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     };
 
+    template<typename TBase>
+    class TDriveClosureTransaction: public TBase {
+    public:
+		Key driveKey;
+
+    };
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -321,6 +328,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
     using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
+
+    using DriveClosureTransaction = TDriveClosureTransaction <Transaction>;
+    using EmbeddedDriveClosureTransaction = TDriveClosureTransaction<EmbeddedTransaction>;
 }}
 
 

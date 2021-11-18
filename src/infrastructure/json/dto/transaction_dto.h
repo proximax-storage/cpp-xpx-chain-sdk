@@ -248,6 +248,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		using TReplicatorOffboardingTransactionDto = VariadicStruct<
 				TBase>;
 
+		template<typename TBase>
+		using TDriveClosureTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("driveKey"),				Key>>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -319,4 +324,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using ReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<EmbeddedTransactionDto>;
+
+		using DriveClosureTransactionDto = TDriveClosureTransactionDto<TransactionDto>;
+		using EmbeddedDriveClosureTransactionDto = TDriveClosureTransactionDto<EmbeddedTransactionDto>;
 	}

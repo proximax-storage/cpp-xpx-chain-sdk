@@ -366,6 +366,18 @@ namespace xpx_chain_sdk {
 			return CreateTransaction<TImpl>(
 				dto, binaryData);
 		}
+
+		template<
+			typename TDto,
+			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+			                                    DriveClosureTransactionImpl,
+			                                    EmbeddedDriveClosureTransactionImpl>>
+		std::unique_ptr<TImpl> CreateDriveClosureTransaction(const TDto& dto, RawBuffer binaryData)
+		{
+			return CreateTransaction<TImpl>(
+				dto, binaryData,
+				dto.template value<"driveKey"_>());
+		}
 		
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
 		{
@@ -613,6 +625,17 @@ namespace xpx_chain_sdk {
 
 						if (result) {
 							embeddedTransaction = CreateReplicatorOffboardingTransaction(dto, RawBuffer{});
+						}
+
+						break;
+					}
+				case TransactionType::Drive_Closure:
+					{
+						EmbeddedDriveClosureTransactionDTO dto;
+						result = Parser::Read(dto, data, startPos);
+
+						if (result) {
+							embeddedTransaction = CreateDriveClosureTransaction(dto, RawBuffer{});
 						}
 
 						break;
@@ -940,6 +963,18 @@ namespace xpx_chain_sdk {
 
 				if (binaryData.size() == dto.value<"size"_>()) {
 					transaction = CreateReplicatorOffboardingTransaction(dto, binaryData);
+				}
+
+				break;
+			}
+		case TransactionType::Drive_Closure:
+			{
+				DriveClosureTransactionDTO dto;
+				parseResult = Parser::Read(dto, data);
+				RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+				if (binaryData.size() == dto.value<"size"_>()) {
+					transaction = CreateDriveClosureTransaction(dto, binaryData);
 				}
 
 				break;

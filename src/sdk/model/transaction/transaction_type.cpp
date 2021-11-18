@@ -34,6 +34,7 @@ namespace xpx_chain_sdk {
 		case TransactionType::Data_Modification_Cancel:		return "data modification cancel";
 		case TransactionType::Replicator_Onboarding:		return "replicator onboarding";
 		case TransactionType::Replicator_Offboarding:		return "replicator offboarding";
+		case TransactionType::Drive_Closure:				return "drive closure";
 		default: break;
 		}
 		
@@ -67,6 +68,7 @@ namespace xpx_chain_sdk {
 		case TransactionType::Data_Modification_Cancel:		return 1;
 		case TransactionType::Replicator_Onboarding:		return 1;
 		case TransactionType::Replicator_Offboarding:		return 1;
+		case TransactionType::Drive_Closure:				return 1;
 		default: break;
 		}
 		

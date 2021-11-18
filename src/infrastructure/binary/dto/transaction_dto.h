@@ -230,6 +230,11 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TReplicatorOffboardingTransactionDTO = VariadicStruct<
 		TBase>;
+	
+	template<typename TBase>
+	using TDriveClosureTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("driveKey"),				Key>>;
 
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
@@ -293,4 +298,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using ReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<EmbeddedTransactionDTO>;
+
+	using DriveClosureTransactionDTO = TDriveClosureTransactionDTO<TransactionDTO>;
+	using EmbeddedDriveClosureTransactionDTO = TDriveClosureTransactionDTO<EmbeddedTransactionDTO>;
 }}}
