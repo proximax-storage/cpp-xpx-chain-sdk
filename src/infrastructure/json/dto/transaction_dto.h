@@ -206,6 +206,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		using TPrepareBcDriveTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("driveSize"),				uint64_t>,
+				Field<STR_LITERAL("verificationFeeAmount"),	Amount>,
 				Field<STR_LITERAL("replicatorCount"),		uint16_t> >;
 
 		template<typename TBase>

@@ -24,21 +24,27 @@ namespace xpx_chain_sdk {
 		template<typename... TArgs>
 		explicit TPrepareBcDriveTransaction(
 				uint64_t driveSize,
+				Amount verificationFeeAmount,
 				uint16_t replicatorCount,
 		        TArgs&&... args):
 			TBase(TransactionType::Prepare_Bc_Drive, std::forward<TArgs>(args)...),
 			driveSize_(driveSize),
+			verificationFeeAmount_(verificationFeeAmount),
 			replicatorCount_(replicatorCount)
 		{ }
 		
 		/// Returns drive size.
 		uint64_t driveSize() const;
 
+		// Return verification fee.
+		Amount verificationFeeAmount() const;
+
 		/// Returns replicator count.
 		uint16_t replicatorCount() const;
 		
 	private:
 		uint64_t driveSize_;
+		Amount verificationFeeAmount_;
 		uint16_t replicatorCount_;
 	};
 	
@@ -53,6 +59,7 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransaction(uint64_t driveSize,
+							  Amount verificationFeeAmount,
 	                          uint16_t replicatorCount,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,
@@ -64,6 +71,7 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedPrepareBcDriveTransaction>
 	CreateEmbeddedPrepareBcDriveTransaction(uint64_t driveSize,
+									  Amount verificationFeeAmount,
 	                                  uint16_t replicatorCount,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);

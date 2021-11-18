@@ -292,7 +292,7 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"driveSize"_>(), dto.template value<"replicatorCount"_>());
+				dto.template value<"driveSize"_>(), dto.template value<"verificationFeeAmount"_>(), dto.template value<"replicatorCount"_>());
 		}
 
 		template<

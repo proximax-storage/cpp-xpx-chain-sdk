@@ -1460,6 +1460,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.driveSize = dto.value<"driveSize"_>();
+		transaction.verificationFeeAmount = dto.value<"verificationFeeAmount"_>();
 		transaction.replicatorCount = dto.value<"replicatorCount"_>();
 
 		return transaction;

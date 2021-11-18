@@ -284,6 +284,7 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
+								  Amount verificationFeeAmount,
 	                              uint16_t replicatorCount,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,

@@ -188,7 +188,8 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TPrepareBcDriveTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("driveSize"),			uint64_t>,
+		Field<STR_LITERAL("driveSize"),				uint64_t>,
+		Field<STR_LITERAL("verificationFeeAmount"),			Amount>,
 		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
 	
 	template<typename TBase>

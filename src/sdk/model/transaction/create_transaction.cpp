@@ -539,10 +539,12 @@ namespace xpx_chain_sdk { namespace internal {
 		template<typename TDto, typename... TArgs>
 		void InitPrepareBcDriveTransactionDTO(TDto& dto,
 										uint64_t driveSize,
+										Amount verificationFeeAmount,
 										uint16_t replicatorCount,
 		                                TArgs&&... args)
 		{
 			dto.template set<"driveSize"_>(driveSize);
+			dto.template set<"verificationFeeAmount"_>(verificationFeeAmount);
 			dto.template set<"replicatorCount"_>(replicatorCount);
 
 			InitTransactionDTO(dto, TransactionType::Prepare_Bc_Drive, std::forward<TArgs>(args)...);
@@ -942,6 +944,7 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
+								  Amount verificationFeeAmount,
 	                              uint16_t replicatorCount,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
@@ -952,10 +955,10 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		PrepareBcDriveTransactionDTO dto;
 		InitPrepareBcDriveTransactionDTO(
-			dto, driveSize, replicatorCount, maxFee, deadline, networkId, signer, signature);
+			dto, driveSize, verificationFeeAmount, replicatorCount, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<PrepareBcDriveTransactionImpl>(
-			dto, signer, signature, info, driveSize, replicatorCount);
+			dto, signer, signature, info, driveSize, verificationFeeAmount, replicatorCount);
 	}
 
 	std::unique_ptr<DataModificationTransaction>
@@ -1483,23 +1486,25 @@ namespace xpx_chain_sdk {
 
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransaction(uint64_t driveSize,
+							  Amount verificationFeeAmount,
 	                          uint16_t replicatorCount,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
 	                          std::optional<NetworkIdentifier> networkId)
 	{
-		return CreatePrepareBcDriveTransactionImpl(driveSize, replicatorCount, maxFee, deadline, networkId);
+		return CreatePrepareBcDriveTransactionImpl(driveSize, verificationFeeAmount, replicatorCount, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedPrepareBcDriveTransaction>
 	CreateEmbeddedPrepareBcDriveTransaction(uint64_t driveSize,
+									  Amount verificationFeeAmount,
 	                                  uint16_t replicatorCount,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedPrepareBcDriveTransactionDTO dto;
-		InitPrepareBcDriveTransactionDTO(dto, driveSize, replicatorCount, signer, networkId);
-		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, replicatorCount);
+		InitPrepareBcDriveTransactionDTO(dto, driveSize, verificationFeeAmount, replicatorCount, signer, networkId);
+		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, verificationFeeAmount, replicatorCount);
 	}
 
 	std::unique_ptr<DataModificationTransaction>

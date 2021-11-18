@@ -197,6 +197,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TPrepareBcDriveTransaction: public TBase {
     public:
 		uint64_t driveSize;
+        Amount verificationFeeAmount;
         uint16_t replicatorCount;
 
     };
