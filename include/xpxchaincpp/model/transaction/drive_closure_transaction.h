@@ -52,7 +52,7 @@ namespace xpx_chain_sdk {
 	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
 
 
-	/// Creates replicator onboarding transaction.
+	/// Creates drive closure transaction.
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedDriveClosureTransaction>

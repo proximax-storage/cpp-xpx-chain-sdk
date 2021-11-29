@@ -626,6 +626,16 @@ namespace xpx_chain_sdk { namespace internal {
 		{
 			InitTransactionDTO(dto, TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...);
 		}
+
+		template<typename TDto, typename... TArgs>
+		void InitDriveClosureTransactionDTO(TDto& dto,
+										const Key& driveKey,
+		                                TArgs&&... args)
+		{
+			dto.template set<"driveKey"_>(driveKey);
+
+			InitTransactionDTO(dto, TransactionType::Drive_Closure, std::forward<TArgs>(args)...);
+		}
 	}
 	
 	
@@ -1070,6 +1080,23 @@ namespace xpx_chain_sdk { namespace internal {
 
 		return CreateTransaction<ReplicatorOffboardingTransactionImpl>(
 			dto, signer, signature, info);
+	}
+
+	std::unique_ptr<DriveClosureTransaction>
+	CreateDriveClosureTransactionImpl(const Key& driveKey,
+	                              std::optional<Amount> maxFee,
+	                              std::optional<NetworkDuration> deadline,
+	                              std::optional<NetworkIdentifier> networkId,
+	                              const std::optional<Key>& signer,
+	                              const std::optional<Signature>& signature,
+	                              const std::optional<TransactionInfo>& info)
+	{
+		DriveClosureTransactionDTO dto;
+		InitDriveClosureTransactionDTO(
+			dto, driveKey, maxFee, deadline, networkId, signer, signature);
+
+		return CreateTransaction<DriveClosureTransactionImpl>(
+			dto, signer, signature, info, driveKey);
 	}
 }}
 
@@ -1637,5 +1664,24 @@ namespace xpx_chain_sdk {
 		EmbeddedReplicatorOffboardingTransactionDTO dto;
 		InitReplicatorOffboardingTransactionDTO(dto, signer, networkId);
 		return CreateTransaction<EmbeddedReplicatorOffboardingTransactionImpl>(dto);
+	}
+
+	std::unique_ptr<DriveClosureTransaction>
+	CreateDriveClosureTransaction(const Key& driveKey,
+	                          std::optional<Amount> maxFee,
+	                          std::optional<NetworkDuration> deadline,
+	                          std::optional<NetworkIdentifier> networkId)
+	{
+		return CreateDriveClosureTransactionImpl(driveKey, maxFee, deadline, networkId);
+	}
+
+	std::unique_ptr<EmbeddedDriveClosureTransaction>
+	CreateEmbeddedDriveClosureTransaction(const Key& driveKey,
+	                                  const Key& signer,
+	                                  std::optional<NetworkIdentifier> networkId)
+	{
+		EmbeddedDriveClosureTransactionDTO dto;
+		InitDriveClosureTransactionDTO(dto, driveKey, signer, networkId);
+		return CreateTransaction<EmbeddedDriveClosureTransaction>(dto, driveKey);
 	}
 }
