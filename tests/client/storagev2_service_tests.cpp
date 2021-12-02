@@ -14,26 +14,27 @@ namespace xpx_chain_sdk::tests {
     ClientData replicatorData;
     ClientData2 driveData;
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
-    auto replicatorAccount = getTestAccount(clientData.privateKey);
+    auto replicatorAccount = getTestAccount(replicatorData.privateKey);
     auto driveAccount = getTestAccount(driveData.privateKey);
 
     TEST(TEST_CLASS, StorageV2Service_Flow_Test) {
-        Address replicatorAddress(clientData.publicKeyContainer);
+        Address replicatorAddress(replicatorData.publicKeyContainer);
         Address driveAddress(driveData.publicKeyContainer);
 
-        // srand(time(0));
-        // uint32_t nonce = rand();
-        // Mosaic mosaic;
-        // mosaic.id = mosaic.GenerateId(replicatorData.publicKeyContainer, nonce);
-        // MosaicProperties mosaicProperties(MosaicFlags::All, 4);
+        Mosaic xpx(-4613020131619586570, Amount(10000));
+        MosaicContainer mosaics { xpx };
+        RawBuffer message("test message");
 
-        // std::unique_ptr<MosaicDefinitionTransaction> mosaicDefinitionTx =  
-        // CreateMosaicDefinitionTransaction(
-        //         nonce, mosaic.id, MosaicFlags::All, mosaicProperties);
-        
-        // driveAccount->signTransaction(mosaicDefinitionTx.get());
-       
-        // EXPECT_TRUE(client->transactions()->announceNewTransaction(mosaicDefinitionTx->binary()));
+        // Transfer fund to accounts
+        std::unique_ptr<TransferTransaction> driveFundTx = CreateTransferTransaction(replicatorAddress, mosaics, message);
+
+        driveAccount->signTransaction(driveFundTx.get());
+        EXPECT_TRUE(client->transactions()->announceNewTransaction(driveFundTx->binary()));
+
+        std::unique_ptr<TransferTransaction> replicatorFundTx = CreateTransferTransaction(driveAddress, mosaics, message);
+
+        driveAccount->signTransaction(replicatorFundTx.get());
+        EXPECT_TRUE(client->transactions()->announceNewTransaction(replicatorFundTx->binary()));
 
         // Replicator onboarding transaction
         std::unique_ptr<ReplicatorOnboardingTransaction> onboardingTx = CreateReplicatorOnboardingTransaction(
@@ -45,6 +46,9 @@ namespace xpx_chain_sdk::tests {
 
         sleep(10);
 
+        Replicator replicatorInfo = client->storagev2()->getReplicatorByPublicKey(replicatorData.publicKey);
+        EXPECT_EQ(replicatorData.publicKey, replicatorInfo.replicatorKey);
+
         // PrepareDrive transaction
         std::unique_ptr<PrepareBcDriveTransaction> prepareDriveTx = CreatePrepareBcDriveTransaction(
                 100, Amount(10), 1);
@@ -54,6 +58,9 @@ namespace xpx_chain_sdk::tests {
         EXPECT_TRUE(client->transactions()->announceNewTransaction(prepareDriveTx->binary()));
         
         sleep(10);
+
+        BcDrive bcDriveInfo = client->storagev2()->getBcDriveByAccountId(driveData.publicKey);
+        EXPECT_EQ(driveData.publicKey, bcDriveInfo.owner);
         
         // DriveClosure transaction
         std::unique_ptr<DriveClosureTransaction> driveClosureTx = CreateDriveClosureTransaction(prepareDriveTx.get()->hash());
@@ -64,12 +71,16 @@ namespace xpx_chain_sdk::tests {
 
         sleep(10);
 
+        EXPECT_ANY_THROW(client->storagev2()->getBcDriveByAccountId(driveData.publicKey));
+
         // Replicator offboarding transaction
         std::unique_ptr<ReplicatorOffboardingTransaction> offboardingTx = CreateReplicatorOffboardingTransaction();
 
         replicatorAccount->signTransaction(offboardingTx.get());
 
         EXPECT_TRUE(client->transactions()->announceNewTransaction(offboardingTx->binary()));
+
+        EXPECT_ANY_THROW(client->storagev2()->getReplicatorByPublicKey(replicatorData.publicKey));
     }
 
 }
