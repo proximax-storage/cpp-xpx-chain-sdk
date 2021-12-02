@@ -27,9 +27,6 @@ namespace xpx_chain_sdk {
 				std::shared_ptr<internal::network::Context> context);
 		~StorageV2Service() = default;
 
-        std::shared_ptr<transactions_info::ReplicatorOnboardingTransaction> getOnboardingTransactionInfo(const std::string& id);
-        std::shared_ptr<transactions_info::ReplicatorOffboardingTransaction> getOffboardingTransactionInfo(const std::string& id);
-
         // BcDrive getBcDrives();
         BcDrive getBcDriveByAccountId(const std::string& id);
         // BcDrive getBcDriveByOwnerPublicKey(const std::string& id);
