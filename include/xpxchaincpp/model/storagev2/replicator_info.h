@@ -22,7 +22,7 @@ namespace xpx_chain_sdk {
     class Replicator {
     public:
         std::string replicatorKey;
-		int32_t version;
+		uint32_t version;
 		uint64_t capacity;
 		std::string blskey;
 		std::vector<DriveInfo> drives;

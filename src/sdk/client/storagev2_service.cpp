@@ -23,7 +23,7 @@ StorageV2Service::StorageV2Service(
 
 BcDrive StorageV2Service::getBcDriveByAccountId(const std::string& id){
     std::stringstream path;
-    path << "drivev2/" << id;
+    path << "drive_v2/" << id;
 
     RequestParamsBuilder builder(_config);
     builder.setPath(path.str());
@@ -57,7 +57,7 @@ BcDrive StorageV2Service::getBcDriveByAccountId(const std::string& id){
 
 Replicator StorageV2Service::getReplicatorByPublicKey(const std::string& id){
     std::stringstream path;
-    path << "replicatorv2/" << id;
+    path << "replicators_v2/" << id;
 
     RequestParamsBuilder builder(_config);
     builder.setPath(path.str());
@@ -68,15 +68,15 @@ Replicator StorageV2Service::getReplicatorByPublicKey(const std::string& id){
     return result;
 }
 
-// Replicator StorageV2Service::getReplicatorByBlsKey(const std::string& id){
-//     std::stringstream path;
-//     path << "accountv2/" << id << "/replicator";
+Replicator StorageV2Service::getReplicatorByBlsKey(const std::string& id){
+    std::stringstream path;
+    path << "account_v2/" << id << "/replicator";
 
-//     RequestParamsBuilder builder(_config);
-//     builder.setPath(path.str());
-//     builder.setMethod(internal::network::HTTPRequestMethod::GET);
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
-//     std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
-//     auto result = from_json<Replicator, ReplicatorDto>(response);
-//     return result;
-// }
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+    auto result = from_json<Replicator, ReplicatorDto>(response);
+    return result;
+}

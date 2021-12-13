@@ -22,10 +22,12 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("initialDownloadWork"), Uint64> >;
     
     using ReplicatorDto = VariadicStruct<
-            Field<STR_LITERAL("replicatorKey"), std::string>,
-            Field<STR_LITERAL("version"), Uint64>,
+            Field<STR_LITERAL("replicator"),
+                    VariadicStruct<
+            Field<STR_LITERAL("key"), std::string>,
+            Field<STR_LITERAL("version"), Uint32>,
             Field<STR_LITERAL("capacity"), Uint64>,
-            Field<STR_LITERAL("blskey"), std::string>,
-            Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> > >;
+            Field<STR_LITERAL("blsKey"), std::string>,
+            Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> > > > >;
     
 }
