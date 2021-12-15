@@ -23,7 +23,7 @@ StorageV2Service::StorageV2Service(
 
 BcDrive StorageV2Service::getBcDriveByAccountId(const std::string& id){
     std::stringstream path;
-    path << "drive_v2/" << id;
+    path << "drives_v2/" << id;
 
     RequestParamsBuilder builder(_config);
     builder.setPath(path.str());

@@ -23,23 +23,62 @@ namespace xpx_chain_sdk {
 		std::string id;
 		std::string owner;
 		std::string downloadDataCdi;
-		uint64_t uploadSize;
+		uint64_t expectedUploadSize;
+		uint64_t actualUploadSize;
+		std::string folderName;
+		bool readyForApprove;
 	};
 
     class CompletedDataModification {
 	public:
-		ActiveDataModification activeDataModification;
+		std::vector<ActiveDataModification> activeDataModification;
 		DataModificationState State;
 	};
 
+	class ConfirmedUsedSize {
+	public:
+		std::string replicator;
+		uint64_t storageSize;
+	};
+
+	enum class VerificationState : uint8_t {
+		PendingVerification,
+		CanceledVerification,
+		FinishedVerification
+	};
+
+	class VerificationOpinion {
+	public:
+		std::string prover;
+		uint8_t result;
+	};
+
+	class Verification {
+	public:
+		std::string verificationTrigger;
+		VerificationState verificationState;
+		std::vector<VerificationOpinion> verificationOpinion;
+	};
+
+	// vector
     class ActiveDataModifications {
 	public:
-		std::vector<ActiveDataModification> active;
+		std::vector<ActiveDataModification> nActiveDataModification;
 	};
 
 	class CompletedDataModifications {
 	public:
-		std::vector<CompletedDataModification> complete;
+		std::vector<CompletedDataModification> nCompletedDataModification;
+	};
+
+	class ConfirmedUsedSizes {
+	public:
+		std::vector<ConfirmedUsedSize> nConfirmedUsedSize;
+	};
+
+	class Verifications {
+	public:
+		std::vector<Verification> nVerification;
 	};
 
     class BcDrive {
@@ -53,5 +92,8 @@ namespace xpx_chain_sdk {
 		uint16_t replicatorCount;
 		ActiveDataModifications activeDataModifications;
 		CompletedDataModifications completedDataModifications;
+		ConfirmedUsedSizes confirmUsedSizes;
+		std::vector<std::string> replicators;
+		Verifications verifications;
     };
 }

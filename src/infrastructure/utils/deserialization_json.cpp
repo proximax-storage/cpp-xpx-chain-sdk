@@ -761,15 +761,18 @@ namespace xpx_chain_sdk::internal::json::dto {
         activeDataModification.id = dto.value<"id"_>();
         activeDataModification.owner = dto.value<"owner"_>();
         activeDataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
-        activeDataModification.uploadSize = dto.value<"uploadSize"_>();
+        activeDataModification.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        activeDataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
+        activeDataModification.folderName = dto.value<"folderName"_>();
+        activeDataModification.readyForApprove = dto.value<"readyForApproval"_>();
         return activeDataModification;
     }
 
 	template<>
-    ActiveDataModifications fromDto<ActiveDataModifications, ActiveDataModificationsDto>(const ActiveDataModificationsDto& dto) {
+    ActiveDataModifications fromDto<ActiveDataModifications, ActiveDataModificationsDtos>(const ActiveDataModificationsDtos& dto) {
         ActiveDataModifications activeDataModifications;
         for(auto & adm : dto) {
-            activeDataModifications.active.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
+            activeDataModifications.nActiveDataModification.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
         }
         return activeDataModifications;
     }
@@ -777,18 +780,65 @@ namespace xpx_chain_sdk::internal::json::dto {
 	template<>
     CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto& dto) {
         CompletedDataModification completedDataModification;
-        completedDataModification.activeDataModification = fromDto<ActiveDataModification, ActiveDataModificationDto>(dto.value<"activeDataModification"_>());
+		for(auto& cdm : dto.value<"activeDataModifications"_>()) {
+            completedDataModification.activeDataModification.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(cdm));
+        }
         completedDataModification.State = dto.value<"state"_>();
         return completedDataModification;
     }
 
 	template<>
-    CompletedDataModifications fromDto<CompletedDataModifications, CompletedDataModificationsDto>(const CompletedDataModificationsDto& dto) {
+    CompletedDataModifications fromDto<CompletedDataModifications, CompletedDataModificationsDtos>(const CompletedDataModificationsDtos& dto) {
         CompletedDataModifications completedDataModifications;
         for(auto & cdm : dto) {
-            completedDataModifications.complete.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
+            completedDataModifications.nCompletedDataModification.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
         }
         return completedDataModifications;
+    }
+	
+	template<>
+    ConfirmedUsedSize fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDTO>(const ConfirmedUsedSizeDTO& dto) {
+        ConfirmedUsedSize confirmedUsedSize;
+		confirmedUsedSize.replicator = dto.value<"id"_>();
+		confirmedUsedSize.storageSize = dto.value<"size"_>();
+        return confirmedUsedSize;
+    }
+
+	template<>
+    ConfirmedUsedSizes fromDto<ConfirmedUsedSizes, ComfirmedUsedSizesDtos>(const ComfirmedUsedSizesDtos& dto) {
+        ConfirmedUsedSizes confirmedUsedSizes;
+        for(auto & cus : dto) {
+            confirmedUsedSizes.nConfirmedUsedSize.push_back(fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDTO>(cus));
+        }
+        return confirmedUsedSizes;
+    }
+
+	template<>
+    VerificationOpinion fromDto<VerificationOpinion, VerificationOpinionDTO>(const VerificationOpinionDTO& dto) {
+        VerificationOpinion verificationOpinion;
+        verificationOpinion.prover = dto.value<"prover"_>();
+        verificationOpinion.result = dto.value<"result"_>();
+        return verificationOpinion;
+    }
+	
+	template<>
+    Verification fromDto<Verification, VerificationDTO>(const VerificationDTO& dto) {
+        Verification verification;
+        verification.verificationTrigger = dto.value<"verificationTrigger"_>();
+        verification.verificationState = dto.value<"state"_>();
+        for(auto & verify : dto.value<"verificationOpinions"_>()) {
+            verification.verificationOpinion.push_back(fromDto<VerificationOpinion, VerificationOpinionDTO>(verify));
+        }
+        return verification;
+    }
+
+	template<>
+    Verifications fromDto<Verifications, VerificationsDtos>(const VerificationsDtos& dto) {
+        Verifications verifications;
+        for(auto & verify : dto) {
+            verifications.nVerification.push_back(fromDto<Verification, VerificationDTO>(verify));
+        }
+        return verifications;
     }
 
 	template<>
@@ -802,11 +852,21 @@ namespace xpx_chain_sdk::internal::json::dto {
         bcDrive.metaFilesSize = dto.value<"metaFilesSize"_>();
         bcDrive.replicatorCount = dto.value<"replicatorCount"_>();
 		for(auto& adm : dto.value<"activeDataModifications"_>()) {
-            bcDrive.activeDataModifications.active.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
+            bcDrive.activeDataModifications.nActiveDataModification.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(adm));
         }
-        for(auto& cdm : dto.value<"activeDataModifications"_>()) {
-            bcDrive.completedDataModifications.complete.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
+        for(auto& cdm : dto.value<"completedDataModifications"_>()) {
+            bcDrive.completedDataModifications.nCompletedDataModification.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(cdm));
         }
+        for(auto& cus : dto.value<"confirmedUsedSizes"_>()) {
+            bcDrive.confirmUsedSizes.nConfirmedUsedSize.push_back(fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDTO>(cus));
+        }
+        for(auto& replicator : dto.value<"replicators"_>()) {
+            bcDrive.replicators.push_back(replicator);
+        }
+        for(auto& verification : dto.value<"verifications"_>()) {
+            bcDrive.verifications.nVerification.push_back(fromDto<Verification, VerificationDTO>(verification));
+        }
+
         return bcDrive;
     }
 
@@ -823,11 +883,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 	template<>
     Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto& dto) {
         Replicator replicator;
-        replicator.replicatorKey = dto.value<"replicatorKey"_>();
-        replicator.version = dto.value<"version"_>();
-        replicator.capacity = dto.value<"capacity"_>();
-        replicator.blskey = dto.value<"blskey"_>();
-		for(auto& drive : dto.value<"drives"_>()) {
+		auto replicatorDto = dto.value<"replicator"_>();
+        replicator.replicatorKey = replicatorDto.value<"key"_>();
+        replicator.version = replicatorDto.value<"version"_>();
+        replicator.capacity = replicatorDto.value<"capacity"_>();
+        replicator.blskey = replicatorDto.value<"blsKey"_>();
+		for(auto& drive : replicatorDto.value<"drives"_>()) {
             replicator.drives.push_back(fromDto<DriveInfo, DriveInfoDto>(drive));
         }
         return replicator;
