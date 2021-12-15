@@ -30,7 +30,7 @@ namespace xpx_chain_sdk {
         // BcDrive getBcDrives();
         BcDrive getBcDriveByAccountId(const std::string& id);
         // BcDrive getBcDriveByOwnerPublicKey(const std::string& id);
-        // Replicator getReplicators();
+        MultipleReplicator getReplicators();
         Replicator getReplicatorByPublicKey(const std::string& id);
         Replicator getReplicatorByBlsKey(const std::string& id);
 

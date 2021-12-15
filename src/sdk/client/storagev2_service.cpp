@@ -51,9 +51,18 @@ BcDrive StorageV2Service::getBcDriveByAccountId(const std::string& id){
 //     return result;
 // }
 
-// Replicator StorageV2Service::getReplicators(){
+MultipleReplicator StorageV2Service::getReplicators(){
+    std::stringstream path;
+    path << "replicators_v2";
 
-// }
+    RequestParamsBuilder builder(_config);
+    builder.setPath(path.str());
+    builder.setMethod(internal::network::HTTPRequestMethod::GET);
+
+    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+    auto result = from_json<MultipleReplicator, MultipleReplicatorDto>(response);
+    return result;
+}
 
 Replicator StorageV2Service::getReplicatorByPublicKey(const std::string& id){
     std::stringstream path;

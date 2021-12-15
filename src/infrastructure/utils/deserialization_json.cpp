@@ -893,6 +893,15 @@ namespace xpx_chain_sdk::internal::json::dto {
         }
         return replicator;
     }
+
+	template<>
+	MultipleReplicator fromDto<MultipleReplicator, MultipleReplicatorDto>(const MultipleReplicatorDto & dto) {
+		MultipleReplicator multipleReplicator;
+		for(auto & replicatorDto : dto.value<"data"_>()) {
+			multipleReplicator.replicators.push_back(fromDto<Replicator, ReplicatorDto>(replicatorDto));
+		}
+		return multipleReplicator;
+	}
 	
 	/// Transaction Meta
 

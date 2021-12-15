@@ -192,6 +192,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
         Replicator fromDto<Replicator, ReplicatorDto> (const ReplicatorDto& dto);
 
+		template<>
+        MultipleReplicator fromDto<MultipleReplicator, MultipleReplicatorDto>(const MultipleReplicatorDto & dto);
+
         /// Transaction Meta
 
         template<>

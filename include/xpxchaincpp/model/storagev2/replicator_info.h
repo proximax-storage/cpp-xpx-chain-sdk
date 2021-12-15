@@ -27,4 +27,9 @@ namespace xpx_chain_sdk {
 		std::string blskey;
 		std::vector<DriveInfo> drives;
     };
+
+	class MultipleReplicator {
+    public:
+        std::vector<Replicator> replicators;
+    };
 }
