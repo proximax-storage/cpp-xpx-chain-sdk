@@ -220,6 +220,15 @@ namespace xpx_chain_sdk { namespace transactions_info {
     };
 
     template<typename TBase>
+    class TDownloadPaymentTransaction: public TBase {
+    public:
+        Hash256 downloadChannelId;
+        uint64_t downloadSize;
+        Amount feedbackFeeAmount;
+
+    };
+
+    template<typename TBase>
     class TDataModificationApprovalTransaction: public TBase {
     public:
 		Key driveKey;
@@ -301,6 +310,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using DownloadTransaction = TDownloadTransaction <Transaction>;
     using EmbeddedDownloadTransaction = TDownloadTransaction<EmbeddedTransaction>;
+
+    using DownloadPaymentTransaction = TDownloadPaymentTransaction <Transaction>;
+    using EmbeddedDownloadPaymentTransaction = TDownloadPaymentTransaction<EmbeddedTransaction>;
 
     using DataModificationApprovalTransaction = TDataModificationApprovalTransaction <Transaction>;
     using EmbeddedDataModificationApprovalTransaction = TDataModificationApprovalTransaction<EmbeddedTransaction>;

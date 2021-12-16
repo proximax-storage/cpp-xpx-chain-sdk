@@ -327,6 +327,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Download_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DownloadPaymentTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DownloadPaymentTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Data_Modification_Approval: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationApprovalTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -1399,6 +1411,19 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+    template<>
+    DownloadPaymentTransaction fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto >(const DownloadPaymentTransactionDto & dto) {
+        DownloadPaymentTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.downloadChannelId = dto.value<"downloadChannelId"_>();
+        transaction.downloadSize = dto.value<"downloadSize"_>();
+        transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+
+        return transaction;
+    }
 
 	template<>
 	DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto) {

@@ -222,6 +222,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("downloadSize"),			uint64_t>,
 				Field<STR_LITERAL("transactionFee"),		Amount> >;
 
+        template<typename TBase>
+        using TDownloadPaymentTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("downloadChannelId"),		Hash256>,
+                Field<STR_LITERAL("downloadSize"),			uint64_t>,
+                Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
+
 		template<typename TBase>
 		using TDataModificationApprovalTransactionDto = VariadicStruct<
 				TBase,
@@ -301,6 +308,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using DownloadTransactionDto = TDownloadTransactionDto<TransactionDto>;
 		using EmbeddedDownloadTransactionDto = TDownloadTransactionDto<EmbeddedTransactionDto>;
+
+        using DownloadPaymentTransactionDto = TDownloadPaymentTransactionDto<TransactionDto>;
+        using EmbeddedDownloadPaymentTransactionDto = TDownloadPaymentTransactionDto<EmbeddedTransactionDto>;
 
 		using DataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<TransactionDto>;
 		using EmbeddedDataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<EmbeddedTransactionDto>;

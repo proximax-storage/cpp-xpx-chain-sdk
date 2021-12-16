@@ -21,6 +21,7 @@
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_transaction.h>
 #include <xpxchaincpp/model/transaction/download_transaction.h>
+#include <xpxchaincpp/model/transaction/download_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_approval_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_cancel_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
@@ -92,6 +93,9 @@ namespace xpx_chain_sdk { namespace internal {
 
 	using DownloadTransactionImpl = TTransactionImpl<DownloadTransaction>;
 	using EmbeddedDownloadTransactionImpl = TTransactionImpl<EmbeddedDownloadTransaction>;
+
+    using DownloadPaymentTransactionImpl = TTransactionImpl<DownloadPaymentTransaction>;
+    using EmbeddedDownloadPaymentTransactionImpl = TTransactionImpl<EmbeddedDownloadPaymentTransaction>;
 
 	using DataModificationApprovalTransactionImpl = TTransactionImpl<DataModificationApprovalTransaction>;
 	using EmbeddedDataModificationApprovalTransactionImpl = TTransactionImpl<EmbeddedDataModificationApprovalTransaction>;
@@ -309,6 +313,17 @@ namespace xpx_chain_sdk { namespace internal {
 	                              const std::optional<Key>& signer = std::nullopt,
 	                              const std::optional<Signature>& signature = std::nullopt,
 	                              const std::optional<TransactionInfo>& info = std::nullopt);
+
+   std::unique_ptr<DownloadPaymentTransaction>
+   CreateDownloadPaymentTransactionImpl(const Hash256& downloadChannelId,
+                                        uint64_t downloadSize,
+                                        const Amount& feedbackFeeAmount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationApprovalTransaction>
 	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,

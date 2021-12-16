@@ -27,7 +27,7 @@ namespace xpx_chain_sdk {
 				uint64_t downloadSize,
 				const Amount& transactionFee,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Download, std::forward<TArgs>(args)...),
 			driveKey_(driveKey),
 			downloadSize_(downloadSize),
 			transactionFee_(transactionFee)

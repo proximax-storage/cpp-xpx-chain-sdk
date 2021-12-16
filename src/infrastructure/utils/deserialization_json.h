@@ -267,6 +267,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		DownloadTransaction fromDto<DownloadTransaction, DownloadTransactionDto >(const DownloadTransactionDto & dto);
 
+        template<>
+        DownloadPaymentTransaction fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto >(const DownloadPaymentTransactionDto & dto);
+
 		template<>
 		DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto);
 
@@ -332,6 +335,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedDownloadTransaction fromDto<EmbeddedDownloadTransaction, EmbeddedDownloadTransactionDto >(const EmbeddedDownloadTransactionDto & dto);
+
+        template<>
+        EmbeddedDownloadPaymentTransaction fromDto<EmbeddedDownloadPaymentTransaction, EmbeddedDownloadPaymentTransactionDto >(const EmbeddedDownloadPaymentTransactionDto & dto);
 
 		template<>
 		EmbeddedDataModificationApprovalTransaction fromDto<EmbeddedDataModificationApprovalTransaction, EmbeddedDataModificationApprovalTransactionDto >(const EmbeddedDataModificationApprovalTransactionDto & dto);

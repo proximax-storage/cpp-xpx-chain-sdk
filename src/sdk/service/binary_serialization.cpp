@@ -319,6 +319,18 @@ namespace xpx_chain_sdk {
 				dto.template value<"driveKey"_>(), dto.template value<"downloadSize"_>(), dto.template value<"transactionFee"_>());
 		}
 
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        DownloadPaymentTransactionImpl,
+                        EmbeddedDownloadPaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateDownloadPaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"downloadChannelId"_>(), dto.template value<"downloadSize"_>(), dto.template value<"feedbackFeeAmount"_>());
+        }
+
 		template<
 			typename TDto,
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
@@ -562,6 +574,17 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Download_Payment:
+                    {
+                        EmbeddedDownloadPaymentTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateDownloadPaymentTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Data_Modification_Approval:
 					{
 						EmbeddedDataModificationApprovalTransactionDTO dto;
@@ -874,6 +897,18 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Download_Payment:
+            {
+                DownloadPaymentTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateDownloadPaymentTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Data_Modification_Approval:
 			{
 				DataModificationApprovalTransactionDTO dto;

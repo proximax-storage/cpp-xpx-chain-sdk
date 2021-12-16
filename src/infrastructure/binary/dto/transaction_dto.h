@@ -205,6 +205,13 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("downloadSize"),			uint64_t>,
 		Field<STR_LITERAL("transactionFee"),		Amount>>;
 
+    template<typename TBase>
+    using TDownloadPaymentTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("downloadChannelId"),		Hash256>,
+        Field<STR_LITERAL("downloadSize"),			uint64_t>,
+        Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
+
 	template<typename TBase>
 	using TDataModificationApprovalTransactionDTO = VariadicStruct<
 		TBase,
@@ -275,6 +282,9 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using DownloadTransactionDTO = TDownloadTransactionDTO<TransactionDTO>;
 	using EmbeddedDownloadTransactionDTO = TDownloadTransactionDTO<EmbeddedTransactionDTO>;
+
+    using DownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<TransactionDTO>;
+    using EmbeddedDownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<EmbeddedTransactionDTO>;
 
 	using DataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<EmbeddedTransactionDTO>;

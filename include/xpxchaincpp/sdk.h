@@ -27,6 +27,7 @@
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_transaction.h>
 #include <xpxchaincpp/model/transaction/download_transaction.h>
+#include <xpxchaincpp/model/transaction/download_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_approval_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_cancel_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>

@@ -32,6 +32,7 @@ namespace xpx_chain_sdk {
 		Prepare_Bc_Drive = 0x4162,
 		Data_Modification = 0x4262,
 		Download = 0x4362,
+		Download_Payment = 0x1000,
 		Data_Modification_Approval = 0x4462,
 		Data_Modification_Cancel = 0x4562,
 		Replicator_Onboarding = 0x4662,

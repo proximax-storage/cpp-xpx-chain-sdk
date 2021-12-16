@@ -576,6 +576,20 @@ namespace xpx_chain_sdk { namespace internal {
 			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
 		}
 
+        template<typename TDto, typename... TArgs>
+        void InitDownloadPaymentTransactionDTO(TDto& dto,
+                                               const Hash256& downloadChannelId,
+                                               uint64_t downloadSize,
+                                               const Amount& feedbackFeeAmount,
+                                               TArgs&&... args)
+        {
+            dto.template set<"downloadChannelId"_>(downloadChannelId);
+            dto.template set<"downloadSize"_>(downloadSize);
+            dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+
+            InitTransactionDTO(dto, TransactionType::Download_Payment, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
 		void InitDataModificationApprovalTransactionDTO(TDto& dto,
 										const Key& driveKey,
@@ -986,6 +1000,25 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<DownloadTransactionImpl>(
 			dto, signer, signature, info, driveKey, downloadSize, transactionFee);
 	}
+
+    std::unique_ptr<DownloadPaymentTransaction>
+    CreateDownloadPaymentTransactionImpl(const Hash256& downloadChannelId,
+                                         uint64_t downloadSize,
+                                         const Amount& feedbackFeeAmount,
+                                         std::optional<Amount> maxFee,
+                                         std::optional<NetworkDuration> deadline,
+                                         std::optional<NetworkIdentifier> networkId,
+                                         const std::optional<Key>& signer,
+                                         const std::optional<Signature>& signature,
+                                         const std::optional<TransactionInfo>& info)
+    {
+        DownloadPaymentTransactionDTO dto;
+        InitDownloadPaymentTransactionDTO(
+                dto, downloadChannelId, downloadSize, feedbackFeeAmount, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<DownloadPaymentTransactionImpl>(
+                dto, signer, signature, info, downloadChannelId, downloadSize, feedbackFeeAmount);
+    }
 
 	std::unique_ptr<DataModificationApprovalTransaction>
 	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
@@ -1521,6 +1554,29 @@ namespace xpx_chain_sdk {
 		InitDownloadTransactionDTO(dto, driveKey, downloadSize, transactionFee, signer, networkId);
 		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, transactionFee);
 	}
+
+    std::unique_ptr<DownloadPaymentTransaction>
+    CreateDownloadPaymentTransaction(const Hash256& downloadChannelId,
+                                     uint64_t downloadSize,
+                                     const Amount& feedbackFeeAmount,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateDownloadPaymentTransactionImpl(downloadChannelId, downloadSize, feedbackFeeAmount, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedDownloadPaymentTransaction>
+    CreateEmbeddedDownloadPaymentTransaction(const Hash256& downloadChannelId,
+                                             uint64_t downloadSize,
+                                             const Amount& feedbackFeeAmount,
+                                             const Key& signer,
+                                             std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedDownloadPaymentTransactionDTO dto;
+        InitDownloadPaymentTransactionDTO(dto, downloadChannelId, downloadSize, feedbackFeeAmount, signer, networkId);
+        return CreateTransaction<EmbeddedDownloadPaymentTransactionImpl>(dto, downloadChannelId, downloadSize, feedbackFeeAmount);
+    }
 
 	std::unique_ptr<DataModificationApprovalTransaction>
 	CreateDataModificationApprovalTransaction(const Key& driveKey,
