@@ -25,7 +25,7 @@ namespace xpx_chain_sdk {
 		explicit TReplicatorOnboardingTransaction(
 				const Amount& capacity,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...),
 			capacity_(capacity)
 		{ }
 
