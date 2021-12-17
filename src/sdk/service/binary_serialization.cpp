@@ -236,10 +236,24 @@ namespace xpx_chain_sdk {
 		std::unique_ptr<TImpl> CreateSecretProofTransaction(const TDto& dto, RawBuffer binaryData)
 		{
 			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"hashAlgorithm"_>(), dto.template value<"secret"_>(),
-				dto.template value<"proof"_>());
+                    dto, binaryData,
+                    dto.template value<"hashAlgorithm"_>(),
+                    dto.template value<"secret"_>(),
+                    dto.template value<"proof"_>());
 		}
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        StoragePaymentTransactionImpl,
+                        EmbeddedStoragePaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateStoragePaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"storageUnits"_>());
+        }
 		
 		template<
 			typename TDto,
@@ -315,8 +329,10 @@ namespace xpx_chain_sdk {
 		std::unique_ptr<TImpl> CreateDownloadTransaction(const TDto& dto, RawBuffer binaryData)
 		{
 			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"downloadSize"_>(), dto.template value<"transactionFee"_>());
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"downloadSize"_>(),
+                    dto.template value<"transactionFee"_>());
 		}
 
         template<
@@ -328,7 +344,21 @@ namespace xpx_chain_sdk {
         {
             return CreateTransaction<TImpl>(
                     dto, binaryData,
-                    dto.template value<"downloadChannelId"_>(), dto.template value<"downloadSize"_>(), dto.template value<"feedbackFeeAmount"_>());
+                    dto.template value<"downloadChannelId"_>(),
+                    dto.template value<"downloadSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        DriveClosureTransactionImpl,
+                        EmbeddedDriveClosureTransactionImpl>>
+        std::unique_ptr<TImpl> CreateDriveClosureTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>());
         }
 
 		template<
@@ -355,6 +385,19 @@ namespace xpx_chain_sdk {
 				dto, binaryData,
 				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>());
 		}
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        FinishDownloadTransactionImpl,
+                        EmbeddedFinishDownloadTransactionImpl>>
+        std::unique_ptr<TImpl> CreateFinishDownloadTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"downloadChannelId"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
 
 		template<
 			typename TDto,
@@ -530,6 +573,17 @@ namespace xpx_chain_sdk {
 						
 						break;
 					}
+                case TransactionType::Storage_Payment:
+                    {
+                        EmbeddedStoragePaymentTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateStoragePaymentTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Transfer:
 					{
 						EmbeddedTransferTransactionDTO dto;
@@ -585,6 +639,17 @@ namespace xpx_chain_sdk {
 
                         break;
                     }
+                case TransactionType::Drive_Closure:
+                    {
+                        EmbeddedDriveClosureTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateDriveClosureTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Data_Modification_Approval:
 					{
 						EmbeddedDataModificationApprovalTransactionDTO dto;
@@ -607,6 +672,17 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Finish_Download:
+                    {
+                        EmbeddedFinishDownloadTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateFinishDownloadTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Replicator_Onboarding:
 					{
 						EmbeddedReplicatorOnboardingTransactionDTO dto;
@@ -849,6 +925,18 @@ namespace xpx_chain_sdk {
 				
 				break;
 			}
+        case TransactionType::Storage_Payment:
+            {
+                StoragePaymentTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateStoragePaymentTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Transfer:
 			{
 				TransferTransactionDTO dto;
@@ -909,6 +997,18 @@ namespace xpx_chain_sdk {
 
                 break;
             }
+        case TransactionType::Drive_Closure:
+            {
+                DriveClosureTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateDriveClosureTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Data_Modification_Approval:
 			{
 				DataModificationApprovalTransactionDTO dto;
@@ -933,6 +1033,18 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Finish_Download:
+            {
+                FinishDownloadTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateFinishDownloadTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Replicator_Onboarding:
 			{
 				ReplicatorOnboardingTransactionDTO dto;

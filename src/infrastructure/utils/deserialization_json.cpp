@@ -273,6 +273,20 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Storage_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), StoragePaymentTransactionDto> > t_dto;
+
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto>(
+                        t_dto.value<"transaction"_>());
+                result = std::make_shared<StoragePaymentTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Account_Link: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AccountLinkTransactionDto> > t_dto;
 
@@ -339,6 +353,18 @@ namespace xpx_chain_sdk::internal::json::dto {
                 break;
             }
 
+            case TransactionType::Drive_Closure: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DriveClosureTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<DriveClosureTransaction, DriveClosureTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DriveClosureTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Data_Modification_Approval: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationApprovalTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -362,6 +388,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				result = std::make_shared<DataModificationCancelTransaction>(transaction);
 				break;
 			}
+
+            case TransactionType::Finish_Download: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), FinishDownloadTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<FinishDownloadTransaction>(transaction);
+                break;
+            }
 
 			case TransactionType::Replicator_Onboarding: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorOnboardingTransactionDto> > t_dto;
@@ -1004,7 +1042,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.namespaceType = dto.value<"namespaceType"_>();
 		transaction.durationOrParentId = dto.value<"durationOrParentId"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1020,14 +1057,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		transaction.amount = dto.value<"amount"_>();
 		transaction.duration = dto.value<"duration"_>();
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
 		transaction.recipient = dto.value<"recipient"_>();
-
 
 		return transaction;
 	}
@@ -1039,14 +1074,24 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
 		transaction.proof = dto.value<"proof"_>();
 
-
 		return transaction;
 	}
+
+    template<>
+    StoragePaymentTransaction fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto >(const StoragePaymentTransactionDto & dto) {
+        StoragePaymentTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.storageUnits = dto.value<"storageUnits"_>();
+
+        return transaction;
+    }
 
 	template<>
 	TransferTransactionMessage fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(const TransferTransactionMessageDto & dto) {
@@ -1076,7 +1121,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		AliasTransactionBase transaction;
 
 		EXTRACT_TRANSACTION(transaction, dto)
-
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1111,7 +1155,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& accountTransactionPropertyDto : dto.value<"modifications"_>()){
@@ -1127,7 +1170,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& accountTransactionPropertyDto : dto.value<"modifications"_>()){
@@ -1142,7 +1184,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		AccountAddressPropertyTransaction transaction;
 
 		EXTRACT_TRANSACTION(transaction, dto)
-
 
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
@@ -1275,13 +1316,24 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    EmbeddedStoragePaymentTransaction fromDto<EmbeddedStoragePaymentTransaction, EmbeddedStoragePaymentTransactionDto >(const EmbeddedStoragePaymentTransactionDto & dto) {
+        EmbeddedStoragePaymentTransaction transaction;
+
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.storageUnits = dto.value<"storageUnits"_>();
+
+        return transaction;
+    }
+
 
 	template<>
 	EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto) {
 		EmbeddedTransferTransaction transaction;
 
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
-
 
 		transaction.recipient = dto.value<"recipient"_>();
 		transaction.message = fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(dto.value<"message"_>());
@@ -1299,7 +1351,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EmbeddedAliasTransactionBase transaction;
 
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
-
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1425,6 +1476,17 @@ namespace xpx_chain_sdk::internal::json::dto {
         return transaction;
     }
 
+    template<>
+    DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto) {
+        DriveClosureTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+
+        return transaction;
+    }
+
 	template<>
 	DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto) {
 		DataModificationApprovalTransaction transaction;
@@ -1452,6 +1514,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    FinishDownloadTransaction fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto >(const FinishDownloadTransactionDto & dto) {
+        FinishDownloadTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.downloadChannelId = dto.value<"downloadChannelId"_>(),
+        transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+
+        return transaction;
+    }
+
 	template<>
 	ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto) {
 		ReplicatorOnboardingTransaction transaction;
@@ -1462,6 +1536,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };

@@ -149,6 +149,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::vector<uint8_t> proof;
     };
 
+    template<typename TBase>
+    class TStoragePaymentTransaction: public TBase {
+    public:
+        Key driveKey;
+        Amount storageUnits;
+    };
+
     class TransferTransactionMessage {
     public:
         std::uint32_t type;
@@ -229,6 +236,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
     };
 
     template<typename TBase>
+    class TDriveClosureTransaction: public TBase {
+    public:
+        Key driveKey;
+
+    };
+
+    template<typename TBase>
     class TDataModificationApprovalTransaction: public TBase {
     public:
 		Key driveKey;
@@ -244,6 +258,14 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
 		Key driveKey;
 		Hash256 dataModificationId;
+
+    };
+
+    template<typename TBase>
+    class TFinishDownloadTransaction: public TBase {
+    public:
+        Hash256 downloadChannelId;
+        Amount feedbackFeeAmount;
 
     };
 
@@ -277,6 +299,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using SecretProofTransaction  = TSecretProofTransaction<Transaction >;
     using EmbeddedSecretProofTransaction  = TSecretProofTransaction<EmbeddedTransaction >;
+
+    using StoragePaymentTransaction  = TStoragePaymentTransaction<Transaction >;
+    using EmbeddedStoragePaymentTransaction  = TStoragePaymentTransaction<EmbeddedTransaction >;
 
     using TransferTransaction  = TTransferTransaction <Transaction>;
     using EmbeddedTransferTransaction  = TTransferTransaction<EmbeddedTransaction >;
@@ -314,11 +339,17 @@ namespace xpx_chain_sdk { namespace transactions_info {
     using DownloadPaymentTransaction = TDownloadPaymentTransaction <Transaction>;
     using EmbeddedDownloadPaymentTransaction = TDownloadPaymentTransaction<EmbeddedTransaction>;
 
+    using DriveClosureTransaction = TDriveClosureTransaction <Transaction>;
+    using EmbeddedDriveClosureTransaction = TDriveClosureTransaction<EmbeddedTransaction>;
+
     using DataModificationApprovalTransaction = TDataModificationApprovalTransaction <Transaction>;
     using EmbeddedDataModificationApprovalTransaction = TDataModificationApprovalTransaction<EmbeddedTransaction>;
 
     using DataModificationCancelTransaction = TDataModificationCancelTransaction <Transaction>;
     using EmbeddedDataModificationCancelTransaction = TDataModificationCancelTransaction<EmbeddedTransaction>;
+
+    using FinishDownloadTransaction = TFinishDownloadTransaction <Transaction>;
+    using EmbeddedFinishDownloadTransaction = TFinishDownloadTransaction<EmbeddedTransaction>;
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;

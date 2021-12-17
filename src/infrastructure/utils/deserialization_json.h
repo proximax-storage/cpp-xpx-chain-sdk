@@ -246,6 +246,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransactionDto >(const SecretProofTransactionDto & dto);
 
+        template<>
+        StoragePaymentTransaction fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto >(const StoragePaymentTransactionDto & dto);
+
 		template<>
 		TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto);
 
@@ -270,13 +273,19 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         DownloadPaymentTransaction fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto >(const DownloadPaymentTransactionDto & dto);
 
+        template<>
+        DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto);
+
 		template<>
 		DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto);
 
 		template<>
 		DataModificationCancelTransaction fromDto<DataModificationCancelTransaction, DataModificationCancelTransactionDto >(const DataModificationCancelTransactionDto & dto);
 
-		template<>
+        template<>
+        FinishDownloadTransaction fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto >(const FinishDownloadTransactionDto & dto);
+
+        template<>
 		ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto);
 
 		/// Account Property Transactions
@@ -315,6 +324,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		EmbeddedSecretProofTransaction fromDto<EmbeddedSecretProofTransaction, EmbeddedSecretProofTransactionDto >(const EmbeddedSecretProofTransactionDto & dto);
 
+        template<>
+        EmbeddedStoragePaymentTransaction fromDto<EmbeddedStoragePaymentTransaction, EmbeddedStoragePaymentTransactionDto >(const EmbeddedStoragePaymentTransactionDto & dto);
+
 		template<>
 		EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto);
 
@@ -339,7 +351,10 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         EmbeddedDownloadPaymentTransaction fromDto<EmbeddedDownloadPaymentTransaction, EmbeddedDownloadPaymentTransactionDto >(const EmbeddedDownloadPaymentTransactionDto & dto);
 
-		template<>
+        template<>
+        EmbeddedDriveClosureTransaction fromDto<EmbeddedDriveClosureTransaction, EmbeddedDriveClosureTransactionDto >(const EmbeddedDriveClosureTransactionDto & dto);
+
+        template<>
 		EmbeddedDataModificationApprovalTransaction fromDto<EmbeddedDataModificationApprovalTransaction, EmbeddedDataModificationApprovalTransactionDto >(const EmbeddedDataModificationApprovalTransactionDto & dto);
 
 		template<>
@@ -348,7 +363,10 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		EmbeddedReplicatorOnboardingTransaction fromDto<EmbeddedReplicatorOnboardingTransaction, EmbeddedReplicatorOnboardingTransactionDto >(const EmbeddedReplicatorOnboardingTransactionDto & dto);
 
-		/// Account Property Transactions
+        template<>
+        EmbeddedFinishDownloadTransaction fromDto<EmbeddedFinishDownloadTransaction, EmbeddedFinishDownloadTransactionDto >(const EmbeddedFinishDownloadTransactionDto & dto);
+
+        /// Account Property Transactions
 		template<>
 		EmbeddedAccountTransactionPropertyTransaction fromDto<EmbeddedAccountTransactionPropertyTransaction, EmbeddedAccountTransactionPropertyTransactionDto >(const EmbeddedAccountTransactionPropertyTransactionDto & dto);
 

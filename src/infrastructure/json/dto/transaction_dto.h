@@ -168,6 +168,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("secret"),        std::string >,
 				Field<STR_LITERAL("proof"),         std::vector<uint8_t> > >;
 
+        template<typename TBase>
+        using TStoragePaymentTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("driveKey"),      Key>,
+                Field<STR_LITERAL("storageUnits"),  Amount>>;
+
 		using TransferTransactionMessageDto = VariadicStruct<
                 Field<STR_LITERAL("type"),        std::uint32_t >,
                 Field<STR_LITERAL("payload"),     std::string > >;
@@ -229,6 +235,11 @@ namespace xpx_chain_sdk::internal::json::dto {
                 Field<STR_LITERAL("downloadSize"),			uint64_t>,
                 Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
 
+        template<typename TBase>
+        using TDriveClosureTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("driveKey"), Key>>;
+
 		template<typename TBase>
 		using TDataModificationApprovalTransactionDto = VariadicStruct<
 				TBase,
@@ -243,6 +254,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 				TBase,
 				Field<STR_LITERAL("driveKey"),				Key>,
 				Field<STR_LITERAL("dataModificationId"),	Hash256>>;
+
+        template<typename TBase>
+        using TFinishDownloadTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("downloadChannelId"),	Hash256>,
+                Field<STR_LITERAL("feedbackFeeAmount"),	Amount>>;
 
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
@@ -272,6 +289,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using SecretProofTransactionDto = TSecretProofTransactionDto<TransactionDto>;
 		using EmbeddedSecretProofTransactionDto = TSecretProofTransactionDto<EmbeddedTransactionDto>;
+
+        using StoragePaymentTransactionDto = TStoragePaymentTransactionDto<TransactionDto>;
+        using EmbeddedStoragePaymentTransactionDto = TStoragePaymentTransactionDto<EmbeddedTransactionDto>;
 
 		using TransferTransactionDto = TTransferTransactionDto<TransactionDto>;
 		using EmbeddedTransferTransactionDto = TTransferTransactionDto<EmbeddedTransactionDto>;
@@ -312,11 +332,17 @@ namespace xpx_chain_sdk::internal::json::dto {
         using DownloadPaymentTransactionDto = TDownloadPaymentTransactionDto<TransactionDto>;
         using EmbeddedDownloadPaymentTransactionDto = TDownloadPaymentTransactionDto<EmbeddedTransactionDto>;
 
+        using DriveClosureTransactionDto = TDriveClosureTransactionDto<TransactionDto>;
+        using EmbeddedDriveClosureTransactionDto = TDriveClosureTransactionDto<EmbeddedTransactionDto>;
+
 		using DataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<TransactionDto>;
 		using EmbeddedDataModificationApprovalTransactionDto = TDataModificationApprovalTransactionDto<EmbeddedTransactionDto>;
 
 		using DataModificationCancelTransactionDto = TDataModificationCancelTransactionDto<TransactionDto>;
 		using EmbeddedDataModificationCancelTransactionDto = TDataModificationCancelTransactionDto<EmbeddedTransactionDto>;
+
+        using FinishDownloadTransactionDto = TFinishDownloadTransactionDto<TransactionDto>;
+        using EmbeddedFinishDownloadTransactionDto = TFinishDownloadTransactionDto<EmbeddedTransactionDto>;
 
 		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;

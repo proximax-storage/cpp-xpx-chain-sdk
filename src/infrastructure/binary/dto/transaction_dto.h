@@ -152,6 +152,12 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("secret"),        Hash256>,
 		Field<STR_LITERAL("proofSize"),     uint16_t>,
 		Field<STR_LITERAL("proof"),         std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("proofSize")>>>;
+
+    template<typename TBase>
+    using TStoragePaymentTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"),      Key>,
+        Field<STR_LITERAL("storageUnits"),  Amount>>;
 	
 	template<typename TBase>
 	using TTransferTransactionDTO = VariadicStruct<
@@ -212,6 +218,11 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
         Field<STR_LITERAL("downloadSize"),			uint64_t>,
         Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
 
+    template<typename TBase>
+    using TDriveClosureTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"), Key>>;
+
 	template<typename TBase>
 	using TDataModificationApprovalTransactionDTO = VariadicStruct<
 		TBase,
@@ -226,6 +237,12 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		TBase,
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("dataModificationId"),	Hash256>>;
+
+    template<typename TBase>
+    using TFinishDownloadTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("downloadChannelId"),	Hash256>,
+        Field<STR_LITERAL("feedbackFeeAmount"),	Amount>>;
 
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
@@ -255,6 +272,9 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	using SecretProofTransactionDTO = TSecretProofTransactionDTO<TransactionDTO>;
 	using EmbeddedSecretProofTransactionDTO = TSecretProofTransactionDTO<EmbeddedTransactionDTO>;
+
+    using StoragePaymentTransactionDTO = TStoragePaymentTransactionDTO<TransactionDTO>;
+    using EmbeddedStoragePaymentTransactionDTO = TStoragePaymentTransactionDTO<EmbeddedTransactionDTO>;
 	
 	using TransferTransactionDTO = TTransferTransactionDTO<TransactionDTO>;
 	using EmbeddedTransferTransactionDTO = TTransferTransactionDTO<EmbeddedTransactionDTO>;
@@ -286,11 +306,17 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
     using DownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<TransactionDTO>;
     using EmbeddedDownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<EmbeddedTransactionDTO>;
 
+    using DriveClosureTransactionDTO = TDriveClosureTransactionDTO<TransactionDTO>;
+    using EmbeddedDriveClosureTransactionDTO = TDriveClosureTransactionDTO<EmbeddedTransactionDTO>;
+
 	using DataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<EmbeddedTransactionDTO>;
 
 	using DataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<EmbeddedTransactionDTO>;
+
+    using FinishDownloadTransactionDTO = TFinishDownloadTransactionDTO<TransactionDTO>;
+    using EmbeddedFinishDownloadTransactionDTO = TFinishDownloadTransactionDTO<EmbeddedTransactionDTO>;
 
 	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;

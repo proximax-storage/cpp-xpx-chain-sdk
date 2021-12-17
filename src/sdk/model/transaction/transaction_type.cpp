@@ -26,12 +26,16 @@ namespace xpx_chain_sdk {
 		case TransactionType::Transaction_Property:			return "transaction property";
 		case TransactionType::Secret_Lock:					return "secret lock";
 		case TransactionType::Secret_Proof:					return "secret proof";
+		case TransactionType::Storage_Payment:				return "storage payment";
 		case TransactionType::Account_Link:					return "account link";
 		case TransactionType::Prepare_Bc_Drive:				return "prepare bc drive";
 		case TransactionType::Data_Modification:			return "data modification";
 		case TransactionType::Download:						return "download";
+		case TransactionType::Download_Payment:				return "download payment";
+		case TransactionType::Drive_Closure:				return "drive closure";
 		case TransactionType::Data_Modification_Approval:	return "data modification approval";
 		case TransactionType::Data_Modification_Cancel:		return "data modification cancel";
+		case TransactionType::Finish_Download:      		return "finish download";
 		case TransactionType::Replicator_Onboarding:		return "replicator onboarding";
 		default: break;
 		}
@@ -58,12 +62,16 @@ namespace xpx_chain_sdk {
 		case TransactionType::Transaction_Property:			return 1;
 		case TransactionType::Secret_Lock:					return 1;
 		case TransactionType::Secret_Proof:					return 1;
+		case TransactionType::Storage_Payment:				return 1;
 		case TransactionType::Account_Link:					return 2;
 		case TransactionType::Prepare_Bc_Drive:				return 1;
 		case TransactionType::Data_Modification:			return 1;
 		case TransactionType::Download:						return 1;
+		case TransactionType::Download_Payment:				return 1;
+		case TransactionType::Drive_Closure:				return 1;
 		case TransactionType::Data_Modification_Approval:	return 1;
 		case TransactionType::Data_Modification_Cancel:		return 1;
+		case TransactionType::Finish_Download:      		return 1;
 		case TransactionType::Replicator_Onboarding:		return 1;
 		default: break;
 		}
