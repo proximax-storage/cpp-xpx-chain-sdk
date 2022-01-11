@@ -582,12 +582,14 @@ namespace xpx_chain_sdk { namespace internal {
 		void InitDownloadTransactionDTO(TDto& dto,
 										const Key& driveKey,
 										uint64_t downloadSize,
-										const Amount& transactionFee,
+										const Amount& feedbackFeeAmount,
+                                        uint16_t listOfPublicKeysSize,
 		                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"downloadSize"_>(downloadSize);
-			dto.template set<"transactionFee"_>(transactionFee);
+			dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+			dto.template set<"listOfPublicKeysSize"_>(listOfPublicKeysSize);
 
 			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
 		}
@@ -1053,7 +1055,8 @@ namespace xpx_chain_sdk { namespace internal {
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransactionImpl(const Key& driveKey,
 	                              uint64_t downloadSize,
-	                              const Amount& transactionFee,
+	                              const Amount& feedbackFeeAmount,
+                                  uint16_t listOfPublicKeysSize,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,
@@ -1063,10 +1066,10 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		DownloadTransactionDTO dto;
 		InitDownloadTransactionDTO(
-			dto, driveKey, downloadSize, transactionFee, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<DownloadTransactionImpl>(
-			dto, signer, signature, info, driveKey, downloadSize, transactionFee);
+			dto, signer, signature, info, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize);
 	}
 
     std::unique_ptr<DownloadPaymentTransaction>
@@ -1659,24 +1662,26 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransaction(const Key& driveKey,
 	                          uint64_t downloadSize,
-	                          const Amount& transactionFee,
+	                          const Amount& feedbackFeeAmount,
+	                          uint16_t listOfPublicKeysSize,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
 	                          std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDownloadTransactionImpl(driveKey, downloadSize, transactionFee, maxFee, deadline, networkId);
+		return CreateDownloadTransactionImpl(driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDownloadTransaction>
 	CreateEmbeddedDownloadTransaction(const Key& driveKey,
 	                                  uint64_t downloadSize,
-	                                  const Amount& transactionFee,
+	                                  const Amount& feedbackFeeAmount,
+                                      uint16_t listOfPublicKeysSize,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDownloadTransactionDTO dto;
-		InitDownloadTransactionDTO(dto, driveKey, downloadSize, transactionFee, signer, networkId);
-		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, transactionFee);
+		InitDownloadTransactionDTO(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, signer, networkId);
+		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize);
 	}
 
     std::unique_ptr<DownloadPaymentTransaction>

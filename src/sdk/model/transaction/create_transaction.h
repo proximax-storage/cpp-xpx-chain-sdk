@@ -328,7 +328,8 @@ namespace xpx_chain_sdk { namespace internal {
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransactionImpl(const Key& driveKey,
 	                              uint64_t downloadSize,
-	                              const Amount& transactionFee,
+	                              const Amount& feedbackFeeAmount,
+                                  uint16_t listOfPublicKeysSize,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,

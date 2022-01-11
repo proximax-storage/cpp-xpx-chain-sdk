@@ -222,7 +222,8 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
 		Key driveKey;
 		uint64_t downloadSize;
-		Amount transactionFee;
+		Amount feedbackFeeAmount;
+        uint16_t listOfPublicKeysSize;
 
     };
 

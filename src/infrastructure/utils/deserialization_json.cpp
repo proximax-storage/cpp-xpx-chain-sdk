@@ -1458,7 +1458,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadSize = dto.value<"downloadSize"_>();
-		transaction.transactionFee = dto.value<"transactionFee"_>();
+		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+		transaction.listOfPublicKeysSize = dto.value<"listOfPublicKeysSize"_>();
 
 		return transaction;
 	}
