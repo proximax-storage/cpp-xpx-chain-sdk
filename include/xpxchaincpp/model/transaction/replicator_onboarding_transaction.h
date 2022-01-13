@@ -20,7 +20,7 @@ namespace xpx_chain_sdk {
 	template<typename TBase>
 	class TReplicatorOnboardingTransaction: public TBase {
 	public:
-		/// Creates download transaction.
+		/// Creates onboarding transaction.
 		template<typename... TArgs>
 		explicit TReplicatorOnboardingTransaction(
 				const Amount& capacity,
@@ -46,17 +46,17 @@ namespace xpx_chain_sdk {
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransaction(const Amount& capacity,
-	                          std::optional<Amount> maxFee = std::nullopt,
-	                          std::optional<NetworkDuration> deadline = std::nullopt,
-	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateReplicatorOnboardingTransaction(const Amount& capacity,
+                                          std::optional<Amount> maxFee = std::nullopt,
+                                          std::optional<NetworkDuration> deadline = std::nullopt,
+                                          std::optional<NetworkIdentifier> networkId = std::nullopt);
 
 
 	/// Creates replicator onboarding transaction.
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
-	CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
+                                                  const Key& signer,
+                                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

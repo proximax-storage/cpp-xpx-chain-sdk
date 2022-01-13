@@ -248,7 +248,12 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("capacity"),				Amount>>;
+		Field<STR_LITERAL("capacity"), Amount>>;
+
+    template<typename TBase>
+        using TReplicatorOffboardingTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"), Key>>;
 
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
@@ -321,4 +326,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;
+
+    using ReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<TransactionDTO>;
+    using EmbeddedReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<EmbeddedTransactionDTO>;
 }}}

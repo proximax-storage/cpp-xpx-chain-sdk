@@ -277,6 +277,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     };
 
+    template<typename TBase>
+    class TReplicatorOffboardingTransaction: public TBase {
+    public:
+        Key driveKey;
+
+    };
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -354,6 +361,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
+    using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
 }}
 
 

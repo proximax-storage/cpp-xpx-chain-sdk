@@ -673,14 +673,24 @@ namespace xpx_chain_sdk { namespace internal {
         }
 
 		template<typename TDto, typename... TArgs>
-		void InitReplicatorOnboardingTransactionDTO(TDto& dto,
-										const Amount& capacity,
-		                                TArgs&&... args)
+        void InitReplicatorOnboardingTransactionDTO(TDto& dto,
+                                                    const Amount& capacity,
+                                                    TArgs&&... args)
 		{
 			dto.template set<"capacity"_>(capacity);
 
 			InitTransactionDTO(dto, TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...);
 		}
+
+        template<typename TDto, typename... TArgs>
+        void InitReplicatorOffboardingTransactionDTO(TDto& dto,
+                                                     const Key& driveKey,
+                                                     TArgs&&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+
+            InitTransactionDTO(dto, TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...);
+        }
 	}
 	
 	
@@ -1166,13 +1176,13 @@ namespace xpx_chain_sdk { namespace internal {
     }
 
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId,
+                                              const std::optional<Key>& signer,
+                                              const std::optional<Signature>& signature,
+                                              const std::optional<TransactionInfo>& info)
 	{
 		ReplicatorOnboardingTransactionDTO dto;
 		InitReplicatorOnboardingTransactionDTO(
@@ -1181,6 +1191,23 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<ReplicatorOnboardingTransactionImpl>(
 			dto, signer, signature, info, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransactionImpl(const Key& driveKey,
+                                               std::optional<Amount> maxFee,
+                                               std::optional<NetworkDuration> deadline,
+                                               std::optional<NetworkIdentifier> networkId,
+                                               const std::optional<Key>& signer,
+                                               const std::optional<Signature>& signature,
+                                               const std::optional<TransactionInfo>& info)
+    {
+        ReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(
+                dto, driveKey, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<ReplicatorOffboardingTransactionImpl>(
+                dto, signer, signature, info, driveKey);
+    }
 }}
 
 
@@ -1813,4 +1840,23 @@ namespace xpx_chain_sdk {
 		InitReplicatorOnboardingTransactionDTO(dto, capacity, signer, networkId);
 		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransaction(const Key& driveKey,
+                                           std::optional<Amount> maxFee,
+                                           std::optional<NetworkDuration> deadline,
+                                           std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateReplicatorOffboardingTransactionImpl(driveKey, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedReplicatorOffboardingTransaction>
+    CreateEmbeddedReplicatorOffboardingTransaction(const Key& driveKey,
+                                                   const Key& signer,
+                                                   std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(dto, driveKey, signer, networkId);
+        return CreateTransaction<EmbeddedReplicatorOffboardingTransactionImpl>(dto, driveKey);
+    }
 }

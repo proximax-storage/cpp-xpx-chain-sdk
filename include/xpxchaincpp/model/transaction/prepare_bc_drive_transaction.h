@@ -52,11 +52,11 @@ namespace xpx_chain_sdk {
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<PrepareBcDriveTransaction>
-	CreatePrepareBcDriveTransaction(uint64_t driveSize,
-	                          uint16_t replicatorCount,
-	                          std::optional<Amount> maxFee = std::nullopt,
-	                          std::optional<NetworkDuration> deadline = std::nullopt,
-	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreatePrepareBcDriveTransaction(uint64_t driveSize,
+                                    uint16_t replicatorCount,
+                                    std::optional<Amount> maxFee = std::nullopt,
+                                    std::optional<NetworkDuration> deadline = std::nullopt,
+                                    std::optional<NetworkIdentifier> networkId = std::nullopt);
 	
 	
 	/// Creates prepare drive transaction.
