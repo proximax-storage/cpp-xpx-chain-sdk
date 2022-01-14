@@ -210,7 +210,8 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("downloadSize"),			uint64_t>,
 		Field<STR_LITERAL("feedbackFeeAmount"),		Amount>,
-		Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>>;
+		Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>,
+		Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<Key>, desc::VariableSize<STR_LITERAL("listOfPublicKeysSize")>>>;
 
     template<typename TBase>
     using TDownloadPaymentTransactionDTO = VariadicStruct<

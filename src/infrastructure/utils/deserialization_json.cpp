@@ -1472,6 +1472,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.downloadSize = dto.value<"downloadSize"_>();
 		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
 		transaction.listOfPublicKeysSize = dto.value<"listOfPublicKeysSize"_>();
+		transaction.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
 
 		return transaction;
 	}

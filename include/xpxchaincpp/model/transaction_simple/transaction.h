@@ -224,6 +224,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		uint64_t downloadSize;
 		Amount feedbackFeeAmount;
         uint16_t listOfPublicKeysSize;
+        std::vector<Key> listOfPublicKeys;
 
     };
 

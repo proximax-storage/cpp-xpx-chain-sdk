@@ -227,7 +227,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("driveKey"),				Key>,
 				Field<STR_LITERAL("downloadSize"),			uint64_t>,
 				Field<STR_LITERAL("feedbackFeeAmount"),		Amount>,
-				Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t> >;
+				Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>,
+                Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<Key> >>;
 
         template<typename TBase>
         using TDownloadPaymentTransactionDto = VariadicStruct<

@@ -332,6 +332,7 @@ namespace xpx_chain_sdk { namespace internal {
 	                              uint64_t downloadSize,
 	                              const Amount& feedbackFeeAmount,
                                   uint16_t listOfPublicKeysSize,
+                                  const std::vector<Key>& listOfPublicKeys,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,

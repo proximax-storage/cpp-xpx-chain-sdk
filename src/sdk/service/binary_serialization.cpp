@@ -333,7 +333,8 @@ namespace xpx_chain_sdk {
                     dto.template value<"driveKey"_>(),
                     dto.template value<"downloadSize"_>(),
                     dto.template value<"feedbackFeeAmount"_>(),
-                    dto.template value<"listOfPublicKeysSize"_>());
+                    dto.template value<"listOfPublicKeysSize"_>(),
+                    dto.template value<"listOfPublicKeys"_>());
 		}
 
         template<

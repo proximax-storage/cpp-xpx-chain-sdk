@@ -31,6 +31,12 @@ namespace xpx_chain_sdk {
         return listOfPublicKeysSize_;
     }
 
+	template<typename TBase>
+    std::vector<Key> TDownloadTransaction<TBase>::listOfPublicKeys() const
+	{
+		return listOfPublicKeys_;
+	}
+
 	template class TDownloadTransaction<Transaction>;
 	template class TDownloadTransaction<EmbeddedTransaction>;
 }
