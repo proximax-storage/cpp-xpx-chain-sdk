@@ -20,9 +20,21 @@ namespace xpx_chain_sdk {
 	}
 
 	template<typename TBase>
-	uint16_t TDownloadTransaction<TBase>::listOfPublicKeysSize() const
+	const Amount& TDownloadTransaction<TBase>::feedbackFeeAmount() const
 	{
-		return listOfPublicKeysSize_;
+		return feedbackFeeAmount_;
+	}
+
+    template<typename TBase>
+    uint16_t TDownloadTransaction<TBase>::listOfPublicKeysSize() const
+    {
+        return listOfPublicKeysSize_;
+    }
+
+	template<typename TBase>
+    std::vector<Key> TDownloadTransaction<TBase>::listOfPublicKeys() const
+	{
+		return listOfPublicKeys_;
 	}
 
 	template class TDownloadTransaction<Transaction>;

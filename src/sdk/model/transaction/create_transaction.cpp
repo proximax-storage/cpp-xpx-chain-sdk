@@ -584,14 +584,18 @@ namespace xpx_chain_sdk { namespace internal {
 
 		template<typename TDto, typename... TArgs>
 		void InitDownloadTransactionDTO(TDto& dto,
-                                        const uint64_t& downloadSize,
-                                        const Amount& feedbackFeeAmount,
+										const Key& driveKey,
+										uint64_t downloadSize,
+										const Amount& feedbackFeeAmount,
                                         uint16_t listOfPublicKeysSize,
+                                        const std::vector<Key>& listOfPublicKeys,
 		                                TArgs&&... args)
 		{
+			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"downloadSize"_>(downloadSize);
 			dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
 			dto.template set<"listOfPublicKeysSize"_>(listOfPublicKeysSize);
+			dto.template set<"listOfPublicKeys"_>(listOfPublicKeys);
 
 			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
 		}
@@ -675,14 +679,24 @@ namespace xpx_chain_sdk { namespace internal {
         }
 
 		template<typename TDto, typename... TArgs>
-		void InitReplicatorOnboardingTransactionDTO(TDto& dto,
-										const Amount& capacity,
-		                                TArgs&&... args)
+        void InitReplicatorOnboardingTransactionDTO(TDto& dto,
+                                                    const Amount& capacity,
+                                                    TArgs&&... args)
 		{
 			dto.template set<"capacity"_>(capacity);
 
 			InitTransactionDTO(dto, TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...);
 		}
+
+        template<typename TDto, typename... TArgs>
+        void InitReplicatorOffboardingTransactionDTO(TDto& dto,
+                                                     const Key& driveKey,
+                                                     TArgs&&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+
+            InitTransactionDTO(dto, TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...);
+        }
 	}
 	
 	
@@ -1057,9 +1071,11 @@ namespace xpx_chain_sdk { namespace internal {
 	}
 
 	std::unique_ptr<DownloadTransaction>
-	CreateDownloadTransactionImpl(const uint64_t& downloadSize,
-                                  const Amount& feedbackFeeAmount,
+	CreateDownloadTransactionImpl(const Key& driveKey,
+	                              uint64_t downloadSize,
+	                              const Amount& feedbackFeeAmount,
                                   uint16_t listOfPublicKeysSize,
+                                  const std::vector<Key>& listOfPublicKeys,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,
@@ -1069,10 +1085,10 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		DownloadTransactionDTO dto;
 		InitDownloadTransactionDTO(
-			dto, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<DownloadTransactionImpl>(
-			dto, signer, signature, info, downloadSize, feedbackFeeAmount, listOfPublicKeysSize);
+			dto, signer, signature, info, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys);
 	}
 
     std::unique_ptr<DownloadPaymentTransaction>
@@ -1169,13 +1185,13 @@ namespace xpx_chain_sdk { namespace internal {
     }
 
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId,
+                                              const std::optional<Key>& signer,
+                                              const std::optional<Signature>& signature,
+                                              const std::optional<TransactionInfo>& info)
 	{
 		ReplicatorOnboardingTransactionDTO dto;
 		InitReplicatorOnboardingTransactionDTO(
@@ -1184,6 +1200,23 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<ReplicatorOnboardingTransactionImpl>(
 			dto, signer, signature, info, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransactionImpl(const Key& driveKey,
+                                               std::optional<Amount> maxFee,
+                                               std::optional<NetworkDuration> deadline,
+                                               std::optional<NetworkIdentifier> networkId,
+                                               const std::optional<Key>& signer,
+                                               const std::optional<Signature>& signature,
+                                               const std::optional<TransactionInfo>& info)
+    {
+        ReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(
+                dto, driveKey, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<ReplicatorOffboardingTransactionImpl>(
+                dto, signer, signature, info, driveKey);
+    }
 }}
 
 
@@ -1667,26 +1700,30 @@ namespace xpx_chain_sdk {
 	}
 
 	std::unique_ptr<DownloadTransaction>
-	CreateDownloadTransaction(const uint64_t& downloadSize,
-                              const Amount& feedbackFeeAmount,
-                              uint16_t listOfPublicKeysSize,
+	CreateDownloadTransaction(const Key& driveKey,
+	                          uint64_t downloadSize,
+	                          const Amount& feedbackFeeAmount,
+	                          uint16_t listOfPublicKeysSize,
+                              const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
 	                          std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDownloadTransactionImpl(downloadSize, feedbackFeeAmount, listOfPublicKeysSize, maxFee, deadline, networkId);
+		return CreateDownloadTransactionImpl(driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDownloadTransaction>
-	CreateEmbeddedDownloadTransaction(const uint64_t& downloadSize,
-                                      const Amount& feedbackFeeAmount,
+	CreateEmbeddedDownloadTransaction(const Key& driveKey,
+	                                  uint64_t downloadSize,
+	                                  const Amount& feedbackFeeAmount,
                                       uint16_t listOfPublicKeysSize,
+                                      const std::vector<Key>& listOfPublicKeys,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDownloadTransactionDTO dto;
-		InitDownloadTransactionDTO(dto, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, signer, networkId);
-		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, downloadSize, feedbackFeeAmount, listOfPublicKeysSize);
+		InitDownloadTransactionDTO(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, signer, networkId);
+		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys);
 	}
 
     std::unique_ptr<DownloadPaymentTransaction>
@@ -1818,4 +1855,23 @@ namespace xpx_chain_sdk {
 		InitReplicatorOnboardingTransactionDTO(dto, capacity, signer, networkId);
 		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransaction(const Key& driveKey,
+                                           std::optional<Amount> maxFee,
+                                           std::optional<NetworkDuration> deadline,
+                                           std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateReplicatorOffboardingTransactionImpl(driveKey, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedReplicatorOffboardingTransaction>
+    CreateEmbeddedReplicatorOffboardingTransaction(const Key& driveKey,
+                                                   const Key& signer,
+                                                   std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(dto, driveKey, signer, networkId);
+        return CreateTransaction<EmbeddedReplicatorOffboardingTransactionImpl>(dto, driveKey);
+    }
 }

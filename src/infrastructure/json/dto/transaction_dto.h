@@ -226,9 +226,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TDownloadTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("downloadSize"),				uint64_t>,
-				Field<STR_LITERAL("feedbackFeeAmount"),			Amount>,
-				Field<STR_LITERAL("listOfPublicKeysSize"),		uint16_t> >;
+				Field<STR_LITERAL("driveKey"),				Key>,
+				Field<STR_LITERAL("downloadSize"),			uint64_t>,
+				Field<STR_LITERAL("feedbackFeeAmount"),		Amount>,
+				Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>,
+                Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<Key> >>;
 
         template<typename TBase>
         using TDownloadPaymentTransactionDto = VariadicStruct<
@@ -266,7 +268,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("capacity"),				Amount>>;
+				Field<STR_LITERAL("capacity"), Amount>>;
+
+        template<typename TBase>
+        using TReplicatorOffboardingTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("driveKey"), Key>>;
 
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
@@ -348,4 +355,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;
+
+        using ReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<TransactionDto>;
+        using EmbeddedReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<EmbeddedTransactionDto>;
 	}

@@ -23,29 +23,41 @@ namespace xpx_chain_sdk {
 		/// Creates download transaction.
 		template<typename... TArgs>
 		explicit TDownloadTransaction(
-                const uint64_t& downloadSize,
-                const Amount& feedbackFeeAmount,
-                uint16_t listOfPublicKeysSize,
+				const Key& driveKey,
+				uint64_t downloadSize,
+				const Amount& feedbackFeeAmount,
+				const uint16_t& listOfPublicKeysSize,
+                const std::vector<Key>& listOfPublicKeys,
 		        TArgs&&... args):
 			TBase(TransactionType::Download, std::forward<TArgs>(args)...),
-            downloadSize_(downloadSize),
+			driveKey_(driveKey),
+			downloadSize_(downloadSize),
             feedbackFeeAmount_(feedbackFeeAmount),
-            listOfPublicKeysSize_(listOfPublicKeysSize)
+            listOfPublicKeysSize_(listOfPublicKeysSize),
+            listOfPublicKeys_(listOfPublicKeys)
 		{ }
 
-        /// Returns prepaid download Size.
-        const uint64_t& downloadSize() const;
+		/// Returns drive key.
+		const Key& driveKey() const;
+
+		/// Returns download size.
+		uint64_t downloadSize() const;
 
 		/// Returns XPXs to lock for future payment for.
 		const Amount& feedbackFeeAmount() const;
 
-		/// Returns size of the list of public keys.
+        /// Returns size of the list of public keys.
         uint16_t listOfPublicKeysSize() const;
 
+        /// Returns list of public keys.
+        std::vector<Key> listOfPublicKeys() const;
+
 	private:
+		Key driveKey_;
 		uint64_t downloadSize_;
-        Amount feedbackFeeAmount_;
+		Amount feedbackFeeAmount_;
         uint16_t listOfPublicKeysSize_;
+        std::vector<Key> listOfPublicKeys_;
 	};
 
 	extern template class TDownloadTransaction<Transaction>;
@@ -58,9 +70,11 @@ namespace xpx_chain_sdk {
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<DownloadTransaction>
-	CreateDownloadTransaction(const uint64_t& downloadSize,
+	CreateDownloadTransaction(const Key& driveKey,
+	                          uint64_t downloadSize,
                               const Amount& feedbackFeeAmount,
-                              uint16_t listOfPublicKeysSize,
+                              const uint16_t& listOfPublicKeysSize,
+                              const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,
 	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
@@ -70,9 +84,11 @@ namespace xpx_chain_sdk {
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedDownloadTransaction>
-	CreateEmbeddedDownloadTransaction(const uint64_t& downloadSize,
+	CreateEmbeddedDownloadTransaction(const Key& driveKey,
+	                                  uint64_t downloadSize,
                                       const Amount& feedbackFeeAmount,
-                                      uint16_t listOfPublicKeysSize,
+                                      const uint16_t& listOfPublicKeysSize,
+                                      const std::vector<Key>& listOfPublicKeys,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

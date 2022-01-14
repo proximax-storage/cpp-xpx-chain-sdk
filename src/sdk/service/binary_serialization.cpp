@@ -335,9 +335,11 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
                     dto, binaryData,
+                    dto.template value<"driveKey"_>(),
                     dto.template value<"downloadSize"_>(),
                     dto.template value<"feedbackFeeAmount"_>(),
-                    dto.template value<"listOfPublicKeysSize"_>());
+                    dto.template value<"listOfPublicKeysSize"_>(),
+                    dto.template value<"listOfPublicKeys"_>());
 		}
 
         template<
@@ -415,6 +417,18 @@ namespace xpx_chain_sdk {
 				dto, binaryData,
 				dto.template value<"capacity"_>());
 		}
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        ReplicatorOffboardingTransactionImpl,
+                        EmbeddedReplicatorOffboardingTransactionImpl>>
+        std::unique_ptr<TImpl> CreateReplicatorOffboardingTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>());
+        }
 		
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
 		{
@@ -699,6 +713,17 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Replicator_Offboarding:
+                    {
+                        EmbeddedReplicatorOffboardingTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateReplicatorOffboardingTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				default:
 					{
 						return false;
@@ -1062,6 +1087,18 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Replicator_Offboarding:
+            {
+                ReplicatorOffboardingTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateReplicatorOffboardingTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		default:
 			{
 				break;

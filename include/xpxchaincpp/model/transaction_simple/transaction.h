@@ -222,9 +222,11 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDownloadTransaction: public TBase {
     public:
-        uint64_t downloadSize;
-        Amount feedbackFeeAmount;
+		Key driveKey;
+		uint64_t downloadSize;
+		Amount feedbackFeeAmount;
         uint16_t listOfPublicKeysSize;
+        std::vector<Key> listOfPublicKeys;
 
     };
 
@@ -275,6 +277,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+
+    };
+
+    template<typename TBase>
+    class TReplicatorOffboardingTransaction: public TBase {
+    public:
+        Key driveKey;
 
     };
 
@@ -355,6 +364,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
+    using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
 }}
 
 

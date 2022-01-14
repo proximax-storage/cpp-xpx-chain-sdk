@@ -97,12 +97,12 @@ int main() {
 			MosaicFlags::Supply_Mutable, mosaicProperties);
 
 	xpx_chain_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
-		if(reason == PrivateKeySupplierReason::Transaction_Signing) {
-			Key key;
+        Key key;
+        if(reason == PrivateKeySupplierReason::Transaction_Signing) {
 			ParseHexStringIntoContainer(privateKeyString.c_str(), privateKeyString.size(), key);
-
-			return PrivateKey(key.data(), key.size());
 		}
+
+        return PrivateKey(key.data(), key.size());
 	}, mosaicDefinitionTransaction -> networkId());
 
 	account.signTransaction(mosaicDefinitionTransaction.get());
