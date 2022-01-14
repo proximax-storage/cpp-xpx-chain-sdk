@@ -306,29 +306,31 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
-	                              uint16_t replicatorCount,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+                                        const Amount& verificationFeeAmount,
+                                        uint16_t replicatorCount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationTransaction>
-	CreateDataModificationTransactionImpl(const Key& driveKey,
-	                              const Hash256& downloadDataCdi,
-	                              uint64_t uploadSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+    CreateDataModificationTransactionImpl(const Key& driveKey,
+                                          const Hash256& downloadDataCdi,
+                                          uint64_t uploadSize,
+                                          const Amount& feedbackFeeAmount,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer = std::nullopt,
+                                          const std::optional<Signature>& signature = std::nullopt,
+                                          const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DownloadTransaction>
-	CreateDownloadTransactionImpl(const Key& driveKey,
-	                              uint64_t downloadSize,
-	                              const Amount& transactionFee,
+	CreateDownloadTransactionImpl(const uint64_t& downloadSize,
+                                  const Amount& feedbackFeeAmount,
+                                  uint16_t listOfPublicKeysSize,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,

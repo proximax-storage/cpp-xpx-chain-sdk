@@ -1432,6 +1432,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.driveSize = dto.value<"driveSize"_>();
+		transaction.verificationFeeAmount = dto.value<"verificationFeeAmount"_>();
 		transaction.replicatorCount = dto.value<"replicatorCount"_>();
 
 		return transaction;
@@ -1446,6 +1447,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadDataCdi = dto.value<"downloadDataCdi"_>();
 		transaction.uploadSize = dto.value<"uploadSize"_>();
+		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
 
 		return transaction;
 	}
@@ -1456,9 +1458,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadSize = dto.value<"downloadSize"_>();
-		transaction.transactionFee = dto.value<"transactionFee"_>();
+		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+		transaction.listOfPublicKeysSize = dto.value<"listOfPublicKeysSize"_>();
 
 		return transaction;
 	}

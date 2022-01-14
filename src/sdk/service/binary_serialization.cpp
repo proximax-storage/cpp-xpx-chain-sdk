@@ -306,7 +306,9 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"driveSize"_>(), dto.template value<"replicatorCount"_>());
+                dto.template value<"driveSize"_>(),
+                dto.template value<"verificationFeeAmount"_>(),
+                dto.template value<"replicatorCount"_>());
 		}
 
 		template<
@@ -314,12 +316,15 @@ namespace xpx_chain_sdk {
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
 			                                    DataModificationTransactionImpl,
 			                                    EmbeddedDataModificationTransactionImpl>>
-		std::unique_ptr<TImpl> CreateDataModificationTransaction(const TDto& dto, RawBuffer binaryData)
-		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"downloadDataCdi"_>(), dto.template value<"uploadSize"_>());
-		}
+        std::unique_ptr<TImpl> CreateDataModificationTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"downloadDataCdi"_>(),
+                    dto.template value<"uploadSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
 
 		template<
 			typename TDto,
@@ -330,9 +335,9 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
                     dto, binaryData,
-                    dto.template value<"driveKey"_>(),
                     dto.template value<"downloadSize"_>(),
-                    dto.template value<"transactionFee"_>());
+                    dto.template value<"feedbackFeeAmount"_>(),
+                    dto.template value<"listOfPublicKeysSize"_>());
 		}
 
         template<

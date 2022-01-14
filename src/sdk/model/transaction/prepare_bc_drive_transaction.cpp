@@ -13,6 +13,12 @@ namespace xpx_chain_sdk {
 		return driveSize_;
 	}
 
+    template<typename TBase>
+    Amount TPrepareBcDriveTransaction<TBase>::verificationFeeAmount() const
+    {
+        return verificationFeeAmount_;
+    }
+
 	template<typename TBase>
 	uint16_t TPrepareBcDriveTransaction<TBase>::replicatorCount() const
 	{

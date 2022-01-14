@@ -100,8 +100,6 @@ namespace xpx_chain_sdk {
 		std::string payloadStr = bytes_to_string(payload);
 		requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::cout << requestJson << std::endl;
-
 		std::string path = "transactions";
 
 		RequestParamsBuilder builder(_config);

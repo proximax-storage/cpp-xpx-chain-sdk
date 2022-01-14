@@ -212,6 +212,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		using TPrepareBcDriveTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("driveSize"),				uint64_t>,
+				Field<STR_LITERAL("verificationFeeAmount"), Amount>,
 				Field<STR_LITERAL("replicatorCount"),		uint16_t> >;
 
 		template<typename TBase>
@@ -219,14 +220,15 @@ namespace xpx_chain_sdk::internal::json::dto {
 				TBase,
 				Field<STR_LITERAL("driveKey"),				Key>,
 				Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
-				Field<STR_LITERAL("uploadSize"),			uint64_t> >;
+				Field<STR_LITERAL("uploadSize"),			uint64_t>,
+				Field<STR_LITERAL("feedbackFeeAmount"),		Amount> >;
 
 		template<typename TBase>
 		using TDownloadTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveKey"),				Key>,
-				Field<STR_LITERAL("downloadSize"),			uint64_t>,
-				Field<STR_LITERAL("transactionFee"),		Amount> >;
+				Field<STR_LITERAL("downloadSize"),				uint64_t>,
+				Field<STR_LITERAL("feedbackFeeAmount"),			Amount>,
+				Field<STR_LITERAL("listOfPublicKeysSize"),		uint16_t> >;
 
         template<typename TBase>
         using TDownloadPaymentTransactionDto = VariadicStruct<

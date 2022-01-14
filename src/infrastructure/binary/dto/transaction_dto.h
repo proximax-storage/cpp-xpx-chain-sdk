@@ -194,7 +194,8 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TPrepareBcDriveTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("driveSize"),			uint64_t>,
+		Field<STR_LITERAL("driveSize"),			    uint64_t>,
+		Field<STR_LITERAL("verificationFeeAmount"),	Amount>,
 		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
 	
 	template<typename TBase>
@@ -202,14 +203,15 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		TBase,
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
-		Field<STR_LITERAL("uploadSize"),			uint64_t>>;
+		Field<STR_LITERAL("uploadSize"),			uint64_t>,
+		Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
 
 	template<typename TBase>
 	using TDownloadTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("driveKey"),				Key>,
-		Field<STR_LITERAL("downloadSize"),			uint64_t>,
-		Field<STR_LITERAL("transactionFee"),		Amount>>;
+		Field<STR_LITERAL("downloadSize"),				uint64_t>,
+		Field<STR_LITERAL("feedbackFeeAmount"),			Amount>,
+		Field<STR_LITERAL("listOfPublicKeysSize"),		uint16_t>>;
 
     template<typename TBase>
     using TDownloadPaymentTransactionDTO = VariadicStruct<

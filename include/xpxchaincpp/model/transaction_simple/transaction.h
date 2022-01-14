@@ -204,6 +204,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TPrepareBcDriveTransaction: public TBase {
     public:
 		uint64_t driveSize;
+		Amount verificationFeeAmount;
         uint16_t replicatorCount;
 
     };
@@ -214,15 +215,16 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		Key driveKey;
 		Hash256 downloadDataCdi;
 		uint64_t uploadSize;
+        Amount feedbackFeeAmount;
 
     };
 
     template<typename TBase>
     class TDownloadTransaction: public TBase {
     public:
-		Key driveKey;
-		uint64_t downloadSize;
-		Amount transactionFee;
+        uint64_t downloadSize;
+        Amount feedbackFeeAmount;
+        uint16_t listOfPublicKeysSize;
 
     };
 
