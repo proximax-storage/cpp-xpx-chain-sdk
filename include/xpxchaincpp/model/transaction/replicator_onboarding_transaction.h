@@ -29,7 +29,7 @@ namespace xpx_chain_sdk {
 			capacity_(capacity)
 		{ }
 
-		/// Returns capacity that the replicator is willing to contribute.
+		/// Returns capacity that the replicator is willing to contribute (Megabytes).
 		const Amount& capacity() const;
 
 	private:
