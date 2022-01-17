@@ -71,9 +71,9 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransaction(const Key& driveKey,
-	                          uint64_t downloadSize,
+                              uint64_t downloadSize,
                               const Amount& feedbackFeeAmount,
-                              const uint16_t& listOfPublicKeysSize,
+                              uint16_t listOfPublicKeysSize,
                               const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,

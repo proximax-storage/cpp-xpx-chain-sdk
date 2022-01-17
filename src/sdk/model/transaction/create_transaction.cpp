@@ -1072,8 +1072,8 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransactionImpl(const Key& driveKey,
-	                              uint64_t downloadSize,
-	                              const Amount& feedbackFeeAmount,
+                                  uint64_t downloadSize,
+                                  const Amount& feedbackFeeAmount,
                                   uint16_t listOfPublicKeysSize,
                                   const std::vector<Key>& listOfPublicKeys,
 	                              std::optional<Amount> maxFee,
@@ -1701,9 +1701,9 @@ namespace xpx_chain_sdk {
 
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransaction(const Key& driveKey,
-	                          uint64_t downloadSize,
-	                          const Amount& feedbackFeeAmount,
-	                          uint16_t listOfPublicKeysSize,
+                              uint64_t downloadSize,
+                              const Amount& feedbackFeeAmount,
+                              uint16_t listOfPublicKeysSize,
                               const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
