@@ -792,6 +792,38 @@ namespace xpx_chain_sdk::internal::json::dto {
         return {fromDto<NetworkVersionData, NetworkVersionDataDto>(dto.value<"blockchainUpgrade"_>())};
     }
 
+    template<>
+    DriveData fromDto<DriveData, DriveDataDto>(const DriveDataDto &dto) {
+        DriveData driveData;
+        driveData.multisig = dto.value<"multisig"_>();
+        driveData.owner = dto.value<"owner"_>();
+        driveData.rootHash = dto.value<"rootHash"_>();
+        driveData.size = dto.value<"size"_>();
+        driveData.usedSize = dto.value<"usedSize"_>();
+        driveData.replicators = dto.value<"replicators"_>();
+        driveData.offboardingReplicators = dto.value<"offboardingReplicators"_>();
+        return driveData;
+    }
+
+    template<>
+    Drive fromDto<Drive, DriveDto>(const DriveDto &dto) {
+        Drive drive;
+        drive.data = fromDto<DriveData, DriveDataDto>(dto.value<"drive"_>());
+        return drive;
+    }
+
+	template<>
+	MultipleDrives fromDto<MultipleDrives, MultipleDrivesDto>(const MultipleDrivesDto &dto) {
+		MultipleDrives mddto;
+
+		for (auto &driveDto: dto) {
+			Drive drive = fromDto<Drive, DriveDto>(driveDto);
+			mddto.drives.push_back(drive);
+		}
+
+		return mddto;
+	}
+
 	/// Transaction Meta
 
 	template<>

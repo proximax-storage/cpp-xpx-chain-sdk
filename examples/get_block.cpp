@@ -28,6 +28,13 @@ int main() {
 
 	auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
 
+	auto drives = client->storage()->getDrives();
+	std::cout << "Drive number: " << drives.drives.size() << std::endl;
+	for (const auto& drive : drives.drives)
+		std::cout << "Drive key: " << drive.data.multisig << std::endl;
+
+	return 0;
+
 	auto score = client->blockchain()->getCurrentScore();
 	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;
 

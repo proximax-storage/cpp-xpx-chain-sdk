@@ -7,7 +7,6 @@
 #pragma once
 
 #include <xpxchaincpp/config.h>
-#include <xpxchaincpp/client/blockchain_service.h>
 #include <xpxchaincpp/model/blockchain/storage_info.h>
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_container.h>
