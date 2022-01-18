@@ -24,6 +24,7 @@ public:
         _notification   = std::make_shared<NotificationService>(config, _context);
         _network        = std::make_shared<NetworkService>(config, _context);
         _transaction    = std::make_shared<TransactionService>(config, _context);
+        _storage    = std::make_shared<StorageService>(config, _context);
 	}
 
 	std::shared_ptr<AccountService> account() const override  {
@@ -54,6 +55,10 @@ public:
 		return _transaction;
 	}
 
+	std::shared_ptr<StorageService> storage() const override {
+		return _storage;
+	}
+
 private:
 	std::shared_ptr<Config> _config;
 	std::shared_ptr<internal::network::Context> _context;
@@ -65,6 +70,7 @@ private:
     std::shared_ptr<NotificationService> _notification;
 	std::shared_ptr<NetworkService> _network;
 	std::shared_ptr<TransactionService> _transaction;
+	std::shared_ptr<StorageService> _storage;
 };
 
 namespace xpx_chain_sdk {
