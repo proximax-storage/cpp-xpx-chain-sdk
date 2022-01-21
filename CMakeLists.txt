@@ -9,10 +9,10 @@ cmake_policy(SET CMP0068 OLD)
 # options and features
 #-----------------------------------------------------------------------------
 
-option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
-option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
-option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
-option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." ON)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
+option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." ON)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "XPX-CHAIN SDK build type." FORCE)
@@ -192,8 +192,11 @@ install(FILES
 # tests
 #-----------------------------------------------------------------------------
 
+include(CTest)
+
 if (XPX_CHAIN_SDK_BUILD_TESTS)
-	enable_testing()
+	# include(CTest)
+	enable_testing()	
 	add_subdirectory(tests)
 endif()
 
