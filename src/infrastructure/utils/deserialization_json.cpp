@@ -887,7 +887,6 @@ namespace xpx_chain_sdk::internal::json::dto {
         replicator.replicatorKey = replicatorDto.value<"key"_>();
         replicator.version = replicatorDto.value<"version"_>();
         replicator.capacity = replicatorDto.value<"capacity"_>();
-        replicator.blskey = replicatorDto.value<"blsKey"_>();
 		for(auto& drive : replicatorDto.value<"drives"_>()) {
             replicator.drives.push_back(fromDto<DriveInfo, DriveInfoDto>(drive));
         }
@@ -1608,7 +1607,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.capacity = dto.value<"capacity"_>();
-		transaction.blskey = dto.value<"blskey"_>();
 
 		return transaction;
 	}

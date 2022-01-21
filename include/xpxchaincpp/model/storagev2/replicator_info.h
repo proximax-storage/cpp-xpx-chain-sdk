@@ -24,7 +24,6 @@ namespace xpx_chain_sdk {
         std::string replicatorKey;
 		uint32_t version;
 		uint64_t capacity;
-		std::string blskey;
 		std::vector<DriveInfo> drives;
     };
 

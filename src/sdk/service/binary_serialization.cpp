@@ -353,7 +353,7 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"capacity"_>(), dto.template value<"blskey"_>());
+				dto.template value<"capacity"_>());
 		}
 
 		template<

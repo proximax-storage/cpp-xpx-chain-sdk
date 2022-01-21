@@ -224,8 +224,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("capacity"),				Amount>,
-		Field<STR_LITERAL("blskey"),				BLSPublicKey>>;
+		Field<STR_LITERAL("capacity"),				Amount>>;
 	
 	template<typename TBase>
 	using TReplicatorOffboardingTransactionDTO = VariadicStruct<

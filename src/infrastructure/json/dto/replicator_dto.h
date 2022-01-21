@@ -27,7 +27,6 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("key"), std::string>,
             Field<STR_LITERAL("version"), Uint32>,
             Field<STR_LITERAL("capacity"), Uint64>,
-            Field<STR_LITERAL("blsKey"), std::string>,
             Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> > > > >;
 
     using MultipleReplicatorDto = VariadicStruct<

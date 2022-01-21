@@ -344,7 +344,6 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<ReplicatorOnboardingTransaction>
 	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-								  const BLSPublicKey& blskey,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,

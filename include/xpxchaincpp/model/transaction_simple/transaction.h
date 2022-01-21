@@ -243,7 +243,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
-        BLSPublicKey blskey;
 
     };
 

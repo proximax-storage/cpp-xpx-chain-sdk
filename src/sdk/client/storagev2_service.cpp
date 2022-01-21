@@ -76,16 +76,3 @@ Replicator StorageV2Service::getReplicatorByPublicKey(const std::string& id){
     auto result = from_json<Replicator, ReplicatorDto>(response);
     return result;
 }
-
-Replicator StorageV2Service::getReplicatorByBlsKey(const std::string& id){
-    std::stringstream path;
-    path << "account_v2/" << id << "/replicator";
-
-    RequestParamsBuilder builder(_config);
-    builder.setPath(path.str());
-    builder.setMethod(internal::network::HTTPRequestMethod::GET);
-
-    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
-    auto result = from_json<Replicator, ReplicatorDto>(response);
-    return result;
-}

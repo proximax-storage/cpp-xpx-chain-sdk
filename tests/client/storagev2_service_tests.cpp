@@ -16,6 +16,7 @@ namespace xpx_chain_sdk::tests {
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
     auto replicatorAccount = getTestAccount(replicatorData.privateKey);
     auto driveAccount = getTestAccount(driveData.privateKey);
+    auto capacity = 100;
 
     TEST(TEST_CLASS, StorageV2Service_Flow_Test) {
         Address replicatorAddress(replicatorData.publicKeyContainer);
@@ -38,16 +39,18 @@ namespace xpx_chain_sdk::tests {
 
         // Replicator onboarding transaction
         std::unique_ptr<ReplicatorOnboardingTransaction> onboardingTx = CreateReplicatorOnboardingTransaction(
-                10, BLSPublicKey());
+                capacity);
 
         replicatorAccount->signTransaction(onboardingTx.get());
 
         EXPECT_TRUE(client->transactions()->announceNewTransaction(onboardingTx->binary()));
 
-        sleep(10);
+        sleep(5);
 
         Replicator replicatorInfo = client->storagev2()->getReplicatorByPublicKey(replicatorData.publicKey);
         EXPECT_EQ(replicatorData.publicKey, replicatorInfo.replicatorKey);
+        EXPECT_EQ(capacity, replicatorInfo.capacity);
+        EXPECT_EQ(0, replicatorInfo.drives.size());
 
         // PrepareDrive transaction
         std::unique_ptr<PrepareBcDriveTransaction> prepareDriveTx = CreatePrepareBcDriveTransaction(
@@ -57,10 +60,10 @@ namespace xpx_chain_sdk::tests {
 
         EXPECT_TRUE(client->transactions()->announceNewTransaction(prepareDriveTx->binary()));
         
-        sleep(10);
+        // sleep(5);
 
-        BcDrive bcDriveInfo = client->storagev2()->getBcDriveByAccountId(driveData.publicKey);
-        EXPECT_EQ(driveData.publicKey, bcDriveInfo.owner);
+        // BcDrive bcDriveInfo = client->storagev2()->getBcDriveByAccountId(driveData.publicKey);
+        // EXPECT_EQ(driveData.publicKey, bcDriveInfo.owner);
         
         // DriveClosure transaction
         std::unique_ptr<DriveClosureTransaction> driveClosureTx = CreateDriveClosureTransaction(prepareDriveTx.get()->hash());
@@ -79,6 +82,8 @@ namespace xpx_chain_sdk::tests {
         replicatorAccount->signTransaction(offboardingTx.get());
 
         EXPECT_TRUE(client->transactions()->announceNewTransaction(offboardingTx->binary()));
+
+        sleep(10);
 
         EXPECT_ANY_THROW(client->storagev2()->getReplicatorByPublicKey(replicatorData.publicKey));
     }
