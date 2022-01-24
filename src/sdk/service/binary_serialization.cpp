@@ -375,10 +375,22 @@ namespace xpx_chain_sdk {
 			                                    EmbeddedDataModificationApprovalTransactionImpl>>
 		std::unique_ptr<TImpl> CreateDataModificationApprovalTransaction(const TDto& dto, RawBuffer binaryData)
 		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>(), dto.template value<"fileStructureCdi"_>(),
-				dto.template value<"fileStructureSize"_>(), dto.template value<"usedDriveSize"_>());
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"dataModificationId"_>(),
+                    dto.template value<"fileStructureCdi"_>(),
+                    dto.template value<"fileStructureSize"_>(),
+                    dto.template value<"metaFilesSize"_>(),
+                    dto.template value<"usedDriveSize"_>(),
+                    dto.template value<"judgingKeysCount"_>(),
+                    dto.template value<"overlappingKeysCount"_>(),
+                    dto.template value<"judgedKeysCount"_>(),
+                    dto.template value<"opinionElementCount"_>(),
+                    dto.template value<"publicKeys"_>(),
+                    dto.template value<"signatures"_>(),
+                    dto.template value<"presentOpinions"_>(),
+                    dto.template value<"opinions"_>());
 		}
 
 		template<

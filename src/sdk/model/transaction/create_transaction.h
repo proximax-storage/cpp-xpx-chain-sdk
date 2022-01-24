@@ -363,17 +363,26 @@ namespace xpx_chain_sdk { namespace internal {
                                      const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationApprovalTransaction>
-	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
-	                              const Hash256& dataModificationId,
-	                              const Hash256& fileStructureCdi,
-	                              uint64_t fileStructureSize,
-	                              uint64_t usedDriveSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+    CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
+                                                  const Hash256& dataModificationId,
+                                                  const Hash256& fileStructureCdi,
+                                                  uint64_t fileStructureSize,
+                                                  uint64_t metaFilesSize,
+                                                  uint64_t usedDriveSize,
+                                                  uint8_t judgingKeysCount,
+                                                  uint8_t overlappingKeysCount,
+                                                  uint8_t judgedKeysCount,
+                                                  uint16_t opinionElementCount,
+                                                  const std::vector<Key>& publicKeys,
+                                                  const std::vector<Signature>& signatures,
+                                                  const std::vector<uint8_t>& presentOpinions,
+                                                  const std::vector<uint64_t>& opinions,
+                                                  std::optional<Amount> maxFee,
+                                                  std::optional<NetworkDuration> deadline,
+                                                  std::optional<NetworkIdentifier> networkId,
+                                                  const std::optional<Key>& signer = std::nullopt,
+                                                  const std::optional<Signature>& signature = std::nullopt,
+                                                  const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationCancelTransaction>
 	CreateDataModificationCancelTransactionImpl(const Key& driveKey,

@@ -596,6 +596,7 @@ namespace xpx_chain_sdk { namespace internal {
 			dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
 			dto.template set<"listOfPublicKeysSize"_>(listOfPublicKeysSize);
 			dto.template set<"listOfPublicKeys"_>(listOfPublicKeys);
+            dto.template isSet<"listOfPublicKeys"_>() = true;
 
 			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
 		}
@@ -634,18 +635,43 @@ namespace xpx_chain_sdk { namespace internal {
 
 		template<typename TDto, typename... TArgs>
 		void InitDataModificationApprovalTransactionDTO(TDto& dto,
-										const Key& driveKey,
-										const Hash256& dataModificationId,
-										const Hash256& fileStructureCdi,
-										uint64_t fileStructureSize,
-										uint64_t usedDriveSize,
-		                                TArgs&&... args)
+                                                        const Key& driveKey,
+                                                        const Hash256& dataModificationId,
+                                                        const Hash256& fileStructureCdi,
+                                                        uint64_t fileStructureSize,
+                                                        uint64_t metaFilesSize,
+                                                        uint64_t usedDriveSize,
+                                                        uint8_t judgingKeysCount,
+                                                        uint8_t overlappingKeysCount,
+                                                        uint8_t judgedKeysCount,
+                                                        uint16_t opinionElementCount,
+                                                        const std::vector<Key>& publicKeys,
+                                                        const std::vector<Signature>& signatures,
+                                                        const std::vector<uint8_t>& presentOpinions,
+                                                        const std::vector<uint64_t>& opinions,
+		                                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"dataModificationId"_>(dataModificationId);
 			dto.template set<"fileStructureCdi"_>(fileStructureCdi);
 			dto.template set<"fileStructureSize"_>(fileStructureSize);
+			dto.template set<"metaFilesSize"_>(metaFilesSize);
 			dto.template set<"usedDriveSize"_>(usedDriveSize);
+			dto.template set<"judgingKeysCount"_>(judgingKeysCount);
+			dto.template set<"overlappingKeysCount"_>(overlappingKeysCount);
+			dto.template set<"judgedKeysCount"_>(judgedKeysCount);
+			dto.template set<"opinionElementCount"_>(opinionElementCount);
+			dto.template set<"publicKeys"_>(publicKeys);
+            dto.template isSet<"publicKeys"_>() = true;
+
+			dto.template set<"signatures"_>(signatures);
+            dto.template isSet<"signatures"_>() = true;
+
+			dto.template set<"presentOpinions"_>(presentOpinions);
+            dto.template isSet<"presentOpinions"_>() = true;
+
+			dto.template set<"opinions"_>(opinions);
+            dto.template isSet<"opinions"_>() = true;
 
 			InitTransactionDTO(dto, TransactionType::Data_Modification_Approval, std::forward<TArgs>(args)...);
 		}
@@ -1128,24 +1154,37 @@ namespace xpx_chain_sdk { namespace internal {
     }
 
 	std::unique_ptr<DataModificationApprovalTransaction>
-	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
-	                              const Hash256& dataModificationId,
-	                              const Hash256& fileStructureCdi,
-	                              uint64_t fileStructureSize,
-	                              uint64_t usedDriveSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
+                                                  const Hash256& dataModificationId,
+                                                  const Hash256& fileStructureCdi,
+                                                  uint64_t fileStructureSize,
+                                                  uint64_t metaFilesSize,
+                                                  uint64_t usedDriveSize,
+                                                  uint8_t judgingKeysCount,
+                                                  uint8_t overlappingKeysCount,
+                                                  uint8_t judgedKeysCount,
+                                                  uint16_t opinionElementCount,
+                                                  const std::vector<Key>& publicKeys,
+                                                  const std::vector<Signature>& signatures,
+                                                  const std::vector<uint8_t>& presentOpinions,
+                                                  const std::vector<uint64_t>& opinions,
+                                                  std::optional<Amount> maxFee,
+                                                  std::optional<NetworkDuration> deadline,
+                                                  std::optional<NetworkIdentifier> networkId,
+                                                  const std::optional<Key>& signer,
+                                                  const std::optional<Signature>& signature,
+                                                  const std::optional<TransactionInfo>& info)
 	{
 		DataModificationApprovalTransactionDTO dto;
 		InitDataModificationApprovalTransactionDTO(
-			dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, metaFilesSize, usedDriveSize, judgingKeysCount,
+            overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, maxFee,
+            deadline, networkId, signer, signature);
 
 		return CreateTransaction<DataModificationApprovalTransactionImpl>(
-			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, fileStructureSize,
+            metaFilesSize, usedDriveSize, judgingKeysCount, overlappingKeysCount, judgedKeysCount, opinionElementCount,
+            publicKeys, signatures, presentOpinions, opinions);
 	}
 
 	std::unique_ptr<DataModificationCancelTransaction>
@@ -1773,12 +1812,23 @@ namespace xpx_chain_sdk {
                                               const Hash256& dataModificationId,
                                               const Hash256& fileStructureCdi,
                                               uint64_t fileStructureSize,
+                                              uint64_t metaFilesSize,
                                               uint64_t usedDriveSize,
+                                              uint8_t judgingKeysCount,
+                                              uint8_t overlappingKeysCount,
+                                              uint8_t judgedKeysCount,
+                                              uint16_t opinionElementCount,
+                                              const std::vector<Key>& publicKeys,
+                                              const std::vector<Signature>& signatures,
+                                              const std::vector<uint8_t>& presentOpinions,
+                                              const std::vector<uint64_t>& opinions,
                                               std::optional<Amount> maxFee,
                                               std::optional<NetworkDuration> deadline,
                                               std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId);
+		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, fileStructureSize, metaFilesSize, usedDriveSize, judgingKeysCount,
+                                                             overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions,
+                                                             maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDataModificationApprovalTransaction>
@@ -1786,13 +1836,24 @@ namespace xpx_chain_sdk {
                                                       const Hash256& dataModificationId,
                                                       const Hash256& fileStructureCdi,
                                                       uint64_t fileStructureSize,
+                                                      uint64_t metaFilesSize,
                                                       uint64_t usedDriveSize,
+                                                      uint8_t judgingKeysCount,
+                                                      uint8_t overlappingKeysCount,
+                                                      uint8_t judgedKeysCount,
+                                                      uint16_t opinionElementCount,
+                                                      const std::vector<Key>& publicKeys,
+                                                      const std::vector<Signature>& signatures,
+                                                      const std::vector<uint8_t>& presentOpinions,
+                                                      const std::vector<uint64_t>& opinions,
                                                       const Key& signer,
                                                       std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDataModificationApprovalTransactionDTO dto;
-		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, signer, networkId);
-		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, metaFilesSize, usedDriveSize, judgingKeysCount,
+                                                   overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, metaFilesSize, usedDriveSize, judgingKeysCount,
+                                                                                  overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions);
 	}
 
 	std::unique_ptr<DataModificationCancelTransaction>

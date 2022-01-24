@@ -249,11 +249,20 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDataModificationApprovalTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 dataModificationId;
-		Hash256 fileStructureCdi;
-		uint64_t fileStructureSize;
-		uint64_t usedDriveSize;
+        Key driveKey;
+        Hash256 dataModificationId;
+        Hash256 fileStructureCdi;
+        uint64_t fileStructureSize;
+        uint64_t metaFilesSize;
+        uint64_t usedDriveSize;
+        uint8_t judgingKeysCount;
+        uint8_t overlappingKeysCount;
+        uint8_t judgedKeysCount;
+        uint16_t opinionElementCount;
+        std::vector<Key> publicKeys;
+        std::vector<Signature> signatures;
+        std::vector<uint8_t> presentOpinions;
+        std::vector<uint64_t> opinions;
 
     };
 

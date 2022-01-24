@@ -247,11 +247,20 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TDataModificationApprovalTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveKey"),				Key>,
-				Field<STR_LITERAL("dataModificationId"),	Hash256>,
-				Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
-				Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
-				Field<STR_LITERAL("usedDriveSize"),			uint64_t>>;
+                Field<STR_LITERAL("driveKey"),				Key>,
+                Field<STR_LITERAL("dataModificationId"),	Hash256>,
+                Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
+                Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
+                Field<STR_LITERAL("metaFilesSize"),		    uint64_t>,
+                Field<STR_LITERAL("usedDriveSize"),		    uint64_t>,
+                Field<STR_LITERAL("judgingKeysCount"),		uint8_t>,
+                Field<STR_LITERAL("overlappingKeysCount"),	uint8_t>,
+                Field<STR_LITERAL("judgedKeysCount"),		uint8_t>,
+                Field<STR_LITERAL("opinionElementCount"),	uint16_t>,
+                Field<STR_LITERAL("publicKeys"),		    std::vector<Key>>,
+                Field<STR_LITERAL("signatures"),		    std::vector<Signature>>,
+                Field<STR_LITERAL("presentOpinions"),		std::vector<uint8_t>>,
+                Field<STR_LITERAL("opinions"),			    std::vector<uint64_t>>>;
 
 		template<typename TBase>
 		using TDataModificationCancelTransactionDto = VariadicStruct<
