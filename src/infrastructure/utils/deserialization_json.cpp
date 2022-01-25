@@ -931,7 +931,121 @@ namespace xpx_chain_sdk::internal::json::dto {
         return verification;
     }
 
-	/// Transaction Meta
+    template<>
+    Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto &dto) {
+        Replicator replicator;
+        replicator.data = fromDto<ReplicatorData, ReplicatorDataDto>(dto.value<"replicator"_>());
+        return replicator;
+    }
+
+    template<>
+    ReplicatorData fromDto<ReplicatorData, ReplicatorDataDto>(const ReplicatorDataDto &dto) {
+        ReplicatorData replicatorData;
+        replicatorData.key = dto.value<"key"_>();
+        replicatorData.version = dto.value<"version"_>();
+        replicatorData.capacity = dto.value<"capacity"_>();
+
+        for (const auto& driveInfoDto : dto.value<"drives"_>()) {
+            replicatorData.drivesInfo.push_back(fromDto<DriveInfo, DriveInfoDto>(driveInfoDto));
+        }
+
+        return replicatorData;
+    }
+
+    template<>
+    DriveInfo fromDto<DriveInfo, DriveInfoDto>(const DriveInfoDto &dto) {
+        DriveInfo driveInfo;
+        driveInfo.drive = dto.value<"drive"_>();
+        driveInfo.lastApprovedDataModificationId = dto.value<"lastApprovedDataModificationId"_>();
+        driveInfo.dataModificationIdIsValid = dto.value<"dataModificationIdIsValid"_>();
+        driveInfo.initialDownloadWork = dto.value<"initialDownloadWork"_>();
+        driveInfo.lastCompletedCumulativeDownloadWork = dto.value<"lastCompletedCumulativeDownloadWork"_>();
+
+        return driveInfo;
+    }
+
+    template<>
+    xpx_chain_sdk::replicators_page::Pagination fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(const dto::replicators_page::PaginationDto &dto) {
+        xpx_chain_sdk::replicators_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::replicators_page::ReplicatorsPage fromDto<xpx_chain_sdk::replicators_page::ReplicatorsPage, replicators_page::ReplicatorsPageDto>(const replicators_page::ReplicatorsPageDto &dto) {
+        xpx_chain_sdk::replicators_page::ReplicatorsPage replicatorsPage;
+        replicatorsPage.pagination = fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& replicatorDto : dto.value<"data"_>()) {
+            replicatorsPage.data.replicators.push_back(fromDto<xpx_chain_sdk::Replicator, dto::ReplicatorDto>(replicatorDto));
+        }
+
+        return replicatorsPage;
+    }
+
+    template<>
+    DownloadChannel fromDto<DownloadChannel, DownloadChannelDto>(const DownloadChannelDto &dto) {
+        DownloadChannel downloadChannel;
+        downloadChannel.data = fromDto<DownloadChannelData, DownloadChannelDataDto>(dto.value<"downloadChannelInfo"_>());
+        return downloadChannel;
+    }
+
+    template<>
+    DownloadChannelData fromDto<DownloadChannelData, DownloadChannelDataDto>(const DownloadChannelDataDto &dto) {
+        DownloadChannelData downloadChannelData;
+        downloadChannelData.id = dto.value<"id"_>();
+        downloadChannelData.consumer = dto.value<"consumer"_>();
+        downloadChannelData.drive = dto.value<"drive"_>();
+        downloadChannelData.downloadSize = dto.value<"downloadSize"_>();
+        downloadChannelData.downloadApprovalCount = dto.value<"downloadApprovalCount"_>();
+        downloadChannelData.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
+
+        for(const auto& cumulativePaymentDto : dto.value<"cumulativePayments"_>()) {
+            downloadChannelData.cumulativePayments.push_back(fromDto<xpx_chain_sdk::CumulativePayment, dto::CumulativePaymentDto>(cumulativePaymentDto));
+        }
+
+        return downloadChannelData;
+    }
+
+    template<>
+    CumulativePayment fromDto<CumulativePayment, CumulativePaymentDto>(const CumulativePaymentDto &dto) {
+        CumulativePayment cumulativePayment;
+        cumulativePayment.replicator = dto.value<"replicator"_>();
+        cumulativePayment.payment = dto.value<"payment"_>();
+        return cumulativePayment;
+    }
+
+    template<>
+    xpx_chain_sdk::download_channels_page::Pagination fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(const dto::download_channels_page::PaginationDto &dto) {
+        xpx_chain_sdk::download_channels_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::download_channels_page::DownloadChannelsPage fromDto<xpx_chain_sdk::download_channels_page::DownloadChannelsPage, download_channels_page::DownloadChannelsPageDto>(const download_channels_page::DownloadChannelsPageDto &dto) {
+        xpx_chain_sdk::download_channels_page::DownloadChannelsPage downloadChannelsPage;
+        downloadChannelsPage.pagination = fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& channelDto : dto.value<"data"_>()) {
+            downloadChannelsPage.data.channels.push_back(fromDto<xpx_chain_sdk::DownloadChannel, dto::DownloadChannelDto>(channelDto));
+        }
+
+        return downloadChannelsPage;
+    }
+
+
+    /// Transaction Meta
 
 	template<>
 	TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto) {

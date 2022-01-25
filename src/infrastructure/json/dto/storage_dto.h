@@ -71,4 +71,39 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 	using MultipleDrivesDto = std::vector<DriveDto>;
 
+    using DriveInfoDto = VariadicStruct<
+            Field<STR_LITERAL("drive"), std::string>,
+            Field<STR_LITERAL("lastApprovedDataModificationId"), std::string>,
+            Field<STR_LITERAL("dataModificationIdIsValid"), uint8_t>,
+            Field<STR_LITERAL("initialDownloadWork"), Uint64>,
+            Field<STR_LITERAL("lastCompletedCumulativeDownloadWork"), Uint64>>;
+
+    using ReplicatorDataDto = VariadicStruct<
+            Field<STR_LITERAL("key"), std::string>,
+            Field<STR_LITERAL("version"), Uint32>,
+            Field<STR_LITERAL("capacity"), Uint64>,
+            Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> >>;
+
+    using ReplicatorDto = VariadicStruct<
+            Field<STR_LITERAL("replicator"), ReplicatorDataDto > >;
+
+    using MultipleReplicatorsDto = std::vector<ReplicatorDto>;
+
+    using CumulativePaymentDto = VariadicStruct<
+            Field<STR_LITERAL("replicator"), std::string>,
+            Field<STR_LITERAL("payment"), uint64_t>>;
+
+    using DownloadChannelDataDto = VariadicStruct<
+            Field<STR_LITERAL("id"), std::string>,
+            Field<STR_LITERAL("consumer"), std::string>,
+            Field<STR_LITERAL("drive"), std::string>,
+            Field<STR_LITERAL("downloadSize"), Uint64>,
+            Field<STR_LITERAL("downloadApprovalCount"), uint16_t>,
+            Field<STR_LITERAL("listOfPublicKeys"), std::vector<std::string>>,
+            Field<STR_LITERAL("cumulativePayments"), std::vector<CumulativePaymentDto> >>;
+
+    using DownloadChannelDto = VariadicStruct<
+            Field<STR_LITERAL("downloadChannelInfo"), DownloadChannelDataDto > >;
+
+    using MultipleDownloadChannelsDto = std::vector<DownloadChannelDto>;
 }

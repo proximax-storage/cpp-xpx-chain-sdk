@@ -9,6 +9,8 @@
 #include <infrastructure/json/dto/block_dto.h>
 #include <infrastructure/json/dto/drives_page_dto.h>
 #include <infrastructure/json/dto/drive_state_notification_dto.h>
+#include <infrastructure/json/dto/download_channels_page_dto.h>
+#include <infrastructure/json/dto/replicators_page_dto.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/height.h>
@@ -56,8 +58,9 @@
 #include <xpxchaincpp/model/notification/signer_info_notification.h>
 #include <xpxchaincpp/model/notification/transaction_notification.h>
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
-#include <xpxchaincpp/model/storage/drive.h>
 #include <xpxchaincpp/model/storage/drives_page.h>
+#include <xpxchaincpp/model/storage/download_channels_page.h>
+#include <xpxchaincpp/model/storage/replicators_page.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
 
@@ -193,6 +196,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         Drive fromDto<Drive, DriveDto>(const DriveDto &dto);
 
         template<>
+        DriveInfo fromDto<DriveInfo, DriveInfoDto>(const DriveInfoDto &dto);
+
+        template<>
         xpx_chain_sdk::drives_page::Pagination fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(const dto::drives_page::PaginationDto &dto);
 
         template<>
@@ -212,6 +218,33 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
         template<>
         Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto);
+
+        template<>
+        Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto &dto);
+
+        template<>
+        ReplicatorData fromDto<ReplicatorData, ReplicatorDataDto>(const ReplicatorDataDto &dto);
+
+        template<>
+        xpx_chain_sdk::replicators_page::Pagination fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(const dto::replicators_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::replicators_page::ReplicatorsPage fromDto<xpx_chain_sdk::replicators_page::ReplicatorsPage, replicators_page::ReplicatorsPageDto>(const replicators_page::ReplicatorsPageDto &dto);
+
+        template<>
+        DownloadChannel fromDto<DownloadChannel, DownloadChannelDto>(const DownloadChannelDto &dto);
+
+        template<>
+        DownloadChannelData fromDto<DownloadChannelData, DownloadChannelDataDto>(const DownloadChannelDataDto &dto);
+
+        template<>
+        CumulativePayment fromDto<CumulativePayment, CumulativePaymentDto>(const CumulativePaymentDto &dto);
+
+        template<>
+        xpx_chain_sdk::download_channels_page::Pagination fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(const dto::download_channels_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::download_channels_page::DownloadChannelsPage fromDto<xpx_chain_sdk::download_channels_page::DownloadChannelsPage, download_channels_page::DownloadChannelsPageDto>(const download_channels_page::DownloadChannelsPageDto &dto);
 
         /// Transaction Meta
 

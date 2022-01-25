@@ -8,6 +8,8 @@
 
 #include <xpxchaincpp/config.h>
 #include <xpxchaincpp/model/storage/drives_page.h>
+#include <xpxchaincpp/model/storage/download_channels_page.h>
+#include <xpxchaincpp/model/storage/replicators_page.h>
 #include <memory>
 
 
@@ -30,10 +32,13 @@ namespace xpx_chain_sdk {
 
 		Drive getDriveById(const std::string& id);
         drives_page::DrivesPage getDrives();
+        Replicator getReplicatorById(const std::string& id);
+        replicators_page::ReplicatorsPage getReplicators();
+        DownloadChannel getDownloadChannelById(const std::string& id);
+        download_channels_page::DownloadChannelsPage getDownloadChannels();
 
 	private:
 		std::shared_ptr<Config> _config;
 		std::shared_ptr<Context> _context;
 	};
-
 }
