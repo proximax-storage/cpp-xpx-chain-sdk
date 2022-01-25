@@ -18,6 +18,7 @@ using internal::json::dto::from_json;
 using internal::json::dto::transactions_from_json;
 using internal::json::dto::DriveDto;
 using internal::json::dto::MultipleDrivesDto;
+using internal::json::dto::drives_page::DrivesPageDto;
 
 
 StorageService::StorageService(
@@ -40,7 +41,7 @@ Drive StorageService::getDriveById(const std::string& id) {
 	return from_json<Drive, DriveDto>(response);
 }
 
-MultipleDrives StorageService::getDrives() {
+drives_page::DrivesPage StorageService::getDrives() {
 	std::stringstream path;
 	path << "bcdrives";
 
@@ -49,5 +50,5 @@ MultipleDrives StorageService::getDrives() {
     builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
     std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
-	return from_json<MultipleDrives, MultipleDrivesDto>(response);
+	return from_json<drives_page::DrivesPage, DrivesPageDto>(response);
 }

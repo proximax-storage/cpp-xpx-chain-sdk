@@ -7,6 +7,7 @@
 
 #include <infrastructure/json/parser.h>
 #include <infrastructure/json/dto/block_dto.h>
+#include <infrastructure/json/dto/drives_page_dto.h>
 #include <infrastructure/json/dto/drive_state_notification_dto.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <infrastructure/json/dto/namespace_dto.h>
@@ -56,6 +57,7 @@
 #include <xpxchaincpp/model/notification/transaction_notification.h>
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
 #include <xpxchaincpp/model/storage/drive.h>
+#include <xpxchaincpp/model/storage/drives_page.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
 
@@ -190,6 +192,27 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         Drive fromDto<Drive, DriveDto>(const DriveDto &dto);
 
+        template<>
+        xpx_chain_sdk::drives_page::Pagination fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(const dto::drives_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::drives_page::DrivesPage fromDto<xpx_chain_sdk::drives_page::DrivesPage, drives_page::DrivesPageDto>(const drives_page::DrivesPageDto &dto);
+
+        template<>
+        ActiveDataModification fromDto<ActiveDataModification, ActiveDataModificationDto>(const ActiveDataModificationDto &dto);
+
+        template<>
+        CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto &dto);
+
+        template<>
+        ConfirmedUsedSize fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(const ConfirmedUsedSizeDto &dto);
+
+        template<>
+        Shard fromDto<Shard, ShardDto>(const ShardDto &dto);
+
+        template<>
+        Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto);
+
         /// Transaction Meta
 
         template<>
@@ -205,6 +228,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto);
 
         /// Transactions
+        template<>
+        xpx_chain_sdk::transactions_page::TransactionsPage fromDto<xpx_chain_sdk::transactions_page::TransactionsPage, dto::transactions_page::TransactionsPageDto>(const dto::transactions_page::TransactionsPageDto& dto);
+
+        template<>
+        xpx_chain_sdk::transactions_page::Pagination fromDto<xpx_chain_sdk::transactions_page::Pagination, dto::transactions_page::PaginationDto>(const dto::transactions_page::PaginationDto &dto);
+
         template<>
 		Cosignature fromDto<Cosignature, CosignatureDto>(const CosignatureDto& dto);
 

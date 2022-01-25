@@ -796,12 +796,34 @@ namespace xpx_chain_sdk::internal::json::dto {
     DriveData fromDto<DriveData, DriveDataDto>(const DriveDataDto &dto) {
         DriveData driveData;
         driveData.multisig = dto.value<"multisig"_>();
+        driveData.multisigAddress = dto.value<"multisigAddress"_>();
         driveData.owner = dto.value<"owner"_>();
         driveData.rootHash = dto.value<"rootHash"_>();
         driveData.size = dto.value<"size"_>();
         driveData.usedSize = dto.value<"usedSize"_>();
+        driveData.metaFilesSize = dto.value<"metaFilesSize"_>();
+        driveData.replicatorCount = dto.value<"replicatorCount"_>();
+        driveData.ownerCumulativeUploadSize = dto.value<"ownerCumulativeUploadSize"_>();
+
+        for (const auto& activeModificationDto : dto.value<"activeDataModifications"_>()) {
+            driveData.activeDataModifications.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(activeModificationDto));
+        }
+
+        for (const auto& completedDataModificationDto : dto.value<"completedDataModifications"_>()) {
+            driveData.completedDataModifications.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(completedDataModificationDto));
+        }
+
+        for (const auto& confirmedUsedSizeDto : dto.value<"confirmedUsedSizes"_>()) {
+            driveData.confirmedUsedSizes.push_back(fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(confirmedUsedSizeDto));
+        }
+
         driveData.replicators = dto.value<"replicators"_>();
         driveData.offboardingReplicators = dto.value<"offboardingReplicators"_>();
+
+        for (const auto& verificationDto : dto.value<"verifications"_>()) {
+            driveData.verifications.push_back(fromDto<Verification, VerificationDto>(verificationDto));
+        }
+
         return driveData;
     }
 
@@ -823,6 +845,91 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return mddto;
 	}
+
+    template<>
+    xpx_chain_sdk::drives_page::Pagination fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(const dto::drives_page::PaginationDto &dto) {
+        xpx_chain_sdk::drives_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::drives_page::DrivesPage fromDto<xpx_chain_sdk::drives_page::DrivesPage, drives_page::DrivesPageDto>(const drives_page::DrivesPageDto &dto) {
+        xpx_chain_sdk::drives_page::DrivesPage drivesPage;
+        drivesPage.pagination = fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& driveDto : dto.value<"data"_>()) {
+            drivesPage.data.drives.push_back(fromDto<xpx_chain_sdk::Drive, dto::DriveDto>(driveDto));
+        }
+
+        return drivesPage;
+    }
+
+    template<>
+    ActiveDataModification fromDto<ActiveDataModification, ActiveDataModificationDto>(const ActiveDataModificationDto &dto) {
+        ActiveDataModification activeDataModification;
+        activeDataModification.dataModification.id = dto.value<"id"_>();
+        activeDataModification.dataModification.owner = dto.value<"owner"_>();
+        activeDataModification.dataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+        activeDataModification.dataModification.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        activeDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
+        activeDataModification.dataModification.folderName = dto.value<"folderName"_>();
+        activeDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
+
+        return activeDataModification;
+    }
+
+    template<>
+    CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto &dto) {
+        CompletedDataModification completedDataModification;
+        completedDataModification.dataModification.id = dto.value<"id"_>();
+        completedDataModification.dataModification.owner = dto.value<"owner"_>();
+        completedDataModification.dataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+        completedDataModification.dataModification.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        completedDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
+        completedDataModification.dataModification.folderName = dto.value<"folderName"_>();
+        completedDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
+        completedDataModification.state = dto.value<"state"_>();
+
+        return completedDataModification;
+    }
+
+    template<>
+    ConfirmedUsedSize fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(const ConfirmedUsedSizeDto &dto) {
+        ConfirmedUsedSize confirmedUsedSize;
+        confirmedUsedSize.replicator = dto.value<"replicator"_>();
+        confirmedUsedSize.size = dto.value<"size"_>();
+
+        return confirmedUsedSize;
+    }
+
+    template<>
+    Shard fromDto<Shard, ShardDto>(const ShardDto &dto) {
+        Shard shard;
+        shard.downloadChannelId = dto.value<"downloadChannelId"_>();
+        shard.replicators = dto.value<"replicators"_>();
+
+        return shard;
+    }
+
+    template<>
+    Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto) {
+        Verification verification;
+        verification.verificationTrigger = dto.value<"verificationTrigger"_>();
+        verification.expiration = dto.value<"expiration"_>();
+        verification.expired = dto.value<"expired"_>();
+
+        for (const auto& shard : dto.value<"shards"_>()) {
+            verification.shards.push_back(fromDto<Shard, ShardDto>(shard));
+        }
+
+        return verification;
+    }
 
 	/// Transaction Meta
 
@@ -1551,6 +1658,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.overlappingKeysCount = dto.value<"overlappingKeysCount"_>();
 		transaction.judgedKeysCount = dto.value<"judgedKeysCount"_>();
 		transaction.opinionElementCount = dto.value<"opinionElementCount"_>();
+
+        // TODO: fix it here
 		transaction.publicKeys = dto.value<"publicKeys"_>();
 		transaction.signatures = dto.value<"signatures"_>();
 		transaction.presentOpinions = dto.value<"presentOpinions"_>();

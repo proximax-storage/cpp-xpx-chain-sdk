@@ -7,7 +7,7 @@
 #pragma once
 
 #include <xpxchaincpp/config.h>
-#include <xpxchaincpp/model/storage/drive.h>
+#include <xpxchaincpp/model/storage/drives_page.h>
 #include <memory>
 
 
@@ -29,7 +29,7 @@ namespace xpx_chain_sdk {
 		~StorageService() = default;
 
 		Drive getDriveById(const std::string& id);
-		MultipleDrives getDrives();
+        drives_page::DrivesPage getDrives();
 
 	private:
 		std::shared_ptr<Config> _config;
