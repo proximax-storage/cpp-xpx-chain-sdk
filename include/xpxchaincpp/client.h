@@ -21,12 +21,26 @@
 #include <xpxchaincpp/client/blockchain_service.h>
 
 namespace xpx_chain_sdk {
+    class ErrorMessage  {
+    public:
+        std::string code;
+        std::string message;
+    };
+
 	class InvalidRequest : public std::runtime_error {
 	public:
-		explicit InvalidRequest(uint16_t code);
+		explicit InvalidRequest(const std::string& errorMessage, uint16_t code);
+
+    public:
+        int getErrorCode() const;
+        ErrorMessage getErrorMessage() const;
 
 	private:
 		static std::string getErrorMessage(uint16_t code);
+
+    private:
+        const int errorCode;
+        const std::string errorMessage;
 	};
 
 	class InvalidJson : public std::runtime_error {

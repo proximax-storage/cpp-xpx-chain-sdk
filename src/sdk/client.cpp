@@ -4,6 +4,7 @@
 *** license that can be found in the LICENSE file.
 **/
 #include "infrastructure/network/context.h"
+#include <infrastructure/utils/deserialization_json.h>
 #include <xpxchaincpp/client.h>
 #include <xpxchaincpp/client/blockchain_service.h>
 #include <xpxchaincpp/client/mosaic_service.h>
@@ -79,9 +80,19 @@ namespace xpx_chain_sdk {
 	}
 }
 
-InvalidRequest::InvalidRequest(uint16_t code) :
-	runtime_error(InvalidRequest::getErrorMessage(code))
+InvalidRequest::InvalidRequest(const std::string& message, uint16_t code) :
+    runtime_error(InvalidRequest::getErrorMessage(code)),
+    errorCode(code),
+	errorMessage(message)
 {}
+
+int InvalidRequest::getErrorCode() const {
+    return errorCode;
+}
+
+ErrorMessage InvalidRequest::getErrorMessage() const {
+    return internal::json::dto::from_json<ErrorMessage, internal::json::dto::ErrorMessageDto>(errorMessage);
+}
 
 std::string InvalidRequest::getErrorMessage(uint16_t code) {
 	std::stringstream s;

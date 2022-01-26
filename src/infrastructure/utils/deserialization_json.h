@@ -30,6 +30,7 @@
 #include <infrastructure/json/dto/uid_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
 #include <infrastructure/json/dto/storage_dto.h>
+#include <infrastructure/json/dto/error_message_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -69,6 +70,7 @@
 #include <xpxchaincpp/exceptions.h>
 #include <xpxchaincpp/model/account/multiple_account_info.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_container.h>
+#include "xpxchaincpp/client.h"
 
 
 using namespace xpx_chain_sdk::transactions_info;
@@ -361,7 +363,11 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         ReplicatorOffboardingTransaction fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto >(const ReplicatorOffboardingTransactionDto & dto);
 
-		/// Account Property Transactions
+        /// Utils
+        template<>
+        ErrorMessage fromDto<ErrorMessage, ErrorMessageDto >(const ErrorMessageDto & dto);
+
+        /// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
 

@@ -1115,6 +1115,15 @@ namespace xpx_chain_sdk::internal::json::dto {
     }
 
     template<>
+    ErrorMessage fromDto<ErrorMessage, ErrorMessageDto >(const ErrorMessageDto & dto) {
+        ErrorMessage errorMessage;
+        errorMessage.code = dto.value<"code"_>();
+        errorMessage.message = dto.value<"message"_>();
+
+        return errorMessage;
+    }
+
+    template<>
     xpx_chain_sdk::transactions_page::Pagination fromDto<
         xpx_chain_sdk::transactions_page::Pagination,
         dto::transactions_page::PaginationDto>(
