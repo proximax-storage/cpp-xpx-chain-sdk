@@ -60,7 +60,7 @@ namespace xpx_chain_sdk {
         uint64_t size;
         uint64_t usedSize;
         uint64_t metaFilesSize;
-        uint32_t replicatorCount;
+        uint16_t replicatorCount;
         uint64_t ownerCumulativeUploadSize;
         std::vector<ActiveDataModification> activeDataModifications;
         std::vector<CompletedDataModification> completedDataModifications;

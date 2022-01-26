@@ -57,7 +57,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("size"), Uint64 >,
             Field<STR_LITERAL("usedSize"), Uint64 >,
             Field<STR_LITERAL("metaFilesSize"), Uint64 >,
-            Field<STR_LITERAL("replicatorCount"), Uint32 >,
+            Field<STR_LITERAL("replicatorCount"), uint16_t >,
             Field<STR_LITERAL("ownerCumulativeUploadSize"), Uint64 >,
             Field<STR_LITERAL("activeDataModifications"), std::vector<ActiveDataModificationDto> >,
             Field<STR_LITERAL("completedDataModifications"), std::vector<CompletedDataModificationDto> >,
