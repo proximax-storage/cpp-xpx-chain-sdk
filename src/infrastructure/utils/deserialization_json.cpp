@@ -894,7 +894,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         completedDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
         completedDataModification.dataModification.folderName = dto.value<"folderName"_>();
         completedDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
-        completedDataModification.state = dto.value<"state"_>();
+        completedDataModification.modificationState = dto.value<"modificationState"_>();
 
         return completedDataModification;
     }
