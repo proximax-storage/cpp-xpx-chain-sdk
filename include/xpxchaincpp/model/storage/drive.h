@@ -28,7 +28,7 @@ namespace xpx_chain_sdk {
     class CompletedDataModification {
     public:
         DataModification dataModification;
-        uint8_t modificationState;
+        uint8_t state;
     };
 
     class ConfirmedUsedSize {
