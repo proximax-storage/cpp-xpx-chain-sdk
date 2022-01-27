@@ -91,7 +91,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     using CumulativePaymentDto = VariadicStruct<
             Field<STR_LITERAL("replicator"), std::string>,
-            Field<STR_LITERAL("payment"), uint64_t>>;
+            Field<STR_LITERAL("payment"), Uint64>>;
 
     using DownloadChannelDataDto = VariadicStruct<
             Field<STR_LITERAL("id"), std::string>,
