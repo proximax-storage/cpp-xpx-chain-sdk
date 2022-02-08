@@ -5,18 +5,26 @@
 **/
 
 #include "websocket.h"
+#include <thread>
 
 namespace xpx_chain_sdk::internal::network {
 
     WsClient::WsClient(
             std::shared_ptr<Config> config,
             std::shared_ptr<internal::network::Context> context,
+            std::shared_ptr<boost::asio::io_context> ioContext,
             Callback connectionCallback,
             Callback receiverCallback,
             ErrorCallback errorCallback) :
-            _config(config), _context(context), _io_context(boost::asio::io_context()),
-            _resolver(boost::asio::ip::tcp::resolver(_io_context)),
-            _ws(boost::asio::make_strand(_io_context)),
+            _config(config),
+            _context(context),
+            _buffer(std::make_shared<boost::asio::streambuf>()),
+            _io_context(ioContext),
+            _outgoingQueue(),
+            _isConnected(false),
+            _strand(boost::asio::make_strand(_io_context->get_executor())),
+            _resolver(boost::asio::ip::tcp::resolver(*_io_context)),
+            _ws(_strand),
             _connectionCallback(connectionCallback),
             _receiverCallback(receiverCallback),
             _errorCallback(errorCallback) {}
@@ -26,41 +34,62 @@ namespace xpx_chain_sdk::internal::network {
     }
 
     void WsClient::connect(uint64_t onResolveHostTimeoutSec) {
-        if (!isConnected()) {
-            _resolver.async_resolve(_config->nodeAddress,
-                                    _config->port,
-                                    [pThis = shared_from_this(), onResolveHostTimeoutSec] (
-                                            boost::beast::error_code errorCode,
-                                            const boost::asio::ip::tcp::resolver::results_type &resultsType) {
-                                        pThis->onResolve(errorCode, resultsType, onResolveHostTimeoutSec);
-                                    });
+        boost::asio::post(_strand, [pThis = shared_from_this(), onResolveHostTimeoutSec] {
+            pThis->_resolver.async_resolve(pThis->_config->nodeAddress,
+                                           pThis->_config->port,
+                                           boost::asio::bind_executor(pThis->_strand, [pThis, onResolveHostTimeoutSec] (
+                                                   boost::beast::error_code errorCode,
+                                                   const boost::asio::ip::tcp::resolver::results_type &resultsType) {
+                                               pThis->onResolve(errorCode, resultsType, onResolveHostTimeoutSec);
+                                           }));
+        });
 
-            boost::thread thread([pThis = shared_from_this()]() { pThis->_io_context.run(); });
-            thread.detach();
-        }
+        boost::thread thread([pThis = shared_from_this()]() { pThis->_io_context->run(); });
+        thread.detach();
     }
 
     void WsClient::disconnect() {
-        if (isConnected()) {
-            _ws.async_close(boost::beast::websocket::close_code::normal,
-            [pThis = shared_from_this()](auto errorCode){
-                pThis->onClose(errorCode);
-            });
-        }
+        boost::asio::post(_strand, [pThis = shared_from_this()] {
+            if (pThis->isConnected()) {
+                pThis->_ws.async_close(boost::beast::websocket::close_code::normal,
+                                       boost::asio::bind_executor(pThis->_strand, [pThis](auto errorCode) {
+                                           pThis->onClose(errorCode);
+                                       }));
+            } else {
+                pThis->_isConnected = pThis->_ws.is_open();
+            }
+        });
     }
 
     void WsClient::send(const std::string& json) {
-        if (isConnected()) {
-            _ws.async_write(
-                    boost::asio::buffer(json),
-                    [pThis = shared_from_this()](auto errorCode, auto bytesTransferred) {
-                        pThis->onWrite(errorCode, bytesTransferred);
-                    });
-        }
+        boost::asio::post(_strand, [pThis = shared_from_this(), json] {
+            pThis->_outgoingQueue.push_back(json);
+            if (pThis->_outgoingQueue.size() > 1) {
+                return;
+            }
+
+            pThis->doWrite();
+        });
     }
 
     bool WsClient::isConnected() {
-        return _ws.is_open();
+        return _isConnected;
+    }
+
+    void WsClient::doWrite() {
+        _ws.async_write(
+                boost::asio::buffer(_outgoingQueue[0]),
+                boost::asio::bind_executor(_strand, [pThis = shared_from_this()](auto errorCode, auto bytesTransferred) {
+                    pThis->_outgoingQueue.pop_front();
+                    if (errorCode) {
+                        pThis->_isConnected = pThis->_ws.is_open();
+                        return pThis->_errorCallback(errorCode);
+                    }
+
+                    if (!pThis->_outgoingQueue.empty()) {
+                        pThis->doWrite();
+                    }
+                }));
     }
 
     void WsClient::onResolve(
@@ -68,20 +97,22 @@ namespace xpx_chain_sdk::internal::network {
             const boost::asio::ip::tcp::resolver::results_type& resultsType,
             uint64_t onResolveHostTimeoutSec) {
         if (errorCode) {
+            _isConnected = _ws.is_open();
             return _errorCallback(errorCode);
         }
 
         boost::beast::get_lowest_layer(_ws).expires_after(std::chrono::seconds(onResolveHostTimeoutSec));
         boost::beast::get_lowest_layer(_ws).async_connect(
-                resultsType, [pThis = shared_from_this()] (auto ec, const auto& et) {
+                resultsType, boost::asio::bind_executor(_strand, [pThis = shared_from_this()] (auto ec, const auto& et) {
                     pThis->onConnect(ec, et);
-                });
+                }));
     }
 
     void WsClient::onConnect(
             boost::beast::error_code errorCode,
             const boost::asio::ip::tcp::resolver::results_type::endpoint_type&) {
         if (errorCode) {
+            _isConnected = _ws.is_open();
             return _errorCallback(errorCode);
         }
 
@@ -92,60 +123,53 @@ namespace xpx_chain_sdk::internal::network {
         // Set suggested timeout settings for the websocket
         _ws.set_option(boost::beast::websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
 
+        _isConnected = true;
+
         const std::string host = _config->nodeAddress + ":" + _config->port;
 
         std::cout << "websocket: connection established: " << host << std::endl;
 
         // Perform the websocket handshake
-        _ws.async_handshake(host, _config->baseWsPath,[pThis = shared_from_this()](auto ec){
+        _ws.async_handshake(host, _config->baseWsPath, boost::asio::bind_executor(_strand, [pThis = shared_from_this()](auto ec) {
             pThis->onHandshake(ec);
-        });
+        }));
     }
 
     void WsClient::onHandshake(boost::beast::error_code errorCode) {
         if (errorCode) {
+            _isConnected = _ws.is_open();
             return _errorCallback(errorCode);
         } else {
-            std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
             _ws.async_read(
-                    *pBuffer,
-                    [pThis = shared_from_this(), pBuffer] (
+                    *_buffer,
+                    boost::asio::bind_executor(_strand, [pThis = shared_from_this()] (
                             boost::beast::error_code ec,
-                            std::size_t bytesTransferred) {
+                            std::size_t) {
                         if (ec) {
                             return pThis->_errorCallback(ec);
                         }
 
-                        boost::ignore_unused(bytesTransferred);
-                        const std::string json = boost::beast::buffers_to_string(pBuffer->data());
+                        const std::string json = boost::beast::buffers_to_string(pThis->_buffer->data());
                         pThis->_connectionCallback(json);
                         pThis->readNext();
-                    });
+                    }));
         }
     }
 
-    void WsClient::onRead(boost::beast::error_code errorCode, std::shared_ptr<boost::beast::flat_buffer> pData, std::size_t bytesTransferred) {
+    void WsClient::onRead(boost::beast::error_code errorCode, std::size_t) {
         if (errorCode) {
+            _isConnected = _ws.is_open();
             return _errorCallback(errorCode);
         }
 
-        boost::ignore_unused(bytesTransferred);
-
-        const std::string json = boost::beast::buffers_to_string(pData->data());
+        const std::string json = boost::beast::buffers_to_string(_buffer->data());
         _receiverCallback(json);
 
         readNext();
     }
 
-    void WsClient::onWrite(boost::beast::error_code errorCode, std::size_t bytesTransferred) {
-        if (errorCode) {
-            return _errorCallback(errorCode);
-        }
-
-        boost::ignore_unused(bytesTransferred);
-    }
-
     void WsClient::onClose(boost::beast::error_code errorCode) {
+        _isConnected = _ws.is_open();
         if (errorCode) {
             return _errorCallback(errorCode);
         } else {
@@ -154,12 +178,13 @@ namespace xpx_chain_sdk::internal::network {
     }
 
     void WsClient::readNext() {
-        std::shared_ptr<boost::beast::flat_buffer> pBuffer(new boost::beast::flat_buffer);
+        _buffer->consume(_buffer->size());
         _ws.async_read(
-                *pBuffer,
-                [pThis = shared_from_this(), pBuffer](boost::beast::error_code errorCode,
-                                                      std::size_t bytesTransferred) {
-                    pThis->onRead(errorCode, pBuffer, bytesTransferred);
-                });
+                *_buffer,
+                boost::asio::bind_executor(_strand, [pThis = shared_from_this()](
+                        boost::beast::error_code errorCode,
+                        std::size_t bytesTransferred) {
+                    pThis->onRead(errorCode, bytesTransferred);
+                }));
     }
 }

@@ -74,7 +74,7 @@ namespace xpx_chain_sdk {
             }
         };
 
-        _wsClient = std::make_shared<internal::network::WsClient>(_config, _context, connectionCallback, receiverCallback, errorCallback);
+        _wsClient = std::make_shared<internal::network::WsClient>(_config, _context, std::make_shared<boost::asio::io_context>(), connectionCallback, receiverCallback, errorCallback);
         _wsClient->connect();
         _initializeCheck.wait_for(lock, std::chrono::seconds(60), [pThis = shared_from_this()]() {
             return pThis->_wsClient->isConnected();

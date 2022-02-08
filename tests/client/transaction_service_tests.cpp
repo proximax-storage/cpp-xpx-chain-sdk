@@ -13,7 +13,17 @@ namespace xpx_chain_sdk::tests {
 
     ClientData clientData;
     auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(getTestConfiguration()));
-    auto account = getTestAccount(clientData.privateKey);
+
+    auto account = [privateKey = clientData.privateKey]() {
+        std::shared_ptr<xpx_chain_sdk::Account> account = std::make_shared<xpx_chain_sdk::Account>(
+                [privateKey](xpx_chain_sdk::PrivateKeySupplierReason reason,
+                              xpx_chain_sdk::PrivateKeySupplierParam param) {
+                    xpx_chain_sdk::Key key;
+                    xpx_chain_sdk::ParseHexStringIntoContainer(privateKey.c_str(),privateKey.size(), key);
+                    return xpx_chain_sdk::PrivateKey(key.data(), key.size());
+                });
+        return account;
+    }();
 
     TEST(TEST_CLASS, getAnyTransactionInfo) {
         Address recipient(clientData.publicKeyContainer);

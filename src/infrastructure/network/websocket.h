@@ -9,6 +9,7 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/asio/streambuf.hpp>
 #include <boost/thread.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -31,6 +32,7 @@ namespace xpx_chain_sdk::internal::network {
         WsClient(
             std::shared_ptr<Config> config,
             std::shared_ptr<internal::network::Context> context,
+            std::shared_ptr<boost::asio::io_context> ioContext,
             Callback connectionCallback,
             Callback receiverCallback,
             ErrorCallback errorCallback);
@@ -42,6 +44,7 @@ namespace xpx_chain_sdk::internal::network {
         bool isConnected();
 
     private:
+        void doWrite();
         void onResolve(
                 boost::beast::error_code errorCode,
                 const boost::asio::ip::tcp::resolver::results_type& resultsType,
@@ -52,18 +55,18 @@ namespace xpx_chain_sdk::internal::network {
         void onHandshake(boost::beast::error_code errorCode);
         void onRead(
                 boost::beast::error_code errorCode,
-                std::shared_ptr<boost::beast::flat_buffer> data,
                 std::size_t bytes_transferred);
         void readNext();
-        void onWrite(
-                boost::beast::error_code errorCode,
-                std::size_t bytesTransferred);
         void onClose(boost::beast::error_code errorCode);
 
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
-        boost::asio::io_context _io_context;
+        std::shared_ptr<boost::asio::streambuf> _buffer;
+        std::shared_ptr<boost::asio::io_context> _io_context;
+        std::deque<std::string> _outgoingQueue;
+        std::atomic<bool> _isConnected;
+        boost::asio::strand<boost::asio::io_context::executor_type> _strand;
         boost::asio::ip::tcp::resolver _resolver;
         boost::beast::websocket::stream<boost::beast::tcp_stream> _ws;
         Callback _connectionCallback;

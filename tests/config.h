@@ -29,20 +29,4 @@ namespace xpx_chain_sdk::tests {
 
         return config;
     }
-
-    static std::shared_ptr<xpx_chain_sdk::Account> getTestAccount(const std::string &privateKey) {
-        std::shared_ptr<xpx_chain_sdk::Account> account = std::make_shared<xpx_chain_sdk::Account>(
-                [&privateKey](xpx_chain_sdk::PrivateKeySupplierReason reason,
-                              xpx_chain_sdk::PrivateKeySupplierParam param) {
-                    xpx_chain_sdk::Key key;
-                    if (reason == xpx_chain_sdk::PrivateKeySupplierReason::Transaction_Signing) {
-                        xpx_chain_sdk::ParseHexStringIntoContainer(privateKey.c_str(),
-                                                                   privateKey.size(), key);
-                    }
-
-                    return xpx_chain_sdk::PrivateKey(key.data(), key.size());
-                });
-
-        return account;
-    }
 }
