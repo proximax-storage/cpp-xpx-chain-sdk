@@ -10,7 +10,7 @@ cmake_policy(SET CMP0068 OLD)
 #-----------------------------------------------------------------------------
 
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
-option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
 option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 

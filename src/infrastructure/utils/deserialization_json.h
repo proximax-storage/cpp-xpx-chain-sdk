@@ -24,6 +24,7 @@
 #include <infrastructure/json/dto/transactions_page_dto.h>
 #include <infrastructure/json/dto/transaction_notification_dto.h>
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
+#include <infrastructure/json/dto/unconfirmed_removed_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
 
@@ -54,6 +55,7 @@
 #include <xpxchaincpp/model/notification/signer_info_notification.h>
 #include <xpxchaincpp/model/notification/transaction_notification.h>
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <xpxchaincpp/model/notification/unconfirmed_removed_notification.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
 
