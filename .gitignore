@@ -1,7 +1,9 @@
 build/
 cmake-build-debug/
+Testing/Temporary/
 CMakeLists.txt
 .vscode/settings.json
 tests/client/
+tests/config.h 
 
 .idea
