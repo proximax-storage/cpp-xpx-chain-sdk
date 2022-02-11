@@ -6,20 +6,15 @@
 #pragma once
 
 #include <xpxchaincpp/config.h>
-#include <xpxchaincpp/model/blockchain/block.h>
-#include <xpxchaincpp/model/transaction_simple/transaction.h>
-#include <xpxchaincpp/model/transaction_simple/transaction_info.h>
-#include <xpxchaincpp/model/notification/drive_state_notification.h>
-#include <xpxchaincpp/model/notification/signer_info_notification.h>
-#include <xpxchaincpp/model/notification/transaction_notification.h>
-#include <xpxchaincpp/model/notification/transaction_status_notification.h>
-#include <condition_variable>
+#include <xpxchaincpp/model/notification/notifier.h>
+#include <deque>
 #include <functional>
 #include <memory>
 #include <vector>
 #include <map>
-#include <mutex>
-#include <initializer_list>
+#include <thread>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/strand.hpp>
 
 namespace xpx_chain_sdk::internal::network {
     class Context;
@@ -33,15 +28,7 @@ namespace xpx_chain_sdk::internal {
 namespace xpx_chain_sdk {
 
     using internal::network::Context;
-    using BlockNotifier = std::function<void(const Block& block)>;
-    using ConfirmedAddedNotifier = std::function<void(const TransactionNotification& transactionNotification)>;
-    using UnconfirmedAddedNotifier = std::function<void(const TransactionNotification& transactionNotification)>;
-    using UnconfirmedRemovedNotifier = std::function<void(const transactions_info::TransactionInfo& transactionInfo)>;
-    using PartialAddedNotifier = std::function<void(std::shared_ptr<transactions_info::BasicTransaction> transaction)>;
-    using PartialRemovedNotifier = std::function<void(const transactions_info::TransactionInfo& transactionInfo)>;
-    using StatusNotifier = std::function<void(const TransactionStatusNotification& status)>;
-    using CosignatureNotifier = std::function<void(const SignerInfoNotification& signerInfo)>;
-    using DriveStateNotifier = std::function<void(const DriveStateNotification& driveState)>;
+    using notifierId = std::string;
 
 class NotificationService : public std::enable_shared_from_this<NotificationService> {
     public:
@@ -50,58 +37,64 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
                 std::shared_ptr<internal::network::Context> context);
         ~NotificationService();
 
-    void addBlockNotifiers(const std::initializer_list<BlockNotifier>& notifiers);
-    void removeBlockNotifiers();
+    void addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers);
+    void removeBlockNotifiers(const std::vector<notifierId>& notifierIds = {});
 
-    void addConfirmedAddedNotifiers(const Address& address, const std::initializer_list<ConfirmedAddedNotifier>& notifiers);
-    void removeConfirmedAddedNotifiers(const Address& address);
+    void addConfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers);
+    void removeConfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addUnconfirmedAddedNotifiers(const Address& address, const std::initializer_list<UnconfirmedAddedNotifier>& notifiers);
-    void removeUnconfirmedAddedNotifiers(const Address& address);
+    void addUnconfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers);
+    void removeUnconfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addUnconfirmedRemovedNotifiers(const Address& address, const std::initializer_list<UnconfirmedRemovedNotifier>& notifiers);
-    void removeUnconfirmedRemovedNotifiers(const Address& address);
+    void addUnconfirmedRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers);
+    void removeUnconfirmedRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addPartialAddedNotifiers(const Address& address, const std::initializer_list<PartialAddedNotifier>& notifiers);
-    void removePartialAddedNotifiers(const Address& address);
+    void addPartialAddedNotifiers(const Address& address, const std::vector<Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>& notifiers);
+    void removePartialAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addPartialRemovedNotifiers(const Address& address, const std::initializer_list<PartialRemovedNotifier>& notifiers);
-    void removePartialRemovedNotifiers(const Address& address);
+    void addPartialRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers);
+    void removePartialRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addStatusNotifiers(const Address& address, const std::initializer_list<StatusNotifier>& notifiers);
-    void removeStatusNotifiers(const Address& address);
+    void addStatusNotifiers(const Address& address, const std::vector<Notifier<TransactionStatusNotification>>& notifiers);
+    void removeStatusNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addCosignatureNotifiers(const Address& address, const std::initializer_list<CosignatureNotifier>& notifiers);
-    void removeCosignatureNotifiers(const Address& address);
+    void addCosignatureNotifiers(const Address& address, const std::vector<Notifier<SignerInfoNotification>>& notifiers);
+    void removeCosignatureNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
-    void addDriveStateNotifiers(const Address& address, const std::initializer_list<DriveStateNotifier>& notifiers);
-    void removeDriveStateNotifiers(const Address& address);
+    void addDriveStateNotifiers(const Address& address, const std::vector<Notifier<DriveStateNotification>>& notifiers);
+    void removeDriveStateNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
 
     private:
-        void addMutexIfNotExist(const std::string& mutexKey);
-        void initialize(std::function<void()> initializeCallback);
+        void run();
+        void runTask(std::function<void()>);
         void notificationsHandler(const std::string& json);
-        void finalize();
+        void stop();
+
+        template<typename InternalContainer, typename ExternalContainer>
+        void addNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer&);
+
+        template<typename InternalContainer, typename ExternalContainer>
+        void removeNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer& = {});
 
     private:
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
         std::shared_ptr<internal::network::WsClient> _wsClient;
         std::shared_ptr<internal::SubscriptionManager> _subscriptionManager;
-        std::map<std::string, std::unique_ptr<std::mutex>> _notifiersMutexes;
-        std::vector<BlockNotifier> _blockNotifiers;
-        std::map<std::string, std::vector<ConfirmedAddedNotifier>> _confirmedAddedNotifiers;
-        std::map<std::string, std::vector<UnconfirmedAddedNotifier>> _unconfirmedAddedNotifiers;
-        std::map<std::string, std::vector<UnconfirmedRemovedNotifier>> _unconfirmedRemovedNotifiers;
-        std::map<std::string, std::vector<PartialAddedNotifier>> _partialAddedNotifiers;
-        std::map<std::string, std::vector<PartialRemovedNotifier>> _partialRemovedNotifiers;
-        std::map<std::string, std::vector<StatusNotifier>> _statusNotifiers;
-        std::map<std::string, std::vector<CosignatureNotifier>> _cosignatureNotifiers;
-        std::map<std::string, std::vector<DriveStateNotifier>> _driveStateNotifiers;
-        std::mutex _commonMutex;
-        std::mutex _initializeMutex;
-        std::condition_variable _initializeCheck;
+        std::shared_ptr<boost::asio::io_context> _io_context;
+        std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> _strand;
+        std::deque<std::function<void()>> _tasks;
+        std::thread _mainWorker;
+        std::map<notifierId, Notifier<Block>> _blockNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<TransactionNotification>>> _confirmedAddedNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<TransactionNotification>>> _unconfirmedAddedNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<transactions_info::TransactionInfo>>> _unconfirmedRemovedNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>> _partialAddedNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<transactions_info::TransactionInfo>>> _partialRemovedNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<TransactionStatusNotification>>> _statusNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<SignerInfoNotification>>> _cosignatureNotifiers;
+        std::map<std::string, std::map<notifierId, Notifier<DriveStateNotification>>> _driveStateNotifiers;
         std::string _uid;
-        bool _isInitialized;
+        bool _isConnectionInProgress;
     };
 }

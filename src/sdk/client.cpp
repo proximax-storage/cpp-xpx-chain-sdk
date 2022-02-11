@@ -22,10 +22,10 @@ public:
         _blockchain     = std::make_shared<BlockchainService>(config, _context);
         _mosaic         = std::make_shared<MosaicService>(config, _context);
         _namespace      = std::make_shared<NamespaceService>(config, _context);
-        _notification   = std::make_shared<NotificationService>(config, _context);
+        _notification   = nullptr;
         _network        = std::make_shared<NetworkService>(config, _context);
         _transaction    = std::make_shared<TransactionService>(config, _context);
-        _storage    = std::make_shared<StorageService>(config, _context);
+        _storage        = std::make_shared<StorageService>(config, _context);
 	}
 
 	std::shared_ptr<AccountService> account() const override  {
@@ -45,6 +45,9 @@ public:
     }
 
     std::shared_ptr<NotificationService> notifications() const override {
+        if (!_notification) {
+            _notification = std::make_shared<NotificationService>(_config, _context);
+        }
         return _notification;
     }
 
@@ -61,17 +64,17 @@ public:
 	}
 
 private:
-	std::shared_ptr<Config> _config;
-	std::shared_ptr<internal::network::Context> _context;
+    std::shared_ptr<Config> _config;
+    std::shared_ptr<internal::network::Context> _context;
 
-	std::shared_ptr<AccountService> _account;
-	std::shared_ptr<BlockchainService> _blockchain;
-	std::shared_ptr<MosaicService> _mosaic;
-	std::shared_ptr<NamespaceService> _namespace;
-    std::shared_ptr<NotificationService> _notification;
-	std::shared_ptr<NetworkService> _network;
-	std::shared_ptr<TransactionService> _transaction;
-	std::shared_ptr<StorageService> _storage;
+    std::shared_ptr<AccountService> _account;
+    std::shared_ptr<BlockchainService> _blockchain;
+    std::shared_ptr<MosaicService> _mosaic;
+    std::shared_ptr<NamespaceService> _namespace;
+    mutable std::shared_ptr<NotificationService> _notification;
+    std::shared_ptr<NetworkService> _network;
+    std::shared_ptr<TransactionService> _transaction;
+    std::shared_ptr<StorageService> _storage;
 };
 
 namespace xpx_chain_sdk {
