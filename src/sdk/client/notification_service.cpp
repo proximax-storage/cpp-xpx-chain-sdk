@@ -184,6 +184,7 @@ namespace xpx_chain_sdk {
                 }
 
                 if (linkedNotifiers[hexAddress].empty()) {
+                    linkedNotifiers.erase(hexAddress);
                     pThis->_subscriptionManager->unsubscribe(pThis->_uid, path, address);
                 }
             }
