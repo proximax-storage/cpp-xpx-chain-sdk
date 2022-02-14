@@ -95,38 +95,38 @@ namespace xpx_chain_sdk {
     void NotificationService::stop() {
         boost::asio::post(*_strand, [this] {
             if (_wsClient->isConnected()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathBlock);
+                _subscriptionManager->unsubscribe(_uid, internal::pathBlock, [](){}, [](auto){});
 
                 for (auto const &item: _confirmedAddedNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _unconfirmedAddedNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _unconfirmedRemovedNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _partialAddedNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _partialRemovedNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _statusNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _cosignatureNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 for (auto const &item: _driveStateNotifiers) {
-                    _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(item.first));
+                    _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(item.first), [](){}, [](auto){});
                 }
 
                 _wsClient->disconnect();
@@ -141,17 +141,21 @@ namespace xpx_chain_sdk {
             const Address& address,
             const std::string& path,
             InternalContainer& linkedNotifiers,
-            const ExternalContainer& notifiers) {
+            const ExternalContainer& notifiers,
+            std::function<void()> onSuccess,
+            std::function<void(boost::beast::error_code errorCode)> onError) {
         if (empty(notifiers)) {
             XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
-        auto task = [pThis = shared_from_this(), address, path, &linkedNotifiers, notifiers]() {
+        auto task = [pThis = shared_from_this(), address, path, &linkedNotifiers, notifiers, onSuccess, onError]() {
             const std::string hexAddress = ToHex(address.binary());
             if ( linkedNotifiers.find(hexAddress) != linkedNotifiers.end() ) {
                 for (const auto& notifier : notifiers) {
                     linkedNotifiers[hexAddress].insert({notifier.getId(), notifier});
                 }
+
+                pThis->runTask(onSuccess);
             } else {
                 linkedNotifiers.insert({hexAddress, {}});
 
@@ -159,7 +163,7 @@ namespace xpx_chain_sdk {
                     linkedNotifiers[hexAddress].insert({notifier.getId(), notifier});
                 }
 
-                pThis->_subscriptionManager->subscribe(pThis->_uid, path, address);
+                pThis->_subscriptionManager->subscribe(pThis->_uid, path, address, onSuccess, onError);
             }
         };
 
@@ -171,8 +175,10 @@ namespace xpx_chain_sdk {
             const Address& address,
             const std::string& path,
             InternalContainer& linkedNotifiers,
-            const ExternalContainer& notifierIds) {
-        auto task = [pThis = shared_from_this(), address, path, &linkedNotifiers, notifierIds]() {
+            const ExternalContainer& notifierIds,
+            std::function<void()> onSuccess,
+            std::function<void(boost::beast::error_code errorCode)> onError) {
+        auto task = [pThis = shared_from_this(), address, path, &linkedNotifiers, notifierIds, onSuccess, onError]() {
             const std::string hexAddress = ToHex(address.binary());
             if (linkedNotifiers.find(hexAddress) != linkedNotifiers.end()) {
                 for (const auto& id : notifierIds) {
@@ -185,7 +191,9 @@ namespace xpx_chain_sdk {
 
                 if (linkedNotifiers[hexAddress].empty()) {
                     linkedNotifiers.erase(hexAddress);
-                    pThis->_subscriptionManager->unsubscribe(pThis->_uid, path, address);
+                    pThis->_subscriptionManager->unsubscribe(pThis->_uid, path, address, onSuccess, onError);
+                } else {
+                    pThis->runTask(onSuccess);
                 }
             }
         };
@@ -198,7 +206,7 @@ namespace xpx_chain_sdk {
         
         if (internal::pathBlock == websocketInfo.meta.channelName) {
             if (_blockNotifiers.empty()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathBlock);
+                _subscriptionManager->unsubscribe(_uid, internal::pathBlock, [](){}, [](auto){});
             } else {
                 auto block = from_json<Block, BlockDto>(json);
                 for (const auto& notifier : _blockNotifiers) {
@@ -207,7 +215,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathConfirmedAdded == websocketInfo.meta.channelName) {
             if (_confirmedAddedNotifiers.find(websocketInfo.meta.address) == _confirmedAddedNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathConfirmedAdded, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transaction = from_json<TransactionNotification, TransactionNotificationDto>(json);
                 for (const auto& notifier : _confirmedAddedNotifiers[websocketInfo.meta.address]) {
@@ -216,7 +224,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathUnconfirmedAdded == websocketInfo.meta.channelName) {
             if (_unconfirmedAddedNotifiers.find(websocketInfo.meta.address) == _unconfirmedAddedNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedAdded, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transaction = from_json<TransactionNotification, TransactionNotificationDto>(json);
                 for (const auto& notifier : _unconfirmedAddedNotifiers[websocketInfo.meta.address]) {
@@ -225,7 +233,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathUnconfirmedRemoved == websocketInfo.meta.channelName) {
             if (_unconfirmedRemovedNotifiers.find(websocketInfo.meta.address) == _unconfirmedRemovedNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathUnconfirmedRemoved, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transactionInfo = from_json<transactions_info::TransactionInfo, TransactionInfoDto>(json);
                 for (const auto& notifier : _unconfirmedRemovedNotifiers[websocketInfo.meta.address]) {
@@ -234,7 +242,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathStatus == websocketInfo.meta.channelName) {
             if (_statusNotifiers.find(websocketInfo.meta.address) == _statusNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathStatus, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transactionStatus = from_json<TransactionStatusNotification, TransactionStatusNotificationDto>(json);
                 for (const auto& notifier : _statusNotifiers[websocketInfo.meta.address]) {
@@ -243,7 +251,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathPartialAdded == websocketInfo.meta.channelName) {
             if (_partialAddedNotifiers.find(websocketInfo.meta.address) == _partialAddedNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialAdded, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transaction = transaction_from_json(json);
                 for (const auto& notifier : _partialAddedNotifiers[websocketInfo.meta.address]) {
@@ -252,7 +260,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathPartialRemoved == websocketInfo.meta.channelName) {
             if (_partialRemovedNotifiers.find(websocketInfo.meta.address) == _partialRemovedNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathPartialRemoved, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto transactionInfo = from_json<transactions_info::TransactionInfo, TransactionInfoDto>(json);
                 for (const auto& notifier : _partialRemovedNotifiers[websocketInfo.meta.address]) {
@@ -261,7 +269,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathCosignature == websocketInfo.meta.channelName) {
             if (_cosignatureNotifiers.find(websocketInfo.meta.address) == _cosignatureNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathCosignature, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto signerInfo = from_json<SignerInfoNotification, SignerInfoNotificationDto>(json);
                 for (const auto& notifier : _cosignatureNotifiers[websocketInfo.meta.address]) {
@@ -270,7 +278,7 @@ namespace xpx_chain_sdk {
             }
         } else if (internal::pathDriveState == websocketInfo.meta.channelName) {
             if (_driveStateNotifiers.find(websocketInfo.meta.address) == _driveStateNotifiers.end()) {
-                _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(websocketInfo.meta.address));
+                _subscriptionManager->unsubscribe(_uid, internal::pathDriveState, Address::FromHex(websocketInfo.meta.address), [](){}, [](auto){});
             } else {
                 auto driveState = from_json<DriveStateNotification, DriveStateNotificationDto>(json);
                 for (const auto& notifier : _driveStateNotifiers[websocketInfo.meta.address]) {
@@ -282,12 +290,14 @@ namespace xpx_chain_sdk {
         }
     }
 
-    void NotificationService::addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers) {
+    void NotificationService::addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers,
+                                                std::function<void()> onSuccess,
+                                                std::function<void(boost::beast::error_code errorCode)> onError) {
         if (empty(notifiers)) {
             XPX_CHAIN_SDK_THROW_1(notification_error, "list of notifiers is empty", __FUNCTION__)
         }
 
-        auto task = [pThis = shared_from_this(), notifiers]() {
+        auto task = [pThis = shared_from_this(), notifiers, onSuccess, onError]() {
             const bool isEmpty = pThis->_blockNotifiers.empty();
 
             for (const auto& notifier : notifiers) {
@@ -295,15 +305,19 @@ namespace xpx_chain_sdk {
             }
 
             if (isEmpty) {
-                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathBlock);
+                pThis->_subscriptionManager->subscribe(pThis->_uid, internal::pathBlock, onSuccess, onError);
+            } else {
+                pThis->runTask(onSuccess);
             }
         };
 
         runTask(task);
     }
 
-    void NotificationService::removeBlockNotifiers(const std::vector<notifierId>& notifierIds) {
-        auto task = [pThis = shared_from_this(), notifierIds]() {
+    void NotificationService::removeBlockNotifiers(std::function<void()> onSuccess,
+                                                   std::function<void(boost::beast::error_code errorCode)> onError,
+                                                   const std::vector<notifierId>& notifierIds) {
+        auto task = [pThis = shared_from_this(), notifierIds, onSuccess, onError]() {
             for (const auto& id : notifierIds) {
                 pThis->_blockNotifiers.erase(id);
             }
@@ -313,74 +327,119 @@ namespace xpx_chain_sdk {
             }
 
             if (pThis->_blockNotifiers.empty()) {
-                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathBlock);
+                pThis->_subscriptionManager->unsubscribe(pThis->_uid, internal::pathBlock, onSuccess, onError);
+            } else {
+                pThis->runTask(onSuccess);
             }
         };
 
         runTask(task);
     }
 
-    void NotificationService::addConfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers) {
-        addNotifiers(address, internal::pathConfirmedAdded, _confirmedAddedNotifiers, notifiers);
+    void NotificationService::addConfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers,
+                                                         std::function<void()> onSuccess,
+                                                         std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathConfirmedAdded, _confirmedAddedNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeConfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathConfirmedAdded, _confirmedAddedNotifiers, notifierIds);
+    void NotificationService::removeConfirmedAddedNotifiers(const Address& address, std::function<void()> onSuccess,
+                                                            std::function<void(boost::beast::error_code errorCode)> onError,
+                                                            const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathConfirmedAdded, _confirmedAddedNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addUnconfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers) {
-        addNotifiers(address, internal::pathUnconfirmedAdded, _unconfirmedAddedNotifiers, notifiers);
+    void NotificationService::addUnconfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers,
+                                                           std::function<void()> onSuccess,
+                                                           std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathUnconfirmedAdded, _unconfirmedAddedNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeUnconfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathUnconfirmedAdded, _unconfirmedAddedNotifiers, notifierIds);
+    void NotificationService::removeUnconfirmedAddedNotifiers(const Address& address, std::function<void()> onSuccess, 
+                                                              std::function<void(boost::beast::error_code errorCode)> onError,
+                                                              const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathUnconfirmedAdded, _unconfirmedAddedNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addUnconfirmedRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers) {
-        addNotifiers(address, internal::pathUnconfirmedRemoved, _unconfirmedRemovedNotifiers, notifiers);
+    void NotificationService::addUnconfirmedRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers,
+                                                             std::function<void()> onSuccess,
+                                                             std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathUnconfirmedRemoved, _unconfirmedRemovedNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeUnconfirmedRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathUnconfirmedRemoved, _unconfirmedRemovedNotifiers, notifierIds);
+    void NotificationService::removeUnconfirmedRemovedNotifiers(const Address& address,
+                                                                std::function<void()> onSuccess,
+                                                                std::function<void(boost::beast::error_code errorCode)> onError,
+                                                                const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathUnconfirmedRemoved, _unconfirmedRemovedNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addPartialAddedNotifiers(const Address& address, const std::vector<Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>& notifiers) {
-        addNotifiers(address, internal::pathPartialAdded, _partialAddedNotifiers, notifiers);
+    void NotificationService::addPartialAddedNotifiers(const Address& address,
+                                                       const std::vector<Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>& notifiers,
+                                                       std::function<void()> onSuccess,
+                                                       std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathPartialAdded, _partialAddedNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removePartialAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathPartialAdded, _partialAddedNotifiers, notifierIds);
+    void NotificationService::removePartialAddedNotifiers(const Address& address,
+                                                          std::function<void()> onSuccess,
+                                                          std::function<void(boost::beast::error_code errorCode)> onError,
+                                                          const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathPartialAdded, _partialAddedNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addPartialRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers) {
-        addNotifiers(address, internal::pathPartialRemoved, _partialRemovedNotifiers, notifiers);
+    void NotificationService::addPartialRemovedNotifiers(const Address& address,
+                                                         const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers,
+                                                         std::function<void()> onSuccess,
+                                                         std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathPartialRemoved, _partialRemovedNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removePartialRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathPartialRemoved, _partialRemovedNotifiers, notifierIds);
+    void NotificationService::removePartialRemovedNotifiers(const Address& address,
+                                                            std::function<void()> onSuccess,
+                                                            std::function<void(boost::beast::error_code errorCode)> onError,
+                                                            const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathPartialRemoved, _partialRemovedNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addStatusNotifiers(const Address& address, const std::vector<Notifier<TransactionStatusNotification>>& notifiers) {
-        addNotifiers(address, internal::pathStatus, _statusNotifiers, notifiers);
+    void NotificationService::addStatusNotifiers(const Address& address,
+                                                 const std::vector<Notifier<TransactionStatusNotification>>& notifiers,
+                                                 std::function<void()> onSuccess,
+                                                 std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathStatus, _statusNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeStatusNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathStatus, _statusNotifiers, notifierIds);
+    void NotificationService::removeStatusNotifiers(const Address& address,
+                                                    std::function<void()> onSuccess,
+                                                    std::function<void(boost::beast::error_code errorCode)> onError,
+                                                    const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathStatus, _statusNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addCosignatureNotifiers(const Address& address, const std::vector<Notifier<SignerInfoNotification>>& notifiers) {
-        addNotifiers(address, internal::pathCosignature, _cosignatureNotifiers, notifiers);
+    void NotificationService::addCosignatureNotifiers(const Address& address,
+                                                      const std::vector<Notifier<SignerInfoNotification>>& notifiers,
+                                                      std::function<void()> onSuccess,
+                                                      std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathCosignature, _cosignatureNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeCosignatureNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathCosignature, _cosignatureNotifiers, notifierIds);
+    void NotificationService::removeCosignatureNotifiers(const Address& address,
+                                                         std::function<void()> onSuccess,
+                                                         std::function<void(boost::beast::error_code errorCode)> onError,
+                                                         const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathCosignature, _cosignatureNotifiers, notifierIds, onSuccess, onError);
     }
 
-    void NotificationService::addDriveStateNotifiers(const Address& address, const std::vector<Notifier<DriveStateNotification>>& notifiers) {
-        addNotifiers(address, internal::pathDriveState, _driveStateNotifiers, notifiers);
+    void NotificationService::addDriveStateNotifiers(const Address& address,
+                                                     const std::vector<Notifier<DriveStateNotification>>& notifiers,
+                                                     std::function<void()> onSuccess,
+                                                     std::function<void(boost::beast::error_code errorCode)> onError) {
+        addNotifiers(address, internal::pathDriveState, _driveStateNotifiers, notifiers, onSuccess, onError);
     }
 
-    void NotificationService::removeDriveStateNotifiers(const Address& address, const std::vector<notifierId>& notifierIds) {
-        removeNotifiers(address, internal::pathDriveState, _driveStateNotifiers, notifierIds);
+    void NotificationService::removeDriveStateNotifiers(const Address& address,
+                                                        std::function<void()> onSuccess,
+                                                        std::function<void(boost::beast::error_code errorCode)> onError,
+                                                        const std::vector<notifierId>& notifierIds) {
+        removeNotifiers(address, internal::pathDriveState, _driveStateNotifiers, notifierIds, onSuccess, onError);
     }
 }

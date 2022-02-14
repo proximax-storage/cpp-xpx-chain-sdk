@@ -57,9 +57,10 @@ namespace xpx_chain_sdk::internal::network {
         });
     }
 
-    void WsClient::send(const std::string& json) {
-        boost::asio::post(*_strand, [pThis = shared_from_this(), json] {
-            pThis->_outgoingQueue.push_back(json);
+    void WsClient::send(const std::string& json, std::function<void()> onSuccess,
+                        std::function<void(boost::beast::error_code errorCode)> onError) {
+        boost::asio::post(*_strand, [pThis = shared_from_this(), json, onSuccess, onError] {
+            pThis->_outgoingQueue.push_back({ json, { onSuccess, onError } });
             if (pThis->_outgoingQueue.size() > 1) {
                 return;
             }
@@ -74,13 +75,21 @@ namespace xpx_chain_sdk::internal::network {
 
     void WsClient::doWrite() {
         _ws.async_write(
-                boost::asio::buffer(_outgoingQueue[0]),
+                boost::asio::buffer(_outgoingQueue[0].first),
                 boost::asio::bind_executor(*_strand, [pThis = shared_from_this()](auto errorCode, auto bytesTransferred) {
-                    pThis->_outgoingQueue.pop_front();
                     if (errorCode) {
-                        return pThis->_errorCallback(errorCode);
+                        boost::asio::post(*pThis->_strand, [errorCode, onError = pThis->_outgoingQueue[0].second.second]() {
+                            onError(errorCode);
+                        });
+
+                        return pThis->_outgoingQueue.pop_front();
                     }
 
+                    boost::asio::post(*pThis->_strand, [onSuccess = pThis->_outgoingQueue[0].second.first]() {
+                        onSuccess();
+                    });
+
+                    pThis->_outgoingQueue.pop_front();
                     if (!pThis->_outgoingQueue.empty()) {
                         pThis->doWrite();
                         return;

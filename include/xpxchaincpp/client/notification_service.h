@@ -15,6 +15,7 @@
 #include <thread>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/beast/core/error.hpp>
 
 namespace xpx_chain_sdk::internal::network {
     class Context;
@@ -37,32 +38,59 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
                 std::shared_ptr<internal::network::Context> context);
         ~NotificationService();
 
-    void addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers);
-    void removeBlockNotifiers(const std::vector<notifierId>& notifierIds = {});
+    void addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers,
+                           std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
-    void addConfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers);
-    void removeConfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void removeBlockNotifiers(std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                              const std::vector<notifierId>& notifierIds = {});
 
-    void addUnconfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers);
-    void removeUnconfirmedAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void addConfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers,
+                                    std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
-    void addUnconfirmedRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers);
-    void removeUnconfirmedRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void removeConfirmedAddedNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                       const std::vector<notifierId>& notifierIds = {});
 
-    void addPartialAddedNotifiers(const Address& address, const std::vector<Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>& notifiers);
-    void removePartialAddedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void addUnconfirmedAddedNotifiers(const Address& address, const std::vector<Notifier<TransactionNotification>>& notifiers,
+                                      std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
-    void addPartialRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers);
-    void removePartialRemovedNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void removeUnconfirmedAddedNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                         const std::vector<notifierId>& notifierIds = {});
 
-    void addStatusNotifiers(const Address& address, const std::vector<Notifier<TransactionStatusNotification>>& notifiers);
-    void removeStatusNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void addUnconfirmedRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers,
+                                        std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
-    void addCosignatureNotifiers(const Address& address, const std::vector<Notifier<SignerInfoNotification>>& notifiers);
-    void removeCosignatureNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void removeUnconfirmedRemovedNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                           const std::vector<notifierId>& notifierIds = {});
 
-    void addDriveStateNotifiers(const Address& address, const std::vector<Notifier<DriveStateNotification>>& notifiers);
-    void removeDriveStateNotifiers(const Address& address, const std::vector<notifierId>& notifierIds = {});
+    void addPartialAddedNotifiers(const Address& address, const std::vector<Notifier<std::shared_ptr<transactions_info::BasicTransaction>>>& notifiers,
+                                  std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+
+    void removePartialAddedNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                     const std::vector<notifierId>& notifierIds = {});
+
+    void addPartialRemovedNotifiers(const Address& address, const std::vector<Notifier<transactions_info::TransactionInfo>>& notifiers,
+                                    std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+
+    void removePartialRemovedNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                       const std::vector<notifierId>& notifierIds = {});
+
+    void addStatusNotifiers(const Address& address, const std::vector<Notifier<TransactionStatusNotification>>& notifiers,
+                            std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+
+    void removeStatusNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                               const std::vector<notifierId>& notifierIds = {});
+
+    void addCosignatureNotifiers(const Address& address, const std::vector<Notifier<SignerInfoNotification>>& notifiers,
+                                 std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+
+    void removeCosignatureNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                    const std::vector<notifierId>& notifierIds = {});
+
+    void addDriveStateNotifiers(const Address& address, const std::vector<Notifier<DriveStateNotification>>& notifiers,
+                                std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+
+    void removeDriveStateNotifiers(const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError,
+                                   const std::vector<notifierId>& notifierIds = {});
 
     private:
         void run();
@@ -71,10 +99,12 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
         void stop();
 
         template<typename InternalContainer, typename ExternalContainer>
-        void addNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer&);
+        void addNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer&,
+                          std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
         template<typename InternalContainer, typename ExternalContainer>
-        void removeNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer& = {});
+        void removeNotifiers(const Address&, const std::string&, InternalContainer&, const ExternalContainer&,
+                             std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
     private:
         std::shared_ptr<Config> _config;

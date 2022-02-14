@@ -41,7 +41,8 @@ namespace xpx_chain_sdk::internal::network {
 
         void connect(uint64_t onResolveHostTimeoutSec = 30);
         void disconnect();
-        void send(const std::string& json);
+        void send(const std::string& json, std::function<void()> onSuccess,
+                  std::function<void(boost::beast::error_code errorCode)> onError);
         bool isConnected() const;
 
     private:
@@ -62,7 +63,7 @@ namespace xpx_chain_sdk::internal::network {
         std::shared_ptr<Config> _config;
         std::shared_ptr<internal::network::Context> _context;
         std::shared_ptr<boost::asio::streambuf> _buffer;
-        std::deque<std::string> _outgoingQueue;
+        std::deque<std::pair<std::string, std::pair<std::function<void()>, std::function<void(boost::beast::error_code errorCode)>>>> _outgoingQueue;
         std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> _strand;
         std::function<void()> _postponedDisconnect;
         boost::asio::ip::tcp::resolver _resolver;
