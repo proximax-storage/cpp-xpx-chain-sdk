@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #include <xpxchaincpp/types.h>
 #include <xpxchaincpp/model/transaction/account_link_transaction_types.h>
 #include "xpxchaincpp/model/transaction/account_property_transaction_types.h"
@@ -152,7 +152,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TStoragePaymentTransaction: public TBase {
     public:
-        Key driveKey;
+        std::string driveKey;
         Amount storageUnits;
     };
 
@@ -212,8 +212,8 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDataModificationTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 downloadDataCdi;
+		std::string driveKey;
+		std::string downloadDataCdi;
 		uint64_t uploadSize;
         Amount feedbackFeeAmount;
 
@@ -222,18 +222,18 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDownloadTransaction: public TBase {
     public:
-		Key driveKey;
+		std::string driveKey;
 		uint64_t downloadSize;
 		Amount feedbackFeeAmount;
         uint16_t listOfPublicKeysSize;
-        std::vector<Key> listOfPublicKeys;
+        std::vector<std::string> listOfPublicKeys;
 
     };
 
     template<typename TBase>
     class TDownloadPaymentTransaction: public TBase {
     public:
-        Hash256 downloadChannelId;
+        std::string downloadChannelId;
         uint64_t downloadSize;
         Amount feedbackFeeAmount;
 
@@ -242,16 +242,16 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDriveClosureTransaction: public TBase {
     public:
-        Key driveKey;
+        std::string driveKey;
 
     };
 
     template<typename TBase>
     class TDataModificationApprovalTransaction: public TBase {
     public:
-        Key driveKey;
-        Hash256 dataModificationId;
-        Hash256 fileStructureCdi;
+        std::string driveKey;
+        std::string dataModificationId;
+        std::string fileStructureCdi;
         uint64_t fileStructureSize;
         uint64_t metaFilesSize;
         uint64_t usedDriveSize;
@@ -259,8 +259,8 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint8_t overlappingKeysCount;
         uint8_t judgedKeysCount;
         uint16_t opinionElementCount;
-        std::vector<Key> publicKeys;
-        std::vector<Signature> signatures;
+        std::vector<std::string> publicKeys;
+        std::vector<std::string> signatures;
         std::vector<uint8_t> presentOpinions;
         std::vector<uint64_t> opinions;
 
@@ -269,15 +269,15 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDataModificationCancelTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 dataModificationId;
+		std::string driveKey;
+		std::string dataModificationId;
 
     };
 
     template<typename TBase>
     class TFinishDownloadTransaction: public TBase {
     public:
-        Hash256 downloadChannelId;
+        std::string downloadChannelId;
         Amount feedbackFeeAmount;
 
     };
@@ -292,7 +292,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TReplicatorOffboardingTransaction: public TBase {
     public:
-        Key driveKey;
+        std::string driveKey;
 
     };
 

@@ -40,9 +40,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 	// Common Dtos
 	//==========================================================================
+
+        using Uint32 = xpx_chain_sdk::internal::json::Uint32;
+        using Uint64 = xpx_chain_sdk::internal::json::Uint64;
+
 		using MosaicPropertyDto = VariadicStruct<
 				Field<STR_LITERAL("id"),    MosaicPropertyId>,
-				Field<STR_LITERAL("value"), uint64_t>>;
+				Field<STR_LITERAL("value"), Uint64>>;
 
 		using CosignatureDto = VariadicStruct<
 				Field<STR_LITERAL("publicKey"), std::string>,
@@ -60,7 +64,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 
 		//Transaction meta Dtos
-        using Uint32 = xpx_chain_sdk::internal::json::Uint32;
+        //==========================================================================
 
 		using TransactionInfoDto = VariadicStruct<
                 Field<STR_LITERAL("height"), Uint64>,
@@ -97,12 +101,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using EmbeddedTransactionDto = VariadicStruct<
 				Field<STR_LITERAL("signer"),    std::string>,
-				Field<STR_LITERAL("version"),   uint32_t>,
+				Field<STR_LITERAL("version"),   Uint32>,
 				Field<STR_LITERAL("type"),      TransactionType>>;
 
 		using AggregateTransactionDto = VariadicStruct<
 				TransactionDto,
-				Field<STR_LITERAL("payloadSize"),  uint32_t>,
+				Field<STR_LITERAL("payloadSize"),  Uint32>,
 				Field<STR_LITERAL("payload"),      std::vector<uint8_t> >,
 				Field<STR_LITERAL("cosignatures"), std::vector<CosignatureDto> > >;
 
@@ -129,8 +133,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TMosaicDefinitionTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("nonce"),                   uint32_t>,
-				Field<STR_LITERAL("mosaicId"),                MosaicId>,
+				Field<STR_LITERAL("nonce"),                   Uint32>,
+				Field<STR_LITERAL("mosaicId"),                Uint64>,
 				Field<STR_LITERAL("flags"),                   MosaicFlags>,
 				Field<STR_LITERAL("divisibility"),            uint8_t>,
 				Field<STR_LITERAL("optionalProperties"),      std::vector<MosaicPropertyDto> > >;
@@ -138,15 +142,15 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TMosaicSupplyChangeTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("mosaicId"),  MosaicId>,
+				Field<STR_LITERAL("mosaicId"),  Uint64>,
 				Field<STR_LITERAL("direction"), MosaicSupplyChangeDirection>,
-				Field<STR_LITERAL("delta"),     Amount>>;
+				Field<STR_LITERAL("delta"),     Uint64>>;
 
 		template<typename TBase>
 		using TRegisterNamespaceTransactionDto = VariadicStruct<
 				TBase,
 				Field<STR_LITERAL("namespaceType"),      NamespaceType>,
-				Field<STR_LITERAL("durationOrParentId"), uint64_t>,
+				Field<STR_LITERAL("durationOrParentId"), Uint64>,
 				Field<STR_LITERAL("namespaceId"),        NamespaceId>,
 				Field<STR_LITERAL("namespaceNameSize"),  uint8_t>,
 				Field<STR_LITERAL("namespaceName"),      std::string > >;
@@ -154,8 +158,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TSecretLockTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("mosaicId"),      MosaicId>,
-				Field<STR_LITERAL("amount"),        Amount>,
+				Field<STR_LITERAL("mosaicId"),      Uint64>,
+				Field<STR_LITERAL("amount"),        Uint64>,
 				Field<STR_LITERAL("duration"),      BlockDuration>,
 				Field<STR_LITERAL("hashAlgorithm"), SecretHashAlgorithm>,
 				Field<STR_LITERAL("secret"),        std::string >,
@@ -171,11 +175,11 @@ namespace xpx_chain_sdk::internal::json::dto {
         template<typename TBase>
         using TStoragePaymentTransactionDto = VariadicStruct<
                 TBase,
-                Field<STR_LITERAL("driveKey"),      Key>,
-                Field<STR_LITERAL("storageUnits"),  Amount>>;
+                Field<STR_LITERAL("driveKey"),      std::string>,
+                Field<STR_LITERAL("storageUnits"),  Uint64>>;
 
 		using TransferTransactionMessageDto = VariadicStruct<
-                Field<STR_LITERAL("type"),        std::uint32_t >,
+                Field<STR_LITERAL("type"),        Uint32 >,
                 Field<STR_LITERAL("payload"),     std::string > >;
 
 		template<typename TBase>
@@ -199,7 +203,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TMosaicAliasTransactionDto = VariadicStruct<
 				TAliasTransactionBaseDto<TBase>,
-				Field<STR_LITERAL("mosaicId"), MosaicId>>;
+				Field<STR_LITERAL("mosaicId"), Uint64>>;
 
 		template<typename TBase, typename T>
 		using TAccountPropertyTransactionDto = VariadicStruct<
@@ -211,78 +215,78 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TPrepareBcDriveTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveSize"),				uint64_t>,
-				Field<STR_LITERAL("verificationFeeAmount"), Amount>,
+				Field<STR_LITERAL("driveSize"),				Uint64>,
+				Field<STR_LITERAL("verificationFeeAmount"), Uint64>,
 				Field<STR_LITERAL("replicatorCount"),		uint16_t> >;
 
 		template<typename TBase>
 		using TDataModificationTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveKey"),				Key>,
-				Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
-				Field<STR_LITERAL("uploadSize"),			uint64_t>,
-				Field<STR_LITERAL("feedbackFeeAmount"),		Amount> >;
+				Field<STR_LITERAL("driveKey"),				std::string>,
+				Field<STR_LITERAL("downloadDataCdi"),		std::string>,
+				Field<STR_LITERAL("uploadSize"),			Uint64>,
+				Field<STR_LITERAL("feedbackFeeAmount"),		Uint64> >;
 
 		template<typename TBase>
 		using TDownloadTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveKey"),				Key>,
-				Field<STR_LITERAL("downloadSize"),			uint64_t>,
-				Field<STR_LITERAL("feedbackFeeAmount"),		Amount>,
+				Field<STR_LITERAL("driveKey"),				std::string>,
+				Field<STR_LITERAL("downloadSize"),			Uint64>,
+				Field<STR_LITERAL("feedbackFeeAmount"),		Uint64>,
 				Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>,
-                Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<Key> >>;
+                Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<std::string> >>;
 
         template<typename TBase>
         using TDownloadPaymentTransactionDto = VariadicStruct<
                 TBase,
-                Field<STR_LITERAL("downloadChannelId"),		Hash256>,
-                Field<STR_LITERAL("downloadSize"),			uint64_t>,
-                Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
+                Field<STR_LITERAL("downloadChannelId"),		std::string>,
+                Field<STR_LITERAL("downloadSize"),			Uint64>,
+                Field<STR_LITERAL("feedbackFeeAmount"),		Uint64>>;
 
         template<typename TBase>
         using TDriveClosureTransactionDto = VariadicStruct<
                 TBase,
-                Field<STR_LITERAL("driveKey"), Key>>;
+                Field<STR_LITERAL("driveKey"), std::string>>;
 
 		template<typename TBase>
 		using TDataModificationApprovalTransactionDto = VariadicStruct<
 				TBase,
-                Field<STR_LITERAL("driveKey"),				Key>,
-                Field<STR_LITERAL("dataModificationId"),	Hash256>,
-                Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
-                Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
-                Field<STR_LITERAL("metaFilesSize"),		    uint64_t>,
-                Field<STR_LITERAL("usedDriveSize"),		    uint64_t>,
+                Field<STR_LITERAL("driveKey"),				std::string>,
+                Field<STR_LITERAL("dataModificationId"),	std::string>,
+                Field<STR_LITERAL("fileStructureCdi"),		std::string>,
+                Field<STR_LITERAL("fileStructureSize"),		Uint64>,
+                Field<STR_LITERAL("metaFilesSize"),		    Uint64>,
+                Field<STR_LITERAL("usedDriveSize"),		    Uint64>,
                 Field<STR_LITERAL("judgingKeysCount"),		uint8_t>,
                 Field<STR_LITERAL("overlappingKeysCount"),	uint8_t>,
                 Field<STR_LITERAL("judgedKeysCount"),		uint8_t>,
                 Field<STR_LITERAL("opinionElementCount"),	uint16_t>,
-                Field<STR_LITERAL("publicKeys"),		    std::vector<Key>>,
-                Field<STR_LITERAL("signatures"),		    std::vector<Signature>>,
+                Field<STR_LITERAL("publicKeys"),		    std::vector<std::string>>,
+                Field<STR_LITERAL("signatures"),		    std::vector<std::string>>,
                 Field<STR_LITERAL("presentOpinions"),		std::vector<uint8_t>>,
-                Field<STR_LITERAL("opinions"),			    std::vector<uint64_t>>>;
+                Field<STR_LITERAL("opinions"),			    std::vector<Uint64>>>;
 
 		template<typename TBase>
 		using TDataModificationCancelTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("driveKey"),				Key>,
-				Field<STR_LITERAL("dataModificationId"),	Hash256>>;
+				Field<STR_LITERAL("driveKey"),				std::string>,
+				Field<STR_LITERAL("dataModificationId"),	std::string>>;
 
         template<typename TBase>
         using TFinishDownloadTransactionDto = VariadicStruct<
                 TBase,
-                Field<STR_LITERAL("downloadChannelId"),	Hash256>,
-                Field<STR_LITERAL("feedbackFeeAmount"),	Amount>>;
+                Field<STR_LITERAL("downloadChannelId"),	std::string>,
+                Field<STR_LITERAL("feedbackFeeAmount"),	Uint64>>;
 
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("capacity"), Amount>>;
+				Field<STR_LITERAL("capacity"), Uint64>>;
 
         template<typename TBase>
         using TReplicatorOffboardingTransactionDto = VariadicStruct<
                 TBase,
-                Field<STR_LITERAL("driveKey"), Key>>;
+                Field<STR_LITERAL("driveKey"), std::string>>;
 
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;

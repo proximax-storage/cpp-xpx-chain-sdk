@@ -1781,12 +1781,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.overlappingKeysCount = dto.value<"overlappingKeysCount"_>();
 		transaction.judgedKeysCount = dto.value<"judgedKeysCount"_>();
 		transaction.opinionElementCount = dto.value<"opinionElementCount"_>();
-
-        // TODO: fix it here
 		transaction.publicKeys = dto.value<"publicKeys"_>();
 		transaction.signatures = dto.value<"signatures"_>();
 		transaction.presentOpinions = dto.value<"presentOpinions"_>();
-		transaction.opinions = dto.value<"opinions"_>();
+
+        for (const auto opinion : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(opinion);
+        }
 
 		return transaction;
 	}
