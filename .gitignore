@@ -1,7 +1,0 @@
-build/
-cmake-build-debug/
-CMakeLists.txt
-.vscode/settings.json
-tests/client/
-
-.idea

@@ -1,7 +1,0 @@
-add_single_test("account_service_tests" "account_service_tests.cpp")
-add_single_test("blockchain_service_tests" "blockchain_service_tests.cpp")
-add_single_test("mosaic_service_tests" "mosaic_service_tests.cpp")
-add_single_test("namespace_service_tests" "namespace_service_tests.cpp")
-add_single_test("network_service_tests" "network_service_tests.cpp")
-add_single_test("transaction_service_tests" "transaction_service_tests.cpp")
-add_single_test("notification_service_tests" "notification_service_tests.cpp")

@@ -209,7 +209,7 @@ namespace xpx_chain_sdk::tests {
 //         RawBuffer message("test message");
 
 //         //Sign transaction
-        // std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
+//         std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
 //         account->signTransaction(transferTransaction.get());
 
 //         //Variables
@@ -220,7 +220,7 @@ namespace xpx_chain_sdk::tests {
 //         //Handler
 //         UnconfirmedRemovedNotifier notifier = [&transferTransaction, &isReceived](const UnconfirmedRemovedTransactionNotification& transaction){
 //             if (transaction.meta.hash == ToHex(transferTransaction->hash())){
-                // EXPECT_EQ(ToHex(transferTransaction->hash()), transaction.meta.hash);
+//                 EXPECT_EQ(ToHex(transferTransaction->hash()), transaction.meta.hash);
 
 //                 auto transactionInfo = client->transactions()->getAnyTransactionInfo(transaction.meta.hash);
 //                 EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
@@ -230,7 +230,7 @@ namespace xpx_chain_sdk::tests {
 //         };
                
 //         client->notifications()->addUnconfirmedRemovedNotifiers(recipient, {notifier});
-        // EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+//         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
 
 //          timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
 //             EXPECT_FALSE(errorCode.value());
@@ -262,6 +262,12 @@ namespace xpx_chain_sdk::tests {
         boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
 
         // Create new account
+        // const std::string firstDefaultAccountPrivateKey = "3E86205091D90B661F95E986D7CC63D68FB11227E8AAF469A5612DB62F89606A";
+        // std::shared_ptr<Account> firstDefaultAccount = getTestAccount(firstDefaultAccountPrivateKey);
+        // const std::string secondDefaultAccountPrivateKey = "3E86205091D90B661F95E986D7CC63D68FB11227E8AAF469A5612DB62F89606A";
+        // std::shared_ptr<Account> secondDefaultAccount = getTestAccount(secondDefaultAccountPrivateKey);
+
+
         const std::string defaultAccountPrivateKey = "3E86205091D90B661F95E986D7CC63D68FB11227E8AAF469A5612DB62F89606A";
         std::shared_ptr<Account> defaultAccount = getTestAccount(defaultAccountPrivateKey);
 
@@ -286,10 +292,24 @@ namespace xpx_chain_sdk::tests {
         std::unique_ptr<AggregateTransaction> aggregateTransaction = CreateBondedAggregateTransaction(embeddedTransactions, coSignatures);
         account->signTransaction(aggregateTransaction.get());
         coSignatures[account->publicKey()] = account->cosignAggregateTransaction(aggregateTransaction.get());
-        coSignatures[defaultAccount->publicKey()] = defaultAccount->cosignAggregateTransaction(aggregateTransaction.get());
+        // coSignatures[defaultAccount->publicKey()] = defaultAccount->cosignAggregateTransaction(aggregateTransaction.get());
 
-        // auto transactionStatus = client->transactions()->getTransactionStatus(aggregateTransaction->hash());
-        // EXPECT_EQ(0,1) << "1TransactionStatus= " << testing::PrintToString(transactionStatus.status);
+
+        // EXPECT_EQ(0,1) << "TransactionStatus= " << testing::PrintToString(ToHex(aggregateTransaction->hash()));
+
+        // auto transactionInfo = client->transactions()->getTransactionInfo(xpx_chain_sdk::Partial    , ToHex(aggregateTransaction->hash()));
+        // EXPECT_EQ(0,1) << "TransactionStatus= " << testing::PrintToString(transactionInfo);
+
+        // auto transactionStatus = client->transactions()->getTransactionStatus(ToHex(aggregateTransaction->hash()));
+
+        auto hash = ToHex(aggregateTransaction->hash());
+        EXPECT_EQ(0,1) << "hashhhh= " << testing::PrintToString(hash);
+        
+        // EXPECT_EQ(0,1) << "1TransactionStatus= " << testing::PrintToString(client->transactions()->getTransactionStatus(hash));
+
+        EXPECT_TRUE(client->transactions()->announceAggregateBoundedTransaction(aggregateTransaction->binary()));
+
+
 
         //Variables
         const int maxIterations = 15;
@@ -311,8 +331,10 @@ namespace xpx_chain_sdk::tests {
             // std::cout << GetTransactionName(transaction->type);
             isReceived = true;
         };
+
+        // EXPECT_TRUE(client->transactions()->announceAggregateBoundedTransaction(aggregateTransaction->binary()));
         client->notifications()->addPartialAddedNotifiers(account->address(), {notifier});
-        EXPECT_TRUE(client->transactions()->announceAggregateBoundedTransaction(aggregateTransaction->binary()));
+        // EXPECT_TRUE(client->transactions()->announceAggregateBoundedTransaction(aggregateTransaction->binary()));
 
         timer.async_wait([currentIteration, &isReceived, &timer](const boost::system::error_code& errorCode) {
             EXPECT_FALSE(errorCode.value());
@@ -345,7 +367,7 @@ namespace xpx_chain_sdk::tests {
 
         //Create transaction
         Address recipient(clientData.publicKeyContainer);
-        Mosaic mosaic(-4613020131619586570, 100);
+        Mosaic mosaic(-23942394, 100);
         MosaicContainer mosaics{ mosaic };
         RawBuffer message("test message");
 
@@ -357,12 +379,11 @@ namespace xpx_chain_sdk::tests {
         const int maxIterations = 15;
         int currentIteration = 0;
         bool isReceived = false;
-        std::cout << ToHex(transferTransaction->hash()) << std::endl;
 
         //Handler
         StatusNotifier notifier = [&transferTransaction, &isReceived](const TransactionStatusNotification& status){
             if (status.hash == ToHex(transferTransaction->hash())){
-                EXPECT_EQ(ToHex(transferTransaction->hash()), status.hash);
+                EXPECT_EQ(ToHex(transferTransaction->hash()), status.hash) << "NOT EQUAL";
 
                 auto transactionStatus = client->transactions()->getTransactionStatus(status.hash);
                 EXPECT_EQ(status.status, transactionStatus.status) << "TransactionStatus= " << testing::PrintToString(transactionStatus.status);
@@ -382,6 +403,67 @@ namespace xpx_chain_sdk::tests {
         io.run();
         EXPECT_TRUE(isReceived);
    }
+
+
+//     void waitDriveStateNotifiers(int currentIteration, const int maxIterations, const bool& isReceived, const Address& recipient, boost::asio::deadline_timer& timer){
+//         if (currentIteration < maxIterations){
+//             ++currentIteration;
+//             if (isReceived) {
+//                 client->notifications()->removeDriveStateNotifiers(recipient);
+//             } else {
+//                 timer.expires_from_now(boost::posix_time::seconds(1));
+//                 timer.async_wait([currentIteration, maxIterations, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+//                     EXPECT_FALSE(errorCode.value());
+//                     waitDriveStateNotifiers(currentIteration, maxIterations, isReceived, recipient, timer);
+//                 });
+//             }
+//         }
+//     }
+
+//    TEST(TEST_CLASS, addDriveStateNotifiers){
+//         //Timer
+//         boost::asio::io_context io;
+//         boost::asio::deadline_timer timer(io, boost::posix_time::seconds(1));
+
+//         //Create transaction
+//         Address recipient(clientData.publicKeyContainer);
+//         Mosaic mosaic(-12312312312, 100);
+//         MosaicContainer mosaics{ mosaic };
+//         RawBuffer message("test message");
+
+//         //Sign transaction
+//         std::unique_ptr<TransferTransaction> transferTransaction = CreateTransferTransaction(recipient, mosaics, message);
+//         account->signTransaction(transferTransaction.get());
+
+//         //Variables
+//         const int maxIterations = 15;
+//         int currentIteration = 0;
+//         bool isReceived = false;
+//         std::cout << ToHex(transferTransaction->hash()) << std::endl;
+
+//         //Handler
+//         StatusNotifier notifier = [&transferTransaction, &isReceived](const TransactionStatusNotification& status){
+//             if (status.hash == ToHex(transferTransaction->hash())){
+//                 EXPECT_EQ(ToHex(transferTransaction->hash()), status.hash);
+
+//                 auto transactionStatus = client->transactions()->getTransactionStatus(status.hash);
+//                 EXPECT_EQ(status.status, transactionStatus.status) << "TransactionStatus= " << testing::PrintToString(transactionStatus.status);
+                
+//                 isReceived = true;
+//             }
+//         };
+
+//         client->notifications()->addDriveStateNotifiers(recipient, {notifier});
+//         EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+
+//          timer.async_wait([currentIteration, &isReceived, &recipient, &timer](const boost::system::error_code& errorCode) {
+//             EXPECT_FALSE(errorCode.value());
+//             waitDriveStateNotifiers(currentIteration, maxIterations, isReceived, recipient, timer);
+//         });  
+
+//         io.run();
+//         EXPECT_TRUE(isReceived);
+//    }
 
 
 }
