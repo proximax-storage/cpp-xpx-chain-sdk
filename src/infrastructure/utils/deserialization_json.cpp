@@ -1777,10 +1777,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.fileStructureSize = dto.value<"fileStructureSize"_>();
 		transaction.metaFilesSize = dto.value<"metaFilesSize"_>();
 		transaction.usedDriveSize = dto.value<"usedDriveSize"_>();
-		transaction.judgingKeysCount = dto.value<"judgingKeysCount"_>();
-		transaction.overlappingKeysCount = dto.value<"overlappingKeysCount"_>();
-		transaction.judgedKeysCount = dto.value<"judgedKeysCount"_>();
-		transaction.opinionElementCount = dto.value<"opinionElementCount"_>();
 		transaction.publicKeys = dto.value<"publicKeys"_>();
 		transaction.signatures = dto.value<"signatures"_>();
 		transaction.presentOpinions = dto.value<"presentOpinions"_>();

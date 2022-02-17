@@ -257,13 +257,9 @@ namespace xpx_chain_sdk::internal::json::dto {
                 Field<STR_LITERAL("fileStructureSize"),		Uint64>,
                 Field<STR_LITERAL("metaFilesSize"),		    Uint64>,
                 Field<STR_LITERAL("usedDriveSize"),		    Uint64>,
-                Field<STR_LITERAL("judgingKeysCount"),		uint8_t>,
-                Field<STR_LITERAL("overlappingKeysCount"),	uint8_t>,
-                Field<STR_LITERAL("judgedKeysCount"),		uint8_t>,
-                Field<STR_LITERAL("opinionElementCount"),	uint16_t>,
                 Field<STR_LITERAL("publicKeys"),		    std::vector<std::string>>,
                 Field<STR_LITERAL("signatures"),		    std::vector<std::string>>,
-                Field<STR_LITERAL("presentOpinions"),		std::vector<uint8_t>>,
+                Field<STR_LITERAL("presentOpinions"),		std::vector<int64_t>>,
                 Field<STR_LITERAL("opinions"),			    std::vector<Uint64>>>;
 
 		template<typename TBase>

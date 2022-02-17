@@ -255,13 +255,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint64_t fileStructureSize;
         uint64_t metaFilesSize;
         uint64_t usedDriveSize;
-        uint8_t judgingKeysCount;
-        uint8_t overlappingKeysCount;
-        uint8_t judgedKeysCount;
-        uint16_t opinionElementCount;
         std::vector<std::string> publicKeys;
         std::vector<std::string> signatures;
-        std::vector<uint8_t> presentOpinions;
+        std::vector<int64_t> presentOpinions;
         std::vector<uint64_t> opinions;
 
     };
