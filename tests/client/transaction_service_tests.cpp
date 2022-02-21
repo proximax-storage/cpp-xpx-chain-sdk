@@ -5,6 +5,7 @@
 **/
 
 #include <gtest/gtest.h>
+#include <condition_variable>
 #include "../config.h"
 
 namespace xpx_chain_sdk::tests {
@@ -25,6 +26,21 @@ namespace xpx_chain_sdk::tests {
         return account;
     }();
 
+    auto announceNewTransaction = [](const std::vector<uint8_t>& binaryData, const std::string& hash) {
+        try {
+            EXPECT_TRUE(client->transactions()->announceNewTransaction(binaryData));
+
+            std::cout << "announced new transaction: " << hash << std::endl;
+        }
+        catch (std::exception &e) {
+            std::cout << e.what() << std::endl;
+        }
+    };
+
+    auto onError = [](auto errorCode) {
+        std::cout << "error code: " << errorCode << std::endl;
+    };
+
     TEST(TEST_CLASS, getAnyTransactionInfo) {
         Address recipient(clientData.publicKeyContainer);
         // xpx id
@@ -42,27 +58,29 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         std::condition_variable receivedCheck;
 
-        ConfirmedAddedNotifier notifier = [&transferTransaction, &receivedCheck, &isReceived](const TransactionNotification& notification) {
+        Notifier<TransactionNotification> notifier([&transferTransaction, &receivedCheck, &isReceived, recipient](const notifierId& id, const TransactionNotification& notification) {
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
                 auto transactionInfo = client->transactions()->getAnyTransactionInfo(notification.meta.hash);
-                EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
+                EXPECT_EQ(TransactionType::Transfer, transactionInfo.get()->type);
+
+                client->notifications()->removeConfirmedAddedNotifiers(recipient, [](){}, onError, { id });
 
                 isReceived = true;
                 receivedCheck.notify_all();
             }
+        });
+
+        auto onSuccess = [binaryData = transferTransaction->binary(), hash = ToHex(transferTransaction->hash())](){
+            announceNewTransaction(binaryData, hash);
         };
 
-        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
-
-        EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier}, onSuccess, onError);
 
         receivedCheck.wait_for(lock, std::chrono::seconds(60), [&isReceived]() {
             return isReceived;
         });
-
-        client->notifications()->removeConfirmedAddedNotifiers(recipient);
 
         EXPECT_TRUE(isReceived);
     }
@@ -84,27 +102,29 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         std::condition_variable receivedCheck;
 
-        ConfirmedAddedNotifier notifier = [&transferTransaction, &receivedCheck, &isReceived](const TransactionNotification& notification) {
+        Notifier<TransactionNotification> notifier([&transferTransaction, &receivedCheck, &isReceived, recipient](const notifierId& id, const TransactionNotification& notification) {
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
                 auto transactionInfo = client->transactions()->getTransactionInfo(TransactionGroup::Confirmed, notification.meta.hash);
                 EXPECT_EQ(TransactionType::Transfer,transactionInfo.get()->type);
 
+                client->notifications()->removeConfirmedAddedNotifiers(recipient, [](){}, onError, { id });
+
                 isReceived = true;
                 receivedCheck.notify_all();
             }
+        });
+
+        auto onSuccess = [binaryData = transferTransaction->binary(), hash = ToHex(transferTransaction->hash())](){
+            announceNewTransaction(binaryData, hash);
         };
 
-        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
-
-        EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier}, onSuccess, onError);
 
         receivedCheck.wait_for(lock, std::chrono::seconds(60), [&isReceived]() {
             return isReceived;
         });
-
-        client->notifications()->removeConfirmedAddedNotifiers(recipient);
 
         EXPECT_TRUE(isReceived);
     }
@@ -126,27 +146,29 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         std::condition_variable receivedCheck;
 
-        ConfirmedAddedNotifier notifier = [&transferTransaction, &receivedCheck, &isReceived](const TransactionNotification& notification) {
+        Notifier<TransactionNotification> notifier([&transferTransaction, &receivedCheck, &isReceived, recipient](const notifierId& id, const TransactionNotification& notification) {
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
                 auto transactionsInfos = client->transactions()->getTransactionInfos(TransactionGroup::Confirmed, {notification.meta.hash});
                 EXPECT_EQ(1, transactionsInfos.transactions.size());
 
+                client->notifications()->removeConfirmedAddedNotifiers(recipient, [](){}, onError, { id });
+
                 isReceived = true;
                 receivedCheck.notify_all();
             }
+        });
+
+        auto onSuccess = [binaryData = transferTransaction->binary(), hash = ToHex(transferTransaction->hash())](){
+            announceNewTransaction(binaryData, hash);
         };
 
-        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
-
-        EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier}, onSuccess, onError);
 
         receivedCheck.wait_for(lock, std::chrono::seconds(60), [&isReceived]() {
             return isReceived;
         });
-
-        client->notifications()->removeConfirmedAddedNotifiers(recipient);
 
         EXPECT_TRUE(isReceived);
     }
@@ -168,7 +190,7 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         std::condition_variable receivedCheck;
 
-        ConfirmedAddedNotifier notifier = [&transferTransaction, &receivedCheck, &isReceived](const TransactionNotification& notification) {
+        Notifier<TransactionNotification> notifier([&transferTransaction, &receivedCheck, &isReceived, recipient](const notifierId& id, const TransactionNotification& notification) {
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
@@ -176,20 +198,22 @@ namespace xpx_chain_sdk::tests {
                 EXPECT_EQ(notification.meta.hash,transactionStatus.hash);
                 EXPECT_EQ(TransactionGroup::Confirmed,TransactionService::transactionGroupFromString(transactionStatus.group));
 
+                client->notifications()->removeConfirmedAddedNotifiers(recipient, [](){}, onError, { id });
+
                 isReceived = true;
                 receivedCheck.notify_all();
             }
+        });
+
+        auto onSuccess = [binaryData = transferTransaction->binary(), hash = ToHex(transferTransaction->hash())](){
+            announceNewTransaction(binaryData, hash);
         };
 
-        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
-
-        EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier}, onSuccess, onError);
 
         receivedCheck.wait_for(lock, std::chrono::seconds(60), [&isReceived]() {
             return isReceived;
         });
-
-        client->notifications()->removeConfirmedAddedNotifiers(recipient);
 
         EXPECT_TRUE(isReceived);
     }
@@ -211,7 +235,7 @@ namespace xpx_chain_sdk::tests {
         std::unique_lock<std::mutex> lock(receivedMutex);
         std::condition_variable receivedCheck;
 
-        ConfirmedAddedNotifier notifier = [&transferTransaction, &receivedCheck, &isReceived](const TransactionNotification& notification) {
+        Notifier<TransactionNotification> notifier([&transferTransaction, &receivedCheck, &isReceived, recipient](const notifierId& id, const TransactionNotification& notification) {
             if (notification.meta.hash == ToHex(transferTransaction->hash())) {
                 EXPECT_EQ(ToHex(transferTransaction->hash()), notification.meta.hash);
 
@@ -220,20 +244,22 @@ namespace xpx_chain_sdk::tests {
                 EXPECT_EQ(notification.meta.hash,transactionStatuses.statuses[0].hash);
                 EXPECT_EQ(TransactionGroup::Confirmed,TransactionService::transactionGroupFromString(transactionStatuses.statuses[0].group));
 
+                client->notifications()->removeConfirmedAddedNotifiers(recipient, [](){}, onError, { id });
+
                 isReceived = true;
                 receivedCheck.notify_all();
             }
+        });
+
+        auto onSuccess = [binaryData = transferTransaction->binary(), hash = ToHex(transferTransaction->hash())](){
+            announceNewTransaction(binaryData, hash);
         };
 
-        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier});
-
-        EXPECT_TRUE(client->transactions()->announceNewTransaction(transferTransaction->binary()));
+        client->notifications()->addConfirmedAddedNotifiers(recipient, {notifier}, onSuccess, onError);
 
         receivedCheck.wait_for(lock, std::chrono::seconds(60), [&isReceived]() {
             return isReceived;
         });
-
-        client->notifications()->removeConfirmedAddedNotifiers(recipient);
 
         EXPECT_TRUE(isReceived);
     }
