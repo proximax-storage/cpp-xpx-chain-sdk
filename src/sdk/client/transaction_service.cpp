@@ -107,55 +107,42 @@ namespace xpx_chain_sdk {
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			std::cout << e.what() << std::endl;
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+
 		return true;
 	}
 
 	bool TransactionService::announceAggregateBoundedTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+        requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::string path = "transaction/partial";
+		std::string path = "transactions/partial";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+        
 		return true;
 	}
 
 	bool TransactionService::announceCosignatureTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+        requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::string path = "transaction/cosignature";
+		std::string path = "transactions/cosignature";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+        
 		return true;
 	}
 

@@ -32,14 +32,14 @@ namespace xpx_chain_sdk {
 		explicit InvalidRequest(const std::string& errorMessage, uint16_t code);
 
     public:
-        int getErrorCode() const;
+        int getHttpErrorCode() const;
         ErrorMessage getErrorMessage() const;
 
 	private:
 		static std::string getErrorMessage(uint16_t code);
 
     private:
-        const int errorCode;
+        const int httpErrorCode;
         const std::string errorMessage;
 	};
 

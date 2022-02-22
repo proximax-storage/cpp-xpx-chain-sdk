@@ -85,12 +85,12 @@ namespace xpx_chain_sdk {
 
 InvalidRequest::InvalidRequest(const std::string& message, uint16_t code) :
     runtime_error(InvalidRequest::getErrorMessage(code)),
-    errorCode(code),
+    httpErrorCode(code),
 	errorMessage(message)
 {}
 
-int InvalidRequest::getErrorCode() const {
-    return errorCode;
+int InvalidRequest::getHttpErrorCode() const {
+    return httpErrorCode;
 }
 
 ErrorMessage InvalidRequest::getErrorMessage() const {

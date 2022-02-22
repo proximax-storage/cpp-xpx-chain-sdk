@@ -1861,7 +1861,6 @@ namespace xpx_chain_sdk::internal::json::dto {
         transactionData.type = dto.value<"type"_>();
         transactionData.maxFee = dto.value<"maxFee"_>();
         transactionData.deadline = dto.value<"deadline"_>();
-        transactionData.hash = dto.value<"hash"_>();
         return transactionData;
     }
 
