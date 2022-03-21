@@ -800,10 +800,9 @@ namespace xpx_chain_sdk::internal::json::dto {
         driveData.owner = dto.value<"owner"_>();
         driveData.rootHash = dto.value<"rootHash"_>();
         driveData.size = dto.value<"size"_>();
-        driveData.usedSize = dto.value<"usedSize"_>();
-        driveData.metaFilesSize = dto.value<"metaFilesSize"_>();
+        driveData.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+        driveData.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
         driveData.replicatorCount = dto.value<"replicatorCount"_>();
-        driveData.ownerCumulativeUploadSize = dto.value<"ownerCumulativeUploadSize"_>();
 
         for (const auto& activeModificationDto : dto.value<"activeDataModifications"_>()) {
             driveData.activeDataModifications.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(activeModificationDto));
@@ -822,6 +821,14 @@ namespace xpx_chain_sdk::internal::json::dto {
 
         for (const auto& verificationDto : dto.value<"verifications"_>()) {
             driveData.verifications.push_back(fromDto<Verification, VerificationDto>(verificationDto));
+        }
+
+        for (const auto& downloadShardDto : dto.value<"downloadShards"_>()) {
+            driveData.downloadShards.push_back(fromDto<DownloadShard, DownloadShardDto>(downloadShardDto));
+        }
+
+        for (const auto& dataModificationShardDto : dto.value<"dataModificationShards"_>()) {
+            driveData.dataModificationShards.push_back(fromDto<DataModificationShard, DataModificationShardDto>(dataModificationShardDto));
         }
 
         return driveData;
@@ -911,7 +918,7 @@ namespace xpx_chain_sdk::internal::json::dto {
     template<>
     Shard fromDto<Shard, ShardDto>(const ShardDto &dto) {
         Shard shard;
-        shard.downloadChannelId = dto.value<"downloadChannelId"_>();
+        shard.id = dto.value<"id"_>();
         shard.replicators = dto.value<"replicators"_>();
 
         return shard;
@@ -929,6 +936,46 @@ namespace xpx_chain_sdk::internal::json::dto {
         }
 
         return verification;
+    }
+
+    template<>
+    DownloadShard fromDto<DownloadShard, DownloadShardDto>(const DownloadShardDto &dto) {
+        DownloadShard downloadShard;
+        downloadShard.downloadChannelId = dto.value<"downloadChannelId"_>();
+
+        return downloadShard;
+    }
+
+    template<>
+    DataModificationShard fromDto<DataModificationShard, DataModificationShardDto>(const DataModificationShardDto &dto) {
+        DataModificationShard dataModificationShard;
+        dataModificationShard.replicator = dto.value<"replicator"_>();
+
+        for (const auto& uploadInfoDto : dto.value<"actualShardReplicators"_>()) {
+            dataModificationShard.actualShardReplicators.push_back(fromDto<UploadInfo, UploadInfoDto>(uploadInfoDto));
+        }
+
+        for (const auto& uploadInfoDto : dto.value<"formerShardReplicators"_>()) {
+            dataModificationShard.formerShardReplicators.push_back(fromDto<UploadInfo, UploadInfoDto>(uploadInfoDto));
+        }
+
+        for (const uint64_t& ownerUpload : dto.value<"ownerUpload"_>()) {
+            dataModificationShard.ownerUpload.push_back(ownerUpload);
+        }
+
+        return dataModificationShard;
+    }
+
+    template<>
+    UploadInfo fromDto<UploadInfo, UploadInfoDto>(const UploadInfoDto &dto) {
+        UploadInfo uploadInfo;
+        uploadInfo.key = dto.value<"key"_>();
+
+        for (const uint64_t& value : dto.value<"uploadSize"_>()) {
+            uploadInfo.uploadSize.push_back(value);
+        }
+
+        return uploadInfo;
     }
 
     template<>
@@ -1002,8 +1049,9 @@ namespace xpx_chain_sdk::internal::json::dto {
         downloadChannelData.consumer = dto.value<"consumer"_>();
         downloadChannelData.drive = dto.value<"drive"_>();
         downloadChannelData.downloadSize = dto.value<"downloadSize"_>();
-        downloadChannelData.downloadApprovalCount = dto.value<"downloadApprovalCount"_>();
+        downloadChannelData.downloadApprovalCountLeft = dto.value<"downloadApprovalCountLeft"_>();
         downloadChannelData.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
+        downloadChannelData.shardReplicators = dto.value<"shardReplicators"_>();
 
         for(const auto& cumulativePaymentDto : dto.value<"cumulativePayments"_>()) {
             downloadChannelData.cumulativePayments.push_back(fromDto<xpx_chain_sdk::CumulativePayment, dto::CumulativePaymentDto>(cumulativePaymentDto));
@@ -1774,9 +1822,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.dataModificationId = dto.value<"dataModificationId"_>();
 		transaction.fileStructureCdi = dto.value<"fileStructureCdi"_>();
-		transaction.fileStructureSize = dto.value<"fileStructureSize"_>();
-		transaction.metaFilesSize = dto.value<"metaFilesSize"_>();
-		transaction.usedDriveSize = dto.value<"usedDriveSize"_>();
+		transaction.fileStructureSizeBytes = dto.value<"fileStructureSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.usedDriveSizeBytes = dto.value<"usedDriveSizeBytes"_>();
 		transaction.publicKeys = dto.value<"publicKeys"_>();
 		transaction.signatures = dto.value<"signatures"_>();
 		transaction.presentOpinions = dto.value<"presentOpinions"_>();

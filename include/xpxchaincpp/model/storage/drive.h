@@ -39,7 +39,7 @@ namespace xpx_chain_sdk {
 
     class Shard {
     public:
-        std::string downloadChannelId;
+        uint32_t id;
         std::vector<std::string> replicators;
     };
 
@@ -51,6 +51,25 @@ namespace xpx_chain_sdk {
         std::vector<Shard> shards;
     };
 
+    class DownloadShard {
+    public:
+        std::string downloadChannelId;
+    };
+
+    class UploadInfo {
+    public:
+        std::string key;
+        std::vector<uint64_t> uploadSize;
+    };
+
+    class DataModificationShard {
+    public:
+        std::string replicator;
+        std::vector<UploadInfo> actualShardReplicators;
+        std::vector<UploadInfo> formerShardReplicators;
+        std::vector<uint64_t> ownerUpload;
+    };
+
     class DriveData {
     public:
         std::string multisig;
@@ -58,16 +77,17 @@ namespace xpx_chain_sdk {
         std::string owner;
         std::string rootHash;
         uint64_t size;
-        uint64_t usedSize;
-        uint64_t metaFilesSize;
+        uint64_t usedSizeBytes;
+        uint64_t metaFilesSizeBytes;
         uint16_t replicatorCount;
-        uint64_t ownerCumulativeUploadSize;
         std::vector<ActiveDataModification> activeDataModifications;
         std::vector<CompletedDataModification> completedDataModifications;
         std::vector<ConfirmedUsedSize> confirmedUsedSizes;
         std::vector<std::string> replicators;
         std::vector<std::string> offboardingReplicators;
         std::vector<Verification> verifications;
+        std::vector<DownloadShard> downloadShards;
+        std::vector<DataModificationShard> dataModificationShards;
     };
 
 	class Drive {

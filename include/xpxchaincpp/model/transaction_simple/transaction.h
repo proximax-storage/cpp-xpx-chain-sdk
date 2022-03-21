@@ -252,9 +252,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::string driveKey;
         std::string dataModificationId;
         std::string fileStructureCdi;
-        uint64_t fileStructureSize;
-        uint64_t metaFilesSize;
-        uint64_t usedDriveSize;
+        uint64_t fileStructureSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        uint64_t usedDriveSizeBytes;
         std::vector<std::string> publicKeys;
         std::vector<std::string> signatures;
         std::vector<int64_t> presentOpinions;

@@ -222,10 +222,19 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto);
 
         template<>
+        DownloadShard fromDto<DownloadShard, DownloadShardDto>(const DownloadShardDto &dto);
+
+        template<>
+        DataModificationShard fromDto<DataModificationShard, DataModificationShardDto>(const DataModificationShardDto &dto);
+
+        template<>
         Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto &dto);
 
         template<>
         ReplicatorData fromDto<ReplicatorData, ReplicatorDataDto>(const ReplicatorDataDto &dto);
+
+        template<>
+        UploadInfo fromDto<UploadInfo, UploadInfoDto>(const UploadInfoDto &dto);
 
         template<>
         xpx_chain_sdk::replicators_page::Pagination fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(const dto::replicators_page::PaginationDto &dto);

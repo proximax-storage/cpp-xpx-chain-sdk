@@ -40,7 +40,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("size"), Uint64> >;
 
     using ShardDto = VariadicStruct<
-            Field<STR_LITERAL("downloadChannelId"), std::string>,
+            Field<STR_LITERAL("id"), Uint32>,
             Field<STR_LITERAL("replicators"), std::vector<std::string> > >;
 
     using VerificationDto = VariadicStruct<
@@ -49,22 +49,36 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("expired"), bool>,
             Field<STR_LITERAL("shards"), std::vector<ShardDto> >>;
 
+    using DownloadShardDto = VariadicStruct<
+            Field<STR_LITERAL("downloadChannelId"), std::string> >;
+
+    using UploadInfoDto = VariadicStruct<
+            Field<STR_LITERAL("key"), std::string>,
+            Field<STR_LITERAL("uploadSize"), std::vector<Uint64> >>;
+
+    using DataModificationShardDto = VariadicStruct<
+            Field<STR_LITERAL("replicator"), std::string>,
+            Field<STR_LITERAL("actualShardReplicators"), std::vector<UploadInfoDto>>,
+            Field<STR_LITERAL("formerShardReplicators"), std::vector<UploadInfoDto>>,
+            Field<STR_LITERAL("ownerUpload"), std::vector<Uint64> >>;
+
     using DriveDataDto = VariadicStruct<
             Field<STR_LITERAL("multisig"), std::string>,
             Field<STR_LITERAL("multisigAddress"), std::string>,
             Field<STR_LITERAL("owner"), std::string>,
             Field<STR_LITERAL("rootHash"), std::string>,
             Field<STR_LITERAL("size"), Uint64 >,
-            Field<STR_LITERAL("usedSize"), Uint64 >,
-            Field<STR_LITERAL("metaFilesSize"), Uint64 >,
+            Field<STR_LITERAL("usedSizeBytes"), Uint64 >,
+            Field<STR_LITERAL("metaFilesSizeBytes"), Uint64 >,
             Field<STR_LITERAL("replicatorCount"), uint16_t >,
-            Field<STR_LITERAL("ownerCumulativeUploadSize"), Uint64 >,
             Field<STR_LITERAL("activeDataModifications"), std::vector<ActiveDataModificationDto> >,
             Field<STR_LITERAL("completedDataModifications"), std::vector<CompletedDataModificationDto> >,
             Field<STR_LITERAL("confirmedUsedSizes"), std::vector<ConfirmedUsedSizeDto> >,
             Field<STR_LITERAL("replicators"), std::vector<std::string> >,
             Field<STR_LITERAL("offboardingReplicators"), std::vector<std::string> >,
-            Field<STR_LITERAL("verifications"), std::vector<VerificationDto> > >;
+            Field<STR_LITERAL("verifications"), std::vector<VerificationDto> >,
+            Field<STR_LITERAL("downloadShards"), std::vector<DownloadShardDto> >,
+            Field<STR_LITERAL("dataModificationShards"), std::vector<DataModificationShardDto> > >;
 
     using DriveDto = VariadicStruct<
             Field<STR_LITERAL("drive"), DriveDataDto > >;
@@ -87,8 +101,6 @@ namespace xpx_chain_sdk::internal::json::dto {
     using ReplicatorDto = VariadicStruct<
             Field<STR_LITERAL("replicator"), ReplicatorDataDto > >;
 
-    using MultipleReplicatorsDto = std::vector<ReplicatorDto>;
-
     using CumulativePaymentDto = VariadicStruct<
             Field<STR_LITERAL("replicator"), std::string>,
             Field<STR_LITERAL("payment"), Uint64>>;
@@ -98,12 +110,11 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("consumer"), std::string>,
             Field<STR_LITERAL("drive"), std::string>,
             Field<STR_LITERAL("downloadSize"), Uint64>,
-            Field<STR_LITERAL("downloadApprovalCount"), uint16_t>,
+            Field<STR_LITERAL("downloadApprovalCountLeft"), uint16_t>,
             Field<STR_LITERAL("listOfPublicKeys"), std::vector<std::string>>,
+            Field<STR_LITERAL("shardReplicators"), std::vector<std::string>>,
             Field<STR_LITERAL("cumulativePayments"), std::vector<CumulativePaymentDto> >>;
 
     using DownloadChannelDto = VariadicStruct<
             Field<STR_LITERAL("downloadChannelInfo"), DownloadChannelDataDto > >;
-
-    using MultipleDownloadChannelsDto = std::vector<DownloadChannelDto>;
 }
