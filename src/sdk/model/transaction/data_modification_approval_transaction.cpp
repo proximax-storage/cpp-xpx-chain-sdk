@@ -26,19 +26,19 @@ namespace xpx_chain_sdk {
 	}
 
 	template<typename TBase>
-	uint64_t TDataModificationApprovalTransaction<TBase>::fileStructureSize() const
+	uint64_t TDataModificationApprovalTransaction<TBase>::fileStructureSizeBytes() const
 	{
 		return fileStructureSize_;
 	}
 
     template<typename TBase>
-    uint64_t TDataModificationApprovalTransaction<TBase>::metaFilesSize() const
+    uint64_t TDataModificationApprovalTransaction<TBase>::metaFilesSizeBytes() const
     {
         return metaFilesSize_;
     }
 
 	template<typename TBase>
-	uint64_t TDataModificationApprovalTransaction<TBase>::usedDriveSize() const
+	uint64_t TDataModificationApprovalTransaction<TBase>::usedDriveSizeBytes() const
 	{
 		return usedDriveSize_;
 	}

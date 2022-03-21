@@ -76,6 +76,9 @@ int main () {
     auto lockFundsTransaction = CreateLockFundsTransaction(Mosaic(xpx, 10000000), 240, aggregateBondedTransaction->hash());
     sponsorAccount->signTransaction(lockFundsTransaction.get());
 
+    std::cout << "lockHash: " << ToHex(lockFundsTransaction->lockHash()) << std::endl;
+    std::cout << "main lock has: " << ToHex(lockFundsTransaction->hash()) << std::endl;
+
     Notifier<TransactionStatusNotification> statusNotifier([sponsorAccount](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
         std::cout <<  "transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
     });
@@ -104,10 +107,14 @@ int main () {
 
     auto announceTransaction = [client,
                                 binaryDataLockFund = lockFundsTransaction->binary(),
-                                lockFundHash = ToHex(lockFundsTransaction->hash())](){
+                                lockFundHash = ToHex(lockFundsTransaction->hash()),
+                                binaryDataAggregate = aggregateBondedTransaction->binary(),
+                                aggregateHash = ToHex(aggregateBondedTransaction->hash())](){
         try {
-            client->transactions()->announceNewTransaction(binaryDataLockFund);
-            std::cout << "announced new lockFundsTransaction: " << lockFundHash << std::endl;
+            //client->transactions()->announceNewTransaction(binaryDataLockFund);
+            client->transactions()->announceAggregateBoundedTransaction(binaryDataAggregate);
+            std::cout << "announced new aggregateBoundedTransaction: " << aggregateHash << std::endl;
+            //std::cout << "announced new lockFundsTransaction: " << lockFundHash << std::endl;
         } catch (const xpx_chain_sdk::InvalidRequest& e) {
             std::cout << e.getErrorMessage().message << std::endl;
             std::cout << e.getErrorMessage().code << std::endl;

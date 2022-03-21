@@ -26,9 +26,9 @@ namespace xpx_chain_sdk {
 				const Key& driveKey,
 				const Hash256& dataModificationId,
 				const Hash256& fileStructureCdi,
-				uint64_t fileStructureSize,
-				uint64_t metaFilesSize,
-				uint64_t usedDriveSize,
+				uint64_t fileStructureSizeBytes,
+				uint64_t metaFilesSizeBytes,
+				uint64_t usedDriveSizeBytes,
                 uint8_t judgingKeysCount,
                 uint8_t overlappingKeysCount,
                 uint8_t judgedKeysCount,
@@ -42,9 +42,9 @@ namespace xpx_chain_sdk {
 			driveKey_(driveKey),
 			dataModificationId_(dataModificationId),
 			fileStructureCdi_(fileStructureCdi),
-			fileStructureSize_(fileStructureSize),
-			metaFilesSize_(metaFilesSize),
-			usedDriveSize_(usedDriveSize),
+			fileStructureSize_(fileStructureSizeBytes),
+			metaFilesSize_(metaFilesSizeBytes),
+			usedDriveSize_(usedDriveSizeBytes),
             judgingKeysCount_(judgingKeysCount),
             overlappingKeysCount_(overlappingKeysCount),
             judgedKeysCount_(judgedKeysCount),
@@ -65,13 +65,13 @@ namespace xpx_chain_sdk {
 		const Hash256& fileStructureCdi() const;
 
 		/// Returns size of the File Structure.
-		uint64_t fileStructureSize() const;
+		uint64_t fileStructureSizeBytes() const;
 
         /// Returns the size of metafiles including File Structure.
-        uint64_t metaFilesSize() const;
+        uint64_t metaFilesSizeBytes() const;
 
 		/// Returns total used disk space of the drive.
-		uint64_t usedDriveSize() const;
+		uint64_t usedDriveSizeBytes() const;
 
         /// Returns number of replicators that provided their opinions, but on which no opinions were provided.
         uint8_t judgingKeysCount() const;
@@ -129,9 +129,9 @@ namespace xpx_chain_sdk {
 	CreateDataModificationApprovalTransaction(const Key& driveKey,
                                               const Hash256& dataModificationId,
                                               const Hash256& fileStructureCdi,
-                                              uint64_t fileStructureSize,
-                                              uint64_t metaFilesSize,
-                                              uint64_t usedDriveSize,
+                                              uint64_t fileStructureSizeBytes,
+                                              uint64_t metaFilesSizeBytes,
+                                              uint64_t usedDriveSizeBytes,
                                               uint8_t judgingKeysCount,
                                               uint8_t overlappingKeysCount,
                                               uint8_t judgedKeysCount,
@@ -152,9 +152,9 @@ namespace xpx_chain_sdk {
     CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
                                                       const Hash256& dataModificationId,
                                                       const Hash256& fileStructureCdi,
-                                                      uint64_t fileStructureSize,
-                                                      uint64_t metaFilesSize,
-                                                      uint64_t usedDriveSize,
+                                                      uint64_t fileStructureSizeBytes,
+                                                      uint64_t metaFilesSizeBytes,
+                                                      uint64_t usedDriveSizeBytes,
                                                       uint8_t judgingKeysCount,
                                                       uint8_t overlappingKeysCount,
                                                       uint8_t judgedKeysCount,
