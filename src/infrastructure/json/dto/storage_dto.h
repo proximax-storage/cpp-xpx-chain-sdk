@@ -54,13 +54,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     using UploadInfoDto = VariadicStruct<
             Field<STR_LITERAL("key"), std::string>,
-            Field<STR_LITERAL("uploadSize"), std::vector<Uint64> >>;
+            Field<STR_LITERAL("uploadSize"), Uint64>>;
 
     using DataModificationShardDto = VariadicStruct<
             Field<STR_LITERAL("replicator"), std::string>,
             Field<STR_LITERAL("actualShardReplicators"), std::vector<UploadInfoDto>>,
             Field<STR_LITERAL("formerShardReplicators"), std::vector<UploadInfoDto>>,
-            Field<STR_LITERAL("ownerUpload"), std::vector<Uint64> >>;
+            Field<STR_LITERAL("ownerUpload"), Uint64>>;
 
     using DriveDataDto = VariadicStruct<
             Field<STR_LITERAL("multisig"), std::string>,

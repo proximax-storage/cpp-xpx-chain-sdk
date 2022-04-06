@@ -959,9 +959,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             dataModificationShard.formerShardReplicators.push_back(fromDto<UploadInfo, UploadInfoDto>(uploadInfoDto));
         }
 
-        for (const uint64_t& ownerUpload : dto.value<"ownerUpload"_>()) {
-            dataModificationShard.ownerUpload.push_back(ownerUpload);
-        }
+        dataModificationShard.ownerUpload = dto.value<"ownerUpload"_>();
 
         return dataModificationShard;
     }
@@ -970,10 +968,7 @@ namespace xpx_chain_sdk::internal::json::dto {
     UploadInfo fromDto<UploadInfo, UploadInfoDto>(const UploadInfoDto &dto) {
         UploadInfo uploadInfo;
         uploadInfo.key = dto.value<"key"_>();
-
-        for (const uint64_t& value : dto.value<"uploadSize"_>()) {
-            uploadInfo.uploadSize.push_back(value);
-        }
+        uploadInfo.uploadSize = dto.value<"uploadSize"_>();
 
         return uploadInfo;
     }

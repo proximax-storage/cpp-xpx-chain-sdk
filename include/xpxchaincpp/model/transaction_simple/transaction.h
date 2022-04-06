@@ -257,7 +257,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint64_t usedDriveSizeBytes;
         std::vector<std::string> publicKeys;
         std::vector<std::string> signatures;
-        std::vector<int64_t> presentOpinions;
+        std::vector<uint8_t> presentOpinions;
         std::vector<uint64_t> opinions;
 
     };
