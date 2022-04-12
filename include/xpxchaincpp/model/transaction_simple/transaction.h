@@ -271,6 +271,31 @@ namespace xpx_chain_sdk { namespace transactions_info {
     };
 
     template<typename TBase>
+    class TCreateLiquidityProviderTransaction: public TBase {
+    public:
+        MosaicId providerMosaicId;
+        Amount currencyDeposit;
+        Amount initialMosaicsMinting;
+        uint32_t slashingPeriod;
+        uint16_t windowSize;
+        std::string slashingAccount;
+        uint32_t alpha;
+        uint32_t beta;
+
+    };
+
+    template<typename TBase>
+    class TManualRateChangeTransaction: public TBase {
+    public:
+        MosaicId providerMosaicId;
+        bool currencyBalanceIncrease;
+        Amount currencyBalanceChange;
+        bool mosaicBalanceIncrease;
+        Amount mosaicBalanceChange;
+
+    };
+
+    template<typename TBase>
     class TFinishDownloadTransaction: public TBase {
     public:
         std::string downloadChannelId;
@@ -345,6 +370,12 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using PrepareBcDriveTransaction = TPrepareBcDriveTransaction <Transaction>;
     using EmbeddedPrepareBcDriveTransaction = TPrepareBcDriveTransaction<EmbeddedTransaction>;
+
+    using CreateLiquidityProviderTransaction = TCreateLiquidityProviderTransaction <Transaction>;
+    using EmbeddedCreateLiquidityProviderTransaction = TCreateLiquidityProviderTransaction<EmbeddedTransaction>;
+
+    using ManualRateChangeTransaction = TManualRateChangeTransaction <Transaction>;
+    using EmbeddedManualRateChangeTransaction = TManualRateChangeTransaction<EmbeddedTransaction>;
 
     using DataModificationTransaction = TDataModificationTransaction <Transaction>;
     using EmbeddedDataModificationTransaction = TDataModificationTransaction<EmbeddedTransaction>;

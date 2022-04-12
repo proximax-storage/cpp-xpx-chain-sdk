@@ -35,6 +35,8 @@ namespace xpx_chain_sdk {
             case TransactionType::Drive_Closure:				return "drive closure";
             case TransactionType::Data_Modification_Approval:	return "data modification approval";
             case TransactionType::Data_Modification_Cancel:		return "data modification cancel";
+            case TransactionType::Create_Liquidity_Provider:	return "create liquidity provider";
+            case TransactionType::Manual_Rate_Change:		    return "manual rate change";
             case TransactionType::Finish_Download:      		return "finish download";
             case TransactionType::Replicator_Onboarding:		return "replicator onboarding";
             case TransactionType::Replicator_Offboarding:		return "replicator offboarding";
@@ -72,6 +74,8 @@ namespace xpx_chain_sdk {
             case TransactionType::Drive_Closure:				return 1;
             case TransactionType::Data_Modification_Approval:	return 1;
             case TransactionType::Data_Modification_Cancel:		return 1;
+            case TransactionType::Create_Liquidity_Provider:	return 1;
+            case TransactionType::Manual_Rate_Change:		    return 1;
             case TransactionType::Finish_Download:      		return 1;
             case TransactionType::Replicator_Onboarding:		return 1;
             case TransactionType::Replicator_Offboarding:		return 1;

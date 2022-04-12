@@ -345,6 +345,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto);
 
+        template<>
+        CreateLiquidityProviderTransaction fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto >(const CreateLiquidityProviderTransactionDto & dto);
+
+        template<>
+        ManualRateChangeTransaction fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto >(const ManualRateChangeTransactionDto & dto);
+
 		template<>
 		DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto);
 
@@ -429,6 +435,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedPrepareBcDriveTransaction fromDto<EmbeddedPrepareBcDriveTransaction, EmbeddedPrepareBcDriveTransactionDto >(const EmbeddedPrepareBcDriveTransactionDto & dto);
+
+        template<>
+        EmbeddedCreateLiquidityProviderTransaction fromDto<EmbeddedCreateLiquidityProviderTransaction, EmbeddedCreateLiquidityProviderTransactionDto >(const EmbeddedCreateLiquidityProviderTransactionDto & dto);
+
+        template<>
+        EmbeddedManualRateChangeTransaction fromDto<EmbeddedManualRateChangeTransaction, EmbeddedManualRateChangeTransactionDto >(const EmbeddedManualRateChangeTransactionDto & dto);
 
 		template<>
 		EmbeddedDataModificationTransaction fromDto<EmbeddedDataModificationTransaction, EmbeddedDataModificationTransactionDto >(const EmbeddedDataModificationTransactionDto & dto);

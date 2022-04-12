@@ -328,7 +328,7 @@ namespace xpx_chain_sdk { namespace internal {
 			
 			std::vector<MosaicDTO> dtoMosaics;
 			for (const auto& mosaic: mosaics) {
-				dtoMosaics.push_back(MosaicDTO{ mosaic.id, mosaic.amount });
+				dtoMosaics.emplace_back( mosaic.id, mosaic.amount );
 			}
 			
 			dto.template set<"recipient"_>(recipient.binary());
@@ -553,11 +553,11 @@ namespace xpx_chain_sdk { namespace internal {
 		}
 
 		template<typename TDto, typename... TArgs>
-		void InitPrepareBcDriveTransactionDTO(TDto& dto,
-										uint64_t driveSize,
-                                        const Amount& verificationFeeAmount,
-										uint16_t replicatorCount,
-		                                TArgs&&... args)
+        void InitPrepareBcDriveTransactionDTO(TDto& dto,
+                                              uint64_t driveSize,
+                                              const Amount& verificationFeeAmount,
+                                              uint16_t replicatorCount,
+                                              TArgs&&... args)
 		{
 			dto.template set<"driveSize"_>(driveSize);
 			dto.template set<"verificationFeeAmount"_>(verificationFeeAmount);
@@ -566,13 +566,55 @@ namespace xpx_chain_sdk { namespace internal {
 			InitTransactionDTO(dto, TransactionType::Prepare_Bc_Drive, std::forward<TArgs>(args)...);
 		}
 
+        template<typename TDto, typename... TArgs>
+        void InitCreateLiquidityProviderTransactionDTO(TDto& dto,
+                                                       const MosaicId providerMosaicId,
+                                                       const Amount currencyDeposit,
+                                                       const Amount initialMosaicsMinting,
+                                                       const uint32_t slashingPeriod,
+                                                       const uint16_t windowSize,
+                                                       const Key& slashingAccount,
+                                                       const uint32_t alpha,
+                                                       const uint32_t beta,
+                                                       TArgs&&... args)
+        {
+            dto.template set<"providerMosaicId"_>(providerMosaicId);
+            dto.template set<"currencyDeposit"_>(currencyDeposit);
+            dto.template set<"initialMosaicsMinting"_>(initialMosaicsMinting);
+            dto.template set<"slashingPeriod"_>(slashingPeriod);
+            dto.template set<"windowSize"_>(windowSize);
+            dto.template set<"slashingAccount"_>(slashingAccount);
+            dto.template set<"alpha"_>(alpha);
+            dto.template set<"beta"_>(beta);
+
+            InitTransactionDTO(dto, TransactionType::Create_Liquidity_Provider, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitManualRateChangeTransactionDTO(TDto& dto,
+                                                const MosaicId providerMosaicId,
+                                                const bool currencyBalanceIncrease,
+                                                const Amount currencyBalanceChange,
+                                                const bool mosaicBalanceIncrease,
+                                                const Amount mosaicBalanceChange,
+                                                TArgs&&... args)
+        {
+            dto.template set<"providerMosaicId"_>(providerMosaicId);
+            dto.template set<"currencyBalanceIncrease"_>(currencyBalanceIncrease);
+            dto.template set<"currencyBalanceChange"_>(currencyBalanceChange);
+            dto.template set<"mosaicBalanceIncrease"_>(mosaicBalanceIncrease);
+            dto.template set<"mosaicBalanceChange"_>(mosaicBalanceChange);
+
+            InitTransactionDTO(dto, TransactionType::Manual_Rate_Change, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
-		void InitDataModificationTransactionDTO(TDto& dto,
-										const Key& driveKey,
-										const Hash256& downloadDataCdi,
-										uint64_t uploadSize,
-                                        const Amount& feedbackFeeAmount,
-		                                TArgs&&... args)
+        void InitDataModificationTransactionDTO(TDto& dto,
+                                                const Key& driveKey,
+                                                const Hash256& downloadDataCdi,
+                                                uint64_t uploadSize,
+                                                const Amount& feedbackFeeAmount,
+                                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"downloadDataCdi"_>(downloadDataCdi);
@@ -1075,6 +1117,55 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<PrepareBcDriveTransactionImpl>(
 			dto, signer, signature, info, driveSize, verificationFeeAmount, replicatorCount);
 	}
+
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransactionImpl(const MosaicId providerMosaicId,
+                                                 const Amount currencyDeposit,
+                                                 const Amount initialMosaicsMinting,
+                                                 const uint32_t slashingPeriod,
+                                                 const uint16_t windowSize,
+                                                 const Key& slashingAccount,
+                                                 const uint32_t alpha,
+                                                 const uint32_t beta,
+                                                 std::optional<Amount> maxFee,
+                                                 std::optional<NetworkDuration> deadline,
+                                                 std::optional<NetworkIdentifier> networkId,
+                                                 const std::optional<Key>& signer,
+                                                 const std::optional<Signature>& signature,
+                                                 const std::optional<TransactionInfo>& info)
+    {
+        CreateLiquidityProviderTransactionDTO dto;
+        InitCreateLiquidityProviderTransactionDTO(
+                dto, providerMosaicId, currencyDeposit, initialMosaicsMinting, slashingPeriod,
+                windowSize, slashingAccount, alpha, beta, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<CreateLiquidityProviderTransactionImpl>(
+                dto, signer, signature, info, providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                slashingPeriod, windowSize, slashingAccount, alpha, beta);
+    }
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransactionImpl(const MosaicId providerMosaicId,
+                                          const bool currencyBalanceIncrease,
+                                          const Amount currencyBalanceChange,
+                                          const bool mosaicBalanceIncrease,
+                                          const Amount mosaicBalanceChange,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer,
+                                          const std::optional<Signature>& signature,
+                                          const std::optional<TransactionInfo>& info)
+    {
+        ManualRateChangeTransactionDTO dto;
+        InitManualRateChangeTransactionDTO(
+                dto, providerMosaicId, currencyBalanceIncrease, currencyBalanceChange,
+                mosaicBalanceIncrease, mosaicBalanceChange, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<ManualRateChangeTransactionImpl>(
+                dto, signer, signature, info, providerMosaicId, currencyBalanceIncrease,
+                currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange);
+    }
 
 	std::unique_ptr<DataModificationTransaction>
     CreateDataModificationTransactionImpl(const Key& driveKey,
@@ -1712,6 +1803,73 @@ namespace xpx_chain_sdk {
 		InitPrepareBcDriveTransactionDTO(dto, driveSize, verificationFeeAmount, replicatorCount, signer, networkId);
 		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, verificationFeeAmount, replicatorCount);
 	}
+
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransaction(const MosaicId providerMosaicId,
+                                             const Amount currencyDeposit,
+                                             const Amount initialMosaicsMinting,
+                                             const uint32_t slashingPeriod,
+                                             const uint16_t windowSize,
+                                             const Key& slashingAccount,
+                                             const uint32_t alpha,
+                                             const uint32_t beta,
+                                             std::optional<Amount> maxFee,
+                                             std::optional<NetworkDuration> deadline,
+                                             std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateCreateLiquidityProviderTransactionImpl(providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                                                            slashingPeriod, windowSize, slashingAccount, alpha, beta, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedCreateLiquidityProviderTransaction>
+    CreateEmbeddedCreateLiquidityProviderTransaction(const MosaicId providerMosaicId,
+                                                     const Amount currencyDeposit,
+                                                     const Amount initialMosaicsMinting,
+                                                     const uint32_t slashingPeriod,
+                                                     const uint16_t windowSize,
+                                                     const Key& slashingAccount,
+                                                     const uint32_t alpha,
+                                                     const uint32_t beta,
+                                                     const Key& signer,
+                                                     std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedCreateLiquidityProviderTransactionDTO dto;
+        InitCreateLiquidityProviderTransactionDTO(dto, providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                                                  slashingPeriod, windowSize, slashingAccount, alpha, beta, signer, networkId);
+        return CreateTransaction<EmbeddedCreateLiquidityProviderTransactionImpl>(dto, providerMosaicId, currencyDeposit,
+                                                                                 initialMosaicsMinting, slashingPeriod, windowSize, slashingAccount, alpha, beta);
+    }
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransaction(const MosaicId providerMosaicId,
+                                      const bool currencyBalanceIncrease,
+                                      const Amount currencyBalanceChange,
+                                      const bool mosaicBalanceIncrease,
+                                      const Amount mosaicBalanceChange,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateManualRateChangeTransactionImpl(providerMosaicId, currencyBalanceIncrease,
+                                                     currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedManualRateChangeTransaction>
+    CreateEmbeddedManualRateChangeTransaction(const MosaicId providerMosaicId,
+                                              const bool currencyBalanceIncrease,
+                                              const Amount currencyBalanceChange,
+                                              const bool mosaicBalanceIncrease,
+                                              const Amount mosaicBalanceChange,
+                                              const Key& signer,
+                                              std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedManualRateChangeTransactionDTO dto;
+        InitManualRateChangeTransactionDTO(dto, providerMosaicId, currencyBalanceIncrease, currencyBalanceChange,
+                                           mosaicBalanceIncrease, mosaicBalanceChange, signer, networkId);
+
+        return CreateTransaction<EmbeddedManualRateChangeTransactionImpl>(dto, providerMosaicId, currencyBalanceIncrease,
+                                                                          currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange);
+    }
 
 	std::unique_ptr<DataModificationTransaction>
     CreateDataModificationTransaction(const Key& driveKey,

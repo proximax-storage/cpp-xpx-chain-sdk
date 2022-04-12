@@ -317,6 +317,30 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Create_Liquidity_Provider: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), CreateLiquidityProviderTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<CreateLiquidityProviderTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Manual_Rate_Change: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), ManualRateChangeTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<ManualRateChangeTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Data_Modification: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -1759,6 +1783,39 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+    template<>
+    CreateLiquidityProviderTransaction fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto >(const CreateLiquidityProviderTransactionDto & dto) {
+        CreateLiquidityProviderTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.providerMosaicId = dto.value<"providerMosaicId"_>();
+        transaction.currencyDeposit = dto.value<"currencyDeposit"_>();
+        transaction.initialMosaicsMinting = dto.value<"initialMosaicsMinting"_>();
+        transaction.slashingPeriod = dto.value<"slashingPeriod"_>();
+        transaction.windowSize = dto.value<"windowSize"_>();
+        transaction.slashingAccount = dto.value<"slashingAccount"_>();
+        transaction.alpha = dto.value<"alpha"_>();
+        transaction.beta = dto.value<"beta"_>();
+
+        return transaction;
+    }
+
+    template<>
+    ManualRateChangeTransaction fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto >(const ManualRateChangeTransactionDto & dto) {
+        ManualRateChangeTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.providerMosaicId = dto.value<"providerMosaicId"_>();
+        transaction.currencyBalanceIncrease = dto.value<"currencyBalanceIncrease"_>();
+        transaction.currencyBalanceChange = dto.value<"currencyBalanceChange"_>();
+        transaction.mosaicBalanceIncrease = dto.value<"mosaicBalanceIncrease"_>();
+        transaction.mosaicBalanceChange = dto.value<"mosaicBalanceChange"_>();
+
+        return transaction;
+    }
 
 	template<>
 	DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto) {

@@ -26,6 +26,8 @@
 #include <xpxchaincpp/model/transaction/storage_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/transfer_transaction.h>
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
+#include <xpxchaincpp/model/transaction/create_liquidity_provider_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_rate_change_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_transaction.h>
 #include <xpxchaincpp/model/transaction/download_transaction.h>
 #include <xpxchaincpp/model/transaction/download_payment_transaction.h>

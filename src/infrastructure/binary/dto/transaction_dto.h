@@ -197,7 +197,28 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveSize"),			    uint64_t>,
 		Field<STR_LITERAL("verificationFeeAmount"),	Amount>,
 		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
-	
+
+    template<typename TBase>
+    using TCreateLiquidityProviderTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("providerMosaicId"),		MosaicId>,
+        Field<STR_LITERAL("currencyDeposit"),	    Amount>,
+        Field<STR_LITERAL("initialMosaicsMinting"),	Amount>,
+        Field<STR_LITERAL("slashingPeriod"),		uint32_t>,
+        Field<STR_LITERAL("windowSize"),		    uint16_t>,
+        Field<STR_LITERAL("slashingAccount"),		Key>,
+        Field<STR_LITERAL("alpha"),		            uint32_t>,
+        Field<STR_LITERAL("beta"),		            uint32_t>>;
+
+    template<typename TBase>
+    using TManualRateChangeTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("providerMosaicId"),          MosaicId>,
+        Field<STR_LITERAL("currencyBalanceIncrease"),	bool>,
+        Field<STR_LITERAL("currencyBalanceChange"),		Amount>,
+        Field<STR_LITERAL("mosaicBalanceIncrease"),		bool>,
+        Field<STR_LITERAL("mosaicBalanceChange"),		Amount>>;
+
 	template<typename TBase>
 	using TDataModificationTransactionDTO = VariadicStruct<
 		TBase,
@@ -233,9 +254,9 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("dataModificationId"),	Hash256>,
 		Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
-		Field<STR_LITERAL("fileStructureSizeBytes"),		uint64_t>,
-		Field<STR_LITERAL("metaFilesSizeBytes"),		    uint64_t>,
-		Field<STR_LITERAL("usedDriveSizeBytes"),		    uint64_t>,
+		Field<STR_LITERAL("fileStructureSizeBytes"),uint64_t>,
+		Field<STR_LITERAL("metaFilesSizeBytes"),	uint64_t>,
+		Field<STR_LITERAL("usedDriveSizeBytes"),	uint64_t>,
 		Field<STR_LITERAL("judgingKeysCount"),		uint8_t>,
 		Field<STR_LITERAL("overlappingKeysCount"),	uint8_t>,
 		Field<STR_LITERAL("judgedKeysCount"),		uint8_t>,
@@ -314,6 +335,12 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using PrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<TransactionDTO>;
 	using EmbeddedPrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<EmbeddedTransactionDTO>;
+
+    using CreateLiquidityProviderTransactionDTO = TCreateLiquidityProviderTransactionDTO<TransactionDTO>;
+    using EmbeddedCreateLiquidityProviderTransactionDTO = TCreateLiquidityProviderTransactionDTO<EmbeddedTransactionDTO>;
+
+    using ManualRateChangeTransactionDTO = TManualRateChangeTransactionDTO<TransactionDTO>;
+    using EmbeddedManualRateChangeTransactionDTO = TManualRateChangeTransactionDTO<EmbeddedTransactionDTO>;
 
 	using DataModificationTransactionDTO = TDataModificationTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationTransactionDTO = TDataModificationTransactionDTO<EmbeddedTransactionDTO>;

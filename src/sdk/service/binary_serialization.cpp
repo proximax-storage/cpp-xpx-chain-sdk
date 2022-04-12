@@ -311,6 +311,41 @@ namespace xpx_chain_sdk {
                 dto.template value<"replicatorCount"_>());
 		}
 
+        template<
+            typename TDto,
+            typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                                                CreateLiquidityProviderTransactionImpl,
+                                                EmbeddedCreateLiquidityProviderTransactionImpl>>
+        std::unique_ptr<TImpl> CreateCreateLiquidityProviderTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"providerMosaicId"_>(),
+                    dto.template value<"currencyDeposit"_>(),
+                    dto.template value<"initialMosaicsMinting"_>(),
+                    dto.template value<"slashingPeriod"_>(),
+                    dto.template value<"windowSize"_>(),
+                    dto.template value<"slashingAccount"_>(),
+                    dto.template value<"alpha"_>(),
+                    dto.template value<"beta"_>());
+        }
+
+        template<
+            typename TDto,
+            typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                                                ManualRateChangeTransactionImpl,
+                                                EmbeddedManualRateChangeTransactionImpl>>
+        std::unique_ptr<TImpl> CreateManualRateChangeTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"providerMosaicId"_>(),
+                    dto.template value<"currencyBalanceIncrease"_>(),
+                    dto.template value<"currencyBalanceChange"_>(),
+                    dto.template value<"mosaicBalanceIncrease"_>(),
+                    dto.template value<"mosaicBalanceChange"_>());
+        }
+
 		template<
 			typename TDto,
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
@@ -637,6 +672,28 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Create_Liquidity_Provider:
+                    {
+                        EmbeddedCreateLiquidityProviderTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateCreateLiquidityProviderTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Manual_Rate_Change:
+                    {
+                        EmbeddedManualRateChangeTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateManualRateChangeTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Data_Modification:
 					{
 						EmbeddedDataModificationTransactionDTO dto;
@@ -1003,6 +1060,30 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Create_Liquidity_Provider:
+            {
+                CreateLiquidityProviderTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateCreateLiquidityProviderTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Manual_Rate_Change:
+            {
+                ManualRateChangeTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateManualRateChangeTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Data_Modification:
 			{
 				DataModificationTransactionDTO dto;

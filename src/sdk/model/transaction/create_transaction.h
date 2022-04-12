@@ -20,6 +20,8 @@
 #include <xpxchaincpp/model/transaction/storage_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/transfer_transaction.h>
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
+#include <xpxchaincpp/model/transaction/create_liquidity_provider_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_rate_change_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_transaction.h>
 #include <xpxchaincpp/model/transaction/download_transaction.h>
 #include <xpxchaincpp/model/transaction/download_payment_transaction.h>
@@ -94,6 +96,12 @@ namespace xpx_chain_sdk { namespace internal {
 
 	using PrepareBcDriveTransactionImpl = TTransactionImpl<PrepareBcDriveTransaction>;
 	using EmbeddedPrepareBcDriveTransactionImpl = TTransactionImpl<EmbeddedPrepareBcDriveTransaction>;
+
+    using CreateLiquidityProviderTransactionImpl = TTransactionImpl<CreateLiquidityProviderTransaction>;
+    using EmbeddedCreateLiquidityProviderTransactionImpl = TTransactionImpl<EmbeddedCreateLiquidityProviderTransaction>;
+
+    using ManualRateChangeTransactionImpl = TTransactionImpl<ManualRateChangeTransaction>;
+    using EmbeddedManualRateChangeTransactionImpl = TTransactionImpl<EmbeddedManualRateChangeTransaction>;
 
 	using DataModificationTransactionImpl = TTransactionImpl<DataModificationTransaction>;
 	using EmbeddedDataModificationTransactionImpl = TTransactionImpl<EmbeddedDataModificationTransaction>;
@@ -316,6 +324,35 @@ namespace xpx_chain_sdk { namespace internal {
                                         const std::optional<Key>& signer = std::nullopt,
                                         const std::optional<Signature>& signature = std::nullopt,
                                         const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransactionImpl(const MosaicId providerMosaicId,
+                                                 const Amount currencyDeposit,
+                                                 const Amount initialMosaicsMinting,
+                                                 const uint32_t slashingPeriod,
+                                                 const uint16_t windowSize,
+                                                 const Key& slashingAccount,
+                                                 const uint32_t alpha,
+                                                 const uint32_t beta,
+                                                 std::optional<Amount> maxFee,
+                                                 std::optional<NetworkDuration> deadline,
+                                                 std::optional<NetworkIdentifier> networkId,
+                                                 const std::optional<Key>& signer = std::nullopt,
+                                                 const std::optional<Signature>& signature = std::nullopt,
+                                                 const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransactionImpl(const MosaicId providerMosaicId,
+                                          const bool currencyBalanceIncrease,
+                                          const Amount currencyBalanceChange,
+                                          const bool mosaicBalanceIncrease,
+                                          const Amount mosaicBalanceChange,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer = std::nullopt,
+                                          const std::optional<Signature>& signature = std::nullopt,
+                                          const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationTransaction>
     CreateDataModificationTransactionImpl(const Key& driveKey,

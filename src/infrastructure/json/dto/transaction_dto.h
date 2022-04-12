@@ -219,6 +219,27 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("verificationFeeAmount"), Uint64>,
 				Field<STR_LITERAL("replicatorCount"),		uint16_t> >;
 
+        template<typename TBase>
+        using TCreateLiquidityProviderTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("providerMosaicId"),			Uint64>,
+                Field<STR_LITERAL("currencyDeposit"),           Uint64>,
+                Field<STR_LITERAL("initialMosaicsMinting"),		Uint64>,
+                Field<STR_LITERAL("slashingPeriod"),		    Uint32>,
+                Field<STR_LITERAL("windowSize"),		        uint16_t>,
+                Field<STR_LITERAL("slashingAccount"),		    std::string>,
+                Field<STR_LITERAL("alpha"),		                Uint32>,
+                Field<STR_LITERAL("beta"),		                Uint32> >;
+
+        template<typename TBase>
+        using TManualRateChangeTransactionDto = VariadicStruct<
+                TBase,
+                Field<STR_LITERAL("providerMosaicId"),		    Uint64>,
+                Field<STR_LITERAL("currencyBalanceIncrease"),   bool>,
+                Field<STR_LITERAL("currencyBalanceChange"),		Uint64>,
+                Field<STR_LITERAL("mosaicBalanceIncrease"),		bool>,
+                Field<STR_LITERAL("mosaicBalanceChange"),		Uint64> >;
+
 		template<typename TBase>
 		using TDataModificationTransactionDto = VariadicStruct<
 				TBase,
@@ -254,9 +275,9 @@ namespace xpx_chain_sdk::internal::json::dto {
                 Field<STR_LITERAL("driveKey"),				std::string>,
                 Field<STR_LITERAL("dataModificationId"),	std::string>,
                 Field<STR_LITERAL("fileStructureCdi"),		std::string>,
-                Field<STR_LITERAL("fileStructureSizeBytes"),		Uint64>,
-                Field<STR_LITERAL("metaFilesSizeBytes"),		    Uint64>,
-                Field<STR_LITERAL("usedDriveSizeBytes"),		    Uint64>,
+                Field<STR_LITERAL("fileStructureSizeBytes"),Uint64>,
+                Field<STR_LITERAL("metaFilesSizeBytes"),	Uint64>,
+                Field<STR_LITERAL("usedDriveSizeBytes"),	Uint64>,
                 Field<STR_LITERAL("publicKeys"),		    std::vector<std::string>>,
                 Field<STR_LITERAL("signatures"),		    std::vector<std::string>>,
                 Field<STR_LITERAL("presentOpinions"),		std::vector<int64_t>>,
@@ -340,6 +361,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using PrepareBcDriveTransactionDto = TPrepareBcDriveTransactionDto<TransactionDto>;
 		using EmbeddedPrepareBcDriveTransactionDto = TPrepareBcDriveTransactionDto<EmbeddedTransactionDto>;
+
+        using CreateLiquidityProviderTransactionDto = TCreateLiquidityProviderTransactionDto<TransactionDto>;
+        using EmbeddedCreateLiquidityProviderTransactionDto = TCreateLiquidityProviderTransactionDto<EmbeddedTransactionDto>;
+
+        using ManualRateChangeTransactionDto = TManualRateChangeTransactionDto<TransactionDto>;
+        using EmbeddedManualRateChangeTransactionDto = TManualRateChangeTransactionDto<EmbeddedTransactionDto>;
 
 		using DataModificationTransactionDto = TDataModificationTransactionDto<TransactionDto>;
 		using EmbeddedDataModificationTransactionDto = TDataModificationTransactionDto<EmbeddedTransactionDto>;
