@@ -280,7 +280,7 @@ namespace xpx_chain_sdk::internal::json::dto {
                 Field<STR_LITERAL("usedDriveSizeBytes"),	Uint64>,
                 Field<STR_LITERAL("publicKeys"),		    std::vector<std::string>>,
                 Field<STR_LITERAL("signatures"),		    std::vector<std::string>>,
-                Field<STR_LITERAL("presentOpinions"),		std::vector<int64_t>>,
+                Field<STR_LITERAL("presentOpinions"),		std::vector<uint8_t>>,
                 Field<STR_LITERAL("opinions"),			    std::vector<Uint64>>>;
 
 		template<typename TBase>

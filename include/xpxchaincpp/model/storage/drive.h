@@ -59,7 +59,7 @@ namespace xpx_chain_sdk {
     class UploadInfo {
     public:
         std::string key;
-        std::vector<uint64_t> uploadSize;
+        uint64_t uploadSize;
     };
 
     class DataModificationShard {
@@ -67,7 +67,7 @@ namespace xpx_chain_sdk {
         std::string replicator;
         std::vector<UploadInfo> actualShardReplicators;
         std::vector<UploadInfo> formerShardReplicators;
-        std::vector<uint64_t> ownerUpload;
+        uint64_t ownerUpload;
     };
 
     class DriveData {
