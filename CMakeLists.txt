@@ -10,8 +10,8 @@ cmake_policy(SET CMP0068 OLD)
 #-----------------------------------------------------------------------------
 
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
-option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
-option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -200,6 +200,20 @@ endif()
 if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
 	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
 	target_link_libraries(get_block
+			xpxchaincpp
+			CONAN_PKG::rapidjson
+			CONAN_PKG::boost
+			CONAN_PKG::openssl)
+
+	add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
+	target_link_libraries(bonded_aggregate_transaction
+			xpxchaincpp
+			CONAN_PKG::rapidjson
+			CONAN_PKG::boost
+			CONAN_PKG::openssl)
+
+	add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
+	target_link_libraries(liquidity_provider_transactions
 			xpxchaincpp
 			CONAN_PKG::rapidjson
 			CONAN_PKG::boost
