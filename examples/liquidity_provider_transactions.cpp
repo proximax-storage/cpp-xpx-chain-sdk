@@ -109,6 +109,50 @@ int main() {
     auto hash = ToHex(createLiquidityProviderTransaction->hash());
     std::cout <<  "transaction hash: " << hash << std::endl;
 
+    const bool currencyBalanceIncrease = true;
+    const Amount currencyBalanceChange = 100005;
+    const bool mosaicBalanceIncrease = true;
+    const Amount mosaicBalanceChange = 1370;
+
+    auto manualRateChangeTransaction = xpx_chain_sdk::CreateManualRateChangeTransaction(
+            mosaicId, currencyBalanceIncrease, currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange);
+
+    account->signTransaction(manualRateChangeTransaction.get());
+
+    auto manualRateChangeTransactionHash = ToHex(manualRateChangeTransaction->hash());
+    std::cout << "manualRateChangeTransactionHash : " << manualRateChangeTransactionHash << std::endl;
+
+    auto createManualRateChangeTransaction = [client, account, manualRateChangeTransactionHash, binaryData = manualRateChangeTransaction->binary()](){
+        Notifier<TransactionNotification> confirmedAddedNotifier([account, client, manualRateChangeTransactionHash](
+                const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
+            if (notification.meta.hash == manualRateChangeTransactionHash) {
+                std::cout << "confirmed manualRateChangeTransaction hash: " << manualRateChangeTransactionHash << std::endl;
+
+                client->notifications()->removeConfirmedAddedNotifiers(account->address(), [](){}, [](auto){}, {id});
+            } else {
+                std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
+            }
+        });
+
+        Notifier<TransactionStatusNotification> statusNotifier([account](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
+            std::cout <<  "manualRateChangeTransaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
+        });
+
+        client->notifications()->addStatusNotifiers(account->address(), { statusNotifier }, [](){}, [](auto ){});
+
+        auto announceTransaction = [client, manualRateChangeTransactionHash, binaryData](){
+            try {
+                client->transactions()->announceNewTransaction(binaryData);
+
+                std::cout << "announced new manualRateChangeTransaction: " << manualRateChangeTransactionHash << std::endl;
+            } catch (std::exception &e) {
+                std::cout << e.what() << std::endl;
+            }
+        };
+
+        client->notifications()->addConfirmedAddedNotifiers(account->address(), { confirmedAddedNotifier }, announceTransaction, [](auto ){});
+    };
+
     std::atomic<bool> isFinished = false;
 
     auto createLpTransaction = [client, account, &hash, &isFinished, binaryData = createLiquidityProviderTransaction->binary()] () {
@@ -150,10 +194,13 @@ int main() {
     MosaicContainer mosaics{ mosaic };
 
     //createLpTransaction();
+    //createManualRateChangeTransaction();
 
     sendTransferTransactionAsync(client, sponsorAccount, mosaics, publicKey, createLpTransaction, [](const std::string& errorText){
         std::cout << "error: " << errorText << std::endl;
     });
+
+
 
     while (!isFinished) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
