@@ -21,6 +21,59 @@ std::shared_ptr<xpx_chain_sdk::Account> CreateAccount(const std::string& private
     });
 }
 
+void sendTransferTransactionAsync(std::shared_ptr<IClient> client,
+                                  std::shared_ptr<xpx_chain_sdk::Account> sponsorAccount,
+                                  const MosaicContainer& mosaics,
+                                  const std::string& receiverPublicKey,
+                                  std::function<void()> onSuccess,
+                                  std::function<void(const std::string& errorText)> onError) {
+    std::string message = "message";
+    xpx_chain_sdk::Key key;
+    ParseHexStringIntoContainer(receiverPublicKey.c_str(), receiverPublicKey.size(), key);
+    auto transferTransaction = xpx_chain_sdk::CreateTransferTransaction(xpx_chain_sdk::Address(key), mosaics, {message.data(), message.size()});
+
+    sponsorAccount->signTransaction(transferTransaction.get());
+
+    auto transferHash = ToHex(transferTransaction->hash());
+    std::cout <<  "transferHash: " << transferHash << std::endl;
+
+    Notifier<TransactionNotification> transferConfirmedAddedNotifier([sponsorAccount, client, transferHash, onSuccess](
+            const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
+        if (notification.meta.hash == transferHash) {
+            std::cout << "confirmed transfer transaction hash: " << transferHash << std::endl;
+
+            client->notifications()->removeConfirmedAddedNotifiers(sponsorAccount->address(), [](){}, [](auto){}, {id});
+            onSuccess();
+        } else {
+            std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
+        }
+    });
+
+    Notifier<TransactionStatusNotification> transferStatusNotifier([sponsorAccount, transferHash, onError](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
+        if (transferHash == notification.hash) {
+            std::cout <<  "transfer transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
+            onError("ERROR. other confirmed transaction hash");
+        } else {
+            std::cout << "WARNING. transfer transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
+        }
+    });
+
+    client->notifications()->addStatusNotifiers(sponsorAccount->address(), { transferStatusNotifier }, [](){}, [](auto ){});
+
+    auto announceTransferTransaction = [client, transferHash, binaryData = transferTransaction->binary(), onError](){
+        try {
+            client->transactions()->announceNewTransaction(binaryData);
+
+            std::cout << "announced new transfer transaction: " << transferHash << std::endl;
+        } catch (std::exception &e) {
+            std::cout << e.what() << std::endl;
+            onError(e.what());
+        }
+    };
+
+    client->notifications()->addConfirmedAddedNotifiers(sponsorAccount->address(), { transferConfirmedAddedNotifier }, announceTransferTransaction, [](auto ){});
+}
+
 int main() {
 	xpx_chain_sdk::Config config = xpx_chain_sdk::GetConfig();
 	config.nodeAddress = "127.0.0.1";
@@ -30,10 +83,10 @@ int main() {
 	std::string publicKey = "E8D4B7BEB2A531ECA8CC7FD93F79A4C828C24BE33F99CF7C5609FF5CE14605F4";
 	std::string privateKey = "2F985E4EC55D60C957C973BD1BEE2C0B3BA313A841D3EE4C74810805E6936053";
 
+    auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
+
     std::string slashingAccountPublicKey = "E92978122F00698856910664C480E8F3C2FDF0A733F42970FBD58A5145BD6F21";
     std::string slashingAccountPrivateKey = "7AA907C3D80B3815BE4B4E1470DEEE8BB83BFEB330B9A82197603D09BA947230";
-
-	auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
 
     xpx_chain_sdk::MosaicId mosaicId = 2761073989369673764; // storage units
     Amount currencyDeposit = 100000;
@@ -58,36 +111,49 @@ int main() {
 
     std::atomic<bool> isFinished = false;
 
-    Notifier<TransactionNotification> confirmedAddedNotifier([account, client, hash, &isFinished](const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
-        if (notification.meta.hash == hash) {
-            std::cout << __LINE__ << " : " << __FUNCTION__ << " : confirmedAddedNotifier thread id: " << std::this_thread::get_id() << "\n";
-            std::cout << "confirmed transaction hash: " << hash << std::endl;
+    auto createLpTransaction = [client, account, &hash, &isFinished, binaryData = createLiquidityProviderTransaction->binary()] () {
+        Notifier<TransactionNotification> confirmedAddedNotifier([account, client, hash, &isFinished](const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
+            if (notification.meta.hash == hash) {
+                std::cout << "confirmed transaction hash: " << hash << std::endl;
 
-            client->notifications()->removeConfirmedAddedNotifiers(account->address(), [](){}, [](auto){}, {id});
+                client->notifications()->removeConfirmedAddedNotifiers(account->address(), [](){}, [](auto){}, {id});
+                isFinished = true;
+            } else {
+                std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
+            }
+        });
+
+        Notifier<TransactionStatusNotification> statusNotifier([account, &isFinished](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
+            std::cout <<  "transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
             isFinished = true;
-        } else {
-            std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
-        }
-    });
+        });
 
-    Notifier<TransactionStatusNotification> statusNotifier([account, &isFinished](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
-        std::cout <<  "transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
-        isFinished = true;
-    });
+        client->notifications()->addStatusNotifiers(account->address(), { statusNotifier }, [](){}, [](auto ){});
 
-    client->notifications()->addStatusNotifiers(account->address(), { statusNotifier }, [](){}, [](auto ){});
+        auto announceTransaction = [client, hash, binaryData](){
+            try {
+                client->transactions()->announceNewTransaction(binaryData);
 
-    auto announceTransaction = [client, hash, binaryData = createLiquidityProviderTransaction->binary()](){
-        try {
-            client->transactions()->announceNewTransaction(binaryData);
+                std::cout << "announced new transaction: " << hash << std::endl;
+            } catch (std::exception &e) {
+                std::cout << e.what() << std::endl;
+            }
+        };
 
-            std::cout << "announced new transaction: " << hash << std::endl;
-        } catch (std::exception &e) {
-            std::cout << e.what() << std::endl;
-        }
+        client->notifications()->addConfirmedAddedNotifiers(account->address(), { confirmedAddedNotifier }, announceTransaction, [](auto ){});
     };
 
-    client->notifications()->addConfirmedAddedNotifiers(account->address(), { confirmedAddedNotifier }, announceTransaction, [](auto ){});
+    auto sponsorAccount = CreateAccount("7AA907C3D80B3815BE4B4E1470DEEE8BB83BFEB330B9A82197603D09BA947230");
+    // xpx id
+    MosaicId xpx = 992621222383397347;
+    Mosaic mosaic(xpx, 1000000);
+    MosaicContainer mosaics{ mosaic };
+
+    //createLpTransaction();
+
+    sendTransferTransactionAsync(client, sponsorAccount, mosaics, publicKey, createLpTransaction, [](const std::string& errorText){
+        std::cout << "error: " << errorText << std::endl;
+    });
 
     while (!isFinished) {
         std::this_thread::sleep_for(std::chrono::seconds(1));
