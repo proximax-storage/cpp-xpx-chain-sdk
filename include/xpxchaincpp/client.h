@@ -11,6 +11,7 @@
 #include <xpxchaincpp/client/namespace_service.h>
 #include <xpxchaincpp/client/notification_service.h>
 #include <xpxchaincpp/client/account_service.h>
+#include <xpxchaincpp/client/liquidity_provider_service.h>
 #include <xpxchaincpp/client/network_service.h>
 #include <xpxchaincpp/client/transaction_service.h>
 #include <xpxchaincpp/client/storage_service.h>
@@ -56,6 +57,7 @@ namespace xpx_chain_sdk {
         virtual std::shared_ptr<NamespaceService> namespaces() const = 0;
         virtual std::shared_ptr<NotificationService> notifications() const = 0;
         virtual std::shared_ptr<NetworkService> network() const = 0;
+        virtual std::shared_ptr<LiquidityProviderService> liquidityProvider() const = 0;
         virtual std::shared_ptr<TransactionService> transactions() const = 0;
         virtual std::shared_ptr<StorageService> storage() const = 0;
         virtual ~IClient() = default;

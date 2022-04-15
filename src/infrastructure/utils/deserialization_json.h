@@ -28,6 +28,8 @@
 #include <infrastructure/json/dto/transaction_notification_dto.h>
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
+#include <infrastructure/json/dto/liquidity_provider_dto.h>
+#include <infrastructure/json/dto/liquidity_providers_page_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
 #include <infrastructure/json/dto/storage_dto.h>
 #include <infrastructure/json/dto/error_message_dto.h>
@@ -62,6 +64,7 @@
 #include <xpxchaincpp/model/storage/drives_page.h>
 #include <xpxchaincpp/model/storage/download_channels_page.h>
 #include <xpxchaincpp/model/storage/replicators_page.h>
+#include <xpxchaincpp/model/liquidity_provider/liquidity_providers_page.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
 
@@ -256,6 +259,27 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
         template<>
         xpx_chain_sdk::download_channels_page::DownloadChannelsPage fromDto<xpx_chain_sdk::download_channels_page::DownloadChannelsPage, download_channels_page::DownloadChannelsPageDto>(const download_channels_page::DownloadChannelsPageDto &dto);
+
+        template<>
+        RateData fromDto<RateData, RateDataDto>(const RateDataDto &dto);
+
+        template<>
+        TurnoverData fromDto<TurnoverData, TurnoverDataDto>(const TurnoverDataDto &dto);
+
+        template<>
+        LiquidityProviderData fromDto<LiquidityProviderData, LiquidityProviderDataDto>(const LiquidityProviderDataDto &dto);
+
+        template<>
+        LiquidityProvider fromDto<LiquidityProvider, LiquidityProviderDto>(const LiquidityProviderDto &dto);
+
+        template<>
+        MultipleLiquidityProviders fromDto<MultipleLiquidityProviders , MultipleLiquidityProvidersDto>(const MultipleLiquidityProvidersDto &dto);
+
+        template<>
+        xpx_chain_sdk::liquidity_providers_page::Pagination fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(const dto::liquidity_providers_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage fromDto<xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage, liquidity_providers_page::LiquidityProvidersPageDto>(const liquidity_providers_page::LiquidityProvidersPageDto &dto);
 
         /// Transaction Meta
 

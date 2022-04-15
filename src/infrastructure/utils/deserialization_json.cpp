@@ -1111,6 +1111,86 @@ namespace xpx_chain_sdk::internal::json::dto {
         return downloadChannelsPage;
     }
 
+    template<>
+    RateData fromDto<RateData, RateDataDto>(const RateDataDto &dto) {
+        RateData rateData;
+        rateData.currencyAmount = dto.value<"currencyAmount"_>();
+        rateData.mosaicAmount = dto.value<"mosaicAmount"_>();
+        return rateData;
+    }
+
+    template<>
+    TurnoverData fromDto<TurnoverData, TurnoverDataDto>(const TurnoverDataDto &dto) {
+        TurnoverData turnoverData;
+        turnoverData.turnover = dto.value<"turnover"_>();
+        turnoverData.rate = fromDto<RateData, RateDataDto>(dto.value<"rate"_>());
+        return turnoverData;
+    }
+
+    template<>
+    LiquidityProviderData fromDto<LiquidityProviderData, LiquidityProviderDataDto>(const LiquidityProviderDataDto &dto) {
+        LiquidityProviderData liquidityProviderData;
+        liquidityProviderData.mosaicId = dto.value<"mosaicId"_>();
+        liquidityProviderData.providerKey = dto.value<"providerKey"_>();
+        liquidityProviderData.owner = dto.value<"owner"_>();
+        liquidityProviderData.additionallyMinted = dto.value<"additionallyMinted"_>();
+        liquidityProviderData.slashingAccount = dto.value<"slashingAccount"_>();
+        liquidityProviderData.slashingPeriod = dto.value<"slashingPeriod"_>();
+        liquidityProviderData.windowSize = dto.value<"windowSize"_>();
+        liquidityProviderData.creationHeight = dto.value<"creationHeight"_>();
+        liquidityProviderData.alpha = dto.value<"alpha"_>();
+        liquidityProviderData.beta = dto.value<"beta"_>();
+        liquidityProviderData.recentTurnover = fromDto<TurnoverData, TurnoverDataDto>(dto.value<"recentTurnover"_>());
+
+        for(const auto& turnoverDto : dto.value<"turnoverHistory"_>()) {
+            liquidityProviderData.turnoverHistory.push_back(fromDto<TurnoverData, TurnoverDataDto>(turnoverDto));
+        }
+
+        return liquidityProviderData;
+    }
+
+    template<>
+    LiquidityProvider fromDto<LiquidityProvider, LiquidityProviderDto>(const LiquidityProviderDto &dto) {
+        LiquidityProvider liquidityProvider;
+        liquidityProvider.data = fromDto<LiquidityProviderData, LiquidityProviderDataDto>(dto.value<"liquidityProvider"_>());
+        return liquidityProvider;
+    }
+
+    template<>
+    MultipleLiquidityProviders fromDto<MultipleLiquidityProviders , MultipleLiquidityProvidersDto>(const MultipleLiquidityProvidersDto &dto) {
+        MultipleLiquidityProviders mldto;
+
+        for (auto &liquidityProviderDto: dto) {
+            LiquidityProvider liquidityProvider = fromDto<LiquidityProvider, LiquidityProviderDto>(liquidityProviderDto);
+            mldto.liquidityProviders.push_back(liquidityProvider);
+        }
+
+        return mldto;
+    }
+
+    template<>
+    xpx_chain_sdk::liquidity_providers_page::Pagination fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(const dto::liquidity_providers_page::PaginationDto &dto) {
+        xpx_chain_sdk::liquidity_providers_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage fromDto<xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage, liquidity_providers_page::LiquidityProvidersPageDto>(const liquidity_providers_page::LiquidityProvidersPageDto &dto) {
+        xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage liquidityProvidersPage;
+        liquidityProvidersPage.pagination = fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& providerDto : dto.value<"data"_>()) {
+            liquidityProvidersPage.data.liquidityProviders.push_back(fromDto<xpx_chain_sdk::LiquidityProvider, dto::LiquidityProviderDto>(providerDto));
+        }
+
+        return liquidityProvidersPage;
+    }
 
     /// Transaction Meta
 
