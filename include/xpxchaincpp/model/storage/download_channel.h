@@ -20,8 +20,9 @@ namespace xpx_chain_sdk {
         std::string id;
         std::string consumer;
         std::string drive;
-        uint64_t downloadSize;
-        uint16_t downloadApprovalCountLeft;
+        uint64_t downloadSizeMegabytes;
+        uint16_t downloadApprovalCount;
+        bool finished;
         std::vector<std::string> listOfPublicKeys;
         std::vector<std::string> shardReplicators;
         std::vector<CumulativePayment> cumulativePayments;

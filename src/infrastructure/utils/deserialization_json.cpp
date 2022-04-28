@@ -1067,8 +1067,9 @@ namespace xpx_chain_sdk::internal::json::dto {
         downloadChannelData.id = dto.value<"id"_>();
         downloadChannelData.consumer = dto.value<"consumer"_>();
         downloadChannelData.drive = dto.value<"drive"_>();
-        downloadChannelData.downloadSize = dto.value<"downloadSize"_>();
-        downloadChannelData.downloadApprovalCountLeft = dto.value<"downloadApprovalCountLeft"_>();
+        downloadChannelData.downloadSizeMegabytes = dto.value<"downloadSizeMegabytes"_>();
+        downloadChannelData.downloadApprovalCount = dto.value<"downloadApprovalCount"_>();
+        downloadChannelData.finished = dto.value<"finished"_>();
         downloadChannelData.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
         downloadChannelData.shardReplicators = dto.value<"shardReplicators"_>();
 

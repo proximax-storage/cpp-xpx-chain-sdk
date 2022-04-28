@@ -109,8 +109,9 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("id"), std::string>,
             Field<STR_LITERAL("consumer"), std::string>,
             Field<STR_LITERAL("drive"), std::string>,
-            Field<STR_LITERAL("downloadSize"), Uint64>,
-            Field<STR_LITERAL("downloadApprovalCountLeft"), uint16_t>,
+            Field<STR_LITERAL("downloadSizeMegabytes"), Uint64>,
+            Field<STR_LITERAL("downloadApprovalCount"), uint16_t>,
+            Field<STR_LITERAL("finished"), bool>,
             Field<STR_LITERAL("listOfPublicKeys"), std::vector<std::string>>,
             Field<STR_LITERAL("shardReplicators"), std::vector<std::string>>,
             Field<STR_LITERAL("cumulativePayments"), std::vector<CumulativePaymentDto> >>;
