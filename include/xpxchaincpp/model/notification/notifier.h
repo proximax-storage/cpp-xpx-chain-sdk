@@ -23,9 +23,11 @@ namespace xpx_chain_sdk {
     template <typename NotificationType>
     class Notifier {
     public:
-        Notifier() = delete;
+        Notifier() :
+        uuid(generateUuid()),
+        notifier() {}
 
-        explicit Notifier(std::function<void(const std::string&, const NotificationType&)> n) :
+        Notifier(std::function<void(const std::string&, const NotificationType&)> n) :
         uuid(generateUuid()),
         notifier(n) {}
 
@@ -37,7 +39,15 @@ namespace xpx_chain_sdk {
         }
 
         void run(const NotificationType& notification) const {
+            if (!notifier) {
+                XPX_CHAIN_SDK_THROW_1(notification_error, "Notifier is not set:", getId());
+            }
+
             notifier(uuid, notification);
+        }
+
+        void set(std::function<void(const std::string&, const NotificationType&)> n) {
+            notifier = n;
         }
 
     private:
