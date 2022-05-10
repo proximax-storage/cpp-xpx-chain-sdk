@@ -47,7 +47,7 @@ namespace xpx_chain_sdk {
     public:
         std::string verificationTrigger;
         uint64_t expiration;
-        bool expired;
+        uint32_t duration;
         std::vector<Shard> shards;
     };
 
@@ -85,7 +85,7 @@ namespace xpx_chain_sdk {
         std::vector<ConfirmedUsedSize> confirmedUsedSizes;
         std::vector<std::string> replicators;
         std::vector<std::string> offboardingReplicators;
-        std::vector<Verification> verifications;
+        Verification verification;
         std::vector<DownloadShard> downloadShards;
         std::vector<DataModificationShard> dataModificationShards;
     };

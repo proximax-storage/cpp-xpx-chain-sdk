@@ -842,10 +842,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
         driveData.replicators = dto.value<"replicators"_>();
         driveData.offboardingReplicators = dto.value<"offboardingReplicators"_>();
-
-        for (const auto& verificationDto : dto.value<"verifications"_>()) {
-            driveData.verifications.push_back(fromDto<Verification, VerificationDto>(verificationDto));
-        }
+		driveData.verification = fromDto<Verification, VerificationDto>(dto.value<"verification"_>());
 
         for (const auto& downloadShardDto : dto.value<"downloadShards"_>()) {
             driveData.downloadShards.push_back(fromDto<DownloadShard, DownloadShardDto>(downloadShardDto));
@@ -953,7 +950,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         Verification verification;
         verification.verificationTrigger = dto.value<"verificationTrigger"_>();
         verification.expiration = dto.value<"expiration"_>();
-        verification.expired = dto.value<"expired"_>();
+        verification.duration = dto.value<"duration"_>();
 
         for (const auto& shard : dto.value<"shards"_>()) {
             verification.shards.push_back(fromDto<Shard, ShardDto>(shard));

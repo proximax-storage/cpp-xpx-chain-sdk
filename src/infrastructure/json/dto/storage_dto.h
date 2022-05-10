@@ -46,7 +46,7 @@ namespace xpx_chain_sdk::internal::json::dto {
     using VerificationDto = VariadicStruct<
             Field<STR_LITERAL("verificationTrigger"), std::string>,
             Field<STR_LITERAL("expiration"), Uint64>,
-            Field<STR_LITERAL("expired"), bool>,
+            Field<STR_LITERAL("duration"), Uint32>,
             Field<STR_LITERAL("shards"), std::vector<ShardDto> >>;
 
     using DownloadShardDto = VariadicStruct<
@@ -76,7 +76,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("confirmedUsedSizes"), std::vector<ConfirmedUsedSizeDto> >,
             Field<STR_LITERAL("replicators"), std::vector<std::string> >,
             Field<STR_LITERAL("offboardingReplicators"), std::vector<std::string> >,
-            Field<STR_LITERAL("verifications"), std::vector<VerificationDto> >,
+            Field<STR_LITERAL("verification"), VerificationDto >,
             Field<STR_LITERAL("downloadShards"), std::vector<DownloadShardDto> >,
             Field<STR_LITERAL("dataModificationShards"), std::vector<DataModificationShardDto> > >;
 
