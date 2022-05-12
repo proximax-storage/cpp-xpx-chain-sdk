@@ -76,7 +76,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("confirmedUsedSizes"), std::vector<ConfirmedUsedSizeDto> >,
             Field<STR_LITERAL("replicators"), std::vector<std::string> >,
             Field<STR_LITERAL("offboardingReplicators"), std::vector<std::string> >,
-            Field<STR_LITERAL("verification"), VerificationDto >,
+            Field<STR_LITERAL("verification"), VerificationDto, desc::Optional >,
             Field<STR_LITERAL("downloadShards"), std::vector<DownloadShardDto> >,
             Field<STR_LITERAL("dataModificationShards"), std::vector<DataModificationShardDto> > >;
 
