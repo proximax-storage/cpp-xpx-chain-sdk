@@ -44,10 +44,10 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("replicators"), std::vector<std::string> > >;
 
     using VerificationDto = VariadicStruct<
-            Field<STR_LITERAL("verificationTrigger"), std::string>,
-            Field<STR_LITERAL("expiration"), Uint64>,
-            Field<STR_LITERAL("duration"), Uint32>,
-            Field<STR_LITERAL("shards"), std::vector<ShardDto> >>;
+            Field<STR_LITERAL("verificationTrigger"), std::string, desc::Optional>,
+            Field<STR_LITERAL("expiration"), Uint64, desc::Optional>,
+            Field<STR_LITERAL("duration"), Uint32, desc::Optional>,
+            Field<STR_LITERAL("shards"), std::vector<ShardDto>, desc::Optional >>;
 
     using DownloadShardDto = VariadicStruct<
             Field<STR_LITERAL("downloadChannelId"), std::string> >;
