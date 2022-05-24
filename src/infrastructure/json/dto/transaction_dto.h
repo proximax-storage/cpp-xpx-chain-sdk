@@ -133,11 +133,10 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TMosaicDefinitionTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("nonce"),                   Uint32>,
-				Field<STR_LITERAL("mosaicId"),                Uint64>,
-				Field<STR_LITERAL("flags"),                   MosaicFlags>,
-				Field<STR_LITERAL("divisibility"),            uint8_t>,
-				Field<STR_LITERAL("optionalProperties"),      std::vector<MosaicPropertyDto> > >;
+				Field<STR_LITERAL("mosaicNonce"),           Uint32>,
+				Field<STR_LITERAL("mosaicId"),              Uint64>,
+                Field<STR_LITERAL("mosaicSupply"),          Uint64>,
+				Field<STR_LITERAL("properties"),            std::vector<MosaicPropertyDto> > >;
 
 		template<typename TBase>
 		using TMosaicSupplyChangeTransactionDto = VariadicStruct<

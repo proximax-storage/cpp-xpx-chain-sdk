@@ -103,12 +103,10 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TMosaicDefinitionTransaction : public TBase {
     public:
-        uint32_t nonce;
+        uint32_t mosaicNonce;
         MosaicId mosaicId;
-        uint8_t optionalPropertiesCount;
-        MosaicFlags flags;
-        uint8_t divisibility;
-        std::vector<MosaicProperty> optionalProperties;
+        Amount mosaicSupply;
+        std::vector<MosaicProperty> properties;
     };
 
     template<typename TBase>

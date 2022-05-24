@@ -207,16 +207,17 @@ namespace xpx_chain_sdk { namespace internal {
 		void InitMosaicDefinitionTransactionDTO(TDto& dto,
 		                                        uint32_t mosaicNonce,
 		                                        MosaicId mosaicId,
-		                                        MosaicFlags flags,
+                                                Amount mosaicSupply,
 		                                        const MosaicProperties& mosaicProperties,
 		                                        TArgs&&... args)
 		{
-			dto.template set<"nonce"_>(mosaicNonce);
+			dto.template set<"mosaicNonce"_>(mosaicNonce);
 			dto.template set<"mosaicId"_>(mosaicId);
+            dto.template set<"mosaicSupply"_>(mosaicSupply);
 			dto.template set<"optionalPropertiesCount"_>(mosaicProperties.size() - 2);
-			dto.template set<"flags"_>(flags);// TODO:(mosaicProperties.flags());
+			dto.template set<"flags"_>(mosaicProperties.flags());
 			dto.template set<"divisibility"_>(mosaicProperties.divisibility());
-			
+
 			std::for_each(mosaicProperties.optionalBegin(), mosaicProperties.end(), [&dto](const auto& property) {
 				dto.template value<"optionalProperties"_>().push_back(MosaicPropertyDTO{ property.id, property.value });
 			});
@@ -459,7 +460,7 @@ namespace xpx_chain_sdk { namespace internal {
 						EmbeddedMosaicDefinitionTransactionDTO dto;
 						
 						InitMosaicDefinitionTransactionDTO(
-							dto, tx->mosaicNonce(), tx->mosaicId(), tx -> flags(), tx->mosaicProperties(),
+							dto, tx->mosaicNonce(), tx->mosaicId(), tx->mosaicSupply(), tx->mosaicProperties(),
 							tx->signer().publicKey(), tx->networkId());
 						
 						AppendDtoData(dto, payload);
@@ -924,7 +925,7 @@ namespace xpx_chain_sdk { namespace internal {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransactionImpl(uint32_t mosaicNonce,
 	                                      MosaicId mosaicId,
-	                                      MosaicFlags flags,
+                                          Amount mosaicSupply,
 	                                      MosaicProperties mosaicProperties,
 	                                      std::optional<Amount> maxFee,
 	                                      std::optional<NetworkDuration> deadline,
@@ -935,10 +936,10 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		MosaicDefinitionTransactionDTO dto;
 		InitMosaicDefinitionTransactionDTO(
-			dto, mosaicNonce, mosaicId, flags, mosaicProperties, maxFee, deadline, networkId, signer, signature);
+			dto, mosaicNonce, mosaicId, mosaicSupply, mosaicProperties, maxFee, deadline, networkId, signer, signature);
 			
 		return CreateTransaction<MosaicDefinitionTransactionImpl>(
-			dto, signer, signature, info, mosaicNonce, mosaicId, flags, std::move(mosaicProperties));
+			dto, signer, signature, info, mosaicNonce, mosaicId, mosaicSupply, std::move(mosaicProperties));
 	}
 	
 	std::unique_ptr<MosaicSupplyChangeTransaction>
@@ -1537,29 +1538,29 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                  MosaicId mosaicId,
-	                                  MosaicFlags flags,
+                                      Amount mosaicSupply,
 	                                  MosaicProperties mosaicProperties,
 	                                  std::optional<Amount> maxFee,
 	                                  std::optional<NetworkDuration> deadline,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateMosaicDefinitionTransactionImpl(
-			mosaicNonce, mosaicId, flags, std::move(mosaicProperties), maxFee, deadline, networkId);
+			mosaicNonce, mosaicId, mosaicSupply, std::move(mosaicProperties), maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedMosaicDefinitionTransaction>
 	CreateEmbeddedMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                          MosaicId mosaicId,
-	                                          MosaicFlags flags,
+                                              Amount mosaicSupply,
 	                                          MosaicProperties mosaicProperties,
 	                                          const Key& signer,
 	                                          std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedMosaicDefinitionTransactionDTO dto;
-		InitMosaicDefinitionTransactionDTO(dto, mosaicNonce, mosaicId, flags, mosaicProperties, signer, networkId);
+		InitMosaicDefinitionTransactionDTO(dto, mosaicNonce, mosaicId, mosaicSupply, mosaicProperties, signer, networkId);
 
 		return CreateTransaction<EmbeddedMosaicDefinitionTransactionImpl>(
-			dto, mosaicNonce, mosaicId, flags, std::move(mosaicProperties));
+			dto, mosaicNonce, mosaicId, mosaicSupply, std::move(mosaicProperties));
 	}
 
 	std::unique_ptr<MosaicSupplyChangeTransaction>

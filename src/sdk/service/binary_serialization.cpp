@@ -174,7 +174,11 @@ namespace xpx_chain_sdk {
 			
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), dto.template value<"flags"_>(), MosaicProperties(std::move(properties)));
+				dto.template value<"mosaicNonce"_>(),
+				dto.template value<"mosaicId"_>(),
+				dto.template value<"mosaicSupply"_>(),
+				MosaicProperties(std::move(properties))
+            );
 		}
 		
 		template<

@@ -112,14 +112,15 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TMosaicDefinitionTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("nonce"),                   uint32_t>,
-		Field<STR_LITERAL("mosaicId"),                MosaicId>,
-		Field<STR_LITERAL("optionalPropertiesCount"), uint8_t>,
-		Field<STR_LITERAL("flags"),                   MosaicFlags>,
-		Field<STR_LITERAL("divisibility"),            uint8_t>,
-		Field<STR_LITERAL("optionalProperties"),      std::vector<MosaicPropertyDTO>, desc::VariableSize<STR_LITERAL("optionalPropertiesCount")>>>;
-	
-	template<typename TBase>
+		Field<STR_LITERAL("mosaicNonce"),               uint32_t>,
+		Field<STR_LITERAL("mosaicId"),                  MosaicId>,
+		Field<STR_LITERAL("mosaicSupply"),              Amount>,
+        Field<STR_LITERAL("optionalPropertiesCount"),   uint8_t>,
+        Field<STR_LITERAL("flags"),                     MosaicFlags>,
+        Field<STR_LITERAL("divisibility"),              uint8_t>,
+        Field<STR_LITERAL("optionalProperties"),        std::vector<MosaicPropertyDTO>, desc::VariableSize<STR_LITERAL("optionalPropertiesCount")>>>;
+
+            template<typename TBase>
 	using TMosaicSupplyChangeTransactionDTO = VariadicStruct<
 		TBase,
 		Field<STR_LITERAL("mosaicId"),  MosaicId>,

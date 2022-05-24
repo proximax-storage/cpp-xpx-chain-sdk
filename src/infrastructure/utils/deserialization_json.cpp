@@ -1431,12 +1431,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 
-		transaction.nonce = dto.value<"nonce"_>();
+		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.flags = dto.value<"flags"_>();
-		transaction.divisibility = dto.value<"divisibility"_>();
-		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
-			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		transaction.mosaicSupply = dto.value<"mosaicSupply"_>();
+		for(auto & mosaicProperty : dto.value<"properties"_>()) {
+			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
 		}
 		return transaction;
 	}
@@ -1663,12 +1662,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
-		transaction.nonce = dto.value<"nonce"_>();
+		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.flags = dto.value<"flags"_>();
-		transaction.divisibility = dto.value<"divisibility"_>();
-		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
-			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		transaction.mosaicSupply = dto.value<"mosaicSupply"_>();
+		for(auto & mosaicProperty : dto.value<"properties"_>()) {
+			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty));
 		}
 		return transaction;
 	}
