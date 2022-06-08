@@ -22,6 +22,7 @@ endif()
 
 if (MSVC)
 	add_compile_options(/W3)
+	add_definitions(-D_WIN32_WINNT=0x0601)
 else()
 	add_compile_options(-Wall)
 endif()
@@ -38,15 +39,15 @@ check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 #-----------------------------------------------------------------------------
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
 	message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.14/conan.cmake"
+	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/release/0.18/conan.cmake"
 		"${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_cmake_run(REQUIRES
-		rapidjson/1.1.0@bincrafters/stable
-		boost/1.71.0
+		rapidjson/1.1.0@
+		boost/1.79.0
 		openssl/1.1.1k
 	BASIC_SETUP
 	CMAKE_TARGETS

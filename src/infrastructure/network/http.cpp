@@ -54,7 +54,7 @@ std::string _performHTTPRequest_internal(
 	request.set(http::field::content_type, "application/json");
 
 	if (method == HTTPRequestMethod::PUT || method == HTTPRequestMethod::POST) {
-		request.set(http::field::content_length, request_body.size());
+		request.set(http::field::content_length, std::to_string(request_body.size()));
 //		request.set(http::field::body, request_body);
 		request.body() = request_body;
 		request.prepare_payload();

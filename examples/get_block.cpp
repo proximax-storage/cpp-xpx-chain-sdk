@@ -8,6 +8,8 @@
 #include <iostream>
 #include <xpxchaincpp/model/message/message.h>
 #include <chrono>
+#include <vector>
+#include <boost/beast/core/error.hpp>
 using namespace xpx_chain_sdk;
 
 int main() {
@@ -92,23 +94,23 @@ int main() {
 
     auto hash = ToHex(replicatorOnboardingTransaction->hash());
 
-    auto notifier = [hash](const xpx_chain_sdk::TransactionNotification& notification) {
-        if (notification.data.hash == hash) {
+    Notifier<TransactionNotification> notifier([hash](const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
+        if (notification.meta.hash == hash) {
             std::cout << "confirmed replicatorOnboardingTransaction: " << hash << std::endl;
 
             exit(0);
         } else {
-            std::cout << "other confirmed transaction hash: " << notification.data.hash << std::endl;
+            std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
         }
-    };
+    });
 
-    client->notifications()->addConfirmedAddedNotifiers(account.address(), { notifier });
+    client->notifications()->addConfirmedAddedNotifiers(account.address(), {notifier}, [](){}, [](boost::beast::error_code errorCode){});
 
-    auto statusNotifier = [](const xpx_chain_sdk::TransactionStatusNotification& notification) {
+    Notifier<TransactionStatusNotification> statusNotifier([](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
         std::cout <<  "transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
-    };
+    });
 
-    client->notifications()->addStatusNotifiers(account.address(), { statusNotifier });
+    client->notifications()->addStatusNotifiers(account.address(), {statusNotifier}, [](){}, [](boost::beast::error_code errorCode){});
 
 	try {
 		client -> transactions() -> announceNewTransaction(replicatorOnboardingTransaction->binary());
