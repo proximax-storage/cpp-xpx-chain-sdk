@@ -39,15 +39,15 @@ make install
 ## Building on Windows ##
 
 ### Install CMake ###
-Download and install the latest CMake from https://cmake.org/download/ using the Windows x64 Installer.
+Download and install the latest CMake from https://cmake.org/download/ using the Windows x64 Installer.  
 Make sure to select the option to add CMake bin directory to PATH in system variables.
 
 ### Install Conan ###
-Download and install Conan from https://conan.io/downloads.html
+Download and install Conan from https://conan.io/downloads.html  
 Add C:\Program Files\Conan\conan to PATH in system variables.
 
 ### Install MinGW-W64 ###
-If you do not have MinGW-W64 installed, download the latest x86_64-posix-seh version from here https://sourceforge.net/projects/mingw-w64/files/mingw-w64/
+If you do not have MinGW-W64 installed, download the 12.1.0 MSVCRT runtime version from here https://winlibs.com/  
 Extract the zip file to your C: drive, then add C:\mingw64\bin to PATH in system variables.
 
 ### Build ###
