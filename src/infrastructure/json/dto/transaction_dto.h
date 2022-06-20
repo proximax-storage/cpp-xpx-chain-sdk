@@ -135,7 +135,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 				TBase,
 				Field<STR_LITERAL("mosaicNonce"),           Uint32>,
 				Field<STR_LITERAL("mosaicId"),              Uint64>,
-                Field<STR_LITERAL("mosaicSupply"),          Uint64>,
 				Field<STR_LITERAL("properties"),            std::vector<MosaicPropertyDto> > >;
 
 		template<typename TBase>

@@ -104,8 +104,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TMosaicDefinitionTransaction : public TBase {
     public:
         uint32_t mosaicNonce;
-        MosaicId mosaicId;
-        Amount mosaicSupply;
+        MosaicId mosaicId;;
         std::vector<MosaicProperty> properties;
     };
 

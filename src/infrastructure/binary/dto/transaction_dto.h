@@ -114,7 +114,6 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		TBase,
 		Field<STR_LITERAL("mosaicNonce"),               uint32_t>,
 		Field<STR_LITERAL("mosaicId"),                  MosaicId>,
-		Field<STR_LITERAL("mosaicSupply"),              Amount>,
         Field<STR_LITERAL("optionalPropertiesCount"),   uint8_t>,
         Field<STR_LITERAL("flags"),                     MosaicFlags>,
         Field<STR_LITERAL("divisibility"),              uint8_t>,

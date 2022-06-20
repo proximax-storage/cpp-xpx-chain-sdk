@@ -176,7 +176,6 @@ namespace xpx_chain_sdk {
 				dto, binaryData,
 				dto.template value<"mosaicNonce"_>(),
 				dto.template value<"mosaicId"_>(),
-				dto.template value<"mosaicSupply"_>(),
 				MosaicProperties(std::move(properties))
             );
 		}

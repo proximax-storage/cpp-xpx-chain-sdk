@@ -18,12 +18,6 @@ namespace xpx_chain_sdk {
 	{
 		return mosaicId_;
 	}
-
-    template<typename TBase>
-    Amount TMosaicDefinitionTransaction<TBase>::mosaicSupply() const
-    {
-        return mosaicSupply_;
-    }
 	
 	template<typename TBase>
 	const MosaicProperties& TMosaicDefinitionTransaction<TBase>::mosaicProperties() const

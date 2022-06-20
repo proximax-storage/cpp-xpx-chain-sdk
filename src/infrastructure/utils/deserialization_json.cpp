@@ -1433,7 +1433,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.mosaicSupply = dto.value<"mosaicSupply"_>();
 		for(auto & mosaicProperty : dto.value<"properties"_>()) {
 			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
 		}
@@ -1664,7 +1663,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.mosaicSupply = dto.value<"mosaicSupply"_>();
 		for(auto & mosaicProperty : dto.value<"properties"_>()) {
 			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty));
 		}

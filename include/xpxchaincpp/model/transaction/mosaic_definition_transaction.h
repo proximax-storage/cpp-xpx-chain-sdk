@@ -24,13 +24,11 @@ namespace xpx_chain_sdk {
 		template<typename... TArgs>
 		explicit TMosaicDefinitionTransaction(uint32_t mosaicNonce,
 		                                      MosaicId mosaicId,
-                                              Amount mosaicSupply,
 		                                      MosaicProperties mosaicProperties,
 		                                      TArgs&&... args):
 			TBase(TransactionType::Mosaic_Definition, std::forward<TArgs>(args)...),
 			mosaicNonce_(mosaicNonce),
 			mosaicId_(mosaicId),
-            mosaicSupply_(mosaicSupply),
 			mosaicProperties_(std::move(mosaicProperties))
 		{ }
 		
@@ -39,9 +37,6 @@ namespace xpx_chain_sdk {
 		
 		/// Returns generated mosaic id.
 		MosaicId mosaicId() const;
-
-        /// Returns mosaic supply.
-        Amount mosaicSupply() const;
 		
 		/// Returns mosaic properties.
 		const MosaicProperties& mosaicProperties() const;
@@ -49,7 +44,6 @@ namespace xpx_chain_sdk {
 	private:
 		uint32_t mosaicNonce_;
 		MosaicId mosaicId_;
-        Amount mosaicSupply_;
 		MosaicProperties mosaicProperties_;
 	};
 	
@@ -65,7 +59,6 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                  MosaicId mosaicId,
-                                      Amount mosaicSupply,
 	                                  MosaicProperties mosaicProperties,
 	                                  std::optional<Amount> maxFee = std::nullopt,
 	                                  std::optional<NetworkDuration> deadline = std::nullopt,
@@ -77,7 +70,6 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<EmbeddedMosaicDefinitionTransaction>
 	CreateEmbeddedMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                          MosaicId mosaicId,
-                                              Amount mosaicSupply,
 	                                          MosaicProperties mosaicProperties,
 	                                          const Key& signer,
 	                                          std::optional<NetworkIdentifier> networkId = std::nullopt);
