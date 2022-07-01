@@ -8,6 +8,7 @@
 #include "context.h"
 
 #include <string>
+#include <map>
 #include <xpxchaincpp/config.h>
 
 namespace xpx_chain_sdk::internal::network {
