@@ -19,7 +19,23 @@ Following variables can be used to control build process:
 * XPX_CHAIN_SDK_BUILD_EXAMPLES - set to ON if you want to build the example programs (default - OFF)
 * other well-known CMake variables (CMAKE_INSTALL_PREFIX, CMAKE_BUILD_TYPE, etc.)
 
+## Update submodules
+
+```shell
+git submodule update --init --recursive --remote 
+```
+
 ## Building on Linux ##
+
+### Update conan
+```shell
+pip install conan --upgrade
+```
+
+### Update conancenter
+```shell
+conan remote add conancenter https://center.conan.io
+```
 
 Prepare build with following instructions:
 
