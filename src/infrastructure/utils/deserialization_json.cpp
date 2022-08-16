@@ -1006,7 +1006,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         ReplicatorData replicatorData;
         replicatorData.key = dto.value<"key"_>();
         replicatorData.version = dto.value<"version"_>();
-        replicatorData.capacity = dto.value<"capacity"_>();
+        replicatorData.downloadChannels = dto.value<"downloadChannels"_>();
 
         for (const auto& driveInfoDto : dto.value<"drives"_>()) {
             replicatorData.drivesInfo.push_back(fromDto<DriveInfo, DriveInfoDto>(driveInfoDto));
@@ -1020,7 +1020,6 @@ namespace xpx_chain_sdk::internal::json::dto {
         DriveInfo driveInfo;
         driveInfo.drive = dto.value<"drive"_>();
         driveInfo.lastApprovedDataModificationId = dto.value<"lastApprovedDataModificationId"_>();
-        driveInfo.dataModificationIdIsValid = dto.value<"dataModificationIdIsValid"_>();
         driveInfo.initialDownloadWork = dto.value<"initialDownloadWork"_>();
         driveInfo.lastCompletedCumulativeDownloadWork = dto.value<"lastCompletedCumulativeDownloadWork"_>();
 

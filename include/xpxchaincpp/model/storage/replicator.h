@@ -13,7 +13,6 @@ namespace xpx_chain_sdk {
     public:
         std::string drive;
         std::string lastApprovedDataModificationId;
-        uint8_t dataModificationIdIsValid;
         uint64_t initialDownloadWork;
         uint64_t lastCompletedCumulativeDownloadWork;
     };
@@ -22,8 +21,8 @@ namespace xpx_chain_sdk {
     public:
         std::string key;
         uint32_t version;
-        uint64_t capacity;
         std::vector<DriveInfo> drivesInfo;
+        std::vector<std::string> downloadChannels;
     };
 
 	class Replicator {

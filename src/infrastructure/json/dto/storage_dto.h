@@ -88,14 +88,13 @@ namespace xpx_chain_sdk::internal::json::dto {
     using DriveInfoDto = VariadicStruct<
             Field<STR_LITERAL("drive"), std::string>,
             Field<STR_LITERAL("lastApprovedDataModificationId"), std::string>,
-            Field<STR_LITERAL("dataModificationIdIsValid"), uint8_t>,
             Field<STR_LITERAL("initialDownloadWork"), Uint64>,
             Field<STR_LITERAL("lastCompletedCumulativeDownloadWork"), Uint64>>;
 
     using ReplicatorDataDto = VariadicStruct<
             Field<STR_LITERAL("key"), std::string>,
             Field<STR_LITERAL("version"), Uint32>,
-            Field<STR_LITERAL("capacity"), Uint64>,
+            Field<STR_LITERAL("downloadChannels"), std::vector<std::string>>,
             Field<STR_LITERAL("drives"), std::vector<DriveInfoDto> >>;
 
     using ReplicatorDto = VariadicStruct<
