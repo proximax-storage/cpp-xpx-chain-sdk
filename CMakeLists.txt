@@ -37,21 +37,24 @@ check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 #-----------------------------------------------------------------------------
 # dependencies
 #-----------------------------------------------------------------------------
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-	message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/release/0.18/conan.cmake"
-		"${CMAKE_BINARY_DIR}/conan.cmake")
+if (APPLE)
+else()
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+            message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+            file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/release/0.18/conan.cmake"
+                    "${CMAKE_BINARY_DIR}/conan.cmake")
+    endif()
+
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+    conan_cmake_run(REQUIRES
+                    rapidjson/1.1.0@
+                    boost/1.71.0
+                    openssl/1.1.1k
+            BASIC_SETUP
+            CMAKE_TARGETS
+            BUILD missing)
 endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-conan_cmake_run(REQUIRES
-		rapidjson/1.1.0@
-		boost/1.71.0
-		openssl/1.1.1k
-	BASIC_SETUP
-	CMAKE_TARGETS
-	BUILD missing)
 
 #-----------------------------------------------------------------------------
 # sources
@@ -142,10 +145,18 @@ if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
     target_compile_definitions(xpxchaincpp PRIVATE XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
 endif()
 
-target_link_libraries(xpxchaincpp
-		CONAN_PKG::rapidjson
-		CONAN_PKG::boost
-		CONAN_PKG::openssl)
+if(APPLE)
+    include_directories(${Boost_INCLUDE_DIRS} /usr/local/opt/openssl@1.1/include)
+    target_link_libraries(xpxchaincpp
+        /usr/local/Cellar/rapidjson/1.1.0
+        /usr/local/opt/openssl@3/lib/libcrypto.dylib
+        /usr/local/opt/openssl@3/lib/libssl.dylib)
+else()
+    target_link_libraries(xpxchaincpp
+                    CONAN_PKG::rapidjson
+                    CONAN_PKG::boost
+                    CONAN_PKG::openssl)
+endif()
 
 #-----------------------------------------------------------------------------
 # install
@@ -193,30 +204,34 @@ install(FILES
 # tests
 #-----------------------------------------------------------------------------
 
-if (XPX_CHAIN_SDK_BUILD_TESTS)
-	enable_testing()
-	add_subdirectory(tests)
-endif()
+if (APPLE)
+else()
 
-if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
-	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
-	target_link_libraries(get_block
-			xpxchaincpp
-			CONAN_PKG::rapidjson
-			CONAN_PKG::boost
-			CONAN_PKG::openssl)
+    if (XPX_CHAIN_SDK_BUILD_TESTS)
+            enable_testing()
+            add_subdirectory(tests)
+    endif()
 
-	add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
-	target_link_libraries(bonded_aggregate_transaction
-			xpxchaincpp
-			CONAN_PKG::rapidjson
-			CONAN_PKG::boost
-			CONAN_PKG::openssl)
+    if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
+            add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
+            target_link_libraries(get_block
+                            xpxchaincpp
+                            CONAN_PKG::rapidjson
+                            CONAN_PKG::boost
+                            CONAN_PKG::openssl)
 
-	add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
-	target_link_libraries(liquidity_provider_transactions
-			xpxchaincpp
-			CONAN_PKG::rapidjson
-			CONAN_PKG::boost
-			CONAN_PKG::openssl)
+            add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
+            target_link_libraries(bonded_aggregate_transaction
+                            xpxchaincpp
+                            CONAN_PKG::rapidjson
+                            CONAN_PKG::boost
+                            CONAN_PKG::openssl)
+
+            add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
+            target_link_libraries(liquidity_provider_transactions
+                            xpxchaincpp
+                            CONAN_PKG::rapidjson
+                            CONAN_PKG::boost
+                            CONAN_PKG::openssl)
+    endif()
 endif()
