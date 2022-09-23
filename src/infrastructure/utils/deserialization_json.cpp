@@ -1908,7 +1908,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadSize = dto.value<"downloadSize"_>();
 		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
-		transaction.listOfPublicKeysSize = dto.value<"listOfPublicKeysSize"_>();
 		transaction.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
 
 		return transaction;
@@ -1950,6 +1949,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.fileStructureSizeBytes = dto.value<"fileStructureSizeBytes"_>();
 		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
 		transaction.usedDriveSizeBytes = dto.value<"usedDriveSizeBytes"_>();
+		transaction.judgingKeysCount = dto.value<"judgingKeysCount"_>();
+		transaction.overlappingKeysCount = dto.value<"overlappingKeysCount"_>();
+		transaction.judgedKeysCount = dto.value<"judgedKeysCount"_>();
 		transaction.publicKeys = dto.value<"publicKeys"_>();
 		transaction.signatures = dto.value<"signatures"_>();
 		transaction.presentOpinions = dto.value<"presentOpinions"_>();

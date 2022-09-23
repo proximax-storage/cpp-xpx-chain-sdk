@@ -222,7 +222,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		std::string driveKey;
 		uint64_t downloadSize;
 		Amount feedbackFeeAmount;
-        uint16_t listOfPublicKeysSize;
         std::vector<std::string> listOfPublicKeys;
 
     };
@@ -252,6 +251,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint64_t fileStructureSizeBytes;
         uint64_t metaFilesSizeBytes;
         uint64_t usedDriveSizeBytes;
+        uint8_t judgingKeysCount;
+        uint8_t overlappingKeysCount;
+        uint8_t judgedKeysCount;
         std::vector<std::string> publicKeys;
         std::vector<std::string> signatures;
         std::vector<uint8_t> presentOpinions;
