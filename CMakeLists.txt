@@ -14,6 +14,10 @@ option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
 option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
+find_package(Threads REQUIRED)
+find_package(Boost 1.71.0 REQUIRED)
+find_package(OpenSSL 1.1.1 REQUIRED)
+
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "XPX-CHAIN SDK build type." FORCE)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
@@ -24,7 +28,7 @@ if (MSVC)
 	add_compile_options(/W3)
 	add_definitions(-D_WIN32_WINNT=0x0601)
 else()
-	add_compile_options(-Wall)
+	add_compile_options(-w)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -34,26 +38,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/CheckFeatures.cmake)
 check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
-#-----------------------------------------------------------------------------
-# dependencies
-#-----------------------------------------------------------------------------
-if (APPLE)
-else()
-    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-            message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-            file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/release/0.18/conan.cmake"
-                    "${CMAKE_BINARY_DIR}/conan.cmake")
-    endif()
-
-    include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-    conan_cmake_run(REQUIRES
-                    rapidjson/1.1.0@
-                    boost/1.71.0
-                    openssl/1.1.1k
-            BASIC_SETUP
-            CMAKE_TARGETS
-            BUILD missing)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
 #-----------------------------------------------------------------------------
@@ -139,6 +127,7 @@ target_include_directories(xpxchaincpp
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
+		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
@@ -147,15 +136,12 @@ endif()
 
 if(APPLE)
     include_directories(${Boost_INCLUDE_DIRS} /usr/local/opt/openssl@1.1/include)
-    target_link_libraries(xpxchaincpp
-        /usr/local/Cellar/rapidjson/1.1.0
-        /usr/local/opt/openssl@3/lib/libcrypto.dylib
-        /usr/local/opt/openssl@3/lib/libssl.dylib)
 else()
     target_link_libraries(xpxchaincpp
-                    CONAN_PKG::rapidjson
-                    CONAN_PKG::boost
-                    CONAN_PKG::openssl)
+                    ${Boost_LIBRARIES}
+                    OpenSSL::SSL
+					OpenSSL::Crypto
+					pthread)
 endif()
 
 #-----------------------------------------------------------------------------
@@ -216,22 +202,25 @@ else()
             add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
             target_link_libraries(get_block
                             xpxchaincpp
-                            CONAN_PKG::rapidjson
-                            CONAN_PKG::boost
-                            CONAN_PKG::openssl)
+							${Boost_LIBRARIES}
+							OpenSSL::SSL
+							OpenSSL::Crypto
+							pthread)
 
             add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
             target_link_libraries(bonded_aggregate_transaction
                             xpxchaincpp
-                            CONAN_PKG::rapidjson
-                            CONAN_PKG::boost
-                            CONAN_PKG::openssl)
+							${Boost_LIBRARIES}
+							OpenSSL::SSL
+							OpenSSL::Crypto
+							pthread)
 
             add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
             target_link_libraries(liquidity_provider_transactions
                             xpxchaincpp
-                            CONAN_PKG::rapidjson
-                            CONAN_PKG::boost
-                            CONAN_PKG::openssl)
+							${Boost_LIBRARIES}
+							OpenSSL::SSL
+							OpenSSL::Crypto
+							pthread)
     endif()
 endif()

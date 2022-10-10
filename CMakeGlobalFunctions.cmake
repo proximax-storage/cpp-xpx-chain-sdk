@@ -21,9 +21,10 @@ function(add_single_test TARGET_NAME SOURCE_CPP)
     target_link_libraries(${TARGET_NAME} gtest gtest_main)
     target_link_libraries(${TARGET_NAME}
             xpxchaincpp
-            CONAN_PKG::rapidjson
-            CONAN_PKG::boost
-            CONAN_PKG::openssl)
+            ${Boost_LIBRARIES}
+            OpenSSL::SSL
+            OpenSSL::Crypto
+            pthread)
 
     include(GoogleTest)
     gtest_discover_tests(${TARGET_NAME})
