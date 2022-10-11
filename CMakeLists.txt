@@ -21,7 +21,7 @@ else()
 endif()
 
 find_package(Threads REQUIRED)
-find_package(Boost 1.71.0 REQUIRED COMPONENTS system)
+find_package(Boost 1.71.0 REQUIRED)
 find_package(OpenSSL 1.1.1 REQUIRED)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -148,7 +148,7 @@ else()
 endif()
 
 target_link_libraries(xpxchaincpp
-					  system
+					  ${Boost_LIBRARIES}
 					  OpenSSL::SSL
 					  OpenSSL::Crypto
 					  pthread)
@@ -211,25 +211,25 @@ else()
             add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
             target_link_libraries(get_block
 								xpxchaincpp
+								${Boost_LIBRARIES}
 								OpenSSL::SSL
             					OpenSSL::Crypto
-								system
 								pthread)
 
             add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
             target_link_libraries(bonded_aggregate_transaction
 								xpxchaincpp
+								${Boost_LIBRARIES}
 								OpenSSL::SSL
             					OpenSSL::Crypto
-								system
 								pthread)
 
             add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
             target_link_libraries(liquidity_provider_transactions
 								xpxchaincpp
+							    ${Boost_LIBRARIES}
 								OpenSSL::SSL
             					OpenSSL::Crypto
-								system
 								pthread)
     endif()
 endif()
