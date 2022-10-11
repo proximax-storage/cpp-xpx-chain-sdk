@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.9)
 project(cpp-xpx-chain-sdk VERSION 1.0.0)
 include(CMakeGlobalFunctions.cmake)
 
-# CMP0068: fallback to older policies for macOS
-cmake_policy(SET CMP0068 OLD)
-
 #-----------------------------------------------------------------------------
 # options and features
 #-----------------------------------------------------------------------------
@@ -14,8 +11,17 @@ option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
 option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
+if (APPLE)
+	set(CMAKE_VERBOSE_MAKEFILE ON)
+	set(BOOST_INCLUDE_DIR "/usr/local/include")
+	set(BOOST_LIB_DIR "/usr/local/lib")
+	set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
+	set(OPENSSL_LIBRARIES "/usr/local/opt/openssl/lib")
+else()
+endif()
+
 find_package(Threads REQUIRED)
-find_package(Boost 1.71.0 REQUIRED)
+find_package(Boost 1.71.0 REQUIRED COMPONENTS system)
 find_package(OpenSSL 1.1.1 REQUIRED)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -135,14 +141,17 @@ if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
 endif()
 
 if(APPLE)
-    include_directories(${Boost_INCLUDE_DIRS} /usr/local/opt/openssl@1.1/include)
+    include_directories(${BOOST_INCLUDE_DIR})
+    include_directories(${OPENSSL_INCLUDE_DIR})
+	target_include_directories(xpxchaincpp PUBLIC ${Boost_INCLUDE_DIRS})
 else()
-    target_link_libraries(xpxchaincpp
-                    ${Boost_LIBRARIES}
-                    OpenSSL::SSL
-					OpenSSL::Crypto
-					pthread)
 endif()
+
+target_link_libraries(xpxchaincpp
+					  system
+					  OpenSSL::SSL
+					  OpenSSL::Crypto
+					  pthread)
 
 #-----------------------------------------------------------------------------
 # install
@@ -201,26 +210,26 @@ else()
     if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
             add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
             target_link_libraries(get_block
-                            xpxchaincpp
-							${Boost_LIBRARIES}
-							OpenSSL::SSL
-							OpenSSL::Crypto
-							pthread)
+								xpxchaincpp
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								system
+								pthread)
 
             add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
             target_link_libraries(bonded_aggregate_transaction
-                            xpxchaincpp
-							${Boost_LIBRARIES}
-							OpenSSL::SSL
-							OpenSSL::Crypto
-							pthread)
+								xpxchaincpp
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								system
+								pthread)
 
             add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
             target_link_libraries(liquidity_provider_transactions
-                            xpxchaincpp
-							${Boost_LIBRARIES}
-							OpenSSL::SSL
-							OpenSSL::Crypto
-							pthread)
+								xpxchaincpp
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								system
+								pthread)
     endif()
 endif()
