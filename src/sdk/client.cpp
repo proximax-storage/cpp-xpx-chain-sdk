@@ -68,6 +68,10 @@ public:
 		return _storage;
 	}
 
+    std::shared_ptr<Config> getConfig() const override {
+        return _config;
+    }
+
 private:
     std::shared_ptr<Config> _config;
     std::shared_ptr<internal::network::Context> _context;
