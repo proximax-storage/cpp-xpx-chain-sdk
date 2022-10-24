@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 3.9)
 project(cpp-xpx-chain-sdk VERSION 1.0.0)
-include(CMakeGlobalFunctions.cmake)
 
 #-----------------------------------------------------------------------------
 # options and features
 #-----------------------------------------------------------------------------
 
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
-option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." ON)
+option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
 option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+
+include(CMakeGlobalFunctions.cmake)
 
 if (APPLE)
 	set(CMAKE_VERBOSE_MAKEFILE ON)
