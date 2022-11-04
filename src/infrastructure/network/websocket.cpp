@@ -79,14 +79,18 @@ namespace xpx_chain_sdk::internal::network {
                 boost::asio::bind_executor(*_strand, [pThis = shared_from_this()](auto errorCode, auto bytesTransferred) {
                     if (errorCode) {
                         boost::asio::post(*pThis->_strand, [errorCode, onError = pThis->_outgoingQueue[0].second.second]() {
-                            onError(errorCode);
+                            if (onError) {
+                                onError(errorCode);
+                            }
                         });
 
                         return pThis->_outgoingQueue.pop_front();
                     }
 
                     boost::asio::post(*pThis->_strand, [onSuccess = pThis->_outgoingQueue[0].second.first]() {
-                        onSuccess();
+                        if (onSuccess) {
+                            onSuccess();
+                        }
                     });
 
                     pThis->_outgoingQueue.pop_front();
