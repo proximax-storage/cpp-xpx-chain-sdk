@@ -84,10 +84,12 @@ namespace xpx_chain_sdk {
 
     void NotificationService::runTask(std::function<void()> task) {
         boost::asio::post(*_strand, [pThis = shared_from_this(), task] {
-            if (pThis->_isConnectionInProgress) {
-                pThis->_tasks.emplace_back(task);
-            } else {
-                task();
+            if (task) {
+                if (pThis->_isConnectionInProgress) {
+                    pThis->_tasks.emplace_back(task);
+                } else {
+                    task();
+                }
             }
         });
     }
