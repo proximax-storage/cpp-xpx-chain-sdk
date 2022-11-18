@@ -44,12 +44,12 @@ Drive StorageService::getDriveById(const std::string& id) {
 	return from_json<Drive, DriveDto>(response);
 }
 
-drives_page::DrivesPage StorageService::getDrives() {
+drives_page::DrivesPage StorageService::getDrives(const DrivesPageOptions& options) {
 	std::stringstream path;
 	path << "bcdrives";
 
 	RequestParamsBuilder builder(_config);
-    builder.setPath(path.str());
+    builder.setPath(path.str(), options.toMap());
     builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
     std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
@@ -68,12 +68,12 @@ Replicator StorageService::getReplicatorById(const std::string &id) {
     return from_json<Replicator, ReplicatorDto>(response);
 }
 
-replicators_page::ReplicatorsPage StorageService::getReplicators() {
+replicators_page::ReplicatorsPage StorageService::getReplicators(const ReplicatorsPageOptions& options) {
     std::stringstream path;
     path << "replicators";
 
     RequestParamsBuilder builder(_config);
-    builder.setPath(path.str());
+    builder.setPath(path.str(), options.toMap());
     builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
     std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
@@ -92,12 +92,12 @@ DownloadChannel StorageService::getDownloadChannelById(const std::string &id) {
     return from_json<DownloadChannel, DownloadChannelDto>(response);
 }
 
-download_channels_page::DownloadChannelsPage StorageService::getDownloadChannels() {
+download_channels_page::DownloadChannelsPage StorageService::getDownloadChannels(const DownloadChannelsPageOptions& options) {
     std::stringstream path;
     path << "download_channels";
 
     RequestParamsBuilder builder(_config);
-    builder.setPath(path.str());
+    builder.setPath(path.str(), options.toMap());
     builder.setMethod(internal::network::HTTPRequestMethod::GET);
 
     std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
