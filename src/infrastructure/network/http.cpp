@@ -108,12 +108,12 @@ std::string _performHTTPRequest(
 	}
 }
 
-RequestParamsBuilder::RequestParamsBuilder(std::shared_ptr<xpx_chain_sdk::Config> config) :
+RequestParamsBuilder::RequestParamsBuilder(const xpx_chain_sdk::Config& config) :
 	_method(HTTPRequestMethod::GET),
-	_secure(config->useSSL),
-	_host(config->nodeAddress),
-	_port(config->port),
-	_basePath(config->basePath)
+	_secure(config.useSSL),
+	_host(config.nodeAddress),
+	_port(config.port),
+	_basePath(config.basePath)
 {}
 
 RequestParamsBuilder& RequestParamsBuilder::setMethod(HTTPRequestMethod method) {

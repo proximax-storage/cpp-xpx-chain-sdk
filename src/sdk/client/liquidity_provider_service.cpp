@@ -20,7 +20,7 @@ using internal::json::dto::liquidity_providers_page::LiquidityProvidersPageDto;
 
 
 LiquidityProviderService::LiquidityProviderService(
-	std::shared_ptr<Config> config,
+	const Config& config,
 	std::shared_ptr<internal::network::Context> context
 ) :
 	_config(std::move(config)),

@@ -34,7 +34,7 @@ namespace xpx_chain_sdk {
 class NotificationService : public std::enable_shared_from_this<NotificationService> {
     public:
         NotificationService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
         ~NotificationService();
 
@@ -107,7 +107,7 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
                              std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
         std::shared_ptr<internal::network::WsClient> _wsClient;
         std::shared_ptr<internal::SubscriptionManager> _subscriptionManager;

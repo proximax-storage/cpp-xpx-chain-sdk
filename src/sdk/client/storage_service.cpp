@@ -25,7 +25,7 @@ using internal::json::dto::replicators_page::ReplicatorsPageDto;
 
 
 StorageService::StorageService(
-	std::shared_ptr<Config> config,
+	const Config& config,
 	std::shared_ptr<internal::network::Context> context
 ) :
 	_config(std::move(config)),

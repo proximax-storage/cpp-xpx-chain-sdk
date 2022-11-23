@@ -9,7 +9,7 @@
 namespace xpx_chain_sdk::internal::network {
 
     WsClient::WsClient(
-            std::shared_ptr<Config> config,
+            const Config& config,
             std::shared_ptr<internal::network::Context> context,
             std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> strand,
             Callback connectionCallback,
@@ -28,8 +28,8 @@ namespace xpx_chain_sdk::internal::network {
 
     void WsClient::connect(uint64_t onResolveHostTimeoutSec) {
         boost::asio::post(*_strand, [pThis = shared_from_this(), onResolveHostTimeoutSec] {
-            pThis->_resolver.async_resolve(pThis->_config->nodeAddress,
-                                           pThis->_config->port,
+            pThis->_resolver.async_resolve(pThis->_config.nodeAddress,
+                                           pThis->_config.port,
                                            boost::asio::bind_executor(*pThis->_strand, [pThis, onResolveHostTimeoutSec] (
                                                    boost::beast::error_code errorCode,
                                                    const boost::asio::ip::tcp::resolver::results_type &resultsType) {
@@ -134,12 +134,12 @@ namespace xpx_chain_sdk::internal::network {
         // Set suggested timeout settings for the websocket
         _ws.set_option(boost::beast::websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
 
-        const std::string host = _config->nodeAddress + ":" + _config->port;
+        const std::string host = _config.nodeAddress + ":" + _config.port;
 
         std::cout << "websocket: connection established: " << host << std::endl;
 
         // Perform the websocket handshake
-        _ws.async_handshake(host, _config->baseWsPath, boost::asio::bind_executor(*_strand, [pThis = shared_from_this()](auto ec) {
+        _ws.async_handshake(host, _config.baseWsPath, boost::asio::bind_executor(*_strand, [pThis = shared_from_this()](auto ec) {
             pThis->onHandshake(ec);
         }));
     }

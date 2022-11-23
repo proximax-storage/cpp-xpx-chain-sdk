@@ -28,7 +28,7 @@ namespace xpx_chain_sdk {
 	class BlockchainService {
 	public:
 		BlockchainService(
-				std::shared_ptr<Config> config,
+				const Config& config,
 				std::shared_ptr<internal::network::Context> context);
 		~BlockchainService() = default;
 
@@ -40,7 +40,7 @@ namespace xpx_chain_sdk {
 
 
 	private:
-		std::shared_ptr<Config> _config;
+		const Config& _config;
 		std::shared_ptr<Context> _context;
 	};
 

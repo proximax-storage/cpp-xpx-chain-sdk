@@ -24,7 +24,7 @@ namespace xpx_chain_sdk {
 	class LiquidityProviderService {
 	public:
         LiquidityProviderService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
 		~LiquidityProviderService() = default;
 
@@ -32,7 +32,7 @@ namespace xpx_chain_sdk {
         liquidity_providers_page::LiquidityProvidersPage getLiquidityProviders();
 
 	private:
-		std::shared_ptr<Config> _config;
+		const Config& _config;
 		std::shared_ptr<Context> _context;
 	};
 }

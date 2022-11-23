@@ -23,7 +23,7 @@ namespace xpx_chain_sdk {
 	using internal::json::dto::MultipleTransactionStatusDto;
 
 	TransactionService::TransactionService(
-			std::shared_ptr<Config> config,
+			const Config& config,
 			std::shared_ptr<internal::network::Context> context) :_config(config), _context(context) {}
 
 	std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getTransactionInfo(TransactionGroup group, const std::string &id) {

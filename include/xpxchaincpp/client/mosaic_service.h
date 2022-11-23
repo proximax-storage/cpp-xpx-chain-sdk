@@ -27,7 +27,7 @@ namespace xpx_chain_sdk {
     class MosaicService {
     public:
         MosaicService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
         ~MosaicService() = default;
 
@@ -36,7 +36,7 @@ namespace xpx_chain_sdk {
         MosaicNames getMosaicsNames(const std::vector<MosaicId>& ids);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
     };
 };

@@ -16,7 +16,7 @@ using namespace xpx_chain_sdk;
 
 class Client : public IClient {
 public:
-	explicit Client(std::shared_ptr<Config> config) : _config(config) {
+	explicit Client(const Config& config) : _config(config) {
         _context            = std::make_shared<internal::network::Context>();
         _account            = std::make_shared<AccountService>(config, _context);
         _blockchain         = std::make_shared<BlockchainService>(config, _context);
@@ -68,12 +68,12 @@ public:
 		return _storage;
 	}
 
-    std::shared_ptr<Config> getConfig() const override {
+    const Config& getConfig() const override {
         return _config;
     }
 
 private:
-    std::shared_ptr<Config> _config;
+    const Config& _config;
     std::shared_ptr<internal::network::Context> _context;
 
     std::shared_ptr<AccountService> _account;
@@ -88,7 +88,7 @@ private:
 };
 
 namespace xpx_chain_sdk {
-	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config) {
+	std::shared_ptr<IClient> getClient(const Config& config) {
 		return std::make_shared<Client>(config);
 	}
 }

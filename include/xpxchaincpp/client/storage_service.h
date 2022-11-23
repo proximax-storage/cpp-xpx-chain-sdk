@@ -29,7 +29,7 @@ namespace xpx_chain_sdk {
 	class StorageService {
 	public:
 		StorageService(
-				std::shared_ptr<Config> config,
+				const Config& config,
 				std::shared_ptr<internal::network::Context> context);
 		~StorageService() = default;
 
@@ -41,7 +41,7 @@ namespace xpx_chain_sdk {
         download_channels_page::DownloadChannelsPage getDownloadChannels(const DownloadChannelsPageOptions& options);
 
 	private:
-		std::shared_ptr<Config> _config;
+		const Config& _config;
 		std::shared_ptr<Context> _context;
 	};
 }

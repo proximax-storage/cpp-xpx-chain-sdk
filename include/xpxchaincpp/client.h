@@ -51,7 +51,7 @@ namespace xpx_chain_sdk {
 
 	class IClient {
 	public:
-        virtual std::shared_ptr<Config> getConfig() const = 0;
+        virtual const Config& getConfig() const = 0;
         virtual std::shared_ptr<AccountService> account() const = 0;
         virtual std::shared_ptr<BlockchainService> blockchain() const = 0;
         virtual std::shared_ptr<MosaicService> mosaics() const = 0;
@@ -64,5 +64,5 @@ namespace xpx_chain_sdk {
         virtual ~IClient() = default;
 	};
 
-	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config);
+	std::shared_ptr<IClient> getClient(const Config& config);
 }

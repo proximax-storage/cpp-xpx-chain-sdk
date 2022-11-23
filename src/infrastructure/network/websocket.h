@@ -30,7 +30,7 @@ namespace xpx_chain_sdk::internal::network {
     class WsClient : public std::enable_shared_from_this<WsClient> {
     public:
         WsClient(
-            std::shared_ptr<Config> config,
+            const Config& config,
             std::shared_ptr<internal::network::Context> context,
             std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> strand,
             Callback connectionCallback,
@@ -60,7 +60,7 @@ namespace xpx_chain_sdk::internal::network {
         void onClose(boost::beast::error_code errorCode);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
         std::shared_ptr<boost::asio::streambuf> _buffer;
         std::deque<std::pair<std::string, std::pair<std::function<void()>, std::function<void(boost::beast::error_code errorCode)>>>> _outgoingQueue;

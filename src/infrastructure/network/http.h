@@ -30,7 +30,7 @@ namespace xpx_chain_sdk::internal::network {
 
 	class RequestParamsBuilder {
 	public:
-		explicit RequestParamsBuilder(std::shared_ptr<xpx_chain_sdk::Config> config);
+		explicit RequestParamsBuilder(const xpx_chain_sdk::Config& config);
 
 		RequestParamsBuilder& setMethod(HTTPRequestMethod method);
 		RequestParamsBuilder& setSecurity(bool secure);

@@ -23,7 +23,7 @@ using xpx_chain_sdk::internal::json::dto::from_json;
 namespace xpx_chain_sdk {
 
     NotificationService::NotificationService(
-            std::shared_ptr<Config> config,
+            const Config& config,
             std::shared_ptr<internal::network::Context> context):
             _config(config),
             _context(context),
