@@ -418,6 +418,7 @@ namespace xpx_chain_sdk {
                     dto.template value<"driveKey"_>(),
                     dto.template value<"dataModificationId"_>(),
                     dto.template value<"fileStructureCdi"_>(),
+                    dto.template value<"modificationStatus"_>(),
                     dto.template value<"fileStructureSizeBytes"_>(),
                     dto.template value<"metaFilesSizeBytes"_>(),
                     dto.template value<"usedDriveSizeBytes"_>(),

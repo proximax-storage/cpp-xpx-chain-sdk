@@ -679,6 +679,7 @@ namespace xpx_chain_sdk { namespace internal {
                                                         const Key& driveKey,
                                                         const Hash256& dataModificationId,
                                                         const Hash256& fileStructureCdi,
+                                                        uint8_t modificationStatus,
                                                         uint64_t fileStructureSizeBytes,
                                                         uint64_t metaFilesSizeBytes,
                                                         uint64_t usedDriveSizeBytes,
@@ -695,6 +696,7 @@ namespace xpx_chain_sdk { namespace internal {
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"dataModificationId"_>(dataModificationId);
 			dto.template set<"fileStructureCdi"_>(fileStructureCdi);
+			dto.template set<"modificationStatus"_>(modificationStatus);
 			dto.template set<"fileStructureSizeBytes"_>(fileStructureSizeBytes);
 			dto.template set<"metaFilesSizeBytes"_>(metaFilesSizeBytes);
 			dto.template set<"usedDriveSizeBytes"_>(usedDriveSizeBytes);
@@ -1246,6 +1248,7 @@ namespace xpx_chain_sdk { namespace internal {
     CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
                                                   const Hash256& dataModificationId,
                                                   const Hash256& fileStructureCdi,
+                                                  uint8_t modificationStatus,
                                                   uint64_t fileStructureSizeBytes,
                                                   uint64_t metaFilesSizeBytes,
                                                   uint64_t usedDriveSizeBytes,
@@ -1266,12 +1269,12 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		DataModificationApprovalTransactionDTO dto;
 		InitDataModificationApprovalTransactionDTO(
-			dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+			dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
             overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, maxFee,
             deadline, networkId, signer, signature);
 
 		return CreateTransaction<DataModificationApprovalTransactionImpl>(
-			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, fileStructureSizeBytes,
+			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes,
             metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount, overlappingKeysCount, judgedKeysCount, opinionElementCount,
             publicKeys, signatures, presentOpinions, opinions);
 	}
@@ -1966,6 +1969,7 @@ namespace xpx_chain_sdk {
     CreateDataModificationApprovalTransaction(const Key& driveKey,
                                               const Hash256& dataModificationId,
                                               const Hash256& fileStructureCdi,
+                                              uint8_t modificationStatus,
                                               uint64_t fileStructureSizeBytes,
                                               uint64_t metaFilesSizeBytes,
                                               uint64_t usedDriveSizeBytes,
@@ -1981,7 +1985,7 @@ namespace xpx_chain_sdk {
                                               std::optional<NetworkDuration> deadline,
                                               std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
                                                              overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions,
                                                              maxFee, deadline, networkId);
 	}
@@ -1990,6 +1994,7 @@ namespace xpx_chain_sdk {
     CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
                                                       const Hash256& dataModificationId,
                                                       const Hash256& fileStructureCdi,
+                                                      uint8_t modificationStatus,
                                                       uint64_t fileStructureSizeBytes,
                                                       uint64_t metaFilesSizeBytes,
                                                       uint64_t usedDriveSizeBytes,
@@ -2005,9 +2010,9 @@ namespace xpx_chain_sdk {
                                                       std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDataModificationApprovalTransactionDTO dto;
-		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
                                                    overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, signer, networkId);
-		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
                                                                                   overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions);
 	}
 

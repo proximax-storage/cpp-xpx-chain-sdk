@@ -29,6 +29,7 @@ namespace xpx_chain_sdk {
     public:
         DataModification dataModification;
         uint8_t state;
+        uint8_t success;
     };
 
     class ConfirmedUsedSize {

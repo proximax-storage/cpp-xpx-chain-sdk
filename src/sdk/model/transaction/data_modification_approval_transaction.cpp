@@ -25,6 +25,12 @@ namespace xpx_chain_sdk {
 		return fileStructureCdi_;
 	}
 
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::modificationStatus() const
+    {
+        return modificationStatus_;
+    }
+
 	template<typename TBase>
 	uint64_t TDataModificationApprovalTransaction<TBase>::fileStructureSizeBytes() const
 	{

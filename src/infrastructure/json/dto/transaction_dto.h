@@ -273,6 +273,7 @@ namespace xpx_chain_sdk::internal::json::dto {
                 Field<STR_LITERAL("driveKey"),				std::string>,
                 Field<STR_LITERAL("dataModificationId"),	std::string>,
                 Field<STR_LITERAL("fileStructureCdi"),		std::string>,
+                Field<STR_LITERAL("modificationStatus"),    uint8_t>,
                 Field<STR_LITERAL("fileStructureSizeBytes"),Uint64>,
                 Field<STR_LITERAL("metaFilesSizeBytes"),	Uint64>,
                 Field<STR_LITERAL("usedDriveSizeBytes"),	Uint64>,

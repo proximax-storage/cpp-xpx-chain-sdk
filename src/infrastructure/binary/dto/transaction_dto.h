@@ -254,6 +254,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("dataModificationId"),	Hash256>,
 		Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
+		Field<STR_LITERAL("modificationStatus"),    uint8_t>,
 		Field<STR_LITERAL("fileStructureSizeBytes"),uint64_t>,
 		Field<STR_LITERAL("metaFilesSizeBytes"),	uint64_t>,
 		Field<STR_LITERAL("usedDriveSizeBytes"),	uint64_t>,

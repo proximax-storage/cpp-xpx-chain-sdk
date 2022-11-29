@@ -33,7 +33,8 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("actualUploadSize"), Uint64 >,
             Field<STR_LITERAL("folderName"), std::string >,
             Field<STR_LITERAL("readyForApproval"), bool >,
-            Field<STR_LITERAL("state"), uint8_t > >;
+            Field<STR_LITERAL("state"), uint8_t >,
+            Field<STR_LITERAL("success"), uint8_t > >;
 
     using ConfirmedUsedSizeDto = VariadicStruct<
             Field<STR_LITERAL("replicator"), std::string>,

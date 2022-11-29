@@ -923,6 +923,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         completedDataModification.dataModification.folderName = dto.value<"folderName"_>();
         completedDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
         completedDataModification.state = dto.value<"state"_>();
+        completedDataModification.success = dto.value<"success"_>();
 
         return completedDataModification;
     }

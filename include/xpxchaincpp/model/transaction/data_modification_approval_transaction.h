@@ -26,6 +26,7 @@ namespace xpx_chain_sdk {
 				const Key& driveKey,
 				const Hash256& dataModificationId,
 				const Hash256& fileStructureCdi,
+                uint8_t modificationStatus,
 				uint64_t fileStructureSizeBytes,
 				uint64_t metaFilesSizeBytes,
 				uint64_t usedDriveSizeBytes,
@@ -42,6 +43,7 @@ namespace xpx_chain_sdk {
 			driveKey_(driveKey),
 			dataModificationId_(dataModificationId),
 			fileStructureCdi_(fileStructureCdi),
+            modificationStatus_(modificationStatus),
 			fileStructureSize_(fileStructureSizeBytes),
 			metaFilesSize_(metaFilesSizeBytes),
 			usedDriveSize_(usedDriveSizeBytes),
@@ -63,6 +65,9 @@ namespace xpx_chain_sdk {
 
 		/// Returns Content Download Information for the File Structure.
 		const Hash256& fileStructureCdi() const;
+
+        /// Returns Status of the modification
+        uint8_t modificationStatus() const;
 
 		/// Returns size of the File Structure.
 		uint64_t fileStructureSizeBytes() const;
@@ -103,6 +108,7 @@ namespace xpx_chain_sdk {
 		Key driveKey_;
 		Hash256 dataModificationId_;
 		Hash256 fileStructureCdi_;
+		uint8_t modificationStatus_;
 		uint64_t fileStructureSize_;
         uint64_t metaFilesSize_;
 		uint64_t usedDriveSize_;
@@ -129,6 +135,7 @@ namespace xpx_chain_sdk {
 	CreateDataModificationApprovalTransaction(const Key& driveKey,
                                               const Hash256& dataModificationId,
                                               const Hash256& fileStructureCdi,
+                                              uint8_t modificationStatus,
                                               uint64_t fileStructureSizeBytes,
                                               uint64_t metaFilesSizeBytes,
                                               uint64_t usedDriveSizeBytes,
@@ -152,6 +159,7 @@ namespace xpx_chain_sdk {
     CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
                                                       const Hash256& dataModificationId,
                                                       const Hash256& fileStructureCdi,
+                                                      uint8_t modificationStatus,
                                                       uint64_t fileStructureSizeBytes,
                                                       uint64_t metaFilesSizeBytes,
                                                       uint64_t usedDriveSizeBytes,

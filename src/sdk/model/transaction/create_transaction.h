@@ -402,6 +402,7 @@ namespace xpx_chain_sdk { namespace internal {
     CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
                                                   const Hash256& dataModificationId,
                                                   const Hash256& fileStructureCdi,
+                                                  uint8_t modificationStatus,
                                                   uint64_t fileStructureSizeBytes,
                                                   uint64_t metaFilesSizeBytes,
                                                   uint64_t usedDriveSizeBytes,
