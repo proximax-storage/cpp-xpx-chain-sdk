@@ -1947,6 +1947,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.dataModificationId = dto.value<"dataModificationId"_>();
 		transaction.fileStructureCdi = dto.value<"fileStructureCdi"_>();
+		transaction.modificationStatus = dto.value<"modificationStatus"_>();
 		transaction.fileStructureSizeBytes = dto.value<"fileStructureSizeBytes"_>();
 		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
 		transaction.usedDriveSizeBytes = dto.value<"usedDriveSizeBytes"_>();
