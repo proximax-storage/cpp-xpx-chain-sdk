@@ -146,6 +146,7 @@ if(APPLE)
     include_directories(${OPENSSL_INCLUDE_DIR})
 	target_include_directories(xpxchaincpp PUBLIC ${Boost_INCLUDE_DIRS})
 else()
+	include_directories(${Boost_INCLUDE_DIR})
 endif()
 
 target_link_libraries(xpxchaincpp
