@@ -5,6 +5,7 @@
 **/
 #pragma once
 
+#include <xpxchaincpp/types.h>
 #include <xpxchaincpp/utils/buffer.h>
 #include <xpxchaincpp/model/transaction/transaction.h>
 #include <xpxchaincpp/model/transaction/embedded_transaction.h>
@@ -15,7 +16,7 @@
 #include <utility>
 
 namespace xpx_chain_sdk {
-	
+
 	/// Deploy contract transaction base class.
 	template<typename TBase>
     class TDeployContractTransaction: public TBase {
@@ -32,7 +33,7 @@ namespace xpx_chain_sdk {
                 const std::vector<MosaicId>& servicePayments,
                 const std::string automaticExecutionsFileName,
                 const std::string automaticExecutionsFunctionName,
-                const Amount& automaticExecutionCallPayment,
+                const Amount& automaticExecutionsCallPayment,
                 const Amount& automaticDownloadCallPayment,
                 uint32_t automaticExecutionsNumber,
                 const Key& assignee,
@@ -47,7 +48,7 @@ namespace xpx_chain_sdk {
             servicePayments_(servicePayments),
             automaticExecutionsFileName_(automaticExecutionsFileName),
             automaticExecutionsFunctionName_(automaticExecutionsFunctionName),
-            automaticExecutionCallPayment_(automaticExecutionCallPayment),
+            automaticExecutionsCallPayment_(automaticExecutionsCallPayment),
             automaticDownloadCallPayment_(automaticDownloadCallPayment),
             automaticExecutionsNumber_(automaticExecutionsNumber),
             assignee_(assignee)
@@ -71,15 +72,15 @@ namespace xpx_chain_sdk {
 
         const std::string& automaticExecutionsFunctionName() const;
 
-        const Amount& automaticExecutionCallPayment() const;
+        const Amount& automaticExecutionsCallPayment() const;
 
         const Amount& automaticDownloadCallPayment() const;
 
         uint32_t automaticExecutionsNumber() const;
 
         const Key& assignee() const;
-		
-	private:
+
+    private:
         Key driveKey_;
         std::string fileName_;
         std::string functionName_;
@@ -89,55 +90,55 @@ namespace xpx_chain_sdk {
         std::vector<MosaicId> servicePayments_;
         std::string automaticExecutionsFileName_;
         std::string automaticExecutionsFunctionName_;
-        Amount automaticExecutionCallPayment_;
+        Amount automaticExecutionsCallPayment_;
         Amount automaticDownloadCallPayment_;
         uint32_t automaticExecutionsNumber_;
         Key assignee_;
 	};
-	
+
 	extern template class TDeployContractTransaction<Transaction>;
 	extern template class TDeployContractTransaction<EmbeddedTransaction>;
-	
+
 	using DeployContractTransaction = TDeployContractTransaction<Transaction>;
 	using EmbeddedDeployContractTransaction = TDeployContractTransaction<EmbeddedTransaction>;
-	
+
 	/// Creates Deploy contract transaction.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<DeployContractTransaction>
 	CreateDeployContractTransaction(const Key& driveKey,
-                                    const std::string fileName,
-                                    const std::string functionName,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
                                     const std::vector<MosaicId>& servicePayments,
-                                    const std::string automaticExecutionsFileName,
-                                    const std::string automaticExecutionsFunctionName,
-                                    const Amount& automaticExecutionCallPayment,
+                                    const std::string& automaticExecutionsFileName,
+                                    const std::string& automaticExecutionsFunctionName,
+                                    const Amount& automaticExecutionsCallPayment,
                                     const Amount& automaticDownloadCallPayment,
                                     uint32_t automaticExecutionsNumber,
                                     const Key& assignee,
                                     std::optional<Amount> maxFee = std::nullopt,
                                     std::optional<NetworkDuration> deadline = std::nullopt,
                                     std::optional<NetworkIdentifier> networkId = std::nullopt);
-	
-	
+
+
 	/// Creates deploy contract transaction.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedDeployContractTransaction>
 	CreateEmbeddedDeployContractTransaction(const Key& driveKey,
-                                            const std::string fileName,
-                                            const std::string functionName,
+                                            const std::string& fileName,
+                                            const std::string& functionName,
                                             const std::vector<uint8_t>& actualArguments,
                                             const Amount& executionCallPayment,
                                             const Amount& downloadCallPayment,
                                             const std::vector<MosaicId>& servicePayments,
-                                            const std::string automaticExecutionsFileName,
-                                            const std::string automaticExecutionsFunctionName,
-                                            const Amount& automaticExecutionCallPayment,
+                                            const std::string& automaticExecutionsFileName,
+                                            const std::string& automaticExecutionsFunctionName,
+                                            const Amount& automaticExecutionsCallPayment,
                                             const Amount& automaticDownloadCallPayment,
                                             uint32_t automaticExecutionsNumber,
                                             const Key& assignee,
                                             const Key& signer,
-                                            std::optional<NetworkIdentifier> networkId = std::nullopt);
+											std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

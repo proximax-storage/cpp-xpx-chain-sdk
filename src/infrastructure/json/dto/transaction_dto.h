@@ -242,6 +242,50 @@ namespace xpx_chain_sdk::internal::json::dto {
 				TBase,
 				Field<STR_LITERAL("capacity"),				Amount>>;
 
+	template<typename TBase>
+	using TDeployContractTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("driveKey"), Key>,
+			Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+			Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+			Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+			Field<STR_LITERAL("executionCallPayment"), Amount>,
+			Field<STR_LITERAL("downloadCallPayment"), Amount>,
+			Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+			Field<STR_LITERAL("automaticExecutionsFileNameSize"),  uint16_t>,
+			Field<STR_LITERAL("automaticExecutionsFunctionNameSize"),  uint16_t>,
+			Field<STR_LITERAL("automaticExecutionsCallPayment"), Amount>,
+			Field<STR_LITERAL("automaticDownloadCallPayment"), Amount>,
+			Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>,
+			Field<STR_LITERAL("assignee"), Key>,
+			Field<STR_LITERAL("fileName"), std::string>,
+			Field<STR_LITERAL("functionName"), std::string>,
+			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>>,
+			Field<STR_LITERAL("automaticExecutionsFileName"), std::string>,
+			Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string>>;
+
+	template<typename TBase>
+	using TManualCallTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("contractKey"), Key>,
+			Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+			Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+			Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+			Field<STR_LITERAL("executionCallPayment"), Amount>,
+			Field<STR_LITERAL("downloadCallPayment"), Amount>,
+			Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+			Field<STR_LITERAL("fileName"), std::string>,
+			Field<STR_LITERAL("functionName"), std::string>,
+			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>>>;
+
+	template<typename TBase>
+	using TAutomaticExecutionsPaymentTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("contractKey"), Key>,
+			Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -310,4 +354,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;
+
+		using DeployContractTransactionDto = TDeployContractTransactionDto<TransactionDto>;
+		using EmbeddedDeployContractTransactionDto = TDeployContractTransactionDto<EmbeddedTransactionDto>;
+
+		using ManualCallTransactionDto = TManualCallTransactionDto<TransactionDto>;
+		using EmbeddedManualCallTransactionDto = TManualCallTransactionDto<EmbeddedTransactionDto>;
+
+		using AutomaticExecutionsPaymentTransactionDto = TAutomaticExecutionsPaymentTransactionDto<TransactionDto>;
+		using EmbeddedAutomaticExecutionsPaymentTransactionDto = TAutomaticExecutionsPaymentTransactionDto<EmbeddedTransactionDto>;
 	}

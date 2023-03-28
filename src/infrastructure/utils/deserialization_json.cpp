@@ -363,6 +363,42 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+			case TransactionType::Deploy_Contract: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), DeployContractTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<DeployContractTransaction, DeployContractTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<DeployContractTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Manual_Call: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), ManualCallTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<ManualCallTransaction, ManualCallTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<ManualCallTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Automatic_Executions_Payment: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), AutomaticExecutionsPaymentTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<AutomaticExecutionsPaymentTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1363,6 +1399,70 @@ namespace xpx_chain_sdk::internal::json::dto {
 	}
 
 	template<>
+	EmbeddedDeployContractTransaction fromDto<EmbeddedDeployContractTransaction, EmbeddedDeployContractTransactionDto>(const EmbeddedDeployContractTransactionDto& dto) {
+		EmbeddedDeployContractTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionNameSize = dto.value<"functionNameSize"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
+		transaction.servicePayments = dto.value<"servicePayments"_>();
+		transaction.automaticExecutionsFileNameSize = dto.value<"automaticExecutionsFileNameSize"_>();
+		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
+		transaction.automaticExecutionsFunctionNameSize = dto.value<"automaticExecutionsFunctionNameSize"_>();
+		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
+		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
+		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+		transaction.assignee = dto.value<"assignee"_>();
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedManualCallTransaction fromDto<EmbeddedManualCallTransaction, EmbeddedManualCallTransactionDto>(const EmbeddedManualCallTransactionDto& dto) {
+		EmbeddedManualCallTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionNameSize = dto.value<"functionNameSize"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
+		transaction.servicePayments = dto.value<"servicePayments"_>();
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto) {
+		EmbeddedAutomaticExecutionsPaymentTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
+
+	template<>
 	PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto) {
 		PrepareBcDriveTransaction transaction;
 
@@ -1441,6 +1541,70 @@ namespace xpx_chain_sdk::internal::json::dto {
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };
     }
+
+	template<>
+	DeployContractTransaction fromDto<DeployContractTransaction, DeployContractTransactionDto>(const DeployContractTransactionDto& dto) {
+		DeployContractTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionNameSize = dto.value<"functionNameSize"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
+		transaction.servicePayments = dto.value<"servicePayments"_>();
+		transaction.automaticExecutionsFileNameSize = dto.value<"automaticExecutionsFileNameSize"_>();
+		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
+		transaction.automaticExecutionsFunctionNameSize = dto.value<"automaticExecutionsFunctionNameSize"_>();
+		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
+		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
+		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+		transaction.assignee = dto.value<"assignee"_>();
+
+		return transaction;
+	}
+
+	template<>
+	ManualCallTransaction fromDto<ManualCallTransaction, ManualCallTransactionDto>(const ManualCallTransactionDto& dto) {
+		ManualCallTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileNameSize = dto.value<"fileNameSize"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionNameSize = dto.value<"functionNameSize"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
+		transaction.servicePayments = dto.value<"servicePayments"_>();
+
+		return transaction;
+	}
+
+	template<>
+	AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto) {
+		AutomaticExecutionsPaymentTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
 
     template<>
     WebsocketMeta fromDto<WebsocketMeta, WebsocketMetaDto>(const WebsocketMetaDto &dto) {

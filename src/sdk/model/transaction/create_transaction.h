@@ -24,6 +24,9 @@
 #include <xpxchaincpp/model/transaction/data_modification_approval_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_cancel_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/deploy_contract_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_call_transaction.h>
+#include <xpxchaincpp/model/transaction/automatic_execution_transaction.h>
 
 #include <utility>
 using namespace xpx_chain_sdk;
@@ -101,6 +104,15 @@ namespace xpx_chain_sdk { namespace internal {
 
 	using ReplicatorOnboardingTransactionImpl = TTransactionImpl<ReplicatorOnboardingTransaction>;
 	using EmbeddedReplicatorOnboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOnboardingTransaction>;
+
+	using DeployContractTransactionImpl = TTransactionImpl<DeployContractTransaction>;
+	using EmbeddedDeployContractTransactionImpl = TTransactionImpl<EmbeddedDeployContractTransaction>;
+
+	using ManualCallTransactionImpl = TTransactionImpl<ManualCallTransaction>;
+	using EmbeddedManualCallTransactionImpl = TTransactionImpl<EmbeddedManualCallTransaction>;
+
+	using AutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<AutomaticExecutionsPaymentTransaction>;
+	using EmbeddedAutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<EmbeddedAutomaticExecutionsPaymentTransaction>;
 	
 	
 	
@@ -344,38 +356,47 @@ namespace xpx_chain_sdk { namespace internal {
 
     std::unique_ptr<DeployContractTransaction>
     CreateDeployContractTransactionImpl(const Key& driveKey,
-                                const std::string fileName,
-                                const std::string functionName,
-                                const std::vector<uint8_t>& actualArguments,
-                                const Amount& executionCallPayment,
-                                const Amount& downloadCallPayment,
-                                const std::vector<MosaicId>& servicePayments,
-                                const std::string automaticExecutionsFileName,
-                                const std::string automaticExecutionsFunctionName,
-                                const Amount& automaticExecutionCallPayment,
-                                const Amount& automaticDownloadCallPayment,
-                                uint32_t automaticExecutionsNumber,
-                                const Key& assignee,
-                                std::optional<Amount> maxFee = std::nullopt,
-                                std::optional<NetworkDuration> deadline = std::nullopt,
-                                std::optional<NetworkIdentifier> networkId = std::nullopt);
+										const std::string& fileName,
+										const std::string& functionName,
+										const std::vector<uint8_t>& actualArguments,
+										const Amount& executionCallPayment,
+										const Amount& downloadCallPayment,
+										const std::vector<MosaicId>& servicePayments,
+										const std::string& automaticExecutionsFileName,
+										const std::string& automaticExecutionsFunctionName,
+										const Amount& automaticExecutionsCallPayment,
+										const Amount& automaticDownloadCallPayment,
+										uint32_t automaticExecutionsNumber,
+										const Key& assignee,
+										std::optional<Amount> maxFee,
+										std::optional<NetworkDuration> deadline,
+										std::optional<NetworkIdentifier> networkId,
+										const std::optional<Key>& signer = std::nullopt,
+										const std::optional<Signature>& signature = std::nullopt,
+										const std::optional<TransactionInfo>& info = std::nullopt);
 
     std::unique_ptr<ManualCallTransaction>
     CreateManualCallTransactionImpl(const Key& contractKey,
-                                const std::string fileName,
-                                const std::string functionName,
-                                const std::vector<uint8_t>& actualArguments,
-                                const Amount& executionCallPayment,
-                                const Amount& downloadCallPayment,
-                                const std::vector<MosaicId>& servicePayments,
-                                std::optional<Amount> maxFee = std::nullopt,
-                                std::optional<NetworkDuration> deadline = std::nullopt,
-                                std::optional<NetworkIdentifier> networkId = std::nullopt);
+									const std::string& fileName,
+									const std::string& functionName,
+									const std::vector<uint8_t>& actualArguments,
+									const Amount& executionCallPayment,
+									const Amount& downloadCallPayment,
+									const std::vector<MosaicId>& servicePayments,
+									std::optional<Amount> maxFee,
+									std::optional<NetworkDuration> deadline,
+									std::optional<NetworkIdentifier> networkId,
+									const std::optional<Key>& signer = std::nullopt,
+									const std::optional<Signature>& signature = std::nullopt,
+									const std::optional<TransactionInfo>& info = std::nullopt);
 
     std::unique_ptr<AutomaticExecutionsPaymentTransaction>
     CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
-                                uint32_t automaticExecutionsNumber,
-                                std::optional<Amount> maxFee = std::nullopt,
-                                std::optional<NetworkDuration> deadline = std::nullopt,
-                                std::optional<NetworkIdentifier> networkId = std::nullopt);
+                                					uint32_t automaticExecutionsNumber,
+													std::optional<Amount> maxFee,
+													std::optional<NetworkDuration> deadline,
+													std::optional<NetworkIdentifier> networkId,
+													const std::optional<Key>& signer = std::nullopt,
+													const std::optional<Signature>& signature = std::nullopt,
+													const std::optional<TransactionInfo>& info = std::nullopt);
 }}

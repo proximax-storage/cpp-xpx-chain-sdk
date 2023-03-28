@@ -619,15 +619,15 @@ namespace xpx_chain_sdk { namespace internal {
 		template<typename TDto, typename... TArgs>
 		void InitDeployContractTransactionDTO(TDto& dto,
                                               const Key& driveKey,
-                                              const std::string fileName,
-                                              const std::string functionName,
-                                              const std::vector<uint8_t>& actualArguments,
+                                              const std::string& fileName,
+                                              const std::string& functionName,
+											  const std::vector<uint8_t>& actualArguments,
                                               const Amount& executionCallPayment,
                                               const Amount& downloadCallPayment,
                                               const std::vector<MosaicId>& servicePayments,
-                                              const std::string automaticExecutionsFileName,
-                                              const std::string automaticExecutionsFunctionName,
-                                              const Amount& automaticExecutionCallPayment,
+                                              const std::string& automaticExecutionsFileName,
+                                              const std::string& automaticExecutionsFunctionName,
+                                              const Amount& automaticExecutionsCallPayment,
                                               const Amount& automaticDownloadCallPayment,
                                               uint32_t automaticExecutionsNumber,
                                               const Key& assignee,
@@ -648,7 +648,7 @@ namespace xpx_chain_sdk { namespace internal {
 			dto.template set<"automaticExecutionsFileName"_>(automaticExecutionsFileName);
 			dto.template set<"automaticExecutionsFunctionNameSize"_>(automaticExecutionsFunctionName.size());
 			dto.template set<"automaticExecutionsFunctionName"_>(automaticExecutionsFunctionName);
-			dto.template set<"automaticExecutionCallPayment"_>(automaticExecutionCallPayment);
+			dto.template set<"automaticExecutionsCallPayment"_>(automaticExecutionsCallPayment);
 			dto.template set<"automaticDownloadCallPayment"_>(automaticDownloadCallPayment);
 			dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
 			dto.template set<"assignee"_>(assignee);
@@ -659,15 +659,15 @@ namespace xpx_chain_sdk { namespace internal {
 		template<typename TDto, typename... TArgs>
 		void InitManualCallTransactionDTO(TDto& dto,
                                           const Key& contractKey,
-                                          const std::string fileName,
-                                          const std::string functionName,
-                                          const std::vector<uint8_t>& actualArguments,
+                                          const std::string& fileName,
+                                          const std::string& functionName,
+										  const std::vector<uint8_t>& actualArguments,
                                           const Amount& executionCallPayment,
                                           const Amount& downloadCallPayment,
                                           const std::vector<MosaicId>& servicePayments,
                                           TArgs&&... args)
 		{
-			dto.template set<"contractKey"_>(driveKey);
+			dto.template set<"contractKey"_>(contractKey);
             dto.template set<"fileNameSize"_>(fileName.size());
             dto.template set<"fileName"_>(fileName);
 			dto.template set<"functionNameSize"_>(functionName.size());
@@ -688,7 +688,7 @@ namespace xpx_chain_sdk { namespace internal {
                                                           uint32_t automaticExecutionsNumber,
                                                           TArgs&&... args)
 		{
-			dto.template set<"contractKey"_>(driveKey);
+			dto.template set<"contractKey"_>(contractKey);
             dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
 
 			InitTransactionDTO(dto, TransactionType::Automatic_Executions_Payment, std::forward<TArgs>(args)...);
@@ -1123,15 +1123,15 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<DeployContractTransaction>
 	CreateDeployContractTransactionImpl(const Key& driveKey,
-                                        const std::string fileName,
-                                        const std::string functionName,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
                                         const std::vector<uint8_t>& actualArguments,
                                         const Amount& executionCallPayment,
                                         const Amount& downloadCallPayment,
                                         const std::vector<MosaicId>& servicePayments,
-                                        const std::string automaticExecutionsFileName,
-                                        const std::string automaticExecutionsFunctionName,
-                                        const Amount& automaticExecutionCallPayment,
+                                        const std::string& automaticExecutionsFileName,
+                                        const std::string& automaticExecutionsFunctionName,
+                                        const Amount& automaticExecutionsCallPayment,
                                         const Amount& automaticDownloadCallPayment,
                                         uint32_t automaticExecutionsNumber,
                                         const Key& assignee,
@@ -1154,7 +1154,7 @@ namespace xpx_chain_sdk { namespace internal {
                 servicePayments,
                 automaticExecutionsFileName,
                 automaticExecutionsFunctionName,
-                automaticExecutionCallPayment,
+                automaticExecutionsCallPayment,
                 automaticDownloadCallPayment,
                 automaticExecutionsNumber,
                 assignee,
@@ -1178,7 +1178,7 @@ namespace xpx_chain_sdk { namespace internal {
                 servicePayments,
                 automaticExecutionsFileName,
                 automaticExecutionsFunctionName,
-                automaticExecutionCallPayment,
+                automaticExecutionsCallPayment,
                 automaticDownloadCallPayment,
                 automaticExecutionsNumber,
                 assignee);
@@ -1186,8 +1186,8 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<ManualCallTransaction>
 	CreateManualCallTransactionImpl(const Key& contractKey,
-                                    const std::string fileName,
-                                    const std::string functionName,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
@@ -1795,84 +1795,120 @@ namespace xpx_chain_sdk {
 
     std::unique_ptr<DeployContractTransaction>
     CreateDeployContractTransaction(const Key& driveKey,
-                                    const std::string fileName,
-                                    const std::string functionName,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
                                     const std::vector<MosaicId>& servicePayments,
-                                    const std::string automaticExecutionsFileName,
-                                    const std::string automaticExecutionsFunctionName,
-                                    const Amount& automaticExecutionCallPayment,
+                                    const std::string& automaticExecutionsFileName,
+                                    const std::string& automaticExecutionsFunctionName,
+                                    const Amount& automaticExecutionsCallPayment,
                                     const Amount& automaticDownloadCallPayment,
                                     uint32_t automaticExecutionsNumber,
                                     const Key& assignee,
-                                    std::optional<Amount> maxFee = std::nullopt,
-                                    std::optional<NetworkDuration> deadline = std::nullopt,
-                                    std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
     {
-        return CreateDeployContractTransactionImpl(contractKey, automaticExecutionsNumber, maxFee, deadline, networkId);
+        return CreateDeployContractTransactionImpl(
+                driveKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments,
+                automaticExecutionsFileName, automaticExecutionsFunctionName, automaticExecutionsCallPayment, automaticDownloadCallPayment,
+                automaticExecutionsNumber, assignee, maxFee, deadline, networkId);
     }
 
     std::unique_ptr<EmbeddedDeployContractTransaction>
     CreateEmbeddedDeployContractTransaction(const Key& driveKey,
-                                            const std::string fileName,
-                                            const std::string functionName,
+                                            const std::string& fileName,
+                                            const std::string& functionName,
                                             const std::vector<uint8_t>& actualArguments,
                                             const Amount& executionCallPayment,
                                             const Amount& downloadCallPayment,
                                             const std::vector<MosaicId>& servicePayments,
-                                            const std::string automaticExecutionsFileName,
-                                            const std::string automaticExecutionsFunctionName,
-                                            const Amount& automaticExecutionCallPayment,
+                                            const std::string& automaticExecutionsFileName,
+                                            const std::string& automaticExecutionsFunctionName,
+                                            const Amount& automaticExecutionsCallPayment,
                                             const Amount& automaticDownloadCallPayment,
                                             uint32_t automaticExecutionsNumber,
                                             const Key& assignee,
                                             const Key& signer,
-                                            std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                            std::optional<NetworkIdentifier> networkId)
     {
         EmbeddedDeployContractTransactionDTO dto;
-        InitDeployContractTransactionDTO(dto, capacity, signer, networkId);
-        return CreateTransaction<EmbeddedDeployContractTransactionImpl>(dto, capacity);
+        InitDeployContractTransactionDTO(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee,
+                signer,
+                networkId);
+        return CreateTransaction<EmbeddedDeployContractTransactionImpl>(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee);
     }
 
     std::unique_ptr<ManualCallTransaction>
     CreateManualCallTransaction(const Key& contractKey,
-                                const std::string fileName,
-                                const std::string functionName,
+                                const std::string& fileName,
+                                const std::string& functionName,
                                 const std::vector<uint8_t>& actualArguments,
                                 const Amount& executionCallPayment,
                                 const Amount& downloadCallPayment,
                                 const std::vector<MosaicId>& servicePayments,
-                                std::optional<Amount> maxFee = std::nullopt,
-                                std::optional<NetworkDuration> deadline = std::nullopt,
-                                std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                std::optional<Amount> maxFee,
+                                std::optional<NetworkDuration> deadline,
+                                std::optional<NetworkIdentifier> networkId)
     {
-        return CreateManualCallTransactionImpl(contractKey, automaticExecutionsNumber, maxFee, deadline, networkId);
+        return CreateManualCallTransactionImpl(
+                contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, maxFee, deadline, networkId);
     }
 
     std::unique_ptr<EmbeddedManualCallTransaction>
     CreateEmbeddedManualCallTransaction(const Key& contractKey,
-                                        const std::string fileName,
-                                        const std::string functionName,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
                                         const std::vector<uint8_t>& actualArguments,
                                         const Amount& executionCallPayment,
                                         const Amount& downloadCallPayment,
                                         const std::vector<MosaicId>& servicePayments,
                                         const Key& signer,
-                                        std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                        std::optional<NetworkIdentifier> networkId)
     {
         EmbeddedManualCallTransactionDTO dto;
-        InitManualCallTransactionDTO(dto, capacity, signer, networkId);
-        return CreateTransaction<EmbeddedManualCallTransactionImpl>(dto, capacity);
+        InitManualCallTransactionDTO(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, signer, networkId);
+        return CreateTransaction<EmbeddedManualCallTransactionImpl>(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments);
     }
 
     std::unique_ptr<AutomaticExecutionsPaymentTransaction>
     CreateAutomaticExecutionsPaymentTransaction(const Key& contractKey,
                                                 uint32_t automaticExecutionsNumber,
-                                                std::optional<Amount> maxFee = std::nullopt,
-                                                std::optional<NetworkDuration> deadline = std::nullopt,
-                                                std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                                std::optional<Amount> maxFee,
+                                                std::optional<NetworkDuration> deadline,
+                                                std::optional<NetworkIdentifier> networkId)
     {
         return CreateAutomaticExecutionsPaymentTransactionImpl(contractKey, automaticExecutionsNumber, maxFee, deadline, networkId);
     }
@@ -1881,10 +1917,10 @@ namespace xpx_chain_sdk {
     CreateEmbeddedAutomaticExecutionsPaymentTransaction(const Key& contractKey,
                                                         uint32_t automaticExecutionsNumber,
                                                         const Key& signer,
-                                                        std::optional<NetworkIdentifier> networkId = std::nullopt)
+                                                        std::optional<NetworkIdentifier> networkId)
     {
         EmbeddedAutomaticExecutionsPaymentTransactionDTO dto;
-        InitAutomaticExecutionsPaymentTransactionDTO(dto, capacity, signer, networkId);
-        return CreateTransaction<EmbeddedAutomaticExecutionsPaymentTransactionImpl>(dto, capacity);
+        InitAutomaticExecutionsPaymentTransactionDTO(dto, contractKey, automaticExecutionsNumber, signer, networkId);
+        return CreateTransaction<EmbeddedAutomaticExecutionsPaymentTransactionImpl>(dto, contractKey, automaticExecutionsNumber);
     }
 }

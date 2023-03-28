@@ -54,7 +54,7 @@ namespace xpx_chain_sdk {
         const Amount& downloadCallPayment() const;
 
         const std::vector<MosaicId>& servicePayments() const;
-		
+
 	private:
         Key contractKey_;
         std::string fileName_;
@@ -75,8 +75,8 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<ManualCallTransaction>
 	CreateManualCallTransaction(const Key& contractKey,
-                            const std::string fileName,
-                            const std::string functionName,
+                            const std::string& fileName,
+                            const std::string& functionName,
                             const std::vector<uint8_t>& actualArguments,
                             const Amount& executionCallPayment,
                             const Amount& downloadCallPayment,
@@ -90,8 +90,8 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedManualCallTransaction>
 	CreateEmbeddedManualCallTransaction(const Key& contractKey,
-                                    const std::string fileName,
-                                    const std::string functionName,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,

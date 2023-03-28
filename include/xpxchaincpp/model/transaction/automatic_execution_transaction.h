@@ -33,13 +33,13 @@ namespace xpx_chain_sdk {
 
         const Key& contractKey() const;
 
-        uint32_t automaticExecutionsNumber() const;
-		
+		uint32_t automaticExecutionsNumber() const;
+
 	private:
         Key contractKey_;
         uint32_t automaticExecutionsNumber_;
 	};
-	
+
 	extern template class TAutomaticExecutionsPaymentTransaction<Transaction>;
 	extern template class TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
 	

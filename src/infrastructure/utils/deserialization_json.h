@@ -276,6 +276,17 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto);
 
+		/// Supercontract V2
+
+		template<>
+		DeployContractTransaction fromDto<DeployContractTransaction, DeployContractTransactionDto>(const DeployContractTransactionDto& dto);
+
+		template<>
+		ManualCallTransaction fromDto<ManualCallTransaction, ManualCallTransactionDto>(const ManualCallTransactionDto& dto);
+
+		template<>
+		AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto);
+
 		/// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
@@ -351,6 +362,17 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto);
+
+		/// Supercontract V2
+
+		template<>
+		EmbeddedDeployContractTransaction fromDto<EmbeddedDeployContractTransaction, EmbeddedDeployContractTransactionDto>(const EmbeddedDeployContractTransactionDto& dto);
+
+		template<>
+		EmbeddedManualCallTransaction fromDto<EmbeddedManualCallTransaction, EmbeddedManualCallTransactionDto>(const EmbeddedManualCallTransactionDto& dto);
+
+		template<>
+		EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto);
 	}
 }
 }

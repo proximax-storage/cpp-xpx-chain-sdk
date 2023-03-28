@@ -198,7 +198,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
 		uint64_t driveSize;
         uint16_t replicatorCount;
-
     };
 
     template<typename TBase>
@@ -207,7 +206,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		Key driveKey;
 		Hash256 downloadDataCdi;
 		uint64_t uploadSize;
-
     };
 
     template<typename TBase>
@@ -216,7 +214,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		Key driveKey;
 		uint64_t downloadSize;
 		Amount transactionFee;
-
     };
 
     template<typename TBase>
@@ -227,7 +224,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		Hash256 fileStructureCdi;
 		uint64_t fileStructureSize;
 		uint64_t usedDriveSize;
-
     };
 
     template<typename TBase>
@@ -235,14 +231,59 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
 		Key driveKey;
 		Hash256 dataModificationId;
-
     };
 
     template<typename TBase>
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+    };
 
+    template<typename TBase>
+    class TDeployContractTransaction: public TBase {
+    public:
+        Key driveKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<MosaicId> servicePayments;
+        uint16_t automaticExecutionsFileNameSize;
+        std::string automaticExecutionsFileName;
+        uint16_t automaticExecutionsFunctionNameSize;
+        std::string automaticExecutionsFunctionName;
+        Amount automaticExecutionsCallPayment;
+        Amount automaticDownloadCallPayment;
+        uint32_t automaticExecutionsNumber;
+        Key assignee;
+    };
+
+    template<typename TBase>
+    class TManualCallTransaction: public TBase {
+    public:
+        Key contractKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<MosaicId> servicePayments;
+    };
+
+    template<typename TBase>
+    class TAutomaticExecutionsPaymentTransaction: public TBase {
+    public:
+        Key contractKey;
+        uint32_t automaticExecutionsNumber;
     };
 
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
@@ -310,6 +351,15 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using DeployContractTransaction = TDeployContractTransaction <Transaction>;
+    using EmbeddedDeployContractTransaction = TDeployContractTransaction<EmbeddedTransaction>;
+
+    using ManualCallTransaction = TManualCallTransaction <Transaction>;
+    using EmbeddedManualCallTransaction = TManualCallTransaction<EmbeddedTransaction>;
+
+    using AutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction <Transaction>;
+    using EmbeddedAutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
 }}
 
 
