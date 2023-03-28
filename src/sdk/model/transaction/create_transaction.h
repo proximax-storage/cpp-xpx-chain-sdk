@@ -341,4 +341,41 @@ namespace xpx_chain_sdk { namespace internal {
 	                              const std::optional<Key>& signer = std::nullopt,
 	                              const std::optional<Signature>& signature = std::nullopt,
 	                              const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransactionImpl(const Key& driveKey,
+                                const std::string fileName,
+                                const std::string functionName,
+                                const std::vector<uint8_t>& actualArguments,
+                                const Amount& executionCallPayment,
+                                const Amount& downloadCallPayment,
+                                const std::vector<MosaicId>& servicePayments,
+                                const std::string automaticExecutionsFileName,
+                                const std::string automaticExecutionsFunctionName,
+                                const Amount& automaticExecutionCallPayment,
+                                const Amount& automaticDownloadCallPayment,
+                                uint32_t automaticExecutionsNumber,
+                                const Key& assignee,
+                                std::optional<Amount> maxFee = std::nullopt,
+                                std::optional<NetworkDuration> deadline = std::nullopt,
+                                std::optional<NetworkIdentifier> networkId = std::nullopt);
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransactionImpl(const Key& contractKey,
+                                const std::string fileName,
+                                const std::string functionName,
+                                const std::vector<uint8_t>& actualArguments,
+                                const Amount& executionCallPayment,
+                                const Amount& downloadCallPayment,
+                                const std::vector<MosaicId>& servicePayments,
+                                std::optional<Amount> maxFee = std::nullopt,
+                                std::optional<NetworkDuration> deadline = std::nullopt,
+                                std::optional<NetworkIdentifier> networkId = std::nullopt);
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
+                                uint32_t automaticExecutionsNumber,
+                                std::optional<Amount> maxFee = std::nullopt,
+                                std::optional<NetworkDuration> deadline = std::nullopt,
+                                std::optional<NetworkIdentifier> networkId = std::nullopt);
 }}

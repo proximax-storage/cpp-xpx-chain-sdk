@@ -225,6 +225,50 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		TBase,
 		Field<STR_LITERAL("capacity"),				Amount>>;
 
+	template<typename TBase>
+	using TDeployContractTransactionDTO = VariadicStruct<
+		TBase,
+        Field<STR_LITERAL("driveKey"), Key>>,
+        Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+        Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+        Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+        Field<STR_LITERAL("executionCallPayment"), Amount>>,
+        Field<STR_LITERAL("downloadCallPayment"), Amount>>,
+        Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+        Field<STR_LITERAL("automaticExecutionsFileNameSize"),  uint16_t>,
+        Field<STR_LITERAL("automaticExecutionsFunctionNameSize"),  uint16_t>,
+        Field<STR_LITERAL("automaticExecutionCallPayment"), Amount>>,
+        Field<STR_LITERAL("automaticDownloadCallPayment"), Amount>>,
+		Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>,
+        Field<STR_LITERAL("assignee"), Key>>>,
+        Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>>,
+        Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>>,
+        Field<STR_LITERAL("actualArguments"), std::string, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>>,
+        Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>,
+        Field<STR_LITERAL("automaticExecutionsFileName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFileNameSize")>>>>,
+        Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFunctionNameSize")>>>>;
+
+    template<typename TBase>
+    using TManualCallTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("contractKey"), Key>>,
+        Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+        Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+        Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+        Field<STR_LITERAL("executionCallPayment"), Amount>>,
+        Field<STR_LITERAL("downloadCallPayment"), Amount>>,
+        Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+        Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>>,
+        Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>>,
+        Field<STR_LITERAL("actualArguments"), std::string, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>>,
+        Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>;
+
+	template<typename TBase>
+	using TAutomaticExecutionsPaymentTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("contractKey"), Key>>,
+		Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>>;
+
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
 	
@@ -284,4 +328,13 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;
+
+    using DeployContractTransactionDTO = TDeployContractTransactionDTO<TransactionDTO>;
+    using EmbeddedDeployContractTransactionDTO = TDeployContractTransactionDTO<EmbeddedTransactionDTO>;
+
+    using ManualCallTransactionDTO = TManualCallTransactionDTO<TransactionDTO>;
+    using EmbeddedManualCallTransactionDTO = TManualCallTransactionDTO<EmbeddedTransactionDTO>;
+
+    using AutomaticExecutionsPaymentTransactionDTO = TAutomaticExecutionsPaymentTransactionDTO<TransactionDTO>;
+    using EmbeddedAutomaticExecutionsPaymentTransactionDTO = TAutomaticExecutionsPaymentTransactionDTO<EmbeddedTransactionDTO>;
 }}}

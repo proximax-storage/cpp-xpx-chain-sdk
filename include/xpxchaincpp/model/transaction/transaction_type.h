@@ -35,6 +35,13 @@ namespace xpx_chain_sdk {
 		Data_Modification_Approval = 0x4462,
 		Data_Modification_Cancel = 0x4562,
 		Replicator_Onboarding = 0x4662,
+		Deploy_Contract = 0x416E,
+		Manual_Call = 0x426E,
+        Automatic_Executions_Payment = 0x436E,
+        Successful_End_Batch_Execution = 0x446E,
+        Unsuccessful_End_Batch_Execution = 0x456E,
+        End_Batch_Execution_Single = 0x466E,
+        Synchronization_Single = 0x476E,
 	};
 	
 	/// Returns transaction name by \a type.
