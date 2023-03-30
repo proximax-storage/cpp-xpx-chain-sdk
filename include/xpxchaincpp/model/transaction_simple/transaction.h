@@ -17,6 +17,7 @@
 #include "xpxchaincpp/model/transaction/aggregate_transaction_types.h"
 #include "xpxchaincpp/model/transaction/secret_hash_algorithm.h"
 #include "xpxchaincpp/model/transaction/alias_transaction_types.h"
+#include "xpxchaincpp/model/transaction/end_batch_execution_transaction_types.h"
 #include <xpxchaincpp/model/namespace/namespace.h>
 #include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <memory>
@@ -286,6 +287,31 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint32_t automaticExecutionsNumber;
     };
 
+    template<typename TBase>
+    class TSuccessfulEndBatchExecutionTransaction: public TBase {
+    public:
+        Key contractKey;
+        uint64_t batchId;
+        Hash256 storageHash;
+        uint64_t usedSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        Height automaticExecutionsNextBlockToCheck;
+        std::array<uint8_t, 32> proofOfExecutionVerificationInformation;
+        std::vector<ExtendedCallDigest> callDigests;
+        std::vector<Opinion> opinions;
+    };
+
+
+    template<typename TBase>
+    class TUnsuccessfulEndBatchExecutionTransaction: public TBase {
+    public:
+        Key contractKey;
+        uint64_t batchId;
+        Height automaticExecutionsNextBlockToCheck;
+        std::vector<ExtendedCallDigest> callDigests;
+        std::vector<Opinion> opinions;
+    };
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -360,6 +386,12 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using AutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction <Transaction>;
     using EmbeddedAutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
+
+    using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <Transaction>;
+    using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
+
+    using UnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction <Transaction>;
+    using EmbeddedUnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
 }}
 
 

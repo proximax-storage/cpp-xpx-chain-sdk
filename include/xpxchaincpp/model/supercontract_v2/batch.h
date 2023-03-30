@@ -28,9 +28,9 @@ namespace xpx_chain_sdk {
 	/// Returns \c true if \a lhs and \a rhs are not equal.
 	bool operator!=(const CompletedCall& lhs, const CompletedCall& rhs);
 
-	struct Batch{
+	struct Batch {
 		bool Success = false;
-//		crypto::CurvePoint PoExVerificationInformation;
+		std::array<uint8_t, 32> PoExVerificationInformation;
 		std::vector<CompletedCall> CompletedCalls;
 	};
 

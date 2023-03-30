@@ -399,6 +399,30 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+			case TransactionType::Successful_End_Batch_Execution: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), SuccessfulEndBatchExecutionTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<SuccessfulEndBatchExecutionTransaction>(transaction);
+				break;
+			}
+
+			case TransactionType::Unsuccessful_End_Batch_Execution: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), UnsuccessfulEndBatchExecutionTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<UnsuccessfulEndBatchExecutionTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1405,20 +1429,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.driveKey = dto.value<"driveKey"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
 		transaction.fileName = dto.value<"fileName"_>();
-		transaction.functionNameSize = dto.value<"functionNameSize"_>();
 		transaction.functionName = dto.value<"functionName"_>();
-		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
 		transaction.servicePayments = dto.value<"servicePayments"_>();
-		transaction.automaticExecutionsFileNameSize = dto.value<"automaticExecutionsFileNameSize"_>();
 		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
-		transaction.automaticExecutionsFunctionNameSize = dto.value<"automaticExecutionsFunctionNameSize"_>();
 		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
 		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
 		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
@@ -1435,16 +1452,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.contractKey = dto.value<"contractKey"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
 		transaction.fileName = dto.value<"fileName"_>();
-		transaction.functionNameSize = dto.value<"functionNameSize"_>();
 		transaction.functionName = dto.value<"functionName"_>();
-		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
 		transaction.servicePayments = dto.value<"servicePayments"_>();
 
 		return transaction;
@@ -1458,6 +1470,40 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.contractKey = dto.value<"contractKey"_>();
 		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto) {
+		EmbeddedSuccessfulEndBatchExecutionTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.storageHash = dto.value<"storageHash"_>();
+		transaction.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
+		transaction.callDigests = dto.value<"callDigests"_>();
+		transaction.opinions = dto.value<"opinions"_>();
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto) {
+		EmbeddedUnsuccessfulEndBatchExecutionTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.callDigests = dto.value<"callDigests"_>();
+		transaction.opinions = dto.value<"opinions"_>();
 
 		return transaction;
 	}
@@ -1549,20 +1595,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.driveKey = dto.value<"driveKey"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
 		transaction.fileName = dto.value<"fileName"_>();
-		transaction.functionNameSize = dto.value<"functionNameSize"_>();
 		transaction.functionName = dto.value<"functionName"_>();
-		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
 		transaction.servicePayments = dto.value<"servicePayments"_>();
-		transaction.automaticExecutionsFileNameSize = dto.value<"automaticExecutionsFileNameSize"_>();
 		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
-		transaction.automaticExecutionsFunctionNameSize = dto.value<"automaticExecutionsFunctionNameSize"_>();
 		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
 		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
 		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
@@ -1579,16 +1618,11 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.contractKey = dto.value<"contractKey"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
-		transaction.fileNameSize = dto.value<"fileNameSize"_>();
 		transaction.fileName = dto.value<"fileName"_>();
-		transaction.functionNameSize = dto.value<"functionNameSize"_>();
 		transaction.functionName = dto.value<"functionName"_>();
-		transaction.actualArgumentsSize = dto.value<"actualArgumentsSize"_>();
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePaymentsCount = dto.value<"servicePaymentsCount"_>();
 		transaction.servicePayments = dto.value<"servicePayments"_>();
 
 		return transaction;
@@ -1602,6 +1636,40 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.contractKey = dto.value<"contractKey"_>();
 		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
+
+	template<>
+	SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto) {
+		SuccessfulEndBatchExecutionTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.storageHash = dto.value<"storageHash"_>();
+		transaction.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
+		transaction.callDigests = dto.value<"callDigests"_>();
+		transaction.opinions = dto.value<"opinions"_>();
+
+		return transaction;
+	}
+
+	template<>
+	UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto) {
+		UnsuccessfulEndBatchExecutionTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.callDigests = dto.value<"callDigests"_>();
+		transaction.opinions = dto.value<"opinions"_>();
 
 		return transaction;
 	}

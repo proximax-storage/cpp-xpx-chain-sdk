@@ -287,6 +287,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto);
 
+		template<>
+		SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto);
+
+		template<>
+		UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto);
+
 		/// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
@@ -373,6 +379,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto);
+
+		template<>
+		EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto);
+
+		template<>
+		EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto);
 	}
 }
 }

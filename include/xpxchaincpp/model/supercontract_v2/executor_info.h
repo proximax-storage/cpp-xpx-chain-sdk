@@ -14,8 +14,8 @@ namespace xpx_chain_sdk {
 
 	struct ProofOfExecution {
 		uint64_t StartBatchId = 0;
-		crypto::CurvePoint T;
-		crypto::Scalar R;
+		std::array<uint8_t, 32> T;
+		std::array<uint8_t, 32> R;
 	};
 
     /// Returns \c true if \a lhs and \a rhs are equal.
