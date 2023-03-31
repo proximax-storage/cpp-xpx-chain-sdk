@@ -399,6 +399,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Unsuccessful_End_Batch_Execution: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), UnsuccessfulEndBatchExecutionTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<UnsuccessfulEndBatchExecutionTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Successful_End_Batch_Execution: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), SuccessfulEndBatchExecutionTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -408,18 +420,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 				auto transaction = fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
 				result = std::make_shared<SuccessfulEndBatchExecutionTransaction>(transaction);
-				break;
-			}
-
-			case TransactionType::Unsuccessful_End_Batch_Execution: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), UnsuccessfulEndBatchExecutionTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
-
-				auto transaction = fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
-				result = std::make_shared<UnsuccessfulEndBatchExecutionTransaction>(transaction);
 				break;
 			}
 
@@ -1474,11 +1474,73 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto & dto) {
+        ExtendedCallDigest result =  {
+                dto.value<"callId"_>(),
+                dto.value<"manual"_>(),
+                dto.value<"block"_>(),
+                dto.value<"status"_>(),
+                dto.value<"releasedTransactionHash"_>()
+        };
+        return result;
+    }
+
+    template<>
+    Opinion fromDto<Opinion, OpinionDto>(const OpinionDto & dto) {
+        Opinion result =  {
+                dto.value<"publicKey"_>(),
+                dto.value<"signature"_>()
+        };
+
+        for(auto& poExDto : dto.value<"poEx"_>()) {
+            RawProofOfExecution poEx{
+                    poExDto.value<"startBatchId"_>(),
+                    poExDto.value<"T"_>(),
+                    poExDto.value<"R"_>(),
+                    poExDto.value<"F"_>(),
+                    poExDto.value<"K"_>()
+            };
+            result.poEx.push_back(poEx);
+        }
+
+        for(auto& callPaymentDto : dto.value<"callPayments"_>()) {
+            CallPayment callPayment{
+                    callPaymentDto.value<"executionPayment"_>(),
+                    callPaymentDto.value<"downloadPayment"_>()
+            };
+            result.callPayments.push_back(callPayment);
+        }
+
+        return result;
+    }
+
+    template<>
+    EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto) {
+        EmbeddedUnsuccessfulEndBatchExecutionTransaction transaction;
+
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+        transaction.contractKey = dto.value<"contractKey"_>();
+        transaction.batchId = dto.value<"batchId"_>();
+        transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+        return transaction;
+    }
+
 	template<>
 	EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto) {
 		EmbeddedSuccessfulEndBatchExecutionTransaction transaction;
 
-		EXTRACT_TRANSACTION(transaction, dto)
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 		transaction.contractKey = dto.value<"contractKey"_>();
 		transaction.batchId = dto.value<"batchId"_>();
@@ -1487,23 +1549,14 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
 		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
 		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
-		transaction.callDigests = dto.value<"callDigests"_>();
-		transaction.opinions = dto.value<"opinions"_>();
 
-		return transaction;
-	}
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
 
-	template<>
-	EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto) {
-		EmbeddedUnsuccessfulEndBatchExecutionTransaction transaction;
-
-		EXTRACT_TRANSACTION(transaction, dto)
-
-		transaction.contractKey = dto.value<"contractKey"_>();
-		transaction.batchId = dto.value<"batchId"_>();
-		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
-		transaction.callDigests = dto.value<"callDigests"_>();
-		transaction.opinions = dto.value<"opinions"_>();
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
 
 		return transaction;
 	}
@@ -1640,6 +1693,27 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto) {
+        UnsuccessfulEndBatchExecutionTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.contractKey = dto.value<"contractKey"_>();
+        transaction.batchId = dto.value<"batchId"_>();
+        transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+        return transaction;
+    }
+
 	template<>
 	SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto) {
 		SuccessfulEndBatchExecutionTransaction transaction;
@@ -1653,23 +1727,14 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
 		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
 		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
-		transaction.callDigests = dto.value<"callDigests"_>();
-		transaction.opinions = dto.value<"opinions"_>();
 
-		return transaction;
-	}
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
 
-	template<>
-	UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto) {
-		UnsuccessfulEndBatchExecutionTransaction transaction;
-
-		EXTRACT_TRANSACTION(transaction, dto)
-
-		transaction.contractKey = dto.value<"contractKey"_>();
-		transaction.batchId = dto.value<"batchId"_>();
-		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
-		transaction.callDigests = dto.value<"callDigests"_>();
-		transaction.opinions = dto.value<"opinions"_>();
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
 
 		return transaction;
 	}

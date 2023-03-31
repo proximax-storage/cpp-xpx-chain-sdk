@@ -385,6 +385,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto);
+
+        template<>
+        ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto & dto);
+
+        template<>
+        Opinion fromDto<Opinion, OpinionDto>(const OpinionDto & dto);
 	}
 }
 }

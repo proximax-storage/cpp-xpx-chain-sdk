@@ -17,7 +17,6 @@
 #include "xpxchaincpp/model/transaction/aggregate_transaction_types.h"
 #include "xpxchaincpp/model/transaction/secret_hash_algorithm.h"
 #include "xpxchaincpp/model/transaction/alias_transaction_types.h"
-#include "xpxchaincpp/model/transaction/end_batch_execution_transaction_types.h"
 #include <xpxchaincpp/model/namespace/namespace.h>
 #include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <memory>
@@ -243,7 +242,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TDeployContractTransaction: public TBase {
     public:
-        Key driveKey;
+        std::string driveKey;
         uint16_t fileNameSize;
         std::string fileName;
         uint16_t functionNameSize;
@@ -261,13 +260,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
         Amount automaticExecutionsCallPayment;
         Amount automaticDownloadCallPayment;
         uint32_t automaticExecutionsNumber;
-        Key assignee;
+        std::string assignee;
     };
 
     template<typename TBase>
     class TManualCallTransaction: public TBase {
     public:
-        Key contractKey;
+        std::string contractKey;
         uint16_t fileNameSize;
         std::string fileName;
         uint16_t functionNameSize;
@@ -283,33 +282,58 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TAutomaticExecutionsPaymentTransaction: public TBase {
     public:
-        Key contractKey;
+        std::string contractKey;
         uint32_t automaticExecutionsNumber;
     };
 
-    template<typename TBase>
-    class TSuccessfulEndBatchExecutionTransaction: public TBase {
+    class ExtendedCallDigest {
     public:
-        Key contractKey;
-        uint64_t batchId;
-        Hash256 storageHash;
-        uint64_t usedSizeBytes;
-        uint64_t metaFilesSizeBytes;
-        Height automaticExecutionsNextBlockToCheck;
-        std::array<uint8_t, 32> proofOfExecutionVerificationInformation;
-        std::vector<ExtendedCallDigest> callDigests;
-        std::vector<Opinion> opinions;
+        std::string callId;
+        bool manual;
+        uint64_t block;
+        int16_t status;
+        std::string releasedTransactionHash;
     };
 
+    class RawProofOfExecution {
+    public:
+        uint64_t startBatchId;
+        std::array<uint8_t, 32> T;
+        std::array<uint8_t, 32> R;
+        std::array<uint8_t, 32> F;
+        std::array<uint8_t, 32> K;
+    };
+
+    class CallPayment {
+    public:
+        Amount executionPayment;
+        Amount downloadPayment;
+    };
+
+    struct Opinion {
+        std::string publicKey;
+        std::string signature;
+        std::vector<RawProofOfExecution> poEx;
+        std::vector<CallPayment> callPayments;
+    };
 
     template<typename TBase>
     class TUnsuccessfulEndBatchExecutionTransaction: public TBase {
     public:
-        Key contractKey;
+        std::string contractKey;
         uint64_t batchId;
-        Height automaticExecutionsNextBlockToCheck;
+        std::string automaticExecutionsNextBlockToCheck;
         std::vector<ExtendedCallDigest> callDigests;
         std::vector<Opinion> opinions;
+    };
+
+    template<typename TUnsuccessfulEndBatchExecutionTransaction>
+    class TSuccessfulEndBatchExecutionTransaction: public TUnsuccessfulEndBatchExecutionTransaction {
+    public:
+        std::string storageHash;
+        uint64_t usedSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        std::array<uint8_t, 32> proofOfExecutionVerificationInformation;
     };
 
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
@@ -387,11 +411,11 @@ namespace xpx_chain_sdk { namespace transactions_info {
     using AutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction <Transaction>;
     using EmbeddedAutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
 
-    using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <Transaction>;
-    using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
-
     using UnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction <Transaction>;
     using EmbeddedUnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
+
+    using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <UnsuccessfulEndBatchExecutionTransaction>;
+    using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedUnsuccessfulEndBatchExecutionTransaction>;
 }}
 
 
