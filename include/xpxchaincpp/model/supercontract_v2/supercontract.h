@@ -9,7 +9,6 @@
 #include "batch.h"
 #include "contract_call.h"
 #include "executor_info.h"
-#include "executor_info.h"
 #include <xpxchaincpp/types.h>
 
 #include <map>
@@ -20,45 +19,18 @@
 
 namespace xpx_chain_sdk {
 
-    /// SuperContract.
-    class SuperContract {
+    /// SuperContractInfo.
+    class SuperContractInfo {
     public:
-        const Key& driveKey() const;
-
-        const Key& executionPaymentKey() const;
-
-        const Key& assignee() const;
-
-        const Key& creator() const;
-
-        const Hash256& deploymentBaseModificationId() const;
-
-        const AutomaticExecutionsInfo& automaticExecutionsInfo() const;
-
-        const std::deque<ContractCall>& requestedCalls() const;
-
-        const std::map<Key, ExecutorInfo>& executorsInfo() const;
-
-        const std::map<uint64_t, Batch>& batches() const;
-
-        const std::multiset<Hash256>& releasedTransactions() const;
-
-    private:
-        Key driveKey_;
-        Key executionPaymentKey_;
-        Key assignee_;
-        Key creator_;
-        Hash256 deploymentBaseModificationId_;
-        AutomaticExecutionsInfo automaticExecutionsInfo_;
-        std::deque<ContractCall> requestedCalls_;
-        std::map<Key, ExecutorInfo> executorsInfo_;
-        std::map<uint64_t, Batch> batches_;
-        std::multiset<Hash256> releasedTransactions_;
+        std::string contractKey;
+        std::string executionPaymentKey;
+        std::string assignee;
+        std::string creator;
+        std::string deploymentBaseModificationId;
+        AutomaticExecutionsInfo automaticExecutionsInfo;
+        std::deque<ContractCall> requestedCalls;
+        std::map<std::string, ExecutorInfo> executorsInfo;
+        std::map<uint64_t, Batch> batches;
+        std::multiset<std::string> releasedTransactions;
     };
-
-    /// Returns \c true if \a lhs and \a rhs are equal.
-    bool operator==(const SuperContract& lhs, const SuperContract& rhs);
-
-    /// Returns \c true if \a lhs and \a rhs are not equal.
-    bool operator!=(const SuperContract& lhs, const SuperContract& rhs);
 }

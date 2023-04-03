@@ -13,18 +13,12 @@
 namespace xpx_chain_sdk {
 
 	struct AutomaticExecutionsInfo {
-		std::string AutomaticExecutionFileName;
-		std::string AutomaticExecutionsFunctionName;
-		Height AutomaticExecutionsNextBlockToCheck;
-		Amount AutomaticExecutionCallPayment;
-		Amount AutomaticDownloadCallPayment;
-		uint32_t AutomatedExecutionsNumber = 0U;
-		std::optional<Height> AutomaticExecutionsPrepaidSince;
+		std::string automaticExecutionFileName;
+		std::string automaticExecutionsFunctionName;
+		uint64_t automaticExecutionsNextBlockToCheck;
+		uint64_t automaticExecutionCallPayment;
+		uint64_t automaticDownloadCallPayment;
+		uint32_t automatedExecutionsNumber = 0U;
+		std::optional<uint64_t> automaticExecutionsPrepaidSince;
 	};
-
-	/// Returns \c true if \a lhs and \a rhs are equal.
-	bool operator==(const AutomaticExecutionsInfo& lhs, const AutomaticExecutionsInfo& rhs);
-
-	/// Returns \c true if \a lhs and \a rhs are not equal.
-	bool operator!=(const AutomaticExecutionsInfo& lhs, const AutomaticExecutionsInfo& rhs);
 }

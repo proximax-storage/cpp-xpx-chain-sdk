@@ -6,47 +6,47 @@
 #include <xpxchaincpp/model/supercontract_v2/supercontract.h>
 
 namespace xpx_chain_sdk {
-    const Key& SuperContract::driveKey() const {
+    const Key& SuperContractInfo::driveKey() const {
         return driveKey_;
     }
 
-    const Key& SuperContract::executionPaymentKey() const {
+    const Key& SuperContractInfo::executionPaymentKey() const {
         return executionPaymentKey_;
     }
 
-    const Key& SuperContract::assignee() const {
+    const Key& SuperContractInfo::assignee() const {
         return assignee_;
     }
 
-    const Key& SuperContract::creator() const {
+    const Key& SuperContractInfo::creator() const {
         return creator_;
     }
 
-    const Hash256& SuperContract::deploymentBaseModificationId() const {
+    const Hash256& SuperContractInfo::deploymentBaseModificationId() const {
         return deploymentBaseModificationId_;
     }
 
-    const AutomaticExecutionsInfo& SuperContract::automaticExecutionsInfo() const {
+    const AutomaticExecutionsInfo& SuperContractInfo::automaticExecutionsInfo() const {
         return automaticExecutionsInfo_;
     }
 
-    const std::deque<ContractCall>& SuperContract::requestedCalls() const {
+    const std::deque<ContractCall>& SuperContractInfo::requestedCalls() const {
         return requestedCalls_;
     }
 
-    const std::map<Key, ExecutorInfo>& SuperContract::executorsInfo() const {
+    const std::map<Key, ExecutorInfo>& SuperContractInfo::executorsInfo() const {
         return executorsInfo_;
     }
 
-    const std::map<uint64_t, Batch>& SuperContract::batches() const {
+    const std::map<uint64_t, Batch>& SuperContractInfo::batches() const {
         return batches_;
     }
 
-    const std::multiset<Hash256>& SuperContract::releasedTransactions() const {
+    const std::multiset<Hash256>& SuperContractInfo::releasedTransactions() const {
         return releasedTransactions_;
     }
 
-    bool operator==(const SuperContract& lhs, const SuperContract& rhs)
+    bool operator==(const SuperContractInfo& lhs, const SuperContractInfo& rhs)
     {
         return lhs.driveKey() == rhs.driveKey() &&
         lhs.executorsInfo() == rhs.executorsInfo() &&
@@ -60,7 +60,7 @@ namespace xpx_chain_sdk {
         lhs.releasedTransactions() == rhs.releasedTransactions();
     }
 
-    bool operator!=(const SuperContract& lhs, const SuperContract& rhs)
+    bool operator!=(const SuperContractInfo& lhs, const SuperContractInfo& rhs)
     {
         return !(lhs == rhs);
     }

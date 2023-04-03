@@ -26,6 +26,7 @@
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
+#include <infrastructure/json/dto/supercontract_v2_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -46,6 +47,7 @@
 #include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
 #include <xpxchaincpp/model/network/network_version.h>
+#include <xpxchaincpp/model/supercontract_v2/supercontract.h>
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
@@ -387,10 +389,13 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto);
 
         template<>
-        ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto & dto);
+        ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto& dto);
 
         template<>
-        Opinion fromDto<Opinion, OpinionDto>(const OpinionDto & dto);
+        Opinion fromDto<Opinion, OpinionDto>(const OpinionDto& dto);
+
+        template<>
+        SuperContractInfo fromDto<SuperContractInfo, SuperContractInfoDto> (const SuperContractInfoDto& dto);
 	}
 }
 }

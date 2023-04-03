@@ -13,31 +13,19 @@
 namespace xpx_chain_sdk {
 
 	struct ServicePayment {
-		MosaicId MosaicId;
-		Amount Amount;
+        uint64_t mosaicId;
+		uint64_t amount;
 	};
-
-	/// Returns \c true if \a lhs and \a rhs are equal.
-	bool operator==(const ServicePayment& lhs, const ServicePayment& rhs);
-
-	/// Returns \c true if \a lhs and \a rhs are not equal.
-	bool operator!=(const ServicePayment& lhs, const ServicePayment& rhs);
 
 	struct ContractCall {
-		Hash256 CallId;
-		Key Caller;
-		std::string FileName;
-		std::string FunctionName;
-		std::string ActualArguments;
-		Amount ExecutionCallPayment;
-		Amount DownloadCallPayment;
-		std::vector<ServicePayment> ServicePayments;
-		Height BlockHeight;
+        std::string callId;
+		std::string caller;
+		std::string fileName;
+		std::string functionName;
+		std::string actualArguments;
+		uint64_t executionCallPayment;
+		uint64_t downloadCallPayment;
+		std::vector<ServicePayment> servicePayments;
+        uint64_t blockHeight;
 	};
-
-	/// Returns \c true if \a lhs and \a rhs are equal.
-	bool operator==(const ContractCall& lhs, const ContractCall& rhs);
-
-	/// Returns \c true if \a lhs and \a rhs are not equal.
-	bool operator!=(const ContractCall& lhs, const ContractCall& rhs);
 }

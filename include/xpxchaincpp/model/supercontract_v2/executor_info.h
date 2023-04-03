@@ -13,26 +13,14 @@
 namespace xpx_chain_sdk {
 
 	struct ProofOfExecution {
-		uint64_t StartBatchId = 0;
+		uint64_t startBatchId = 0;
 		std::array<uint8_t, 32> T;
 		std::array<uint8_t, 32> R;
 	};
 
-    /// Returns \c true if \a lhs and \a rhs are equal.
-    bool operator==(const ProofOfExecution& lhs, const ProofOfExecution& rhs);
-
-    /// Returns \c true if \a lhs and \a rhs are not equal.
-    bool operator!=(const ProofOfExecution& lhs, const ProofOfExecution& rhs);
-
 	struct ExecutorInfo {
-		uint64_t NextBatchToApprove = 0;
-		ProofOfExecution PoEx;
+		uint64_t nextBatchToApprove = 0;
+		ProofOfExecution poEx;
 	};
-
-    /// Returns \c true if \a lhs and \a rhs are equal.
-    bool operator==(const ExecutorInfo& lhs, const ExecutorInfo& rhs);
-
-    /// Returns \c true if \a lhs and \a rhs are not equal.
-    bool operator!=(const ExecutorInfo& lhs, const ExecutorInfo& rhs);
 
 }

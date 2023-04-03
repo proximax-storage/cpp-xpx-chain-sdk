@@ -13,30 +13,16 @@
 namespace xpx_chain_sdk {
 
 	struct CompletedCall {
-		Hash256 CallId;
-		// Zero means that it's an automatic execution
-		Key Caller;
-		// Zero Status Means Success
-		int16_t Status = 0;
-		Amount ExecutionWork;
-		Amount DownloadWork;
+		std::string callId;
+		std::string caller;
+		int16_t status;
+        uint64_t executionWork;
+        uint64_t downloadWork;
 	};
-
-	/// Returns \c true if \a lhs and \a rhs are equal.
-	bool operator==(const CompletedCall& lhs, const CompletedCall& rhs);
-
-	/// Returns \c true if \a lhs and \a rhs are not equal.
-	bool operator!=(const CompletedCall& lhs, const CompletedCall& rhs);
 
 	struct Batch {
-		bool Success = false;
-		std::array<uint8_t, 32> PoExVerificationInformation;
-		std::vector<CompletedCall> CompletedCalls;
+		bool success;
+		std::array<uint8_t, 32> poExVerificationInformation;
+		std::vector<CompletedCall> completedCalls;
 	};
-
-    /// Returns \c true if \a lhs and \a rhs are equal.
-    bool operator==(const Batch& lhs, const Batch& rhs);
-
-    /// Returns \c true if \a lhs and \a rhs are not equal.
-    bool operator!=(const Batch& lhs, const Batch& rhs);
 }

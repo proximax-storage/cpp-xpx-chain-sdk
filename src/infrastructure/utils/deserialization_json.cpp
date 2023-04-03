@@ -650,6 +650,95 @@ namespace xpx_chain_sdk::internal::json::dto {
         return mbdto;
     }
 
+    template<>
+    SuperContractInfo fromDto<SuperContractInfo, SuperContractInfoDto> (const SuperContractInfoDto& dto) {
+        SuperContractInfo scInfo;
+        auto scDto = dto.value<"supercontract"_>();
+        scInfo.contractKey =  scDto.value<"contractKey"_>();
+        scInfo.executionPaymentKey =  scDto.value<"executionPaymentKey"_>();
+        scInfo.assignee =  scDto.value<"assignee"_>();
+        scInfo.creator =  scDto.value<"creator"_>();
+        scInfo.deploymentBaseModificationId = scDto.value<"deploymentBaseModificationId"_>();
+
+        // AutomaticExecutionsInfo
+        AutomaticExecutionsInfo automaticExecutionsInfo;
+        auto automaticExecutionsInfoDto =  scDto.value<"automaticExecutionsInfo"_>();
+        automaticExecutionsInfo.automaticExecutionFileName = automaticExecutionsInfoDto.value<"automaticExecutionFileName"_>();
+        automaticExecutionsInfo.automaticExecutionsFunctionName = automaticExecutionsInfoDto.value<"automaticExecutionsFunctionName"_>();
+        automaticExecutionsInfo.automaticExecutionsNextBlockToCheck = automaticExecutionsInfoDto.value<"automaticExecutionsNextBlockToCheck"_>();
+        automaticExecutionsInfo.automaticExecutionCallPayment = automaticExecutionsInfoDto.value<"automaticExecutionCallPayment"_>();
+        automaticExecutionsInfo.automaticDownloadCallPayment = automaticExecutionsInfoDto.value<"automaticDownloadCallPayment"_>();
+        automaticExecutionsInfo.automatedExecutionsNumber = automaticExecutionsInfoDto.value<"automatedExecutionsNumber"_>();
+        automaticExecutionsInfo.automaticExecutionsPrepaidSince = automaticExecutionsInfoDto.value<"automaticExecutionsPrepaidSince"_>();
+        scInfo.automaticExecutionsInfo = automaticExecutionsInfo;
+
+        // Requested calls
+        for(const auto& requestedCallDto : scDto.value<"requestedCalls"_>()) {
+            ContractCall requestedCall;
+            requestedCall.callId = requestedCallDto.value<"callId"_>();
+            requestedCall.caller = requestedCallDto.value<"caller"_>();
+            requestedCall.fileName = requestedCallDto.value<"fileName"_>();
+            requestedCall.functionName = requestedCallDto.value<"functionName"_>();
+            requestedCall.actualArguments = requestedCallDto.value<"actualArguments"_>();
+            requestedCall.executionCallPayment = requestedCallDto.value<"executionCallPayment"_>();
+            requestedCall.downloadCallPayment = requestedCallDto.value<"downloadCallPayment"_>();
+            requestedCall.blockHeight = requestedCallDto.value<"blockHeight"_>();
+
+            // Service payments
+            for(const auto& servicePaymentDto : requestedCallDto.value<"servicePayments"_>()) {
+                ServicePayment servicePayment;
+                servicePayment.mosaicId = servicePaymentDto.value<"mosaicId"_>();
+                servicePayment.amount = servicePaymentDto.value<"amount"_>();
+
+                requestedCall.servicePayments.emplace_back(servicePayment);
+            }
+
+            scInfo.requestedCalls.emplace_back(requestedCall);
+        }
+
+        // Executors info
+        for(const auto& executorInfoDto : scDto.value<"executorsInfo"_>()) {
+            ExecutorInfo executorInfo;
+            executorInfo.nextBatchToApprove = executorInfoDto.value<"nextBatchToApprove"_>();
+
+            // Proof of execution
+            ProofOfExecution proofOfExecution;
+            auto poEx = executorInfoDto.value<"poEx"_>();
+            proofOfExecution.startBatchId = poEx.value<"startBatchId"_>();
+            proofOfExecution.T = poEx.value<"T"_>();
+            proofOfExecution.R = poEx.value<"R"_>();
+            executorInfo.poEx = proofOfExecution;
+
+            scInfo.executorsInfo.emplace(executorInfoDto.value<"replicatorKey"_>(), executorInfo);
+        }
+
+        // Batches
+        for(const auto& batchDto : scDto.value<"batches"_>()) {
+            Batch batch;
+            batch.success = batchDto.value<"success"_>();
+            batch.poExVerificationInformation = batchDto.value<"poExVerificationInformation"_>();
+
+            // Completed calls
+            for(const auto& completedCallDto : batchDto.value<"completedCalls"_>()) {
+                CompletedCall completedCall;
+                completedCall.callId = completedCallDto.value<"callId"_>();
+                completedCall.caller = completedCallDto.value<"caller"_>();
+                completedCall.status = completedCallDto.value<"status"_>();
+                completedCall.executionWork = completedCallDto.value<"executionWork"_>();
+                completedCall.downloadWork = completedCallDto.value<"downloadWork"_>();
+                batch.completedCalls.emplace_back(completedCall);
+            }
+            scInfo.batches.emplace(batchDto.value<"batchId"_>(), batch);
+        }
+
+        // Released transactions
+        for(const auto& releasedTransactionDto : scDto.value<"releasedTransactions"_>()) {
+            scInfo.releasedTransactions.emplace(releasedTransactionDto);
+        }
+
+        return scInfo;
+    }
+
     // Accounts
 
     template<>
