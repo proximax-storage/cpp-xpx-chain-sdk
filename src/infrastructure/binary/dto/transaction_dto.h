@@ -112,14 +112,14 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TMosaicDefinitionTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("nonce"),                   uint32_t>,
-		Field<STR_LITERAL("mosaicId"),                MosaicId>,
-		Field<STR_LITERAL("optionalPropertiesCount"), uint8_t>,
-		Field<STR_LITERAL("flags"),                   MosaicFlags>,
-		Field<STR_LITERAL("divisibility"),            uint8_t>,
-		Field<STR_LITERAL("optionalProperties"),      std::vector<MosaicPropertyDTO>, desc::VariableSize<STR_LITERAL("optionalPropertiesCount")>>>;
-	
-	template<typename TBase>
+		Field<STR_LITERAL("mosaicNonce"),               uint32_t>,
+		Field<STR_LITERAL("mosaicId"),                  MosaicId>,
+        Field<STR_LITERAL("optionalPropertiesCount"),   uint8_t>,
+        Field<STR_LITERAL("flags"),                     MosaicFlags>,
+        Field<STR_LITERAL("divisibility"),              uint8_t>,
+        Field<STR_LITERAL("optionalProperties"),        std::vector<MosaicPropertyDTO>, desc::VariableSize<STR_LITERAL("optionalPropertiesCount")>>>;
+
+            template<typename TBase>
 	using TMosaicSupplyChangeTransactionDTO = VariadicStruct<
 		TBase,
 		Field<STR_LITERAL("mosaicId"),  MosaicId>,
@@ -152,7 +152,13 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("secret"),        Hash256>,
 		Field<STR_LITERAL("proofSize"),     uint16_t>,
 		Field<STR_LITERAL("proof"),         std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("proofSize")>>>;
-	
+
+    template<typename TBase>
+    using TStoragePaymentTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"),      Key>,
+        Field<STR_LITERAL("storageUnits"),  Amount>>;
+
 	template<typename TBase>
 	using TTransferTransactionDTO = VariadicStruct<
 		TBase,
@@ -188,22 +194,59 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TPrepareBcDriveTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("driveSize"),			uint64_t>,
+		Field<STR_LITERAL("driveSize"),			    uint64_t>,
+		Field<STR_LITERAL("verificationFeeAmount"),	Amount>,
 		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
-	
+
+    template<typename TBase>
+    using TCreateLiquidityProviderTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("providerMosaicId"),		MosaicId>,
+        Field<STR_LITERAL("currencyDeposit"),	    Amount>,
+        Field<STR_LITERAL("initialMosaicsMinting"),	Amount>,
+        Field<STR_LITERAL("slashingPeriod"),		uint32_t>,
+        Field<STR_LITERAL("windowSize"),		    uint16_t>,
+        Field<STR_LITERAL("slashingAccount"),		Key>,
+        Field<STR_LITERAL("alpha"),		            uint32_t>,
+        Field<STR_LITERAL("beta"),		            uint32_t>>;
+
+    template<typename TBase>
+    using TManualRateChangeTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("providerMosaicId"),          MosaicId>,
+        Field<STR_LITERAL("currencyBalanceIncrease"),	bool>,
+        Field<STR_LITERAL("currencyBalanceChange"),		Amount>,
+        Field<STR_LITERAL("mosaicBalanceIncrease"),		bool>,
+        Field<STR_LITERAL("mosaicBalanceChange"),		Amount>>;
+
 	template<typename TBase>
 	using TDataModificationTransactionDTO = VariadicStruct<
 		TBase,
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("downloadDataCdi"),		Hash256>,
-		Field<STR_LITERAL("uploadSize"),			uint64_t>>;
+		Field<STR_LITERAL("uploadSize"),			uint64_t>,
+		Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
 
 	template<typename TBase>
 	using TDownloadTransactionDTO = VariadicStruct<
 		TBase,
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("downloadSize"),			uint64_t>,
-		Field<STR_LITERAL("transactionFee"),		Amount>>;
+		Field<STR_LITERAL("feedbackFeeAmount"),		Amount>,
+		Field<STR_LITERAL("listOfPublicKeysSize"),	uint16_t>,
+		Field<STR_LITERAL("listOfPublicKeys"),	    std::vector<Key>, desc::VariableSize<STR_LITERAL("listOfPublicKeysSize")>>>;
+
+    template<typename TBase>
+    using TDownloadPaymentTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("downloadChannelId"),		Hash256>,
+        Field<STR_LITERAL("downloadSize"),			uint64_t>,
+        Field<STR_LITERAL("feedbackFeeAmount"),		Amount>>;
+
+    template<typename TBase>
+    using TDriveClosureTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"), Key>>;
 
 	template<typename TBase>
 	using TDataModificationApprovalTransactionDTO = VariadicStruct<
@@ -211,8 +254,18 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("dataModificationId"),	Hash256>,
 		Field<STR_LITERAL("fileStructureCdi"),		Hash256>,
-		Field<STR_LITERAL("fileStructureSize"),		uint64_t>,
-		Field<STR_LITERAL("usedDriveSize"),			uint64_t>>;
+		Field<STR_LITERAL("modificationStatus"),    uint8_t>,
+		Field<STR_LITERAL("fileStructureSizeBytes"),uint64_t>,
+		Field<STR_LITERAL("metaFilesSizeBytes"),	uint64_t>,
+		Field<STR_LITERAL("usedDriveSizeBytes"),	uint64_t>,
+		Field<STR_LITERAL("judgingKeysCount"),		uint8_t>,
+		Field<STR_LITERAL("overlappingKeysCount"),	uint8_t>,
+		Field<STR_LITERAL("judgedKeysCount"),		uint8_t>,
+		Field<STR_LITERAL("opinionElementCount"),	uint16_t>,
+		Field<STR_LITERAL("publicKeys"),		    std::vector<Key>, desc::VariableSize<STR_LITERAL("opinionElementCount")>>,
+		Field<STR_LITERAL("signatures"),		    std::vector<Signature>, desc::VariableSize<STR_LITERAL("opinionElementCount")>>,
+		Field<STR_LITERAL("presentOpinions"),		std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("opinionElementCount")>>,
+		Field<STR_LITERAL("opinions"),			    std::vector<uint64_t>, desc::VariableSize<STR_LITERAL("opinionElementCount")>>>;
 
 	template<typename TBase>
 	using TDataModificationCancelTransactionDTO = VariadicStruct<
@@ -220,54 +273,65 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 		Field<STR_LITERAL("driveKey"),				Key>,
 		Field<STR_LITERAL("dataModificationId"),	Hash256>>;
 
+    template<typename TBase>
+    using TFinishDownloadTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("downloadChannelId"),	Hash256>,
+        Field<STR_LITERAL("feedbackFeeAmount"),	Amount>>;
+
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("capacity"),				Amount>>;
+		Field<STR_LITERAL("capacity"), Amount>>;
 
-	template<typename TBase>
-	using TDeployContractTransactionDTO = VariadicStruct<
-		TBase,
-        Field<STR_LITERAL("driveKey"), Key>,
-        Field<STR_LITERAL("fileNameSize"),  uint16_t>,
-        Field<STR_LITERAL("functionNameSize"),  uint16_t>,
-        Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
-        Field<STR_LITERAL("executionCallPayment"), Amount>,
-        Field<STR_LITERAL("downloadCallPayment"), Amount>,
-        Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
-        Field<STR_LITERAL("automaticExecutionsFileNameSize"),  uint16_t>,
-        Field<STR_LITERAL("automaticExecutionsFunctionNameSize"),  uint16_t>,
-        Field<STR_LITERAL("automaticExecutionsCallPayment"), Amount>,
-        Field<STR_LITERAL("automaticDownloadCallPayment"), Amount>,
-		Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>,
-        Field<STR_LITERAL("assignee"), Key>,
-        Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
-        Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
-        Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
-        Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>,
-        Field<STR_LITERAL("automaticExecutionsFileName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFileNameSize")>>,
-        Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFunctionNameSize")>>>;
+    template<typename TBase>
+        using TReplicatorOffboardingTransactionDTO = VariadicStruct<
+        TBase,
+        Field<STR_LITERAL("driveKey"), Key>>;
+
+    template<typename TBase>
+    using TDeployContractTransactionDTO = VariadicStruct<
+            TBase,
+            Field<STR_LITERAL("driveKey"), Key>,
+            Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+            Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+            Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+            Field<STR_LITERAL("executionCallPayment"), Amount>,
+            Field<STR_LITERAL("downloadCallPayment"), Amount>,
+            Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+            Field<STR_LITERAL("automaticExecutionsFileNameSize"),  uint16_t>,
+            Field<STR_LITERAL("automaticExecutionsFunctionNameSize"),  uint16_t>,
+            Field<STR_LITERAL("automaticExecutionsCallPayment"), Amount>,
+            Field<STR_LITERAL("automaticDownloadCallPayment"), Amount>,
+            Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>,
+            Field<STR_LITERAL("assignee"), Key>,
+            Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
+            Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
+            Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
+            Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>,
+            Field<STR_LITERAL("automaticExecutionsFileName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFileNameSize")>>,
+            Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFunctionNameSize")>>>;
 
     template<typename TBase>
     using TManualCallTransactionDTO = VariadicStruct<
-        TBase,
-        Field<STR_LITERAL("contractKey"), Key>,
-        Field<STR_LITERAL("fileNameSize"),  uint16_t>,
-        Field<STR_LITERAL("functionNameSize"),  uint16_t>,
-        Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
-        Field<STR_LITERAL("executionCallPayment"), Amount>,
-        Field<STR_LITERAL("downloadCallPayment"), Amount>,
-        Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
-        Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
-        Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
-        Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
-        Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>;
+            TBase,
+            Field<STR_LITERAL("contractKey"), Key>,
+            Field<STR_LITERAL("fileNameSize"),  uint16_t>,
+            Field<STR_LITERAL("functionNameSize"),  uint16_t>,
+            Field<STR_LITERAL("actualArgumentsSize"),  uint16_t>,
+            Field<STR_LITERAL("executionCallPayment"), Amount>,
+            Field<STR_LITERAL("downloadCallPayment"), Amount>,
+            Field<STR_LITERAL("servicePaymentsCount"),  uint8_t>,
+            Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
+            Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
+            Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
+            Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>;
 
-	template<typename TBase>
-	using TAutomaticExecutionsPaymentTransactionDTO = VariadicStruct<
-		TBase,
-		Field<STR_LITERAL("contractKey"), Key>,
-		Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>>;
+    template<typename TBase>
+    using TAutomaticExecutionsPaymentTransactionDTO = VariadicStruct<
+            TBase,
+            Field<STR_LITERAL("contractKey"), Key>,
+            Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>>;
 
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
@@ -292,7 +356,10 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	
 	using SecretProofTransactionDTO = TSecretProofTransactionDTO<TransactionDTO>;
 	using EmbeddedSecretProofTransactionDTO = TSecretProofTransactionDTO<EmbeddedTransactionDTO>;
-	
+
+    using StoragePaymentTransactionDTO = TStoragePaymentTransactionDTO<TransactionDTO>;
+    using EmbeddedStoragePaymentTransactionDTO = TStoragePaymentTransactionDTO<EmbeddedTransactionDTO>;
+
 	using TransferTransactionDTO = TTransferTransactionDTO<TransactionDTO>;
 	using EmbeddedTransferTransactionDTO = TTransferTransactionDTO<EmbeddedTransactionDTO>;
 	
@@ -314,11 +381,23 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	using PrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<TransactionDTO>;
 	using EmbeddedPrepareBcDriveTransactionDTO = TPrepareBcDriveTransactionDTO<EmbeddedTransactionDTO>;
 
+    using CreateLiquidityProviderTransactionDTO = TCreateLiquidityProviderTransactionDTO<TransactionDTO>;
+    using EmbeddedCreateLiquidityProviderTransactionDTO = TCreateLiquidityProviderTransactionDTO<EmbeddedTransactionDTO>;
+
+    using ManualRateChangeTransactionDTO = TManualRateChangeTransactionDTO<TransactionDTO>;
+    using EmbeddedManualRateChangeTransactionDTO = TManualRateChangeTransactionDTO<EmbeddedTransactionDTO>;
+
 	using DataModificationTransactionDTO = TDataModificationTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationTransactionDTO = TDataModificationTransactionDTO<EmbeddedTransactionDTO>;
 
 	using DownloadTransactionDTO = TDownloadTransactionDTO<TransactionDTO>;
 	using EmbeddedDownloadTransactionDTO = TDownloadTransactionDTO<EmbeddedTransactionDTO>;
+
+    using DownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<TransactionDTO>;
+    using EmbeddedDownloadPaymentTransactionDTO = TDownloadPaymentTransactionDTO<EmbeddedTransactionDTO>;
+
+    using DriveClosureTransactionDTO = TDriveClosureTransactionDTO<TransactionDTO>;
+    using EmbeddedDriveClosureTransactionDTO = TDriveClosureTransactionDTO<EmbeddedTransactionDTO>;
 
 	using DataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationApprovalTransactionDTO = TDataModificationApprovalTransactionDTO<EmbeddedTransactionDTO>;
@@ -326,8 +405,14 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	using DataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<TransactionDTO>;
 	using EmbeddedDataModificationCancelTransactionDTO = TDataModificationCancelTransactionDTO<EmbeddedTransactionDTO>;
 
+    using FinishDownloadTransactionDTO = TFinishDownloadTransactionDTO<TransactionDTO>;
+    using EmbeddedFinishDownloadTransactionDTO = TFinishDownloadTransactionDTO<EmbeddedTransactionDTO>;
+
 	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;
+
+    using ReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<TransactionDTO>;
+    using EmbeddedReplicatorOffboardingTransactionDTO = TReplicatorOffboardingTransactionDTO<EmbeddedTransactionDTO>;
 
     using DeployContractTransactionDTO = TDeployContractTransactionDTO<TransactionDTO>;
     using EmbeddedDeployContractTransactionDTO = TDeployContractTransactionDTO<EmbeddedTransactionDTO>;

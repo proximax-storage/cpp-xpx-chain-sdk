@@ -273,6 +273,20 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Storage_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), StoragePaymentTransactionDto> > t_dto;
+
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto>(
+                        t_dto.value<"transaction"_>());
+                result = std::make_shared<StoragePaymentTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Account_Link: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), AccountLinkTransactionDto> > t_dto;
 
@@ -303,6 +317,30 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Create_Liquidity_Provider: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), CreateLiquidityProviderTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<CreateLiquidityProviderTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Manual_Rate_Change: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), ManualRateChangeTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<ManualRateChangeTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Data_Modification: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -326,6 +364,30 @@ namespace xpx_chain_sdk::internal::json::dto {
 				result = std::make_shared<DownloadTransaction>(transaction);
 				break;
 			}
+
+            case TransactionType::Download_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DownloadPaymentTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DownloadPaymentTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Drive_Closure: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DriveClosureTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<DriveClosureTransaction, DriveClosureTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DriveClosureTransaction>(transaction);
+                break;
+            }
 
 			case TransactionType::Data_Modification_Approval: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), DataModificationApprovalTransactionDto> > t_dto;
@@ -351,6 +413,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+            case TransactionType::Finish_Download: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), FinishDownloadTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<FinishDownloadTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Replicator_Onboarding: {
 				VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorOnboardingTransactionDto> > t_dto;
 				auto err = Parser::Read(t_dto, jsonStr);
@@ -363,41 +437,53 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
-			case TransactionType::Deploy_Contract: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), DeployContractTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
+            case TransactionType::Replicator_Offboarding: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorOffboardingTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
 
-				auto transaction = fromDto<DeployContractTransaction, DeployContractTransactionDto>(t_dto.value<"transaction"_>());
-				result = std::make_shared<DeployContractTransaction>(transaction);
-				break;
-			}
+                auto transaction = fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<ReplicatorOffboardingTransaction>(transaction);
+                break;
+            }
 
-			case TransactionType::Manual_Call: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), ManualCallTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
+            case TransactionType::Deploy_Contract: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DeployContractTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
 
-				auto transaction = fromDto<ManualCallTransaction, ManualCallTransactionDto>(t_dto.value<"transaction"_>());
-				result = std::make_shared<ManualCallTransaction>(transaction);
-				break;
-			}
+                auto transaction = fromDto<DeployContractTransaction, DeployContractTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DeployContractTransaction>(transaction);
+                break;
+            }
 
-			case TransactionType::Automatic_Executions_Payment: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), AutomaticExecutionsPaymentTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
+            case TransactionType::Manual_Call: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), ManualCallTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
 
-				auto transaction = fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(t_dto.value<"transaction"_>());
-				result = std::make_shared<AutomaticExecutionsPaymentTransaction>(transaction);
-				break;
-			}
+                auto transaction = fromDto<ManualCallTransaction, ManualCallTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<ManualCallTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Automatic_Executions_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), AutomaticExecutionsPaymentTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<AutomaticExecutionsPaymentTransaction>(transaction);
+                break;
+            }
 
             case TransactionType::Unsuccessful_End_Batch_Execution: {
                 VariadicStruct<Field<STR_LITERAL("transaction"), UnsuccessfulEndBatchExecutionTransactionDto> > t_dto;
@@ -411,17 +497,17 @@ namespace xpx_chain_sdk::internal::json::dto {
                 break;
             }
 
-			case TransactionType::Successful_End_Batch_Execution: {
-				VariadicStruct<Field<STR_LITERAL("transaction"), SuccessfulEndBatchExecutionTransactionDto> > t_dto;
-				auto err = Parser::Read(t_dto, jsonStr);
-				if (!err) {
-					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
-				}
+            case TransactionType::Successful_End_Batch_Execution: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), SuccessfulEndBatchExecutionTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
 
-				auto transaction = fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
-				result = std::make_shared<SuccessfulEndBatchExecutionTransaction>(transaction);
-				break;
-			}
+                auto transaction = fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<SuccessfulEndBatchExecutionTransaction>(transaction);
+                break;
+            }
 
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
@@ -879,7 +965,381 @@ namespace xpx_chain_sdk::internal::json::dto {
         return {fromDto<NetworkVersionData, NetworkVersionDataDto>(dto.value<"blockchainUpgrade"_>())};
     }
 
-	/// Transaction Meta
+    template<>
+    DriveData fromDto<DriveData, DriveDataDto>(const DriveDataDto &dto) {
+        DriveData driveData;
+        driveData.multisig = dto.value<"multisig"_>();
+        driveData.multisigAddress = dto.value<"multisigAddress"_>();
+        driveData.owner = dto.value<"owner"_>();
+        driveData.rootHash = dto.value<"rootHash"_>();
+        driveData.size = dto.value<"size"_>();
+        driveData.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+        driveData.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+        driveData.replicatorCount = dto.value<"replicatorCount"_>();
+
+        for (const auto& activeModificationDto : dto.value<"activeDataModifications"_>()) {
+            driveData.activeDataModifications.push_back(fromDto<ActiveDataModification, ActiveDataModificationDto>(activeModificationDto));
+        }
+
+        for (const auto& completedDataModificationDto : dto.value<"completedDataModifications"_>()) {
+            driveData.completedDataModifications.push_back(fromDto<CompletedDataModification, CompletedDataModificationDto>(completedDataModificationDto));
+        }
+
+        for (const auto& confirmedUsedSizeDto : dto.value<"confirmedUsedSizes"_>()) {
+            driveData.confirmedUsedSizes.push_back(fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(confirmedUsedSizeDto));
+        }
+
+        driveData.replicators = dto.value<"replicators"_>();
+        driveData.offboardingReplicators = dto.value<"offboardingReplicators"_>();
+		driveData.verification = fromDto<Verification, VerificationDto>(dto.value<"verification"_>());
+
+        for (const auto& downloadShardDto : dto.value<"downloadShards"_>()) {
+            driveData.downloadShards.push_back(fromDto<DownloadShard, DownloadShardDto>(downloadShardDto));
+        }
+
+        for (const auto& dataModificationShardDto : dto.value<"dataModificationShards"_>()) {
+            driveData.dataModificationShards.push_back(fromDto<DataModificationShard, DataModificationShardDto>(dataModificationShardDto));
+        }
+
+        return driveData;
+    }
+
+    template<>
+    Drive fromDto<Drive, DriveDto>(const DriveDto &dto) {
+        Drive drive;
+        drive.data = fromDto<DriveData, DriveDataDto>(dto.value<"drive"_>());
+        return drive;
+    }
+
+	template<>
+	MultipleDrives fromDto<MultipleDrives, MultipleDrivesDto>(const MultipleDrivesDto &dto) {
+		MultipleDrives mddto;
+
+		for (auto &driveDto: dto) {
+			Drive drive = fromDto<Drive, DriveDto>(driveDto);
+			mddto.drives.push_back(drive);
+		}
+
+		return mddto;
+	}
+
+    template<>
+    xpx_chain_sdk::drives_page::Pagination fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(const dto::drives_page::PaginationDto &dto) {
+        xpx_chain_sdk::drives_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::drives_page::DrivesPage fromDto<xpx_chain_sdk::drives_page::DrivesPage, drives_page::DrivesPageDto>(const drives_page::DrivesPageDto &dto) {
+        xpx_chain_sdk::drives_page::DrivesPage drivesPage;
+        drivesPage.pagination = fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& driveDto : dto.value<"data"_>()) {
+            drivesPage.data.drives.push_back(fromDto<xpx_chain_sdk::Drive, dto::DriveDto>(driveDto));
+        }
+
+        return drivesPage;
+    }
+
+    template<>
+    ActiveDataModification fromDto<ActiveDataModification, ActiveDataModificationDto>(const ActiveDataModificationDto &dto) {
+        ActiveDataModification activeDataModification;
+        activeDataModification.dataModification.id = dto.value<"id"_>();
+        activeDataModification.dataModification.owner = dto.value<"owner"_>();
+        activeDataModification.dataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+        activeDataModification.dataModification.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        activeDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
+        activeDataModification.dataModification.folderName = dto.value<"folderName"_>();
+        activeDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
+
+        return activeDataModification;
+    }
+
+    template<>
+    CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto &dto) {
+        CompletedDataModification completedDataModification;
+        completedDataModification.dataModification.id = dto.value<"id"_>();
+        completedDataModification.dataModification.owner = dto.value<"owner"_>();
+        completedDataModification.dataModification.downloadDataCdi = dto.value<"downloadDataCdi"_>();
+        completedDataModification.dataModification.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        completedDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
+        completedDataModification.dataModification.folderName = dto.value<"folderName"_>();
+        completedDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
+        completedDataModification.state = dto.value<"state"_>();
+        completedDataModification.success = dto.value<"success"_>();
+
+        return completedDataModification;
+    }
+
+    template<>
+    ConfirmedUsedSize fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(const ConfirmedUsedSizeDto &dto) {
+        ConfirmedUsedSize confirmedUsedSize;
+        confirmedUsedSize.replicator = dto.value<"replicator"_>();
+        confirmedUsedSize.size = dto.value<"size"_>();
+
+        return confirmedUsedSize;
+    }
+
+    template<>
+    Shard fromDto<Shard, ShardDto>(const ShardDto &dto) {
+        Shard shard;
+        shard.id = dto.value<"id"_>();
+        shard.replicators = dto.value<"replicators"_>();
+
+        return shard;
+    }
+
+    template<>
+    Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto) {
+        Verification verification;
+        verification.verificationTrigger = dto.value<"verificationTrigger"_>();
+        verification.expiration = dto.value<"expiration"_>();
+        verification.duration = dto.value<"duration"_>();
+
+        for (const auto& shard : dto.value<"shards"_>()) {
+            verification.shards.push_back(fromDto<Shard, ShardDto>(shard));
+        }
+
+        return verification;
+    }
+
+    template<>
+    DownloadShard fromDto<DownloadShard, DownloadShardDto>(const DownloadShardDto &dto) {
+        DownloadShard downloadShard;
+        downloadShard.downloadChannelId = dto.value<"downloadChannelId"_>();
+
+        return downloadShard;
+    }
+
+    template<>
+    DataModificationShard fromDto<DataModificationShard, DataModificationShardDto>(const DataModificationShardDto &dto) {
+        DataModificationShard dataModificationShard;
+        dataModificationShard.replicator = dto.value<"replicator"_>();
+
+        for (const auto& uploadInfoDto : dto.value<"actualShardReplicators"_>()) {
+            dataModificationShard.actualShardReplicators.push_back(fromDto<UploadInfo, UploadInfoDto>(uploadInfoDto));
+        }
+
+        for (const auto& uploadInfoDto : dto.value<"formerShardReplicators"_>()) {
+            dataModificationShard.formerShardReplicators.push_back(fromDto<UploadInfo, UploadInfoDto>(uploadInfoDto));
+        }
+
+        dataModificationShard.ownerUpload = dto.value<"ownerUpload"_>();
+
+        return dataModificationShard;
+    }
+
+    template<>
+    UploadInfo fromDto<UploadInfo, UploadInfoDto>(const UploadInfoDto &dto) {
+        UploadInfo uploadInfo;
+        uploadInfo.key = dto.value<"key"_>();
+        uploadInfo.uploadSize = dto.value<"uploadSize"_>();
+
+        return uploadInfo;
+    }
+
+    template<>
+    Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto &dto) {
+        Replicator replicator;
+        replicator.data = fromDto<ReplicatorData, ReplicatorDataDto>(dto.value<"replicator"_>());
+        return replicator;
+    }
+
+    template<>
+    ReplicatorData fromDto<ReplicatorData, ReplicatorDataDto>(const ReplicatorDataDto &dto) {
+        ReplicatorData replicatorData;
+        replicatorData.key = dto.value<"key"_>();
+        replicatorData.version = dto.value<"version"_>();
+        replicatorData.downloadChannels = dto.value<"downloadChannels"_>();
+
+        for (const auto& driveInfoDto : dto.value<"drives"_>()) {
+            replicatorData.drivesInfo.push_back(fromDto<DriveInfo, DriveInfoDto>(driveInfoDto));
+        }
+
+        return replicatorData;
+    }
+
+    template<>
+    DriveInfo fromDto<DriveInfo, DriveInfoDto>(const DriveInfoDto &dto) {
+        DriveInfo driveInfo;
+        driveInfo.drive = dto.value<"drive"_>();
+        driveInfo.lastApprovedDataModificationId = dto.value<"lastApprovedDataModificationId"_>();
+        driveInfo.initialDownloadWork = dto.value<"initialDownloadWork"_>();
+        driveInfo.lastCompletedCumulativeDownloadWork = dto.value<"lastCompletedCumulativeDownloadWork"_>();
+
+        return driveInfo;
+    }
+
+    template<>
+    xpx_chain_sdk::replicators_page::Pagination fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(const dto::replicators_page::PaginationDto &dto) {
+        xpx_chain_sdk::replicators_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::replicators_page::ReplicatorsPage fromDto<xpx_chain_sdk::replicators_page::ReplicatorsPage, replicators_page::ReplicatorsPageDto>(const replicators_page::ReplicatorsPageDto &dto) {
+        xpx_chain_sdk::replicators_page::ReplicatorsPage replicatorsPage;
+        replicatorsPage.pagination = fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& replicatorDto : dto.value<"data"_>()) {
+            replicatorsPage.data.replicators.push_back(fromDto<xpx_chain_sdk::Replicator, dto::ReplicatorDto>(replicatorDto));
+        }
+
+        return replicatorsPage;
+    }
+
+    template<>
+    DownloadChannel fromDto<DownloadChannel, DownloadChannelDto>(const DownloadChannelDto &dto) {
+        DownloadChannel downloadChannel;
+        downloadChannel.data = fromDto<DownloadChannelData, DownloadChannelDataDto>(dto.value<"downloadChannelInfo"_>());
+        return downloadChannel;
+    }
+
+    template<>
+    DownloadChannelData fromDto<DownloadChannelData, DownloadChannelDataDto>(const DownloadChannelDataDto &dto) {
+        DownloadChannelData downloadChannelData;
+        downloadChannelData.id = dto.value<"id"_>();
+        downloadChannelData.consumer = dto.value<"consumer"_>();
+        downloadChannelData.drive = dto.value<"drive"_>();
+        downloadChannelData.downloadSizeMegabytes = dto.value<"downloadSizeMegabytes"_>();
+        downloadChannelData.downloadApprovalCount = dto.value<"downloadApprovalCount"_>();
+        downloadChannelData.finished = dto.value<"finished"_>();
+        downloadChannelData.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
+        downloadChannelData.shardReplicators = dto.value<"shardReplicators"_>();
+
+        for(const auto& cumulativePaymentDto : dto.value<"cumulativePayments"_>()) {
+            downloadChannelData.cumulativePayments.push_back(fromDto<xpx_chain_sdk::CumulativePayment, dto::CumulativePaymentDto>(cumulativePaymentDto));
+        }
+
+        return downloadChannelData;
+    }
+
+    template<>
+    CumulativePayment fromDto<CumulativePayment, CumulativePaymentDto>(const CumulativePaymentDto &dto) {
+        CumulativePayment cumulativePayment;
+        cumulativePayment.replicator = dto.value<"replicator"_>();
+        cumulativePayment.payment = dto.value<"payment"_>();
+        return cumulativePayment;
+    }
+
+    template<>
+    xpx_chain_sdk::download_channels_page::Pagination fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(const dto::download_channels_page::PaginationDto &dto) {
+        xpx_chain_sdk::download_channels_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::download_channels_page::DownloadChannelsPage fromDto<xpx_chain_sdk::download_channels_page::DownloadChannelsPage, download_channels_page::DownloadChannelsPageDto>(const download_channels_page::DownloadChannelsPageDto &dto) {
+        xpx_chain_sdk::download_channels_page::DownloadChannelsPage downloadChannelsPage;
+        downloadChannelsPage.pagination = fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& channelDto : dto.value<"data"_>()) {
+            downloadChannelsPage.data.channels.push_back(fromDto<xpx_chain_sdk::DownloadChannel, dto::DownloadChannelDto>(channelDto));
+        }
+
+        return downloadChannelsPage;
+    }
+
+    template<>
+    RateData fromDto<RateData, RateDataDto>(const RateDataDto &dto) {
+        RateData rateData;
+        rateData.currencyAmount = dto.value<"currencyAmount"_>();
+        rateData.mosaicAmount = dto.value<"mosaicAmount"_>();
+        return rateData;
+    }
+
+    template<>
+    TurnoverData fromDto<TurnoverData, TurnoverDataDto>(const TurnoverDataDto &dto) {
+        TurnoverData turnoverData;
+        turnoverData.turnover = dto.value<"turnover"_>();
+        turnoverData.rate = fromDto<RateData, RateDataDto>(dto.value<"rate"_>());
+        return turnoverData;
+    }
+
+    template<>
+    LiquidityProviderData fromDto<LiquidityProviderData, LiquidityProviderDataDto>(const LiquidityProviderDataDto &dto) {
+        LiquidityProviderData liquidityProviderData;
+        liquidityProviderData.mosaicId = dto.value<"mosaicId"_>();
+        liquidityProviderData.providerKey = dto.value<"providerKey"_>();
+        liquidityProviderData.owner = dto.value<"owner"_>();
+        liquidityProviderData.additionallyMinted = dto.value<"additionallyMinted"_>();
+        liquidityProviderData.slashingAccount = dto.value<"slashingAccount"_>();
+        liquidityProviderData.slashingPeriod = dto.value<"slashingPeriod"_>();
+        liquidityProviderData.windowSize = dto.value<"windowSize"_>();
+        liquidityProviderData.creationHeight = dto.value<"creationHeight"_>();
+        liquidityProviderData.alpha = dto.value<"alpha"_>();
+        liquidityProviderData.beta = dto.value<"beta"_>();
+        liquidityProviderData.recentTurnover = fromDto<TurnoverData, TurnoverDataDto>(dto.value<"recentTurnover"_>());
+
+        for(const auto& turnoverDto : dto.value<"turnoverHistory"_>()) {
+            liquidityProviderData.turnoverHistory.push_back(fromDto<TurnoverData, TurnoverDataDto>(turnoverDto));
+        }
+
+        return liquidityProviderData;
+    }
+
+    template<>
+    LiquidityProvider fromDto<LiquidityProvider, LiquidityProviderDto>(const LiquidityProviderDto &dto) {
+        LiquidityProvider liquidityProvider;
+        liquidityProvider.data = fromDto<LiquidityProviderData, LiquidityProviderDataDto>(dto.value<"liquidityProvider"_>());
+        return liquidityProvider;
+    }
+
+    template<>
+    MultipleLiquidityProviders fromDto<MultipleLiquidityProviders , MultipleLiquidityProvidersDto>(const MultipleLiquidityProvidersDto &dto) {
+        MultipleLiquidityProviders mldto;
+
+        for (auto &liquidityProviderDto: dto) {
+            LiquidityProvider liquidityProvider = fromDto<LiquidityProvider, LiquidityProviderDto>(liquidityProviderDto);
+            mldto.liquidityProviders.push_back(liquidityProvider);
+        }
+
+        return mldto;
+    }
+
+    template<>
+    xpx_chain_sdk::liquidity_providers_page::Pagination fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(const dto::liquidity_providers_page::PaginationDto &dto) {
+        xpx_chain_sdk::liquidity_providers_page::Pagination pagination {
+                dto.value<"totalEntries"_>(),
+                dto.value<"pageNumber"_>(),
+                dto.value<"pageSize"_>(),
+                dto.value<"totalPages"_>()
+        };
+
+        return pagination;
+    }
+
+    template<>
+    xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage fromDto<xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage, liquidity_providers_page::LiquidityProvidersPageDto>(const liquidity_providers_page::LiquidityProvidersPageDto &dto) {
+        xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage liquidityProvidersPage;
+        liquidityProvidersPage.pagination = fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(dto.value<"pagination"_>());
+
+        for(const auto& providerDto : dto.value<"data"_>()) {
+            liquidityProvidersPage.data.liquidityProviders.push_back(fromDto<xpx_chain_sdk::LiquidityProvider, dto::LiquidityProviderDto>(providerDto));
+        }
+
+        return liquidityProvidersPage;
+    }
+
+    /// Transaction Meta
 
 	template<>
 	TransactionInfo fromDto<TransactionInfo, TransactionInfoDto>(const TransactionInfoDto& dto) {
@@ -946,6 +1406,15 @@ namespace xpx_chain_sdk::internal::json::dto {
         transaction.data = fromDto<Transaction, TransactionDto>(dto.value<"transaction"_>());
         transaction.meta = fromDto<xpx_chain_sdk::transactions_page::TransactionMeta, dto::transactions_page::TransactionMetaDto>(dto.value<"meta"_>());
         return transaction;
+    }
+
+    template<>
+    ErrorMessage fromDto<ErrorMessage, ErrorMessageDto >(const ErrorMessageDto & dto) {
+        ErrorMessage errorMessage;
+        errorMessage.code = dto.value<"code"_>();
+        errorMessage.message = dto.value<"message"_>();
+
+        return errorMessage;
     }
 
     template<>
@@ -1111,12 +1580,10 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 
-		transaction.nonce = dto.value<"nonce"_>();
+		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.flags = dto.value<"flags"_>();
-		transaction.divisibility = dto.value<"divisibility"_>();
-		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
-			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		for(auto & mosaicProperty : dto.value<"properties"_>()) {
+			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
 		}
 		return transaction;
 	}
@@ -1141,7 +1608,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.namespaceType = dto.value<"namespaceType"_>();
 		transaction.durationOrParentId = dto.value<"durationOrParentId"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1157,14 +1623,12 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.mosaicId = dto.value<"mosaicId"_>();
 		transaction.amount = dto.value<"amount"_>();
 		transaction.duration = dto.value<"duration"_>();
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
 		transaction.recipient = dto.value<"recipient"_>();
-
 
 		return transaction;
 	}
@@ -1176,14 +1640,24 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.hashAlgorithm = dto.value<"hashAlgorithm"_>();
 		transaction.secret = dto.value<"secret"_>();
 		transaction.proof = dto.value<"proof"_>();
 
-
 		return transaction;
 	}
+
+    template<>
+    StoragePaymentTransaction fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto >(const StoragePaymentTransactionDto & dto) {
+        StoragePaymentTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.storageUnits = dto.value<"storageUnits"_>();
+
+        return transaction;
+    }
 
 	template<>
 	TransferTransactionMessage fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(const TransferTransactionMessageDto & dto) {
@@ -1213,7 +1687,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		AliasTransactionBase transaction;
 
 		EXTRACT_TRANSACTION(transaction, dto)
-
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1248,7 +1721,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& accountTransactionPropertyDto : dto.value<"modifications"_>()){
@@ -1264,7 +1736,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		EXTRACT_TRANSACTION(transaction, dto)
 
-
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
 		for(auto& accountTransactionPropertyDto : dto.value<"modifications"_>()){
@@ -1279,7 +1750,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		AccountAddressPropertyTransaction transaction;
 
 		EXTRACT_TRANSACTION(transaction, dto)
-
 
 		transaction.propertyType = dto.value<"propertyType"_>();
 		transaction.modificationsCount = dto.value<"modificationsCount"_>();
@@ -1340,12 +1810,10 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
 
 
-		transaction.nonce = dto.value<"nonce"_>();
+		transaction.mosaicNonce = dto.value<"mosaicNonce"_>();
 		transaction.mosaicId = dto.value<"mosaicId"_>();
-		transaction.flags = dto.value<"flags"_>();
-		transaction.divisibility = dto.value<"divisibility"_>();
-		for(auto & mosaicProperty : dto.value<"optionalProperties"_>()) {
-			transaction.optionalProperties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty)) ;
+		for(auto & mosaicProperty : dto.value<"properties"_>()) {
+			transaction.properties.push_back(fromDto<MosaicProperty, MosaicPropertyDto>(mosaicProperty));
 		}
 		return transaction;
 	}
@@ -1412,13 +1880,24 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    EmbeddedStoragePaymentTransaction fromDto<EmbeddedStoragePaymentTransaction, EmbeddedStoragePaymentTransactionDto >(const EmbeddedStoragePaymentTransactionDto & dto) {
+        EmbeddedStoragePaymentTransaction transaction;
+
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.storageUnits = dto.value<"storageUnits"_>();
+
+        return transaction;
+    }
+
 
 	template<>
 	EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto) {
 		EmbeddedTransferTransaction transaction;
 
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
-
 
 		transaction.recipient = dto.value<"recipient"_>();
 		transaction.message = fromDto<TransferTransactionMessage, TransferTransactionMessageDto >(dto.value<"message"_>());
@@ -1436,7 +1915,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EmbeddedAliasTransactionBase transaction;
 
 		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
-
 
 		transaction.aliasAction = dto.value<"aliasAction"_>();
 		transaction.namespaceId = dto.value<"namespaceId"_>();
@@ -1657,10 +2135,44 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.driveSize = dto.value<"driveSize"_>();
+		transaction.verificationFeeAmount = dto.value<"verificationFeeAmount"_>();
 		transaction.replicatorCount = dto.value<"replicatorCount"_>();
 
 		return transaction;
 	}
+
+    template<>
+    CreateLiquidityProviderTransaction fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto >(const CreateLiquidityProviderTransactionDto & dto) {
+        CreateLiquidityProviderTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.providerMosaicId = dto.value<"providerMosaicId"_>();
+        transaction.currencyDeposit = dto.value<"currencyDeposit"_>();
+        transaction.initialMosaicsMinting = dto.value<"initialMosaicsMinting"_>();
+        transaction.slashingPeriod = dto.value<"slashingPeriod"_>();
+        transaction.windowSize = dto.value<"windowSize"_>();
+        transaction.slashingAccount = dto.value<"slashingAccount"_>();
+        transaction.alpha = dto.value<"alpha"_>();
+        transaction.beta = dto.value<"beta"_>();
+
+        return transaction;
+    }
+
+    template<>
+    ManualRateChangeTransaction fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto >(const ManualRateChangeTransactionDto & dto) {
+        ManualRateChangeTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.providerMosaicId = dto.value<"providerMosaicId"_>();
+        transaction.currencyBalanceIncrease = dto.value<"currencyBalanceIncrease"_>();
+        transaction.currencyBalanceChange = dto.value<"currencyBalanceChange"_>();
+        transaction.mosaicBalanceIncrease = dto.value<"mosaicBalanceIncrease"_>();
+        transaction.mosaicBalanceChange = dto.value<"mosaicBalanceChange"_>();
+
+        return transaction;
+    }
 
 	template<>
 	DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto) {
@@ -1671,6 +2183,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadDataCdi = dto.value<"downloadDataCdi"_>();
 		transaction.uploadSize = dto.value<"uploadSize"_>();
+		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
 
 		return transaction;
 	}
@@ -1683,10 +2196,35 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.downloadSize = dto.value<"downloadSize"_>();
-		transaction.transactionFee = dto.value<"transactionFee"_>();
+		transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+		transaction.listOfPublicKeys = dto.value<"listOfPublicKeys"_>();
 
 		return transaction;
 	}
+
+    template<>
+    DownloadPaymentTransaction fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto >(const DownloadPaymentTransactionDto & dto) {
+        DownloadPaymentTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.downloadChannelId = dto.value<"downloadChannelId"_>();
+        transaction.downloadSize = dto.value<"downloadSize"_>();
+        transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+
+        return transaction;
+    }
+
+    template<>
+    DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto) {
+        DriveClosureTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+
+        return transaction;
+    }
 
 	template<>
 	DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto) {
@@ -1697,8 +2235,20 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.driveKey = dto.value<"driveKey"_>();
 		transaction.dataModificationId = dto.value<"dataModificationId"_>();
 		transaction.fileStructureCdi = dto.value<"fileStructureCdi"_>();
-		transaction.fileStructureSize = dto.value<"fileStructureSize"_>();
-		transaction.usedDriveSize = dto.value<"usedDriveSize"_>();
+		transaction.modificationStatus = dto.value<"modificationStatus"_>();
+		transaction.fileStructureSizeBytes = dto.value<"fileStructureSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.usedDriveSizeBytes = dto.value<"usedDriveSizeBytes"_>();
+		transaction.judgingKeysCount = dto.value<"judgingKeysCount"_>();
+		transaction.overlappingKeysCount = dto.value<"overlappingKeysCount"_>();
+		transaction.judgedKeysCount = dto.value<"judgedKeysCount"_>();
+		transaction.publicKeys = dto.value<"publicKeys"_>();
+		transaction.signatures = dto.value<"signatures"_>();
+		transaction.presentOpinions = dto.value<"presentOpinions"_>();
+
+        for (const auto opinion : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(opinion);
+        }
 
 		return transaction;
 	}
@@ -1715,6 +2265,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 		return transaction;
 	}
 
+    template<>
+    FinishDownloadTransaction fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto >(const FinishDownloadTransactionDto & dto) {
+        FinishDownloadTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.downloadChannelId = dto.value<"downloadChannelId"_>(),
+        transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+
+        return transaction;
+    }
+
 	template<>
 	ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto) {
 		ReplicatorOnboardingTransaction transaction;
@@ -1725,6 +2287,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+    template<>
+    ReplicatorOffboardingTransaction fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto >(const ReplicatorOffboardingTransactionDto & dto) {
+        ReplicatorOffboardingTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+
+        return transaction;
+    }
+
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };
@@ -1850,7 +2424,6 @@ namespace xpx_chain_sdk::internal::json::dto {
         transactionData.type = dto.value<"type"_>();
         transactionData.maxFee = dto.value<"maxFee"_>();
         transactionData.deadline = dto.value<"deadline"_>();
-        transactionData.hash = dto.value<"hash"_>();
         return transactionData;
     }
 

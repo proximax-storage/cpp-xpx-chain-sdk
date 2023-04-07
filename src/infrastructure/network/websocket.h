@@ -9,11 +9,12 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/asio/strand.hpp>
-#include <boost/thread.hpp>
+#include <boost/asio/streambuf.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <cstdlib>
+#include <deque>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -29,19 +30,23 @@ namespace xpx_chain_sdk::internal::network {
     class WsClient : public std::enable_shared_from_this<WsClient> {
     public:
         WsClient(
-            std::shared_ptr<Config> config,
+            const Config& config,
             std::shared_ptr<internal::network::Context> context,
+            std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> strand,
             Callback connectionCallback,
             Callback receiverCallback,
             ErrorCallback errorCallback);
-        ~WsClient();
+
+        ~WsClient() = default;
 
         void connect(uint64_t onResolveHostTimeoutSec = 30);
         void disconnect();
-        void send(const std::string& json);
-        bool isConnected();
+        void send(const std::string& json, std::function<void()> onSuccess,
+                  std::function<void(boost::beast::error_code errorCode)> onError);
+        bool isConnected() const;
 
     private:
+        void doWrite();
         void onResolve(
                 boost::beast::error_code errorCode,
                 const boost::asio::ip::tcp::resolver::results_type& resultsType,
@@ -50,20 +55,17 @@ namespace xpx_chain_sdk::internal::network {
                 boost::beast::error_code errorCode,
                 const boost::asio::ip::tcp::resolver::results_type::endpoint_type& endpointType);
         void onHandshake(boost::beast::error_code errorCode);
-        void onRead(
-                boost::beast::error_code errorCode,
-                std::shared_ptr<boost::beast::flat_buffer> data,
-                std::size_t bytes_transferred);
+        void onRead(boost::beast::error_code errorCode);
         void readNext();
-        void onWrite(
-                boost::beast::error_code errorCode,
-                std::size_t bytesTransferred);
         void onClose(boost::beast::error_code errorCode);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
-        boost::asio::io_context _io_context;
+        std::shared_ptr<boost::asio::streambuf> _buffer;
+        std::deque<std::pair<std::string, std::pair<std::function<void()>, std::function<void(boost::beast::error_code errorCode)>>>> _outgoingQueue;
+        std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> _strand;
+        std::function<void()> _postponedDisconnect;
         boost::asio::ip::tcp::resolver _resolver;
         boost::beast::websocket::stream<boost::beast::tcp_stream> _ws;
         Callback _connectionCallback;

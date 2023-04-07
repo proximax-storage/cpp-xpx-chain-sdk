@@ -6,12 +6,12 @@
 #include <xpxchaincpp/model/transaction/download_transaction.h>
 
 namespace xpx_chain_sdk {
-	
-	template<typename TBase>
-	const Key& TDownloadTransaction<TBase>::driveKey() const
-	{
-		return driveKey_;
-	}
+
+    template<typename TBase>
+    const Key& TDownloadTransaction<TBase>::driveKey() const
+    {
+        return driveKey_;
+    }
 
 	template<typename TBase>
 	uint64_t TDownloadTransaction<TBase>::downloadSize() const
@@ -20,9 +20,21 @@ namespace xpx_chain_sdk {
 	}
 
 	template<typename TBase>
-	const Amount& TDownloadTransaction<TBase>::transactionFee() const
+	const Amount& TDownloadTransaction<TBase>::feedbackFeeAmount() const
 	{
-		return transactionFee_;
+		return feedbackFeeAmount_;
+	}
+
+    template<typename TBase>
+    uint16_t TDownloadTransaction<TBase>::listOfPublicKeysSize() const
+    {
+        return listOfPublicKeysSize_;
+    }
+
+	template<typename TBase>
+    std::vector<Key> TDownloadTransaction<TBase>::listOfPublicKeys() const
+	{
+		return listOfPublicKeys_;
 	}
 
 	template class TDownloadTransaction<Transaction>;

@@ -54,7 +54,7 @@ std::string _performHTTPRequest_internal(
 	request.set(http::field::content_type, "application/json");
 
 	if (method == HTTPRequestMethod::PUT || method == HTTPRequestMethod::POST) {
-		request.set(http::field::content_length, request_body.size());
+		request.set(http::field::content_length, std::to_string(request_body.size()));
 //		request.set(http::field::body, request_body);
 		request.body() = request_body;
 		request.prepare_payload();
@@ -70,7 +70,7 @@ std::string _performHTTPRequest_internal(
 		auto path = response.at("Location").to_string();
 		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
 	} else if (response.result() != http::status::ok && response.result() != http::status::accepted ) {
-		throw xpx_chain_sdk::InvalidRequest(static_cast<uint16_t>(response.result()));
+		throw xpx_chain_sdk::InvalidRequest(response.body(), static_cast<uint16_t>(response.result()));
 	}
 
 	return response.body();
@@ -108,12 +108,12 @@ std::string _performHTTPRequest(
 	}
 }
 
-RequestParamsBuilder::RequestParamsBuilder(std::shared_ptr<xpx_chain_sdk::Config> config) :
+RequestParamsBuilder::RequestParamsBuilder(const xpx_chain_sdk::Config& config) :
 	_method(HTTPRequestMethod::GET),
-	_secure(config->useSSL),
-	_host(config->nodeAddress),
-	_port(config->port),
-	_basePath(config->basePath)
+	_secure(config.useSSL),
+	_host(config.nodeAddress),
+	_port(config.port),
+	_basePath(config.basePath)
 {}
 
 RequestParamsBuilder& RequestParamsBuilder::setMethod(HTTPRequestMethod method) {

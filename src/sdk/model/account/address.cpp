@@ -137,7 +137,7 @@ namespace xpx_chain_sdk {
 	Address Address::FromHex(const std::string& hexAddress) {
         AddressData addressData;
         ParseHexStringIntoContainer(hexAddress.c_str(), hexAddress.size(), addressData);
-        return Address(addressData);
+        return { addressData };
 	}
 	
 	bool Address::DecodeAndCheck(std::string_view encodedAddress, AddressData& addressData)

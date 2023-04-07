@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
 project(cpp-xpx-chain-sdk VERSION 1.0.0)
-include(CMakeGlobalFunctions.cmake)
-
-# CMP0068: fallback to older policies for macOS
-cmake_policy(SET CMP0068 OLD)
 
 #-----------------------------------------------------------------------------
 # options and features
@@ -11,8 +7,23 @@ cmake_policy(SET CMP0068 OLD)
 
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
 option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
-option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+
+include(CMakeGlobalFunctions.cmake)
+
+if (APPLE)
+	set(CMAKE_VERBOSE_MAKEFILE ON)
+	set(BOOST_INCLUDE_DIR "/usr/local/include")
+	set(BOOST_LIB_DIR "/usr/local/lib")
+	set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
+	set(OPENSSL_LIBRARIES "/usr/local/opt/openssl/lib")
+else()
+endif()
+
+find_package(Threads REQUIRED)
+find_package(Boost 1.71.0 REQUIRED)
+find_package(OpenSSL 1.1.1 REQUIRED)
 
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "XPX-CHAIN SDK build type." FORCE)
@@ -22,8 +33,9 @@ endif()
 
 if (MSVC)
 	add_compile_options(/W3)
+	add_definitions(-D_WIN32_WINNT=0x0601)
 else()
-	add_compile_options(-Wall)
+	add_compile_options(-w)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -33,24 +45,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/CheckFeatures.cmake)
 check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
-#-----------------------------------------------------------------------------
-# dependencies
-#-----------------------------------------------------------------------------
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-	message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-	file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.14/conan.cmake"
-		"${CMAKE_BINARY_DIR}/conan.cmake")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-conan_cmake_run(REQUIRES
-		rapidjson/1.1.0
-		boost/1.71.0
-		openssl/3.1.0
-		BASIC_SETUP
-	CMAKE_TARGETS
-	BUILD missing)
 
 #-----------------------------------------------------------------------------
 # sources
@@ -135,16 +134,26 @@ target_include_directories(xpxchaincpp
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
+		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
     target_compile_definitions(xpxchaincpp PRIVATE XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
 endif()
 
+if(APPLE)
+    include_directories(${BOOST_INCLUDE_DIR})
+    include_directories(${OPENSSL_INCLUDE_DIR})
+	target_include_directories(xpxchaincpp PUBLIC ${Boost_INCLUDE_DIRS})
+else()
+	include_directories(${Boost_INCLUDE_DIR})
+endif()
+
 target_link_libraries(xpxchaincpp
-		CONAN_PKG::rapidjson
-		CONAN_PKG::boost
-		CONAN_PKG::openssl)
+					  ${Boost_LIBRARIES}
+					  OpenSSL::SSL
+					  OpenSSL::Crypto
+					  pthread)
 
 #-----------------------------------------------------------------------------
 # install
@@ -192,16 +201,37 @@ install(FILES
 # tests
 #-----------------------------------------------------------------------------
 
-if (XPX_CHAIN_SDK_BUILD_TESTS)
-	enable_testing()
-	add_subdirectory(tests)
-endif()
+if (APPLE)
+else()
 
-if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
-	add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
-	target_link_libraries(get_block
-			xpxchaincpp
-			CONAN_PKG::rapidjson
-			CONAN_PKG::boost
-			CONAN_PKG::openssl)
+    if (XPX_CHAIN_SDK_BUILD_TESTS)
+            enable_testing()
+            add_subdirectory(tests)
+    endif()
+
+    if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
+            add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
+            target_link_libraries(get_block
+								xpxchaincpp
+								${Boost_LIBRARIES}
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								pthread)
+
+            add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
+            target_link_libraries(bonded_aggregate_transaction
+								xpxchaincpp
+								${Boost_LIBRARIES}
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								pthread)
+
+            add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
+            target_link_libraries(liquidity_provider_transactions
+								xpxchaincpp
+							    ${Boost_LIBRARIES}
+								OpenSSL::SSL
+            					OpenSSL::Crypto
+								pthread)
+    endif()
 endif()

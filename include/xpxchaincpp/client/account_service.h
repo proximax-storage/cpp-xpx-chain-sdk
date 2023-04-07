@@ -27,7 +27,7 @@ namespace xpx_chain_sdk {
     class AccountService {
     public:
         AccountService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
         ~AccountService() = default;
 
@@ -40,7 +40,7 @@ namespace xpx_chain_sdk {
         AccountNames getAccountNames(const std::vector<std::string>& addresses);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
     };
 }

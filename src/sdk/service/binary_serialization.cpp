@@ -174,7 +174,10 @@ namespace xpx_chain_sdk {
 			
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"nonce"_>(), dto.template value<"mosaicId"_>(), dto.template value<"flags"_>(), MosaicProperties(std::move(properties)));
+				dto.template value<"mosaicNonce"_>(),
+				dto.template value<"mosaicId"_>(),
+				MosaicProperties(std::move(properties))
+            );
 		}
 		
 		template<
@@ -236,11 +239,25 @@ namespace xpx_chain_sdk {
 		std::unique_ptr<TImpl> CreateSecretProofTransaction(const TDto& dto, RawBuffer binaryData)
 		{
 			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"hashAlgorithm"_>(), dto.template value<"secret"_>(),
-				dto.template value<"proof"_>());
+                    dto, binaryData,
+                    dto.template value<"hashAlgorithm"_>(),
+                    dto.template value<"secret"_>(),
+                    dto.template value<"proof"_>());
 		}
-		
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        StoragePaymentTransactionImpl,
+                        EmbeddedStoragePaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateStoragePaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"storageUnits"_>());
+        }
+
 		template<
 			typename TDto,
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
@@ -292,20 +309,60 @@ namespace xpx_chain_sdk {
 		{
 			return CreateTransaction<TImpl>(
 				dto, binaryData,
-				dto.template value<"driveSize"_>(), dto.template value<"replicatorCount"_>());
+                dto.template value<"driveSize"_>(),
+                dto.template value<"verificationFeeAmount"_>(),
+                dto.template value<"replicatorCount"_>());
 		}
+
+        template<
+            typename TDto,
+            typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                                                CreateLiquidityProviderTransactionImpl,
+                                                EmbeddedCreateLiquidityProviderTransactionImpl>>
+        std::unique_ptr<TImpl> CreateCreateLiquidityProviderTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"providerMosaicId"_>(),
+                    dto.template value<"currencyDeposit"_>(),
+                    dto.template value<"initialMosaicsMinting"_>(),
+                    dto.template value<"slashingPeriod"_>(),
+                    dto.template value<"windowSize"_>(),
+                    dto.template value<"slashingAccount"_>(),
+                    dto.template value<"alpha"_>(),
+                    dto.template value<"beta"_>());
+        }
+
+        template<
+            typename TDto,
+            typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                                                ManualRateChangeTransactionImpl,
+                                                EmbeddedManualRateChangeTransactionImpl>>
+        std::unique_ptr<TImpl> CreateManualRateChangeTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"providerMosaicId"_>(),
+                    dto.template value<"currencyBalanceIncrease"_>(),
+                    dto.template value<"currencyBalanceChange"_>(),
+                    dto.template value<"mosaicBalanceIncrease"_>(),
+                    dto.template value<"mosaicBalanceChange"_>());
+        }
 
 		template<
 			typename TDto,
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
 			                                    DataModificationTransactionImpl,
 			                                    EmbeddedDataModificationTransactionImpl>>
-		std::unique_ptr<TImpl> CreateDataModificationTransaction(const TDto& dto, RawBuffer binaryData)
-		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"downloadDataCdi"_>(), dto.template value<"uploadSize"_>());
-		}
+        std::unique_ptr<TImpl> CreateDataModificationTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"downloadDataCdi"_>(),
+                    dto.template value<"uploadSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
 
 		template<
 			typename TDto,
@@ -315,9 +372,39 @@ namespace xpx_chain_sdk {
 		std::unique_ptr<TImpl> CreateDownloadTransaction(const TDto& dto, RawBuffer binaryData)
 		{
 			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"downloadSize"_>(), dto.template value<"transactionFee"_>());
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"downloadSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>(),
+                    dto.template value<"listOfPublicKeysSize"_>(),
+                    dto.template value<"listOfPublicKeys"_>());
 		}
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        DownloadPaymentTransactionImpl,
+                        EmbeddedDownloadPaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateDownloadPaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"downloadChannelId"_>(),
+                    dto.template value<"downloadSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        DriveClosureTransactionImpl,
+                        EmbeddedDriveClosureTransactionImpl>>
+        std::unique_ptr<TImpl> CreateDriveClosureTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>());
+        }
 
 		template<
 			typename TDto,
@@ -326,10 +413,23 @@ namespace xpx_chain_sdk {
 			                                    EmbeddedDataModificationApprovalTransactionImpl>>
 		std::unique_ptr<TImpl> CreateDataModificationApprovalTransaction(const TDto& dto, RawBuffer binaryData)
 		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>(), dto.template value<"fileStructureCdi"_>(),
-				dto.template value<"fileStructureSize"_>(), dto.template value<"usedDriveSize"_>());
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"dataModificationId"_>(),
+                    dto.template value<"fileStructureCdi"_>(),
+                    dto.template value<"modificationStatus"_>(),
+                    dto.template value<"fileStructureSizeBytes"_>(),
+                    dto.template value<"metaFilesSizeBytes"_>(),
+                    dto.template value<"usedDriveSizeBytes"_>(),
+                    dto.template value<"judgingKeysCount"_>(),
+                    dto.template value<"overlappingKeysCount"_>(),
+                    dto.template value<"judgedKeysCount"_>(),
+                    dto.template value<"opinionElementCount"_>(),
+                    dto.template value<"publicKeys"_>(),
+                    dto.template value<"signatures"_>(),
+                    dto.template value<"presentOpinions"_>(),
+                    dto.template value<"opinions"_>());
 		}
 
 		template<
@@ -344,6 +444,19 @@ namespace xpx_chain_sdk {
 				dto.template value<"driveKey"_>(), dto.template value<"dataModificationId"_>());
 		}
 
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        FinishDownloadTransactionImpl,
+                        EmbeddedFinishDownloadTransactionImpl>>
+        std::unique_ptr<TImpl> CreateFinishDownloadTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"downloadChannelId"_>(),
+                    dto.template value<"feedbackFeeAmount"_>());
+        }
+
 		template<
 			typename TDto,
 			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
@@ -356,61 +469,73 @@ namespace xpx_chain_sdk {
 				dto.template value<"capacity"_>());
 		}
 
-		template<
-			typename TDto,
-			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
-			                                    DeployContractTransactionImpl,
-			                                    EmbeddedDeployContractTransactionImpl>>
-		std::unique_ptr<TImpl> CreateDeployContractTransaction(const TDto& dto, RawBuffer binaryData)
-		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"driveKey"_>(),
-				dto.template value<"fileName"_>(),
-				dto.template value<"functionName"_>(),
-				dto.template value<"actualArguments"_>(),
-				dto.template value<"executionCallPayment"_>(),
-				dto.template value<"downloadCallPayment"_>(),
-				dto.template value<"servicePayments"_>(),
-				dto.template value<"automaticExecutionsFileName"_>(),
-				dto.template value<"automaticExecutionsFunctionName"_>(),
-				dto.template value<"automaticExecutionsCallPayment"_>(),
-				dto.template value<"automaticDownloadCallPayment"_>(),
-				dto.template value<"automaticExecutionsNumber"_>(),
-				dto.template value<"assignee"_>());
-		}
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        ReplicatorOffboardingTransactionImpl,
+                        EmbeddedReplicatorOffboardingTransactionImpl>>
+        std::unique_ptr<TImpl> CreateReplicatorOffboardingTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>());
+        }
 
-		template<
-			typename TDto,
-			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
-			                                    ManualCallTransactionImpl,
-			                                    EmbeddedManualCallTransactionImpl>>
-		std::unique_ptr<TImpl> CreateManualCallTransaction(const TDto& dto, RawBuffer binaryData)
-		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"contractKey"_>(),
-				dto.template value<"fileName"_>(),
-				dto.template value<"functionName"_>(),
-				dto.template value<"actualArguments"_>(),
-				dto.template value<"executionCallPayment"_>(),
-				dto.template value<"downloadCallPayment"_>(),
-				dto.template value<"servicePayments"_>());
-		}
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        DeployContractTransactionImpl,
+                        EmbeddedDeployContractTransactionImpl>>
+        std::unique_ptr<TImpl> CreateDeployContractTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"fileName"_>(),
+                    dto.template value<"functionName"_>(),
+                    dto.template value<"actualArguments"_>(),
+                    dto.template value<"executionCallPayment"_>(),
+                    dto.template value<"downloadCallPayment"_>(),
+                    dto.template value<"servicePayments"_>(),
+                    dto.template value<"automaticExecutionsFileName"_>(),
+                    dto.template value<"automaticExecutionsFunctionName"_>(),
+                    dto.template value<"automaticExecutionsCallPayment"_>(),
+                    dto.template value<"automaticDownloadCallPayment"_>(),
+                    dto.template value<"automaticExecutionsNumber"_>(),
+                    dto.template value<"assignee"_>());
+        }
 
-		template<
-			typename TDto,
-			typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
-			                                    AutomaticExecutionsPaymentTransactionImpl,
-			                                    EmbeddedAutomaticExecutionsPaymentTransactionImpl>>
-		std::unique_ptr<TImpl> CreateAutomaticExecutionsPaymentTransaction(const TDto& dto, RawBuffer binaryData)
-		{
-			return CreateTransaction<TImpl>(
-				dto, binaryData,
-				dto.template value<"contractKey"_>(),
-				dto.template value<"automaticExecutionsNumber"_>());
-		}
-		
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        ManualCallTransactionImpl,
+                        EmbeddedManualCallTransactionImpl>>
+        std::unique_ptr<TImpl> CreateManualCallTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"contractKey"_>(),
+                    dto.template value<"fileName"_>(),
+                    dto.template value<"functionName"_>(),
+                    dto.template value<"actualArguments"_>(),
+                    dto.template value<"executionCallPayment"_>(),
+                    dto.template value<"downloadCallPayment"_>(),
+                    dto.template value<"servicePayments"_>());
+        }
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        AutomaticExecutionsPaymentTransactionImpl,
+                        EmbeddedAutomaticExecutionsPaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateAutomaticExecutionsPaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"contractKey"_>(),
+                    dto.template value<"automaticExecutionsNumber"_>());
+        }
+
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
 		{
 			EmbeddedTransactionDTO header;
@@ -573,6 +698,17 @@ namespace xpx_chain_sdk {
 						
 						break;
 					}
+                case TransactionType::Storage_Payment:
+                    {
+                        EmbeddedStoragePaymentTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateStoragePaymentTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Transfer:
 					{
 						EmbeddedTransferTransactionDTO dto;
@@ -595,6 +731,28 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Create_Liquidity_Provider:
+                    {
+                        EmbeddedCreateLiquidityProviderTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateCreateLiquidityProviderTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Manual_Rate_Change:
+                    {
+                        EmbeddedManualRateChangeTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateManualRateChangeTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Data_Modification:
 					{
 						EmbeddedDataModificationTransactionDTO dto;
@@ -617,6 +775,28 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Download_Payment:
+                    {
+                        EmbeddedDownloadPaymentTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateDownloadPaymentTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Drive_Closure:
+                    {
+                        EmbeddedDriveClosureTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateDriveClosureTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Data_Modification_Approval:
 					{
 						EmbeddedDataModificationApprovalTransactionDTO dto;
@@ -639,6 +819,17 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Finish_Download:
+                    {
+                        EmbeddedFinishDownloadTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateFinishDownloadTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				case TransactionType::Replicator_Onboarding:
 					{
 						EmbeddedReplicatorOnboardingTransactionDTO dto;
@@ -683,6 +874,17 @@ namespace xpx_chain_sdk {
 
 						break;
 					}
+                case TransactionType::Replicator_Offboarding:
+                    {
+                        EmbeddedReplicatorOffboardingTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateReplicatorOffboardingTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
 				default:
 					{
 						return false;
@@ -914,6 +1116,18 @@ namespace xpx_chain_sdk {
 				
 				break;
 			}
+        case TransactionType::Storage_Payment:
+            {
+                StoragePaymentTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateStoragePaymentTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Transfer:
 			{
 				TransferTransactionDTO dto;
@@ -938,6 +1152,30 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Create_Liquidity_Provider:
+            {
+                CreateLiquidityProviderTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateCreateLiquidityProviderTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Manual_Rate_Change:
+            {
+                ManualRateChangeTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateManualRateChangeTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Data_Modification:
 			{
 				DataModificationTransactionDTO dto;
@@ -962,6 +1200,30 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Download_Payment:
+            {
+                DownloadPaymentTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateDownloadPaymentTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Drive_Closure:
+            {
+                DriveClosureTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateDriveClosureTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Data_Modification_Approval:
 			{
 				DataModificationApprovalTransactionDTO dto;
@@ -986,6 +1248,18 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Finish_Download:
+            {
+                FinishDownloadTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateFinishDownloadTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		case TransactionType::Replicator_Onboarding:
 			{
 				ReplicatorOnboardingTransactionDTO dto;
@@ -1034,6 +1308,18 @@ namespace xpx_chain_sdk {
 
 				break;
 			}
+        case TransactionType::Replicator_Offboarding:
+            {
+                ReplicatorOffboardingTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateReplicatorOffboardingTransaction(dto, binaryData);
+                }
+
+                break;
+            }
 		default:
 			{
 				break;

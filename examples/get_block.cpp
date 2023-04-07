@@ -8,57 +8,52 @@
 #include <iostream>
 #include <xpxchaincpp/model/message/message.h>
 #include <chrono>
+#include <vector>
+#include <boost/beast/core/error.hpp>
 using namespace xpx_chain_sdk;
 
 int main() {
 	xpx_chain_sdk::Config config = xpx_chain_sdk::GetConfig();
-	config.nodeAddress = "bcstage1.xpxsirius.io";
-	config.nodeAddress = "0.0.0.0";
+	config.nodeAddress = "127.0.0.1";
 	config.port = "3000";
 
-	std::string accountAddress = "VA7PKVZYTGLHZUCZTIM6TCJZIW2KB2PYCMKVTF27";
-	std::string publicKey = "E0C0BDFD0CFBC83D5DDC5F16CAD9CF18FE4339649946A79AC334AB5AA39D4BB7";
-	std::string privateKey = "28FCECEA252231D2C86E1BCF7DD541552BDBBEFBB09324758B3AC199B4AA7B78";
-
-	accountAddress = "SBGS2IGUED476REYI5ZZGISVSEHAF6YIQZV6YJFQ";
-	publicKey = "0EB448D07C7CCB312989AC27AA052738FF589E2F83973F909B506B450DC5C4E2";
-
-
-
+	std::string accountAddress = "SDHDCKRVH4NXSKIRX3M7PLPMP6F4O3Z3JUWKJHLB";
+	std::string publicKey = "E92978122F00698856910664C480E8F3C2FDF0A733F42970FBD58A5145BD6F21";
+	std::string privateKey = "7AA907C3D80B3815BE4B4E1470DEEE8BB83BFEB330B9A82197603D09BA947230";
 
 	auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
 
-	auto score = client->blockchain()->getCurrentScore();
-	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;
-
-	auto storage = client->blockchain()->getStorageInfo();
-	std::cout << "Storage Info | Num Transactions: " << storage.numTransactions << std::endl;
-    std::cout << "Storage Info | Num Blocks      : " << storage.numBlocks << std::endl;
-
-	auto height = client->blockchain()->getBlockchainHeight();
-	std::cout << "Block number: " << height << std::endl;
-
-    auto block = client->blockchain()->getBlockByHeight(height);
-    std::cout << "Block signature: " << block.data.signature << std::endl;
-
-    auto blocks = client->blockchain()->getBlocksByHeightWithLimit(height - 1, 25).blocks;
-	for (auto& block: blocks) {
-	    std::cout << "Block signature: " << block.data.signature << std::endl;
-    }
-
-	std::cout << "Generation Hash: " << ' ' << client -> blockchain() -> getBlockByHeight(1).meta.generationHash << std::endl;
-
-	auto networkInfo = client -> network() -> getNetworkInfo();
-	std::cout << "Network Info " << networkInfo.description << '|' << networkInfo.name << std::endl;
-
-	auto accountInfo = client -> account() -> getAccountInfo(accountAddress);
-	std::cout << accountInfo.publicKey << ' ' << accountInfo.mosaics[0].id << std::endl;
-
-	auto mosaicId = accountInfo.mosaics[0].id;
-	std::cout << mosaicId << std::endl;
-	auto mosaicInfo = client -> mosaics() -> getMosaicInfo(mosaicId);
+//	auto score = client->blockchain()->getCurrentScore();
+//	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;
 //
-	std::cout << "Mosaic Info: " << mosaicInfo.data.amount << std::endl;
+//	auto storage = client->blockchain()->getStorageInfo();
+//	std::cout << "Storage Info | Num Transactions: " << storage.numTransactions << std::endl;
+//    std::cout << "Storage Info | Num Blocks      : " << storage.numBlocks << std::endl;
+//
+//	auto height = client->blockchain()->getBlockchainHeight();
+//	std::cout << "Block number: " << height << std::endl;
+//
+//    auto block = client->blockchain()->getBlockByHeight(height);
+//    std::cout << "Block signature: " << block.data.signature << std::endl;
+//
+//    auto blocks = client->blockchain()->getBlocksByHeightWithLimit(height - 1, 25).blocks;
+//	for (auto& block: blocks) {
+//	    std::cout << "Block signature: " << block.data.signature << std::endl;
+//    }
+//
+//	std::cout << "Generation Hash: " << ' ' << client -> blockchain() -> getBlockByHeight(1).meta.generationHash << std::endl;
+//
+//	auto networkInfo = client -> network() -> getNetworkInfo();
+//	std::cout << "Network Info " << networkInfo.description << '|' << networkInfo.name << std::endl;
+//
+//	auto accountInfo = client -> account() -> getAccountInfo(accountAddress);
+//	std::cout << accountInfo.publicKey << ' ' << accountInfo.mosaics[0].id << std::endl;
+//
+//	auto mosaicId = accountInfo.mosaics[0].id;
+//	std::cout << mosaicId << std::endl;
+//	auto mosaicInfo = client -> mosaics() -> getMosaicInfo(mosaicId);
+////
+//	std::cout << "Mosaic Info: " << mosaicInfo.data.amount << std::endl;
 
 //	std::vector<uint64_t > ids = {accountInfo.mosaics[0].id};
 //
@@ -84,34 +79,48 @@ int main() {
 //	}
 //	std::cout << std::endl;
 
-	xpx_chain_sdk::MosaicPropertyContainer propertyContainer;
-
-	propertyContainer.insert(xpx_chain_sdk::MosaicProperty{xpx_chain_sdk::MosaicPropertyId::Divisibility, 6});
-	propertyContainer.insert(xpx_chain_sdk::MosaicProperty{xpx_chain_sdk::MosaicPropertyId::Flags, 4});
-
-	xpx_chain_sdk::MosaicProperties mosaicProperties(propertyContainer);
-
-	auto mosaicDefinitionTransaction = xpx_chain_sdk::CreateMosaicDefinitionTransaction(
-			5,
-			Mosaic::GenerateId(ParseByteArray<Key>(publicKey), 5),
-			MosaicFlags::Supply_Mutable, mosaicProperties);
+	auto replicatorOnboardingTransaction = xpx_chain_sdk::CreateReplicatorOnboardingTransaction(2048);
 
 	xpx_chain_sdk::Account account([privateKeyString = privateKey](PrivateKeySupplierReason reason, PrivateKeySupplierParam param) {
-		if(reason == PrivateKeySupplierReason::Transaction_Signing) {
-			Key key;
+        Key key;
+        if(reason == PrivateKeySupplierReason::Transaction_Signing) {
 			ParseHexStringIntoContainer(privateKeyString.c_str(), privateKeyString.size(), key);
-
-			return PrivateKey(key.data(), key.size());
 		}
-	}, mosaicDefinitionTransaction -> networkId());
 
-	account.signTransaction(mosaicDefinitionTransaction.get());
+        return PrivateKey(key.data(), key.size());
+	}, replicatorOnboardingTransaction -> networkId());
 
+	account.signTransaction(replicatorOnboardingTransaction.get());
+
+    auto hash = ToHex(replicatorOnboardingTransaction->hash());
+
+    Notifier<TransactionNotification> notifier([hash](const notifierId& id, const xpx_chain_sdk::TransactionNotification& notification) {
+        if (notification.meta.hash == hash) {
+            std::cout << "confirmed replicatorOnboardingTransaction: " << hash << std::endl;
+
+            exit(0);
+        } else {
+            std::cout << "other confirmed transaction hash: " << notification.meta.hash << std::endl;
+        }
+    });
+
+    client->notifications()->addConfirmedAddedNotifiers(account.address(), {notifier}, [](){}, [](boost::beast::error_code errorCode){});
+
+    Notifier<TransactionStatusNotification> statusNotifier([](const notifierId& id, const xpx_chain_sdk::TransactionStatusNotification& notification) {
+        std::cout <<  "transaction status notification is received : " << notification.status.c_str() << " : " << notification.hash.c_str() << std::endl;
+    });
+
+    client->notifications()->addStatusNotifiers(account.address(), {statusNotifier}, [](){}, [](boost::beast::error_code errorCode){});
 
 	try {
-		client -> transactions() -> announceNewTransaction(mosaicDefinitionTransaction->binary());
+		client -> transactions() -> announceNewTransaction(replicatorOnboardingTransaction->binary());
 	}
 	catch(std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
+
+    char a;
+    int ret = std::scanf("%c\n", &a);
+    (void) ret; // ignore
+    return 0;
 }
