@@ -471,15 +471,6 @@ namespace xpx_chain_sdk { namespace internal {
                                                const std::optional<Signature>& signature = std::nullopt,
                                                const std::optional<TransactionInfo>& info = std::nullopt);
 
-    std::unique_ptr<ReplicatorOnboardingTransaction>
-    CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-                                              std::optional<Amount> maxFee,
-                                              std::optional<NetworkDuration> deadline,
-                                              std::optional<NetworkIdentifier> networkId,
-                                              const std::optional<Key>& signer = std::nullopt,
-                                              const std::optional<Signature>& signature = std::nullopt,
-                                              const std::optional<TransactionInfo>& info = std::nullopt);
-
     std::unique_ptr<DeployContractTransaction>
     CreateDeployContractTransactionImpl(const Key& driveKey,
                                         const std::string& fileName,
