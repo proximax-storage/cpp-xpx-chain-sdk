@@ -31,7 +31,8 @@ namespace xpx_chain_sdk {
 	
 	using MosaicId = uint64_t;
 	using Amount = uint64_t;
-	
+	using Height = uint64_t;
+
 	using BlockDuration = uint64_t;
 	constexpr BlockDuration Eternal_Duration = 0;
 	

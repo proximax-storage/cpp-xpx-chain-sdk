@@ -309,7 +309,7 @@ namespace xpx_chain_sdk { namespace internal {
 
             InitTransactionDTO(dto, TransactionType::Storage_Payment, std::forward<TArgs>(args)...);
         }
-		
+
 		template<typename TDto, typename... TArgs>
 		void InitTransferTransactionDTO(TDto& dto,
 		                                const Address& recipient,
@@ -766,6 +766,84 @@ namespace xpx_chain_sdk { namespace internal {
 
             InitTransactionDTO(dto, TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...);
         }
+
+        template<typename TDto, typename... TArgs>
+        void InitDeployContractTransactionDTO(TDto& dto,
+                                              const Key& driveKey,
+                                              const std::string& fileName,
+                                              const std::string& functionName,
+                                              const std::vector<uint8_t>& actualArguments,
+                                              const Amount& executionCallPayment,
+                                              const Amount& downloadCallPayment,
+                                              const std::vector<MosaicId>& servicePayments,
+                                              const std::string& automaticExecutionsFileName,
+                                              const std::string& automaticExecutionsFunctionName,
+                                              const Amount& automaticExecutionsCallPayment,
+                                              const Amount& automaticDownloadCallPayment,
+                                              uint32_t automaticExecutionsNumber,
+                                              const Key& assignee,
+                                              TArgs&&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"fileNameSize"_>(fileName.size());
+            dto.template set<"fileName"_>(fileName);
+            dto.template set<"functionNameSize"_>(functionName.size());
+            dto.template set<"functionName"_>(functionName);
+            dto.template set<"actualArgumentsSize"_>(actualArguments.size());
+            dto.template set<"actualArguments"_>(actualArguments);
+            dto.template set<"executionCallPayment"_>(executionCallPayment);
+            dto.template set<"downloadCallPayment"_>(downloadCallPayment);
+            dto.template set<"servicePaymentsCount"_>(servicePayments.size());
+            dto.template set<"servicePayments"_>(servicePayments);
+            dto.template set<"automaticExecutionsFileNameSize"_>(automaticExecutionsFileName.size());
+            dto.template set<"automaticExecutionsFileName"_>(automaticExecutionsFileName);
+            dto.template set<"automaticExecutionsFunctionNameSize"_>(automaticExecutionsFunctionName.size());
+            dto.template set<"automaticExecutionsFunctionName"_>(automaticExecutionsFunctionName);
+            dto.template set<"automaticExecutionsCallPayment"_>(automaticExecutionsCallPayment);
+            dto.template set<"automaticDownloadCallPayment"_>(automaticDownloadCallPayment);
+            dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
+            dto.template set<"assignee"_>(assignee);
+
+            InitTransactionDTO(dto, TransactionType::Deploy_Contract, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitManualCallTransactionDTO(TDto& dto,
+                                          const Key& contractKey,
+                                          const std::string& fileName,
+                                          const std::string& functionName,
+                                          const std::vector<uint8_t>& actualArguments,
+                                          const Amount& executionCallPayment,
+                                          const Amount& downloadCallPayment,
+                                          const std::vector<MosaicId>& servicePayments,
+                                          TArgs&&... args)
+        {
+            dto.template set<"contractKey"_>(contractKey);
+            dto.template set<"fileNameSize"_>(fileName.size());
+            dto.template set<"fileName"_>(fileName);
+            dto.template set<"functionNameSize"_>(functionName.size());
+            dto.template set<"functionName"_>(functionName);
+            dto.template set<"actualArgumentsSize"_>(actualArguments.size());
+            dto.template set<"actualArguments"_>(actualArguments);
+            dto.template set<"executionCallPayment"_>(executionCallPayment);
+            dto.template set<"downloadCallPayment"_>(downloadCallPayment);
+            dto.template set<"servicePaymentsCount"_>(servicePayments.size());
+            dto.template set<"servicePayments"_>(servicePayments);
+
+            InitTransactionDTO(dto, TransactionType::Manual_Call, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitAutomaticExecutionsPaymentTransactionDTO(TDto& dto,
+                                                          const Key& contractKey,
+                                                          uint32_t automaticExecutionsNumber,
+                                                          TArgs&&... args)
+        {
+            dto.template set<"contractKey"_>(contractKey);
+            dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
+
+            InitTransactionDTO(dto, TransactionType::Automatic_Executions_Payment, std::forward<TArgs>(args)...);
+        }
 	}
 	
 	
@@ -1058,7 +1136,7 @@ namespace xpx_chain_sdk { namespace internal {
         return CreateTransaction<StoragePaymentTransaction>(
                 dto, signer, signature, info, driveKey, storageUnits);
     }
-	
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
 	                              MosaicContainer mosaics,
@@ -1347,6 +1425,132 @@ namespace xpx_chain_sdk { namespace internal {
 
         return CreateTransaction<ReplicatorOffboardingTransactionImpl>(
                 dto, signer, signature, info, driveKey);
+    }
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransactionImpl(const Key& driveKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        const std::vector<MosaicId>& servicePayments,
+                                        const std::string& automaticExecutionsFileName,
+                                        const std::string& automaticExecutionsFunctionName,
+                                        const Amount& automaticExecutionsCallPayment,
+                                        const Amount& automaticDownloadCallPayment,
+                                        uint32_t automaticExecutionsNumber,
+                                        const Key& assignee,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer,
+                                        const std::optional<Signature>& signature,
+                                        const std::optional<TransactionInfo>& info)
+    {
+        DeployContractTransactionDTO dto;
+        InitDeployContractTransactionDTO(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee,
+                maxFee,
+                deadline,
+                networkId,
+                signer,
+                signature);
+
+        return CreateTransaction<DeployContractTransactionImpl>(
+                dto,
+                signer,
+                signature,
+                info,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee);
+    }
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransactionImpl(const Key& contractKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    const std::vector<MosaicId>& servicePayments,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId,
+                                    const std::optional<Key>& signer,
+                                    const std::optional<Signature>& signature,
+                                    const std::optional<TransactionInfo>& info)
+    {
+        ManualCallTransactionDTO dto;
+        InitManualCallTransactionDTO(
+                dto,
+                contractKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                maxFee,
+                deadline,
+                networkId,
+                signer,
+                signature);
+
+        return CreateTransaction<ManualCallTransactionImpl>(
+                dto,
+                signer,
+                signature,
+                info,
+                contractKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments);
+    }
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
+                                                    uint32_t automaticExecutionsNumber,
+                                                    std::optional<Amount> maxFee,
+                                                    std::optional<NetworkDuration> deadline,
+                                                    std::optional<NetworkIdentifier> networkId,
+                                                    const std::optional<Key>& signer,
+                                                    const std::optional<Signature>& signature,
+                                                    const std::optional<TransactionInfo>& info)
+    {
+        AutomaticExecutionsPaymentTransactionDTO dto;
+        InitAutomaticExecutionsPaymentTransactionDTO(
+                dto, contractKey, automaticExecutionsNumber, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<AutomaticExecutionsPaymentTransactionImpl>(
+                dto, signer, signature, info, contractKey, automaticExecutionsNumber);
     }
 }}
 
@@ -2094,5 +2298,136 @@ namespace xpx_chain_sdk {
         EmbeddedReplicatorOffboardingTransactionDTO dto;
         InitReplicatorOffboardingTransactionDTO(dto, driveKey, signer, networkId);
         return CreateTransaction<EmbeddedReplicatorOffboardingTransactionImpl>(dto, driveKey);
+    }
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransaction(const Key& driveKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    const std::vector<MosaicId>& servicePayments,
+                                    const std::string& automaticExecutionsFileName,
+                                    const std::string& automaticExecutionsFunctionName,
+                                    const Amount& automaticExecutionsCallPayment,
+                                    const Amount& automaticDownloadCallPayment,
+                                    uint32_t automaticExecutionsNumber,
+                                    const Key& assignee,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateDeployContractTransactionImpl(
+                driveKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments,
+                automaticExecutionsFileName, automaticExecutionsFunctionName, automaticExecutionsCallPayment, automaticDownloadCallPayment,
+                automaticExecutionsNumber, assignee, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedDeployContractTransaction>
+    CreateEmbeddedDeployContractTransaction(const Key& driveKey,
+                                            const std::string& fileName,
+                                            const std::string& functionName,
+                                            const std::vector<uint8_t>& actualArguments,
+                                            const Amount& executionCallPayment,
+                                            const Amount& downloadCallPayment,
+                                            const std::vector<MosaicId>& servicePayments,
+                                            const std::string& automaticExecutionsFileName,
+                                            const std::string& automaticExecutionsFunctionName,
+                                            const Amount& automaticExecutionsCallPayment,
+                                            const Amount& automaticDownloadCallPayment,
+                                            uint32_t automaticExecutionsNumber,
+                                            const Key& assignee,
+                                            const Key& signer,
+                                            std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedDeployContractTransactionDTO dto;
+        InitDeployContractTransactionDTO(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee,
+                signer,
+                networkId);
+        return CreateTransaction<EmbeddedDeployContractTransactionImpl>(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee);
+    }
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransaction(const Key& contractKey,
+                                const std::string& fileName,
+                                const std::string& functionName,
+                                const std::vector<uint8_t>& actualArguments,
+                                const Amount& executionCallPayment,
+                                const Amount& downloadCallPayment,
+                                const std::vector<MosaicId>& servicePayments,
+                                std::optional<Amount> maxFee,
+                                std::optional<NetworkDuration> deadline,
+                                std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateManualCallTransactionImpl(
+                contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedManualCallTransaction>
+    CreateEmbeddedManualCallTransaction(const Key& contractKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        const std::vector<MosaicId>& servicePayments,
+                                        const Key& signer,
+                                        std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedManualCallTransactionDTO dto;
+        InitManualCallTransactionDTO(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, signer, networkId);
+        return CreateTransaction<EmbeddedManualCallTransactionImpl>(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments);
+    }
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransaction(const Key& contractKey,
+                                                uint32_t automaticExecutionsNumber,
+                                                std::optional<Amount> maxFee,
+                                                std::optional<NetworkDuration> deadline,
+                                                std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateAutomaticExecutionsPaymentTransactionImpl(contractKey, automaticExecutionsNumber, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedAutomaticExecutionsPaymentTransaction>
+    CreateEmbeddedAutomaticExecutionsPaymentTransaction(const Key& contractKey,
+                                                        uint32_t automaticExecutionsNumber,
+                                                        const Key& signer,
+                                                        std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedAutomaticExecutionsPaymentTransactionDTO dto;
+        InitAutomaticExecutionsPaymentTransactionDTO(dto, contractKey, automaticExecutionsNumber, signer, networkId);
+        return CreateTransaction<EmbeddedAutomaticExecutionsPaymentTransactionImpl>(dto, contractKey, automaticExecutionsNumber);
     }
 }
