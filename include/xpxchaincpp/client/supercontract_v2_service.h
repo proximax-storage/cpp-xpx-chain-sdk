@@ -24,15 +24,15 @@ namespace xpx_chain_sdk {
     class SuperContractV2Service {
     public:
         SuperContractV2Service(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
 
         ~SuperContractV2Service() = default;
 
-        SuperContractInfo getSuperContractByKey(const std::string& contractKey);
+        SuperContractV2 getSuperContractByKey(const std::string& contractKey);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
     };
 };

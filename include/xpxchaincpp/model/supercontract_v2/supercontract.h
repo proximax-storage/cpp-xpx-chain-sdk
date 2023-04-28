@@ -5,10 +5,6 @@
 **/
 #pragma once
 
-#include "automatic_executions_info.h"
-#include "batch.h"
-#include "contract_call.h"
-#include "executor_info.h"
 #include <xpxchaincpp/types.h>
 
 #include <map>
@@ -19,8 +15,59 @@
 
 namespace xpx_chain_sdk {
 
-    /// SuperContractInfo.
-    class SuperContractInfo {
+    struct AutomaticExecutionsInfo {
+        std::string automaticExecutionFileName;
+        std::string automaticExecutionsFunctionName;
+        uint64_t automaticExecutionsNextBlockToCheck;
+        uint64_t automaticExecutionCallPayment;
+        uint64_t automaticDownloadCallPayment;
+        uint32_t automatedExecutionsNumber = 0U;
+        std::optional<uint64_t> automaticExecutionsPrepaidSince;
+    };
+
+    struct CompletedCall {
+        std::string callId;
+        std::string caller;
+        int16_t status;
+        uint64_t executionWork;
+        uint64_t downloadWork;
+    };
+
+    struct Batch {
+        bool success;
+        std::array<uint8_t, 32> poExVerificationInformation;
+        std::vector<CompletedCall> completedCalls;
+    };
+
+    struct ServicePayment {
+        uint64_t mosaicId;
+        uint64_t amount;
+    };
+
+    struct ContractCall {
+        std::string callId;
+        std::string caller;
+        std::string fileName;
+        std::string functionName;
+        std::string actualArguments;
+        uint64_t executionCallPayment;
+        uint64_t downloadCallPayment;
+        std::vector<ServicePayment> servicePayments;
+        uint64_t blockHeight;
+    };
+
+    struct ProofOfExecution {
+        uint64_t startBatchId = 0;
+        std::array<uint8_t, 32> T;
+        std::array<uint8_t, 32> R;
+    };
+
+    struct ExecutorInfo {
+        uint64_t nextBatchToApprove = 0;
+        ProofOfExecution poEx;
+    };
+
+    class SuperContractV2Data {
     public:
         std::string contractKey;
         std::string executionPaymentKey;
@@ -32,5 +79,15 @@ namespace xpx_chain_sdk {
         std::map<std::string, ExecutorInfo> executorsInfo;
         std::map<uint64_t, Batch> batches;
         std::multiset<std::string> releasedTransactions;
+    };
+
+    class SuperContractV2 {
+    public:
+        SuperContractV2Data data;
+    };
+
+    class MultipleSuperContracts {
+    public:
+        std::vector<SuperContractV2> supercontracts;
     };
 }

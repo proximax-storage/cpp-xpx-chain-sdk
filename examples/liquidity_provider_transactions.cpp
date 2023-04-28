@@ -83,7 +83,7 @@ int main() {
 	std::string publicKey = "E8D4B7BEB2A531ECA8CC7FD93F79A4C828C24BE33F99CF7C5609FF5CE14605F4";
 	std::string privateKey = "2F985E4EC55D60C957C973BD1BEE2C0B3BA313A841D3EE4C74810805E6936053";
 
-    auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
+    auto client = xpx_chain_sdk::getClient(config);
 
     std::string slashingAccountPublicKey = "E92978122F00698856910664C480E8F3C2FDF0A733F42970FBD58A5145BD6F21";
     std::string slashingAccountPrivateKey = "7AA907C3D80B3815BE4B4E1470DEEE8BB83BFEB330B9A82197603D09BA947230";

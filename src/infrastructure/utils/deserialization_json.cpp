@@ -737,14 +737,14 @@ namespace xpx_chain_sdk::internal::json::dto {
     }
 
     template<>
-    SuperContractInfo fromDto<SuperContractInfo, SuperContractInfoDto> (const SuperContractInfoDto& dto) {
-        SuperContractInfo scInfo;
+    SuperContractV2 fromDto<SuperContractV2, SuperContractV2Dto> (const SuperContractV2Dto& dto) {
+        SuperContractV2 scInfo;
         auto scDto = dto.value<"supercontract"_>();
-        scInfo.contractKey =  scDto.value<"contractKey"_>();
-        scInfo.executionPaymentKey =  scDto.value<"executionPaymentKey"_>();
-        scInfo.assignee =  scDto.value<"assignee"_>();
-        scInfo.creator =  scDto.value<"creator"_>();
-        scInfo.deploymentBaseModificationId = scDto.value<"deploymentBaseModificationId"_>();
+        scInfo.data.contractKey =  scDto.value<"contractKey"_>();
+        scInfo.data.executionPaymentKey =  scDto.value<"executionPaymentKey"_>();
+        scInfo.data.assignee =  scDto.value<"assignee"_>();
+        scInfo.data.creator =  scDto.value<"creator"_>();
+        scInfo.data.deploymentBaseModificationId = scDto.value<"deploymentBaseModificationId"_>();
 
         // AutomaticExecutionsInfo
         AutomaticExecutionsInfo automaticExecutionsInfo;
@@ -756,7 +756,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         automaticExecutionsInfo.automaticDownloadCallPayment = automaticExecutionsInfoDto.value<"automaticDownloadCallPayment"_>();
         automaticExecutionsInfo.automatedExecutionsNumber = automaticExecutionsInfoDto.value<"automatedExecutionsNumber"_>();
         automaticExecutionsInfo.automaticExecutionsPrepaidSince = automaticExecutionsInfoDto.value<"automaticExecutionsPrepaidSince"_>();
-        scInfo.automaticExecutionsInfo = automaticExecutionsInfo;
+        scInfo.data.automaticExecutionsInfo = automaticExecutionsInfo;
 
         // Requested calls
         for(const auto& requestedCallDto : scDto.value<"requestedCalls"_>()) {
@@ -779,7 +779,7 @@ namespace xpx_chain_sdk::internal::json::dto {
                 requestedCall.servicePayments.emplace_back(servicePayment);
             }
 
-            scInfo.requestedCalls.emplace_back(requestedCall);
+            scInfo.data.requestedCalls.emplace_back(requestedCall);
         }
 
         // Executors info
@@ -795,7 +795,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             proofOfExecution.R = poEx.value<"R"_>();
             executorInfo.poEx = proofOfExecution;
 
-            scInfo.executorsInfo.emplace(executorInfoDto.value<"replicatorKey"_>(), executorInfo);
+            scInfo.data.executorsInfo.emplace(executorInfoDto.value<"replicatorKey"_>(), executorInfo);
         }
 
         // Batches
@@ -814,12 +814,12 @@ namespace xpx_chain_sdk::internal::json::dto {
                 completedCall.downloadWork = completedCallDto.value<"downloadWork"_>();
                 batch.completedCalls.emplace_back(completedCall);
             }
-            scInfo.batches.emplace(batchDto.value<"batchId"_>(), batch);
+            scInfo.data.batches.emplace(batchDto.value<"batchId"_>(), batch);
         }
 
         // Released transactions
         for(const auto& releasedTransactionDto : scDto.value<"releasedTransactions"_>()) {
-            scInfo.releasedTransactions.emplace(releasedTransactionDto);
+            scInfo.data.releasedTransactions.emplace(releasedTransactionDto);
         }
 
         return scInfo;

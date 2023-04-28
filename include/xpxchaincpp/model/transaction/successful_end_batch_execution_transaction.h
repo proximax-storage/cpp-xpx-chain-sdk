@@ -25,7 +25,7 @@ namespace xpx_chain_sdk {
 				const Hash256& storageHash,
 				uint64_t usedSizeBytes,
 				uint64_t metaFilesSizeBytes,
-				const Height& automaticExecutionsNextBlockToCheck,
+				const uint64_t automaticExecutionsNextBlockToCheck,
 				const std::array<uint8_t, 32>& proofOfExecutionVerificationInformation,
 				const std::vector<ExtendedCallDigest>& callDigests,
 				const std::vector<Opinion>& opinions,
@@ -52,7 +52,7 @@ namespace xpx_chain_sdk {
 
         uint64_t metaFilesSizeBytes() const;
 
-        const Height& automaticExecutionsNextBlockToCheck() const;
+        const uint64_t automaticExecutionsNextBlockToCheck() const;
 
         const std::array<uint8_t, 32>& proofOfExecutionVerificationInformation() const;
 
@@ -67,7 +67,7 @@ namespace xpx_chain_sdk {
 		Hash256 storageHash_;
 		uint64_t usedSizeBytes_;
 		uint64_t metaFilesSizeBytes_;
-		Height automaticExecutionsNextBlockToCheck_;
+		uint64_t automaticExecutionsNextBlockToCheck_;
 		std::array<uint8_t, 32> proofOfExecutionVerificationInformation_;
 		std::vector<ExtendedCallDigest> callDigests_;
 		std::vector<Opinion> opinions_;

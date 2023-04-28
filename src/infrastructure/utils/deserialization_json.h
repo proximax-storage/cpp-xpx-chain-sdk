@@ -546,7 +546,7 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         Opinion fromDto<Opinion, OpinionDto>(const OpinionDto& dto);
 
         template<>
-        SuperContractInfo fromDto<SuperContractInfo, SuperContractInfoDto> (const SuperContractInfoDto& dto);
+        SuperContractV2 fromDto<SuperContractV2, SuperContractV2Dto> (const SuperContractV2Dto& dto);
 	}
 }
 }

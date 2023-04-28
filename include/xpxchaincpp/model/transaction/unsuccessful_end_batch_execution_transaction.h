@@ -22,7 +22,7 @@ namespace xpx_chain_sdk {
 		explicit TUnsuccessfulEndBatchExecutionTransaction(
                 const Key& contractKey,
 				uint64_t batchId,
-				const Height& automaticExecutionsNextBlockToCheck,
+				const uint64_t automaticExecutionsNextBlockToCheck,
 				const std::vector<ExtendedCallDigest>& callDigests,
 				const std::vector<Opinion>& opinions,
 		        TArgs&&... args):
@@ -38,7 +38,7 @@ namespace xpx_chain_sdk {
 
         uint64_t batchId() const;
 
-        const Height& automaticExecutionsNextBlockToCheck() const;
+        const uint64_t automaticExecutionsNextBlockToCheck() const;
 
         const std::vector<ExtendedCallDigest>& callDigests() const;
 
@@ -47,7 +47,7 @@ namespace xpx_chain_sdk {
 	private:
         Key contractKey_;
 		uint64_t batchId_;
-		Height automaticExecutionsNextBlockToCheck_;
+		uint64_t automaticExecutionsNextBlockToCheck_;
 		std::vector<ExtendedCallDigest> callDigests_;
 		std::vector<Opinion> opinions_;
 	};

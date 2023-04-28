@@ -21,7 +21,7 @@ int main() {
 	std::string publicKey = "E92978122F00698856910664C480E8F3C2FDF0A733F42970FBD58A5145BD6F21";
 	std::string privateKey = "7AA907C3D80B3815BE4B4E1470DEEE8BB83BFEB330B9A82197603D09BA947230";
 
-	auto client = xpx_chain_sdk::getClient(std::make_shared<xpx_chain_sdk::Config>(config));
+	auto client = xpx_chain_sdk::getClient(config);
 
 //	auto score = client->blockchain()->getCurrentScore();
 //	std::cout << "Chain score: " << score.scoreHigh << ' ' << score.scoreLow << std::endl;

@@ -33,7 +33,7 @@ namespace xpx_chain_sdk {
     }
 
     template<typename TBase>
-    const Height& TSuccessfulEndBatchExecutionTransaction<TBase>::automaticExecutionsNextBlockToCheck() const {
+    const uint64_t TSuccessfulEndBatchExecutionTransaction<TBase>::automaticExecutionsNextBlockToCheck() const {
         return automaticExecutionsNextBlockToCheck_;
     }
 

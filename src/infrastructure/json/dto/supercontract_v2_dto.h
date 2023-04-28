@@ -13,6 +13,7 @@
 #include <set>
 #include <deque>
 #include <string>
+#include <vector>
 #include <optional>
 
 namespace xpx_chain_sdk::internal::json::dto {
@@ -72,7 +73,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         Field<STR_LITERAL("completedCalls"), std::vector<CompletedCallDto> >
     >;
 
-    using SuperContractInfoDto = VariadicStruct<
+    using SuperContractV2Dto = VariadicStruct<
         Field<STR_LITERAL("supercontract"),
             VariadicStruct<
                 Field<STR_LITERAL("contractKey"), std::string >,

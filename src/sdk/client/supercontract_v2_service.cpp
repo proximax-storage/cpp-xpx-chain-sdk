@@ -20,22 +20,22 @@ using xpx_chain_sdk::internal::json::Parser;
 using xpx_chain_sdk::internal::json::dto::from_json;
 
 SuperContractV2Service::SuperContractV2Service(
-        std::shared_ptr<Config> config,
+        const Config& config,
         std::shared_ptr<internal::network::Context> context
 ) :
-        _config(config),
-        _context(context)
-{}
+        _config(std::move(config)),
+        _context(std::move(context))
+{};
 
-SuperContractInfo SuperContractV2Service::getSuperContractByKey(const std::string& contractKey) {
-    std::stringstream path;
-    path << "supercontracts/" << contractKey;
-
-    RequestParamsBuilder builder(_config);
-    builder.setPath(path.str());
-    builder.setMethod(internal::network::HTTPRequestMethod::GET);
-
-    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
-    auto result = from_json<SuperContractInfo, SuperContractInfoDto>(response);
-    return result;
-}
+//SuperContractV2 SuperContractV2Service::getSuperContractByKey(const std::string& contractKey) {
+//    std::stringstream path;
+//    path << "supercontracts/" << contractKey;
+//
+//    RequestParamsBuilder builder(_config);
+//    builder.setPath(path.str());
+//    builder.setMethod(internal::network::HTTPRequestMethod::GET);
+//
+//    std::string response = internal::network::performHTTPRequest(_context, builder.getRequestParams());
+//    auto result = from_json<SuperContractV2, SuperContractV2Dto>(response);
+//    return result;
+//}
