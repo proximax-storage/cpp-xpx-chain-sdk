@@ -7,6 +7,7 @@
 
 #include <xpxchaincpp/types.h>
 #include <xpxchaincpp/utils/buffer.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <xpxchaincpp/model/transaction/transaction.h>
 #include <xpxchaincpp/model/transaction/embedded_transaction.h>
 
@@ -30,7 +31,7 @@ namespace xpx_chain_sdk {
                 const std::vector<uint8_t>& actualArguments,
                 const Amount& executionCallPayment,
                 const Amount& downloadCallPayment,
-                const std::vector<MosaicId>& servicePayments,
+                MosaicContainer servicePayments,
                 const std::string automaticExecutionsFileName,
                 const std::string automaticExecutionsFunctionName,
                 const Amount& automaticExecutionsCallPayment,
@@ -66,7 +67,7 @@ namespace xpx_chain_sdk {
 
         const Amount& downloadCallPayment() const;
 
-        const std::vector<MosaicId>& servicePayments() const;
+        const MosaicContainer& servicePayments() const;
 
         const std::string& automaticExecutionsFileName() const;
 
@@ -87,7 +88,7 @@ namespace xpx_chain_sdk {
         std::vector<uint8_t> actualArguments_;
         Amount executionCallPayment_;
         Amount downloadCallPayment_;
-        std::vector<MosaicId> servicePayments_;
+        MosaicContainer servicePayments_;
         std::string automaticExecutionsFileName_;
         std::string automaticExecutionsFunctionName_;
         Amount automaticExecutionsCallPayment_;
@@ -111,7 +112,7 @@ namespace xpx_chain_sdk {
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
-                                    const std::vector<MosaicId>& servicePayments,
+                                    MosaicContainer servicePayments,
                                     const std::string& automaticExecutionsFileName,
                                     const std::string& automaticExecutionsFunctionName,
                                     const Amount& automaticExecutionsCallPayment,
@@ -132,7 +133,7 @@ namespace xpx_chain_sdk {
                                             const std::vector<uint8_t>& actualArguments,
                                             const Amount& executionCallPayment,
                                             const Amount& downloadCallPayment,
-                                            const std::vector<MosaicId>& servicePayments,
+                                            MosaicContainer servicePayments,
                                             const std::string& automaticExecutionsFileName,
                                             const std::string& automaticExecutionsFunctionName,
                                             const Amount& automaticExecutionsCallPayment,

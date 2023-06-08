@@ -308,7 +308,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
             Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
             Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
             Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
-            Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>,
+            Field<STR_LITERAL("servicePayments"), std::vector<MosaicDTO>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>,
             Field<STR_LITERAL("automaticExecutionsFileName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFileNameSize")>>,
             Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string, desc::VariableSize<STR_LITERAL("automaticExecutionsFunctionNameSize")>>>;
 
@@ -325,7 +325,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
             Field<STR_LITERAL("fileName"), std::string, desc::VariableSize<STR_LITERAL("fileNameSize")>>,
             Field<STR_LITERAL("functionName"), std::string, desc::VariableSize<STR_LITERAL("functionNameSize")>>,
             Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>, desc::VariableSize<STR_LITERAL("actualArgumentsSize")>>,
-            Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>;
+            Field<STR_LITERAL("servicePayments"), std::vector<MosaicDTO>, desc::VariableSize<STR_LITERAL("servicePaymentsCount")>>>;
 
     template<typename TBase>
     using TAutomaticExecutionsPaymentTransactionDTO = VariadicStruct<

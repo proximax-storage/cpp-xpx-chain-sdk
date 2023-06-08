@@ -38,7 +38,7 @@ namespace xpx_chain_sdk {
     }
 
     template<typename TBase>
-    const std::vector<MosaicId>& xpx_chain_sdk::TDeployContractTransaction<TBase>::servicePayments() const {
+    const MosaicContainer& xpx_chain_sdk::TDeployContractTransaction<TBase>::servicePayments() const {
         return servicePayments_;
     }
 
