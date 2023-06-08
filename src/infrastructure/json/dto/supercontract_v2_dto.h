@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include "mosaic_dto.h"
 
 namespace xpx_chain_sdk::internal::json::dto {
     using internal::json::Uint64;
