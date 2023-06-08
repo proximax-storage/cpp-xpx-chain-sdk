@@ -838,7 +838,7 @@ namespace xpx_chain_sdk { namespace internal {
             dto.template set<"executionCallPayment"_>(executionCallPayment);
             dto.template set<"downloadCallPayment"_>(downloadCallPayment);
             dto.template set<"servicePaymentsCount"_>(servicePayments.size());
-            dto.template set<"servicePayments"_>(dtoServicePayments);
+            dto.template set<"servicePayments"_>(std::move(dtoServicePayments));
 
             InitTransactionDTO(dto, TransactionType::Manual_Call, std::forward<TArgs>(args)...);
         }

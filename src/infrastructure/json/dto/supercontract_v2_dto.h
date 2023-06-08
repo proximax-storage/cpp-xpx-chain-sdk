@@ -29,7 +29,10 @@ namespace xpx_chain_sdk::internal::json::dto {
         Field<STR_LITERAL("automaticExecutionsPrepaidSince"), Uint64 >
     >;
 
-    using ServicePaymentDto = MosaicDto;
+    using ServicePaymentDto = VariadicStruct<
+            Field<STR_LITERAL("id"), Uint64 >,
+            Field<STR_LITERAL("amount"), Uint64 >
+    >;
 
     using ContractCallDto = VariadicStruct<
         Field<STR_LITERAL("callId"), std::string >,
