@@ -344,7 +344,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 			Field<STR_LITERAL("fileName"), std::string>,
 			Field<STR_LITERAL("functionName"), std::string>,
 			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
-			Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>>,
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicDto>>,
 			Field<STR_LITERAL("automaticExecutionsFileName"), std::string>,
 			Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string>>;
 
@@ -357,7 +357,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 			Field<STR_LITERAL("fileName"), std::string>,
 			Field<STR_LITERAL("functionName"), std::string>,
 			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
-			Field<STR_LITERAL("servicePayments"), std::vector<MosaicId>>>;
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicDto>>>;
 
 	template<typename TBase>
 	using TAutomaticExecutionsPaymentTransactionDto = VariadicStruct<

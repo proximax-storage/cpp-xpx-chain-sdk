@@ -488,6 +488,14 @@ namespace xpx_chain_sdk {
                         EmbeddedDeployContractTransactionImpl>>
         std::unique_ptr<TImpl> CreateDeployContractTransaction(const TDto& dto, RawBuffer binaryData)
         {
+            MosaicContainer servicePayments;
+            for (const auto& servicePaymentDTO:  dto.template value<"servicePayments"_>()) {
+                servicePayments.insert(Mosaic{ servicePaymentDTO.template value<"id"_>(), servicePaymentDTO.template value<"amount"_>() });
+            }
+            if (servicePayments.size() != dto.template value<"servicePayments"_>().size()) {
+                return nullptr;
+            }
+
             return CreateTransaction<TImpl>(
                     dto, binaryData,
                     dto.template value<"driveKey"_>(),
@@ -496,7 +504,7 @@ namespace xpx_chain_sdk {
                     dto.template value<"actualArguments"_>(),
                     dto.template value<"executionCallPayment"_>(),
                     dto.template value<"downloadCallPayment"_>(),
-                    dto.template value<"servicePayments"_>(),
+                    std::move(servicePayments),
                     dto.template value<"automaticExecutionsFileName"_>(),
                     dto.template value<"automaticExecutionsFunctionName"_>(),
                     dto.template value<"automaticExecutionsCallPayment"_>(),
@@ -512,6 +520,14 @@ namespace xpx_chain_sdk {
                         EmbeddedManualCallTransactionImpl>>
         std::unique_ptr<TImpl> CreateManualCallTransaction(const TDto& dto, RawBuffer binaryData)
         {
+            MosaicContainer servicePayments;
+            for (const auto& servicePaymentDTO:  dto.template value<"servicePayments"_>()) {
+                servicePayments.insert(Mosaic{ servicePaymentDTO.template value<"id"_>(), servicePaymentDTO.template value<"amount"_>() });
+            }
+            if (servicePayments.size() != dto.template value<"servicePayments"_>().size()) {
+                return nullptr;
+            }
+
             return CreateTransaction<TImpl>(
                     dto, binaryData,
                     dto.template value<"contractKey"_>(),
@@ -520,7 +536,7 @@ namespace xpx_chain_sdk {
                     dto.template value<"actualArguments"_>(),
                     dto.template value<"executionCallPayment"_>(),
                     dto.template value<"downloadCallPayment"_>(),
-                    dto.template value<"servicePayments"_>());
+                    std::move(servicePayments));
         }
 
         template<

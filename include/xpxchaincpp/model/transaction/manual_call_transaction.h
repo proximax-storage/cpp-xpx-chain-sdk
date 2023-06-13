@@ -6,6 +6,7 @@
 #pragma once
 
 #include <xpxchaincpp/utils/buffer.h>
+#include <xpxchaincpp/model/mosaic/mosaic.h>
 #include <xpxchaincpp/model/transaction/transaction.h>
 #include <xpxchaincpp/model/transaction/embedded_transaction.h>
 
@@ -29,7 +30,7 @@ namespace xpx_chain_sdk {
                 const std::vector<uint8_t>& actualArguments,
                 const Amount& executionCallPayment,
                 const Amount& downloadCallPayment,
-                const std::vector<MosaicId>& servicePayments,
+                MosaicContainer servicePayments,
 		        TArgs&&... args):
             TBase(TransactionType::Manual_Call, std::forward<TArgs>(args)...),
             contractKey_(contractKey),
@@ -53,7 +54,7 @@ namespace xpx_chain_sdk {
 
         const Amount& downloadCallPayment() const;
 
-        const std::vector<MosaicId>& servicePayments() const;
+        const MosaicContainer& servicePayments() const;
 
 	private:
         Key contractKey_;
@@ -62,7 +63,7 @@ namespace xpx_chain_sdk {
         std::vector<uint8_t> actualArguments_;
         Amount executionCallPayment_;
         Amount downloadCallPayment_;
-        std::vector<MosaicId> servicePayments_;
+        MosaicContainer servicePayments_;
 	};
 	
 	extern template class TManualCallTransaction<Transaction>;
@@ -80,7 +81,7 @@ namespace xpx_chain_sdk {
                             const std::vector<uint8_t>& actualArguments,
                             const Amount& executionCallPayment,
                             const Amount& downloadCallPayment,
-                            const std::vector<MosaicId>& servicePayments,
+                            MosaicContainer servicePayments,
                             std::optional<Amount> maxFee = std::nullopt,
                             std::optional<NetworkDuration> deadline = std::nullopt,
                             std::optional<NetworkIdentifier> networkId = std::nullopt);
@@ -95,7 +96,7 @@ namespace xpx_chain_sdk {
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
-                                    const std::vector<MosaicId>& servicePayments,
+                                    MosaicContainer servicePayments,
                                     const Key& signer,
                                     std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

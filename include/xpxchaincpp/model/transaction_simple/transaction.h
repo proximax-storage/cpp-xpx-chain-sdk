@@ -320,7 +320,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
         Amount executionCallPayment;
         Amount downloadCallPayment;
         uint8_t servicePaymentsCount;
-        std::vector<MosaicId> servicePayments;
+        std::vector<Mosaic> servicePayments;
         uint16_t automaticExecutionsFileNameSize;
         std::string automaticExecutionsFileName;
         uint16_t automaticExecutionsFunctionNameSize;
@@ -344,7 +344,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
         Amount executionCallPayment;
         Amount downloadCallPayment;
         uint8_t servicePaymentsCount;
-        std::vector<MosaicId> servicePayments;
+        std::vector<Mosaic> servicePayments;
     };
 
     template<typename TBase>

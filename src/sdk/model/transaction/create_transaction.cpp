@@ -775,7 +775,7 @@ namespace xpx_chain_sdk { namespace internal {
                                               const std::vector<uint8_t>& actualArguments,
                                               const Amount& executionCallPayment,
                                               const Amount& downloadCallPayment,
-                                              const std::vector<MosaicId>& servicePayments,
+                                              const MosaicContainer& servicePayments,
                                               const std::string& automaticExecutionsFileName,
                                               const std::string& automaticExecutionsFunctionName,
                                               const Amount& automaticExecutionsCallPayment,
@@ -784,6 +784,11 @@ namespace xpx_chain_sdk { namespace internal {
                                               const Key& assignee,
                                               TArgs&&... args)
         {
+            std::vector<MosaicDTO> dtoServicePayments;
+            for (const auto& servicePayment: servicePayments) {
+                dtoServicePayments.emplace_back( servicePayment.id, servicePayment.amount );
+            }
+
             dto.template set<"driveKey"_>(driveKey);
             dto.template set<"fileNameSize"_>(fileName.size());
             dto.template set<"fileName"_>(fileName);
@@ -794,7 +799,7 @@ namespace xpx_chain_sdk { namespace internal {
             dto.template set<"executionCallPayment"_>(executionCallPayment);
             dto.template set<"downloadCallPayment"_>(downloadCallPayment);
             dto.template set<"servicePaymentsCount"_>(servicePayments.size());
-            dto.template set<"servicePayments"_>(servicePayments);
+            dto.template set<"servicePayments"_>(std::move(dtoServicePayments));
             dto.template set<"automaticExecutionsFileNameSize"_>(automaticExecutionsFileName.size());
             dto.template set<"automaticExecutionsFileName"_>(automaticExecutionsFileName);
             dto.template set<"automaticExecutionsFunctionNameSize"_>(automaticExecutionsFunctionName.size());
@@ -815,9 +820,14 @@ namespace xpx_chain_sdk { namespace internal {
                                           const std::vector<uint8_t>& actualArguments,
                                           const Amount& executionCallPayment,
                                           const Amount& downloadCallPayment,
-                                          const std::vector<MosaicId>& servicePayments,
+                                          const MosaicContainer& servicePayments,
                                           TArgs&&... args)
         {
+            std::vector<MosaicDTO> dtoServicePayments;
+            for (const auto& servicePayment: servicePayments) {
+                dtoServicePayments.emplace_back( servicePayment.id, servicePayment.amount );
+            }
+
             dto.template set<"contractKey"_>(contractKey);
             dto.template set<"fileNameSize"_>(fileName.size());
             dto.template set<"fileName"_>(fileName);
@@ -828,7 +838,7 @@ namespace xpx_chain_sdk { namespace internal {
             dto.template set<"executionCallPayment"_>(executionCallPayment);
             dto.template set<"downloadCallPayment"_>(downloadCallPayment);
             dto.template set<"servicePaymentsCount"_>(servicePayments.size());
-            dto.template set<"servicePayments"_>(servicePayments);
+            dto.template set<"servicePayments"_>(std::move(dtoServicePayments));
 
             InitTransactionDTO(dto, TransactionType::Manual_Call, std::forward<TArgs>(args)...);
         }
@@ -1434,7 +1444,7 @@ namespace xpx_chain_sdk { namespace internal {
                                         const std::vector<uint8_t>& actualArguments,
                                         const Amount& executionCallPayment,
                                         const Amount& downloadCallPayment,
-                                        const std::vector<MosaicId>& servicePayments,
+                                        MosaicContainer servicePayments,
                                         const std::string& automaticExecutionsFileName,
                                         const std::string& automaticExecutionsFunctionName,
                                         const Amount& automaticExecutionsCallPayment,
@@ -1497,7 +1507,7 @@ namespace xpx_chain_sdk { namespace internal {
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
-                                    const std::vector<MosaicId>& servicePayments,
+                                    MosaicContainer servicePayments,
                                     std::optional<Amount> maxFee,
                                     std::optional<NetworkDuration> deadline,
                                     std::optional<NetworkIdentifier> networkId,
@@ -2307,7 +2317,7 @@ namespace xpx_chain_sdk {
                                     const std::vector<uint8_t>& actualArguments,
                                     const Amount& executionCallPayment,
                                     const Amount& downloadCallPayment,
-                                    const std::vector<MosaicId>& servicePayments,
+                                    MosaicContainer servicePayments,
                                     const std::string& automaticExecutionsFileName,
                                     const std::string& automaticExecutionsFunctionName,
                                     const Amount& automaticExecutionsCallPayment,
@@ -2331,7 +2341,7 @@ namespace xpx_chain_sdk {
                                             const std::vector<uint8_t>& actualArguments,
                                             const Amount& executionCallPayment,
                                             const Amount& downloadCallPayment,
-                                            const std::vector<MosaicId>& servicePayments,
+                                            MosaicContainer servicePayments,
                                             const std::string& automaticExecutionsFileName,
                                             const std::string& automaticExecutionsFunctionName,
                                             const Amount& automaticExecutionsCallPayment,
@@ -2383,7 +2393,7 @@ namespace xpx_chain_sdk {
                                 const std::vector<uint8_t>& actualArguments,
                                 const Amount& executionCallPayment,
                                 const Amount& downloadCallPayment,
-                                const std::vector<MosaicId>& servicePayments,
+                                MosaicContainer servicePayments,
                                 std::optional<Amount> maxFee,
                                 std::optional<NetworkDuration> deadline,
                                 std::optional<NetworkIdentifier> networkId)
@@ -2399,7 +2409,7 @@ namespace xpx_chain_sdk {
                                         const std::vector<uint8_t>& actualArguments,
                                         const Amount& executionCallPayment,
                                         const Amount& downloadCallPayment,
-                                        const std::vector<MosaicId>& servicePayments,
+                                        MosaicContainer servicePayments,
                                         const Key& signer,
                                         std::optional<NetworkIdentifier> networkId)
     {

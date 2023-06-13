@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include "mosaic_dto.h"
 
 namespace xpx_chain_sdk::internal::json::dto {
     using internal::json::Uint64;
@@ -30,8 +31,8 @@ namespace xpx_chain_sdk::internal::json::dto {
     >;
 
     using ServicePaymentDto = VariadicStruct<
-        Field<STR_LITERAL("mosaicId"), Uint64 >,
-        Field<STR_LITERAL("amount"), Uint64 >
+            Field<STR_LITERAL("id"), Uint64 >,
+            Field<STR_LITERAL("amount"), Uint64 >
     >;
 
     using ContractCallDto = VariadicStruct<

@@ -773,7 +773,7 @@ namespace xpx_chain_sdk::internal::json::dto {
             // Service payments
             for(const auto& servicePaymentDto : requestedCallDto.value<"servicePayments"_>()) {
                 ServicePayment servicePayment;
-                servicePayment.mosaicId = servicePaymentDto.value<"mosaicId"_>();
+                servicePayment.mosaicId = servicePaymentDto.value<"id"_>();
                 servicePayment.amount = servicePaymentDto.value<"amount"_>();
 
                 requestedCall.servicePayments.emplace_back(servicePayment);
@@ -2001,7 +2001,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePayments = dto.value<"servicePayments"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
 		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
 		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
 		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
@@ -2024,7 +2026,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePayments = dto.value<"servicePayments"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
 
 		return transaction;
 	}
@@ -2316,7 +2320,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePayments = dto.value<"servicePayments"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
 		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
 		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
 		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
@@ -2339,7 +2345,9 @@ namespace xpx_chain_sdk::internal::json::dto {
 		transaction.actualArguments = dto.value<"actualArguments"_>();
 		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
 		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
-		transaction.servicePayments = dto.value<"servicePayments"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
 
 		return transaction;
 	}
