@@ -94,6 +94,10 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::stop() {
+        if (!_mainWorker.joinable()) {
+            return;
+        }
+
         boost::asio::post(*_strand, [this] {
             if (_wsClient->isConnected()) {
                 _subscriptionManager->unsubscribe(_uid, internal::pathBlock, [](){}, [](auto){});
