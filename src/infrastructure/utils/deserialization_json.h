@@ -33,6 +33,7 @@
 #include <infrastructure/json/dto/meta_dto.h>
 #include <infrastructure/json/dto/storage_dto.h>
 #include <infrastructure/json/dto/error_message_dto.h>
+#include <infrastructure/json/dto/supercontract_v2_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -53,6 +54,7 @@
 #include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
 #include <xpxchaincpp/model/network/network_version.h>
+#include <xpxchaincpp/model/supercontract_v2/supercontract.h>
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
@@ -406,6 +408,23 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         ErrorMessage fromDto<ErrorMessage, ErrorMessageDto >(const ErrorMessageDto & dto);
 
+        /// Supercontract V2
+
+        template<>
+        DeployContractTransaction fromDto<DeployContractTransaction, DeployContractTransactionDto>(const DeployContractTransactionDto& dto);
+
+        template<>
+        ManualCallTransaction fromDto<ManualCallTransaction, ManualCallTransactionDto>(const ManualCallTransactionDto& dto);
+
+        template<>
+        AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto);
+
+        template<>
+        SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto);
+
+        template<>
+        UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto);
+
         /// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
@@ -502,6 +521,32 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto);
+
+		/// Supercontract V2
+
+		template<>
+		EmbeddedDeployContractTransaction fromDto<EmbeddedDeployContractTransaction, EmbeddedDeployContractTransactionDto>(const EmbeddedDeployContractTransactionDto& dto);
+
+		template<>
+		EmbeddedManualCallTransaction fromDto<EmbeddedManualCallTransaction, EmbeddedManualCallTransactionDto>(const EmbeddedManualCallTransactionDto& dto);
+
+		template<>
+		EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto);
+
+		template<>
+		EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto);
+
+		template<>
+		EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto);
+
+        template<>
+        ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto& dto);
+
+        template<>
+        Opinion fromDto<Opinion, OpinionDto>(const OpinionDto& dto);
+
+        template<>
+        SuperContractV2 fromDto<SuperContractV2, SuperContractV2Dto> (const SuperContractV2Dto& dto);
 	}
 }
 }

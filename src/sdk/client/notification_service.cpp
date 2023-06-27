@@ -34,7 +34,6 @@ namespace xpx_chain_sdk {
             _tasks(),
             _mainWorker(),
             _isConnectionInProgress(false) {
-        run();
     }
 
     NotificationService::~NotificationService() {
@@ -69,7 +68,7 @@ namespace xpx_chain_sdk {
 
                     _isConnectionInProgress = false;
                     _tasks.clear();
-                    XPX_CHAIN_SDK_THROW_1(notification_error, errorMessage, errorCode.value())
+                    _errorsCallback(errorMessage, errorCode.value());
                 }
             };
 
@@ -95,6 +94,10 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::stop() {
+        if (!_mainWorker.joinable()) {
+            return;
+        }
+
         boost::asio::post(*_strand, [this] {
             if (_wsClient->isConnected()) {
                 _subscriptionManager->unsubscribe(_uid, internal::pathBlock, [](){}, [](auto){});
@@ -443,5 +446,10 @@ namespace xpx_chain_sdk {
                                                         std::function<void(boost::beast::error_code errorCode)> onError,
                                                         const std::vector<notifierId>& notifierIds) {
         removeNotifiers(address, internal::pathDriveState, _driveStateNotifiers, notifierIds, onSuccess, onError);
+    }
+
+    void NotificationService::connect(std::function<void(const std::string& message, int code)> callback) {
+        _errorsCallback = callback;
+        run();
     }
 }

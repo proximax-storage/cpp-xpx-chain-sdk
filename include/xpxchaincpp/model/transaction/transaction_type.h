@@ -41,7 +41,14 @@ namespace xpx_chain_sdk {
 		Manual_Rate_Change = 0x4269,
         Finish_Download = 0x4862,
         Replicator_Onboarding = 0x4662,
-        Replicator_Offboarding = 0x4762
+        Replicator_Offboarding = 0x4762,
+        Deploy_Contract = 0x416E,
+        Manual_Call = 0x426E,
+        Automatic_Executions_Payment = 0x436E,
+        Successful_End_Batch_Execution = 0x446E,
+        Unsuccessful_End_Batch_Execution = 0x456E,
+        End_Batch_Execution_Single = 0x466E,
+        Synchronization_Single = 0x476E,
     };
 	
 	/// Returns transaction name by \a type.

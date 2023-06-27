@@ -40,6 +40,13 @@ namespace xpx_chain_sdk {
             case TransactionType::Finish_Download:      		return "finish download";
             case TransactionType::Replicator_Onboarding:		return "replicator onboarding";
             case TransactionType::Replicator_Offboarding:		return "replicator offboarding";
+            case TransactionType::Deploy_Contract:                  return "Deploy Contract";
+            case TransactionType::Manual_Call:                      return "Manual Call";
+            case TransactionType::Automatic_Executions_Payment:     return "Automatic Executions Payment";
+            case TransactionType::Successful_End_Batch_Execution:   return "Successful End Batch Execution";
+            case TransactionType::Unsuccessful_End_Batch_Execution: return "Unsuccessful End Batch Execution";
+            case TransactionType::End_Batch_Execution_Single:       return "End Batch Execution Single";
+            case TransactionType::Synchronization_Single:           return "Synchronization Single";
             default: break;
         }
 
@@ -79,6 +86,13 @@ namespace xpx_chain_sdk {
             case TransactionType::Finish_Download:      		return 1;
             case TransactionType::Replicator_Onboarding:		return 1;
             case TransactionType::Replicator_Offboarding:		return 1;
+            case TransactionType::Deploy_Contract:                  return 1;
+            case TransactionType::Manual_Call:                      return 1;
+            case TransactionType::Automatic_Executions_Payment:     return 1;
+            case TransactionType::Successful_End_Batch_Execution:   return 1;
+            case TransactionType::Unsuccessful_End_Batch_Execution: return 1;
+            case TransactionType::End_Batch_Execution_Single:       return 1;
+            case TransactionType::Synchronization_Single:           return 1;
             default: break;
         }
 

@@ -203,7 +203,6 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		uint64_t driveSize;
 		Amount verificationFeeAmount;
         uint16_t replicatorCount;
-
     };
 
     template<typename TBase>
@@ -306,7 +305,103 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+    };
 
+    template<typename TBase>
+    class TDeployContractTransaction: public TBase {
+    public:
+        std::string driveKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<Mosaic> servicePayments;
+        uint16_t automaticExecutionsFileNameSize;
+        std::string automaticExecutionsFileName;
+        uint16_t automaticExecutionsFunctionNameSize;
+        std::string automaticExecutionsFunctionName;
+        Amount automaticExecutionsCallPayment;
+        Amount automaticDownloadCallPayment;
+        uint32_t automaticExecutionsNumber;
+        std::string assignee;
+    };
+
+    template<typename TBase>
+    class TManualCallTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<Mosaic> servicePayments;
+    };
+
+    template<typename TBase>
+    class TAutomaticExecutionsPaymentTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint32_t automaticExecutionsNumber;
+    };
+
+    class ExtendedCallDigest {
+    public:
+        std::string callId;
+        bool manual;
+        uint64_t block;
+        int16_t status;
+        std::string releasedTransactionHash;
+    };
+
+    class RawProofOfExecution {
+    public:
+        uint64_t startBatchId;
+        std::array<uint8_t, 32> T;
+        std::array<uint8_t, 32> R;
+        std::array<uint8_t, 32> F;
+        std::array<uint8_t, 32> K;
+    };
+
+    class CallPayment {
+    public:
+        Amount executionPayment;
+        Amount downloadPayment;
+    };
+
+    struct Opinion {
+        std::string publicKey;
+        std::string signature;
+        std::vector<RawProofOfExecution> poEx;
+        std::vector<CallPayment> callPayments;
+    };
+
+    template<typename TBase>
+    class TUnsuccessfulEndBatchExecutionTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint64_t batchId;
+        std::string automaticExecutionsNextBlockToCheck;
+        std::vector<ExtendedCallDigest> callDigests;
+        std::vector<Opinion> opinions;
+    };
+
+    template<typename TUnsuccessfulEndBatchExecutionTransaction>
+    class TSuccessfulEndBatchExecutionTransaction: public TUnsuccessfulEndBatchExecutionTransaction {
+    public:
+        std::string storageHash;
+        uint64_t usedSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        std::array<uint8_t, 32> proofOfExecutionVerificationInformation;
     };
 
     template<typename TBase>
@@ -402,6 +497,21 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
     using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
+
+    using DeployContractTransaction = TDeployContractTransaction <Transaction>;
+    using EmbeddedDeployContractTransaction = TDeployContractTransaction<EmbeddedTransaction>;
+
+    using ManualCallTransaction = TManualCallTransaction <Transaction>;
+    using EmbeddedManualCallTransaction = TManualCallTransaction<EmbeddedTransaction>;
+
+    using AutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction <Transaction>;
+    using EmbeddedAutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
+
+    using UnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction <Transaction>;
+    using EmbeddedUnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
+
+    using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <UnsuccessfulEndBatchExecutionTransaction>;
+    using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedUnsuccessfulEndBatchExecutionTransaction>;
 }}
 
 

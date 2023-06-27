@@ -449,6 +449,66 @@ namespace xpx_chain_sdk::internal::json::dto {
                 break;
             }
 
+            case TransactionType::Deploy_Contract: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), DeployContractTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<DeployContractTransaction, DeployContractTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<DeployContractTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Manual_Call: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), ManualCallTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<ManualCallTransaction, ManualCallTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<ManualCallTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Automatic_Executions_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), AutomaticExecutionsPaymentTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<AutomaticExecutionsPaymentTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Unsuccessful_End_Batch_Execution: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), UnsuccessfulEndBatchExecutionTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<UnsuccessfulEndBatchExecutionTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Successful_End_Batch_Execution: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), SuccessfulEndBatchExecutionTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<SuccessfulEndBatchExecutionTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -674,6 +734,95 @@ namespace xpx_chain_sdk::internal::json::dto {
         }
 
         return mbdto;
+    }
+
+    template<>
+    SuperContractV2 fromDto<SuperContractV2, SuperContractV2Dto> (const SuperContractV2Dto& dto) {
+        SuperContractV2 scInfo;
+        auto scDto = dto.value<"supercontract"_>();
+        scInfo.data.contractKey =  scDto.value<"contractKey"_>();
+        scInfo.data.executionPaymentKey =  scDto.value<"executionPaymentKey"_>();
+        scInfo.data.assignee =  scDto.value<"assignee"_>();
+        scInfo.data.creator =  scDto.value<"creator"_>();
+        scInfo.data.deploymentBaseModificationId = scDto.value<"deploymentBaseModificationId"_>();
+
+        // AutomaticExecutionsInfo
+        AutomaticExecutionsInfo automaticExecutionsInfo;
+        auto automaticExecutionsInfoDto =  scDto.value<"automaticExecutionsInfo"_>();
+        automaticExecutionsInfo.automaticExecutionFileName = automaticExecutionsInfoDto.value<"automaticExecutionFileName"_>();
+        automaticExecutionsInfo.automaticExecutionsFunctionName = automaticExecutionsInfoDto.value<"automaticExecutionsFunctionName"_>();
+        automaticExecutionsInfo.automaticExecutionsNextBlockToCheck = automaticExecutionsInfoDto.value<"automaticExecutionsNextBlockToCheck"_>();
+        automaticExecutionsInfo.automaticExecutionCallPayment = automaticExecutionsInfoDto.value<"automaticExecutionCallPayment"_>();
+        automaticExecutionsInfo.automaticDownloadCallPayment = automaticExecutionsInfoDto.value<"automaticDownloadCallPayment"_>();
+        automaticExecutionsInfo.automatedExecutionsNumber = automaticExecutionsInfoDto.value<"automatedExecutionsNumber"_>();
+        automaticExecutionsInfo.automaticExecutionsPrepaidSince = automaticExecutionsInfoDto.value<"automaticExecutionsPrepaidSince"_>();
+        scInfo.data.automaticExecutionsInfo = automaticExecutionsInfo;
+
+        // Requested calls
+        for(const auto& requestedCallDto : scDto.value<"requestedCalls"_>()) {
+            ContractCall requestedCall;
+            requestedCall.callId = requestedCallDto.value<"callId"_>();
+            requestedCall.caller = requestedCallDto.value<"caller"_>();
+            requestedCall.fileName = requestedCallDto.value<"fileName"_>();
+            requestedCall.functionName = requestedCallDto.value<"functionName"_>();
+            requestedCall.actualArguments = requestedCallDto.value<"actualArguments"_>();
+            requestedCall.executionCallPayment = requestedCallDto.value<"executionCallPayment"_>();
+            requestedCall.downloadCallPayment = requestedCallDto.value<"downloadCallPayment"_>();
+            requestedCall.blockHeight = requestedCallDto.value<"blockHeight"_>();
+
+            // Service payments
+            for(const auto& servicePaymentDto : requestedCallDto.value<"servicePayments"_>()) {
+                ServicePayment servicePayment;
+                servicePayment.mosaicId = servicePaymentDto.value<"id"_>();
+                servicePayment.amount = servicePaymentDto.value<"amount"_>();
+
+                requestedCall.servicePayments.emplace_back(servicePayment);
+            }
+
+            scInfo.data.requestedCalls.emplace_back(requestedCall);
+        }
+
+        // Executors info
+        for(const auto& executorInfoDto : scDto.value<"executorsInfo"_>()) {
+            ExecutorInfo executorInfo;
+            executorInfo.nextBatchToApprove = executorInfoDto.value<"nextBatchToApprove"_>();
+
+            // Proof of execution
+            ProofOfExecution proofOfExecution;
+            auto poEx = executorInfoDto.value<"poEx"_>();
+            proofOfExecution.startBatchId = poEx.value<"startBatchId"_>();
+            proofOfExecution.T = poEx.value<"T"_>();
+            proofOfExecution.R = poEx.value<"R"_>();
+            executorInfo.poEx = proofOfExecution;
+
+            scInfo.data.executorsInfo.emplace(executorInfoDto.value<"replicatorKey"_>(), executorInfo);
+        }
+
+        // Batches
+        for(const auto& batchDto : scDto.value<"batches"_>()) {
+            Batch batch;
+            batch.success = batchDto.value<"success"_>();
+            batch.poExVerificationInformation = batchDto.value<"poExVerificationInformation"_>();
+
+            // Completed calls
+            for(const auto& completedCallDto : batchDto.value<"completedCalls"_>()) {
+                CompletedCall completedCall;
+                completedCall.callId = completedCallDto.value<"callId"_>();
+                completedCall.caller = completedCallDto.value<"caller"_>();
+                completedCall.status = completedCallDto.value<"status"_>();
+                completedCall.executionWork = completedCallDto.value<"executionWork"_>();
+                completedCall.downloadWork = completedCallDto.value<"downloadWork"_>();
+                batch.completedCalls.emplace_back(completedCall);
+            }
+            scInfo.data.batches.emplace(batchDto.value<"batchId"_>(), batch);
+        }
+
+        // Released transactions
+        for(const auto& releasedTransactionDto : scDto.value<"releasedTransactions"_>()) {
+            scInfo.data.releasedTransactions.emplace(releasedTransactionDto);
+        }
+
+        return scInfo;
     }
 
     // Accounts
@@ -1841,6 +1990,149 @@ namespace xpx_chain_sdk::internal::json::dto {
 	}
 
 	template<>
+	EmbeddedDeployContractTransaction fromDto<EmbeddedDeployContractTransaction, EmbeddedDeployContractTransactionDto>(const EmbeddedDeployContractTransactionDto& dto) {
+		EmbeddedDeployContractTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
+		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
+		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
+		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
+		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+		transaction.assignee = dto.value<"assignee"_>();
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedManualCallTransaction fromDto<EmbeddedManualCallTransaction, EmbeddedManualCallTransactionDto>(const EmbeddedManualCallTransactionDto& dto) {
+		EmbeddedManualCallTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
+
+		return transaction;
+	}
+
+	template<>
+	EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto) {
+		EmbeddedAutomaticExecutionsPaymentTransaction transaction;
+
+		EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
+
+    template<>
+    ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto & dto) {
+        ExtendedCallDigest result =  {
+                dto.value<"callId"_>(),
+                dto.value<"manual"_>(),
+                dto.value<"block"_>(),
+                dto.value<"status"_>(),
+                dto.value<"releasedTransactionHash"_>()
+        };
+        return result;
+    }
+
+    template<>
+    Opinion fromDto<Opinion, OpinionDto>(const OpinionDto & dto) {
+        Opinion result =  {
+                dto.value<"publicKey"_>(),
+                dto.value<"signature"_>()
+        };
+
+        for(auto& poExDto : dto.value<"poEx"_>()) {
+            RawProofOfExecution poEx{
+                    poExDto.value<"startBatchId"_>(),
+                    poExDto.value<"T"_>(),
+                    poExDto.value<"R"_>(),
+                    poExDto.value<"F"_>(),
+                    poExDto.value<"K"_>()
+            };
+            result.poEx.push_back(poEx);
+        }
+
+        for(auto& callPaymentDto : dto.value<"callPayments"_>()) {
+            CallPayment callPayment{
+                    callPaymentDto.value<"executionPayment"_>(),
+                    callPaymentDto.value<"downloadPayment"_>()
+            };
+            result.callPayments.push_back(callPayment);
+        }
+
+        return result;
+    }
+
+    template<>
+    EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto) {
+        EmbeddedUnsuccessfulEndBatchExecutionTransaction transaction;
+
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+        transaction.contractKey = dto.value<"contractKey"_>();
+        transaction.batchId = dto.value<"batchId"_>();
+        transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+        return transaction;
+    }
+
+	template<>
+	EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto) {
+		EmbeddedSuccessfulEndBatchExecutionTransaction transaction;
+
+        EXTRACT_EMBEDDED_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.storageHash = dto.value<"storageHash"_>();
+		transaction.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+		return transaction;
+	}
+
+	template<>
 	PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto) {
 		PrepareBcDriveTransaction transaction;
 
@@ -2015,6 +2307,108 @@ namespace xpx_chain_sdk::internal::json::dto {
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };
     }
+
+	template<>
+	DeployContractTransaction fromDto<DeployContractTransaction, DeployContractTransactionDto>(const DeployContractTransactionDto& dto) {
+		DeployContractTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.driveKey = dto.value<"driveKey"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
+		transaction.automaticExecutionsFileName = dto.value<"automaticExecutionsFileName"_>();
+		transaction.automaticExecutionsFunctionName = dto.value<"automaticExecutionsFunctionName"_>();
+		transaction.automaticExecutionsCallPayment = dto.value<"automaticExecutionsCallPayment"_>();
+		transaction.automaticDownloadCallPayment = dto.value<"automaticDownloadCallPayment"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+		transaction.assignee = dto.value<"assignee"_>();
+
+		return transaction;
+	}
+
+	template<>
+	ManualCallTransaction fromDto<ManualCallTransaction, ManualCallTransactionDto>(const ManualCallTransactionDto& dto) {
+		ManualCallTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.fileName = dto.value<"fileName"_>();
+		transaction.functionName = dto.value<"functionName"_>();
+		transaction.actualArguments = dto.value<"actualArguments"_>();
+		transaction.executionCallPayment = dto.value<"executionCallPayment"_>();
+		transaction.downloadCallPayment = dto.value<"downloadCallPayment"_>();
+        for(auto& servicePaymentDto : dto.value<"servicePayments"_>()) {
+            transaction.servicePayments.push_back(fromDto<Mosaic, MosaicDto>(servicePaymentDto));
+        }
+
+		return transaction;
+	}
+
+	template<>
+	AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto) {
+		AutomaticExecutionsPaymentTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.automaticExecutionsNumber = dto.value<"automaticExecutionsNumber"_>();
+
+		return transaction;
+	}
+
+    template<>
+    UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto) {
+        UnsuccessfulEndBatchExecutionTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.contractKey = dto.value<"contractKey"_>();
+        transaction.batchId = dto.value<"batchId"_>();
+        transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+        return transaction;
+    }
+
+	template<>
+	SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto) {
+		SuccessfulEndBatchExecutionTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.contractKey = dto.value<"contractKey"_>();
+		transaction.batchId = dto.value<"batchId"_>();
+		transaction.storageHash = dto.value<"storageHash"_>();
+		transaction.usedSizeBytes = dto.value<"usedSizeBytes"_>();
+		transaction.metaFilesSizeBytes = dto.value<"metaFilesSizeBytes"_>();
+		transaction.automaticExecutionsNextBlockToCheck = dto.value<"automaticExecutionsNextBlockToCheck"_>();
+		transaction.proofOfExecutionVerificationInformation = dto.value<"proofOfExecutionVerificationInformation"_>();
+
+        for(auto& digestDto : dto.value<"callDigests"_>()) {
+            transaction.callDigests.push_back(fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(digestDto));
+        }
+
+        for(auto& opinionDto : dto.value<"opinions"_>()) {
+            transaction.opinions.push_back(fromDto<Opinion, OpinionDto>(opinionDto));
+        }
+
+		return transaction;
+	}
 
     template<>
     WebsocketMeta fromDto<WebsocketMeta, WebsocketMetaDto>(const WebsocketMetaDto &dto) {

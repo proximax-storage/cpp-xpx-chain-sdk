@@ -61,6 +61,30 @@ namespace xpx_chain_sdk::internal::json::dto {
 				Field<STR_LITERAL("value"),            TValue>,
 				Field<STR_LITERAL("modificationType"), AccountPropertyModificationType>>;
 
+		using ExtendedCallDigestDto = VariadicStruct<
+				Field<STR_LITERAL("callId"), std::string>,
+				Field<STR_LITERAL("manual"), bool>,
+				Field<STR_LITERAL("block"), Uint64>,
+				Field<STR_LITERAL("status"), int16_t>,
+				Field<STR_LITERAL("releasedTransactionHash"), std::string>>;
+
+		using RawProofOfExecutionDto = VariadicStruct<
+                Field<STR_LITERAL("startBatchId"), Uint64>,
+                Field<STR_LITERAL("T"), std::array<uint8_t, 32>>,
+                Field<STR_LITERAL("R"), std::array<uint8_t, 32>>,
+                Field<STR_LITERAL("F"), std::array<uint8_t, 32>>,
+                Field<STR_LITERAL("K"), std::array<uint8_t, 32>>>;
+
+        using CallPaymentDto = VariadicStruct<
+                Field<STR_LITERAL("executionPayment"), Amount>,
+                Field<STR_LITERAL("downloadPayment"), Amount>>;
+
+		using OpinionDto = VariadicStruct<
+				Field<STR_LITERAL("publicKey"), std::string>,
+				Field<STR_LITERAL("signature"), std::string>,
+				Field<STR_LITERAL("poEx"), std::vector<RawProofOfExecutionDto>>,
+				Field<STR_LITERAL("callPayments"), std::vector<CallPaymentDto>>>;
+
 
 
 		//Transaction meta Dtos
@@ -307,6 +331,57 @@ namespace xpx_chain_sdk::internal::json::dto {
                 TBase,
                 Field<STR_LITERAL("driveKey"), std::string>>;
 
+	template<typename TBase>
+	using TDeployContractTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("driveKey"), std::string>,
+			Field<STR_LITERAL("executionCallPayment"), Amount>,
+			Field<STR_LITERAL("downloadCallPayment"), Amount>,
+			Field<STR_LITERAL("automaticExecutionsCallPayment"), Amount>,
+			Field<STR_LITERAL("automaticDownloadCallPayment"), Amount>,
+			Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>,
+			Field<STR_LITERAL("assignee"), std::string>,
+			Field<STR_LITERAL("fileName"), std::string>,
+			Field<STR_LITERAL("functionName"), std::string>,
+			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicDto>>,
+			Field<STR_LITERAL("automaticExecutionsFileName"), std::string>,
+			Field<STR_LITERAL("automaticExecutionsFunctionName"), std::string>>;
+
+	template<typename TBase>
+	using TManualCallTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("contractKey"), std::string>,
+			Field<STR_LITERAL("executionCallPayment"), Amount>,
+			Field<STR_LITERAL("downloadCallPayment"), Amount>,
+			Field<STR_LITERAL("fileName"), std::string>,
+			Field<STR_LITERAL("functionName"), std::string>,
+			Field<STR_LITERAL("actualArguments"), std::vector<uint8_t>>,
+			Field<STR_LITERAL("servicePayments"), std::vector<MosaicDto>>>;
+
+	template<typename TBase>
+	using TAutomaticExecutionsPaymentTransactionDto = VariadicStruct<
+			TBase,
+			Field<STR_LITERAL("contractKey"), std::string>,
+			Field<STR_LITERAL("automaticExecutionsNumber"), uint32_t>>;
+
+    template<typename TBase>
+    using TUnsuccessfulEndBatchExecutionTransactionDto = VariadicStruct<
+            TBase,
+            Field<STR_LITERAL("contractKey"), std::string>,
+            Field<STR_LITERAL("batchId"), uint64_t>,
+            Field<STR_LITERAL("automaticExecutionsNextBlockToCheck"), std::string>,
+            Field<STR_LITERAL("callDigests"), std::vector<ExtendedCallDigestDto>>,
+            Field<STR_LITERAL("opinions"), std::vector<OpinionDto>>>;
+
+	template<typename TUnsuccessfulEndBatchExecutionTransaction>
+	using TSuccessfulEndBatchExecutionTransactionDto = VariadicStruct<
+            TUnsuccessfulEndBatchExecutionTransaction,
+			Field<STR_LITERAL("storageHash"), std::string>,
+			Field<STR_LITERAL("usedSizeBytes"), uint64_t>,
+			Field<STR_LITERAL("metaFilesSizeBytes"), uint64_t>,
+			Field<STR_LITERAL("proofOfExecutionVerificationInformation"), std::array<uint8_t, 32>>>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -396,4 +471,19 @@ namespace xpx_chain_sdk::internal::json::dto {
 
         using ReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<TransactionDto>;
         using EmbeddedReplicatorOffboardingTransactionDto = TReplicatorOffboardingTransactionDto<EmbeddedTransactionDto>;
+
+        using DeployContractTransactionDto = TDeployContractTransactionDto<TransactionDto>;
+        using EmbeddedDeployContractTransactionDto = TDeployContractTransactionDto<EmbeddedTransactionDto>;
+
+        using ManualCallTransactionDto = TManualCallTransactionDto<TransactionDto>;
+        using EmbeddedManualCallTransactionDto = TManualCallTransactionDto<EmbeddedTransactionDto>;
+
+        using AutomaticExecutionsPaymentTransactionDto = TAutomaticExecutionsPaymentTransactionDto<TransactionDto>;
+        using EmbeddedAutomaticExecutionsPaymentTransactionDto = TAutomaticExecutionsPaymentTransactionDto<EmbeddedTransactionDto>;
+
+        using UnsuccessfulEndBatchExecutionTransactionDto = TUnsuccessfulEndBatchExecutionTransactionDto<TransactionDto>;
+        using EmbeddedUnsuccessfulEndBatchExecutionTransactionDto = TUnsuccessfulEndBatchExecutionTransactionDto<EmbeddedTransactionDto>;
+
+        using SuccessfulEndBatchExecutionTransactionDto = TSuccessfulEndBatchExecutionTransactionDto<UnsuccessfulEndBatchExecutionTransactionDto>;
+        using EmbeddedSuccessfulEndBatchExecutionTransactionDto = TSuccessfulEndBatchExecutionTransactionDto<EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>;
 	}

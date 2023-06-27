@@ -31,6 +31,9 @@
 #include <xpxchaincpp/model/transaction/finish_download_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_offboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/deploy_contract_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_call_transaction.h>
+#include <xpxchaincpp/model/transaction/automatic_execution_transaction.h>
 
 #include <utility>
 using namespace xpx_chain_sdk;
@@ -90,7 +93,7 @@ namespace xpx_chain_sdk { namespace internal {
 
     using StoragePaymentTransactionImpl = TTransactionImpl<StoragePaymentTransaction>;
     using EmbeddedStoragePaymentTransactionImpl = TTransactionImpl<EmbeddedStoragePaymentTransaction>;
-	
+
 	using TransferTransactionImpl = TTransactionImpl<TransferTransaction>;
 	using EmbeddedTransferTransactionImpl = TTransactionImpl<EmbeddedTransferTransaction>;
 
@@ -129,7 +132,16 @@ namespace xpx_chain_sdk { namespace internal {
 
     using ReplicatorOffboardingTransactionImpl = TTransactionImpl<ReplicatorOffboardingTransaction>;
     using EmbeddedReplicatorOffboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOffboardingTransaction>;
-	
+
+    using DeployContractTransactionImpl = TTransactionImpl<DeployContractTransaction>;
+    using EmbeddedDeployContractTransactionImpl = TTransactionImpl<EmbeddedDeployContractTransaction>;
+
+    using ManualCallTransactionImpl = TTransactionImpl<ManualCallTransaction>;
+    using EmbeddedManualCallTransactionImpl = TTransactionImpl<EmbeddedManualCallTransaction>;
+
+    using AutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<AutomaticExecutionsPaymentTransaction>;
+    using EmbeddedAutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<EmbeddedAutomaticExecutionsPaymentTransaction>;
+
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransactionImpl(AccountLinkTransactionAction action,
 	                                 const Key& remoteAccountKey,
@@ -290,7 +302,7 @@ namespace xpx_chain_sdk { namespace internal {
                                         const std::optional<Key>& signer = std::nullopt,
                                         const std::optional<Signature>& signature = std::nullopt,
                                         const std::optional<TransactionInfo>& info = std::nullopt);
-	
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
 	                              MosaicContainer mosaics,
@@ -458,4 +470,50 @@ namespace xpx_chain_sdk { namespace internal {
                                                const std::optional<Key>& signer = std::nullopt,
                                                const std::optional<Signature>& signature = std::nullopt,
                                                const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransactionImpl(const Key& driveKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        MosaicContainer servicePayments,
+                                        const std::string& automaticExecutionsFileName,
+                                        const std::string& automaticExecutionsFunctionName,
+                                        const Amount& automaticExecutionsCallPayment,
+                                        const Amount& automaticDownloadCallPayment,
+                                        uint32_t automaticExecutionsNumber,
+                                        const Key& assignee,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransactionImpl(const Key& contractKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    MosaicContainer servicePayments,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId,
+                                    const std::optional<Key>& signer = std::nullopt,
+                                    const std::optional<Signature>& signature = std::nullopt,
+                                    const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
+                                                    uint32_t automaticExecutionsNumber,
+                                                    std::optional<Amount> maxFee,
+                                                    std::optional<NetworkDuration> deadline,
+                                                    std::optional<NetworkIdentifier> networkId,
+                                                    const std::optional<Key>& signer = std::nullopt,
+                                                    const std::optional<Signature>& signature = std::nullopt,
+                                                    const std::optional<TransactionInfo>& info = std::nullopt);
 }}
