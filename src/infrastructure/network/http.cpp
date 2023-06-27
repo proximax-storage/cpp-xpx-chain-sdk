@@ -67,7 +67,11 @@ std::string _performHTTPRequest_internal(
 	http::read(stream, buffer, response);
 
 	if (response.result() == http::status::found) {
-		auto path = response.at("Location").to_string();
+#if BOOST_VERSION >= 108200
+        auto path = response.at("Location");
+#else
+        auto path = response.at("Location").to_string();
+#endif
 		return _performHTTPRequest_internal(stream, method, host, port, path, request_body);
 	} else if (response.result() != http::status::ok && response.result() != http::status::accepted ) {
 		throw xpx_chain_sdk::InvalidRequest(response.body(), static_cast<uint16_t>(response.result()));
