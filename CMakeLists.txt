@@ -1,13 +1,17 @@
 cmake_minimum_required(VERSION 3.9)
 project(cpp-xpx-chain-sdk VERSION 1.0.0)
 
+if(POLICY CMP0074)
+	cmake_policy(SET CMP0074 NEW)
+endif()
+
 #-----------------------------------------------------------------------------
 # options and features
 #-----------------------------------------------------------------------------
 
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
 option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
-option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." ON)
+option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
 option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
 
 include(CMakeGlobalFunctions.cmake)
@@ -31,11 +35,10 @@ if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 		"Debug" "Release" "RelWithDebInfo" "MinSizeRel")
 endif()
 
-if (MSVC)
-	add_compile_options(/W3)
-	add_definitions(-D_WIN32_WINNT=0x0601)
+if (WIN32)
+    add_definitions(-D_WIN32_WINNT=0x0601)
 else()
-	add_compile_options(-w)
+    add_compile_options(-w)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -149,11 +152,20 @@ else()
 	include_directories(${Boost_INCLUDE_DIR})
 endif()
 
-target_link_libraries(xpxchaincpp
-					  ${Boost_LIBRARIES}
-					  OpenSSL::SSL
-					  OpenSSL::Crypto
-					  pthread)
+if (WIN32)
+    target_link_libraries(xpxchaincpp
+                                              ${Boost_LIBRARIES}
+                                              OpenSSL::SSL
+                                              OpenSSL::Crypto
+                                              wsock32
+                                              ws2_32)
+else()
+    target_link_libraries(xpxchaincpp
+                                              ${Boost_LIBRARIES}
+                                              OpenSSL::SSL
+                                              OpenSSL::Crypto
+                                              pthread)
+endif()
 
 #-----------------------------------------------------------------------------
 # install
@@ -211,27 +223,57 @@ else()
 
     if (XPX_CHAIN_SDK_BUILD_EXAMPLES)
             add_executable(get_block ${CMAKE_CURRENT_SOURCE_DIR}/examples/get_block.cpp)
-            target_link_libraries(get_block
-								xpxchaincpp
-								${Boost_LIBRARIES}
-								OpenSSL::SSL
-            					OpenSSL::Crypto
-								pthread)
+			if (WIN32)
+				target_link_libraries(get_block
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						wsock32
+						ws2_32)
+			else()
+				target_link_libraries(get_block
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						pthread)
+			endif()
 
             add_executable(bonded_aggregate_transaction ${CMAKE_CURRENT_SOURCE_DIR}/examples/bonded_aggregate_transaction.cpp)
-            target_link_libraries(bonded_aggregate_transaction
-								xpxchaincpp
-								${Boost_LIBRARIES}
-								OpenSSL::SSL
-            					OpenSSL::Crypto
-								pthread)
+			if (WIN32)
+				target_link_libraries(bonded_aggregate_transaction
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						wsock32
+						ws2_32)
+			else()
+				target_link_libraries(bonded_aggregate_transaction
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						pthread)
+			endif()
 
             add_executable(liquidity_provider_transactions ${CMAKE_CURRENT_SOURCE_DIR}/examples/liquidity_provider_transactions.cpp)
-            target_link_libraries(liquidity_provider_transactions
-								xpxchaincpp
-							    ${Boost_LIBRARIES}
-								OpenSSL::SSL
-            					OpenSSL::Crypto
-								pthread)
+			if (WIN32)
+				target_link_libraries(liquidity_provider_transactions
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						wsock32
+						ws2_32)
+			else()
+				target_link_libraries(liquidity_provider_transactions
+						xpxchaincpp
+						${Boost_LIBRARIES}
+						OpenSSL::SSL
+						OpenSSL::Crypto
+						pthread)
+			endif()
     endif()
 endif()
