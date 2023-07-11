@@ -411,6 +411,34 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     };
 
+    template<typename TBase>
+    class TStreamStartTransaction : public TBase {
+    public:
+        std::string driveKey;
+        uint64_t expectedUploadSize;
+        uint16_t folderNameSize;
+        Amount feedbackFeeAmount;
+        std::string folderName;
+
+    };
+
+    template<typename TBase>
+    class TStreamFinishTransaction : public TBase {
+    public:
+        std::string driveKey;
+        std::string streamId;
+        uint64_t actualUploadSizeMegabytes;
+        std::string streamStructureCdi;
+    };
+
+    template<typename TBase>
+    class TStreamPaymentTransaction : public TBase {
+    public:
+        std::string driveKey;
+        std::string streamId;
+        uint64_t additionalUploadSizeMegabytes;
+    };
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -512,6 +540,15 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <UnsuccessfulEndBatchExecutionTransaction>;
     using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedUnsuccessfulEndBatchExecutionTransaction>;
+
+    using StreamStartTransaction = TStreamStartTransaction <Transaction>;
+    using EmbeddedStreamStartTransaction = TStreamStartTransaction<EmbeddedTransaction>;
+
+    using StreamFinishTransaction = TStreamFinishTransaction <Transaction>;
+    using EmbeddedStreamFinishTransaction = TStreamFinishTransaction<EmbeddedTransaction>;
+
+    using StreamPaymentTransaction = TStreamPaymentTransaction <Transaction>;
+    using EmbeddedStreamPaymentTransaction = TStreamPaymentTransaction<EmbeddedTransaction>;
 }}
 
 

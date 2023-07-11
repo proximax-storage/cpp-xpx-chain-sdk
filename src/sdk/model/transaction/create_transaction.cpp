@@ -854,6 +854,54 @@ namespace xpx_chain_sdk { namespace internal {
 
             InitTransactionDTO(dto, TransactionType::Automatic_Executions_Payment, std::forward<TArgs>(args)...);
         }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamStartTransactionDTO(TDto &dto,
+                                           const Key &driveKey,
+                                           const uint64_t expectedUploadSizeMegabytes,
+                                           const uint16_t folderNameSize,
+                                           const Amount &feedbackFeeAmount,
+                                           const std::vector<uint8_t>& folderName,
+                                           TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"expectedUploadSizeMegabytes"_>(expectedUploadSizeMegabytes);
+            dto.template set<"folderNameSize"_>(folderNameSize);
+            dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+            dto.template set<"folderName"_>(folderName);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Start, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamFinishTransactionDTO(TDto &dto,
+                                            const Key &driveKey,
+                                            const Hash256 &streamId,
+                                            const uint64_t actualUploadSizeMegabytes,
+                                            const Hash256 &streamStructureCdi,
+                                            TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"streamId"_>(streamId);
+            dto.template set<"actualUploadSize"_>(actualUploadSizeMegabytes);
+            dto.template set<"streamStructureCdi"_>(streamStructureCdi);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Finish, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamPaymentTransactionDTO(TDto &dto,
+                                             const Key &driveKey,
+                                             const Hash256 &streamId,
+                                             const uint64_t additionalUploadSizeMegabytes,
+                                             TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"streamId"_>(streamId);
+            dto.template set<"additionalUploadSize"_>(additionalUploadSizeMegabytes);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Payment, std::forward<TArgs>(args)...);
+        }
 	}
 	
 	
@@ -1561,6 +1609,66 @@ namespace xpx_chain_sdk { namespace internal {
 
         return CreateTransaction<AutomaticExecutionsPaymentTransactionImpl>(
                 dto, signer, signature, info, contractKey, automaticExecutionsNumber);
+    }
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransactionImpl(const Key &driveKey,
+                                     const uint64_t expectedUploadSizeMegabytes,
+                                     const uint16_t folderNameSize,
+                                     const Amount &feedbackFeeAmount,
+                                     const std::vector<uint8_t>& folderName,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId,
+                                     const std::optional<Key> &signer,
+                                     const std::optional<Signature> &signature,
+                                     const std::optional<TransactionInfo> &info)
+    {
+        StreamStartTransactionDTO dto;
+        InitStreamStartTransactionDTO(
+                dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamStartTransactionImpl>(
+                dto, signer, signature, info, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName);
+    }
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransactionImpl(const Key &driveKey,
+                                      const Hash256 &streamId,
+                                      const uint64_t actualUploadSizeMegabytes,
+                                      const Hash256 &streamStructureCdi,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId,
+                                      const std::optional<Key> &signer,
+                                      const std::optional<Signature> &signature,
+                                      const std::optional<TransactionInfo> &info)
+    {
+        StreamFinishTransactionDTO dto;
+        InitStreamFinishTransactionDTO(
+                dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamFinishTransactionImpl>(
+                dto, signer, signature, info, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi);
+    }
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransactionImpl(const Key &driveKey,
+                                       const Hash256 &streamId,
+                                       const uint64_t additionalUploadSizeMegabytes,
+                                       std::optional<Amount> maxFee,
+                                       std::optional<NetworkDuration> deadline,
+                                       std::optional<NetworkIdentifier> networkId,
+                                       const std::optional<Key> &signer,
+                                       const std::optional<Signature> &signature,
+                                       const std::optional<TransactionInfo> &info)
+    {
+        StreamPaymentTransactionDTO dto;
+        InitStreamPaymentTransactionDTO(
+                dto, driveKey, streamId, additionalUploadSizeMegabytes, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamPaymentTransactionImpl>(
+                dto, signer, signature, info, driveKey, streamId, additionalUploadSizeMegabytes);
     }
 }}
 
@@ -2439,5 +2547,81 @@ namespace xpx_chain_sdk {
         EmbeddedAutomaticExecutionsPaymentTransactionDTO dto;
         InitAutomaticExecutionsPaymentTransactionDTO(dto, contractKey, automaticExecutionsNumber, signer, networkId);
         return CreateTransaction<EmbeddedAutomaticExecutionsPaymentTransactionImpl>(dto, contractKey, automaticExecutionsNumber);
+    }
+
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransaction(const Key &driveKey,
+                                 const uint64_t expectedUploadSizeMegabytes,
+                                 const uint16_t folderNameSize,
+                                 const Amount &feedbackFeeAmount,
+                                 const std::vector<uint8_t>& folderName,
+                                 std::optional<Amount> maxFee,
+                                 std::optional<NetworkDuration> deadline,
+                                 std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamStartTransactionImpl(driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamStartTransaction>
+    CreateEmbeddedStreamStartTransaction(const Key &driveKey,
+                                         const uint64_t expectedUploadSizeMegabytes,
+                                         const uint16_t folderNameSize,
+                                         const Amount &feedbackFeeAmount,
+                                         const std::vector<uint8_t>& folderName,
+                                         const Key &signer,
+                                         std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamStartTransactionDTO dto;
+        InitStreamStartTransactionDTO(dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, signer, networkId);
+        return CreateTransaction<EmbeddedStreamStartTransactionImpl>(dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName);
+    }
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransaction(const Key& driveKey,
+                                  const Hash256& streamId,
+                                  const uint64_t actualUploadSizeMegabytes,
+                                  const Hash256& streamStructureCdi,
+                                  std::optional<Amount> maxFee,
+                                  std::optional<NetworkDuration> deadline,
+                                  std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamFinishTransactionImpl(driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamFinishTransaction>
+    CreateEmbeddedStreamFinishTransaction(const Key& driveKey,
+                                          const Hash256& streamId,
+                                          const uint64_t actualUploadSizeMegabytes,
+                                          const Hash256& streamStructureCdi,
+                                          const Key &signer,
+                                          std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamFinishTransactionDTO dto;
+        InitStreamFinishTransactionDTO(dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, signer, networkId);
+        return CreateTransaction<EmbeddedStreamFinishTransactionImpl>(dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi);
+    }
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransaction(const Key &driveKey,
+                                   const Hash256 &streamId,
+                                   const uint64_t additionalUploadSizeMegabytes,
+                                   std::optional<Amount> maxFee,
+                                   std::optional<NetworkDuration> deadline,
+                                   std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamPaymentTransactionImpl(driveKey, streamId, additionalUploadSizeMegabytes, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamPaymentTransaction>
+    CreateEmbeddedStreamPaymentTransaction(const Key &driveKey,
+                                           const Hash256 &streamId,
+                                           const uint64_t additionalUploadSizeMegabytes,
+                                           const Key &signer,
+                                           std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamPaymentTransactionDTO dto;
+        InitStreamPaymentTransactionDTO(dto, driveKey, streamId, additionalUploadSizeMegabytes, signer, networkId);
+        return CreateTransaction<EmbeddedStreamPaymentTransactionImpl>(dto, driveKey, streamId, additionalUploadSizeMegabytes);
     }
 }

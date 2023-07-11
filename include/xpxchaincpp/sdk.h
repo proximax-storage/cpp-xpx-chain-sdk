@@ -24,6 +24,9 @@
 #include <xpxchaincpp/model/transaction/secret_lock_transaction.h>
 #include <xpxchaincpp/model/transaction/secret_proof_transaction.h>
 #include <xpxchaincpp/model/transaction/storage_payment_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_start_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_finish_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/transfer_transaction.h>
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
 #include <xpxchaincpp/model/transaction/create_liquidity_provider_transaction.h>

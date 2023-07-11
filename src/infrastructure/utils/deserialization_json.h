@@ -435,6 +435,17 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		AccountAddressPropertyTransaction fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto >(const AccountAddressPropertyTransactionDto & dto);
 
+        /// Streaming
+
+        template<>
+        StreamStartTransaction fromDto<StreamStartTransaction, StreamStartTransactionDto >(const StreamStartTransactionDto & dto);
+
+        template<>
+        StreamFinishTransaction fromDto<StreamFinishTransaction, StreamFinishTransactionDto >(const StreamFinishTransactionDto & dto);
+
+        template<>
+        StreamPaymentTransaction fromDto<StreamPaymentTransaction, StreamPaymentTransactionDto >(const StreamPaymentTransactionDto & dto);
+
 		/// Embedded Transactions
 
 		template<>
@@ -521,6 +532,17 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto);
+
+        /// Streaming
+
+        template<>
+        EmbeddedStreamStartTransaction fromDto<EmbeddedStreamStartTransaction, EmbeddedStreamStartTransactionDto >(const EmbeddedStreamStartTransactionDto & dto);
+
+        template<>
+        EmbeddedStreamFinishTransaction fromDto<EmbeddedStreamFinishTransaction, EmbeddedStreamFinishTransactionDto >(const EmbeddedStreamFinishTransactionDto & dto);
+
+        template<>
+        EmbeddedStreamPaymentTransaction fromDto<EmbeddedStreamPaymentTransaction, EmbeddedStreamPaymentTransactionDto >(const EmbeddedStreamPaymentTransactionDto & dto);
 
 		/// Supercontract V2
 

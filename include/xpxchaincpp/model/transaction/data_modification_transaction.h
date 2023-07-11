@@ -45,7 +45,7 @@ namespace xpx_chain_sdk {
 		uint64_t uploadSize() const;
 
         /// Returns amount of XPXs to transfer to the drive.
-        Amount feedbackFeeAmount() const;
+        const Amount& feedbackFeeAmount() const;
 
 	private:
 		Key driveKey_;

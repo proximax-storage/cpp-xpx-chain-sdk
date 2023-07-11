@@ -49,6 +49,9 @@ namespace xpx_chain_sdk {
         Unsuccessful_End_Batch_Execution = 0x456E,
         End_Batch_Execution_Single = 0x466E,
         Synchronization_Single = 0x476E,
+        Stream_Start = 0x4166,
+        Stream_Finish = 0x4266,
+        Stream_Payment = 0x4366
     };
 	
 	/// Returns transaction name by \a type.

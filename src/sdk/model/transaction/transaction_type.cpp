@@ -47,6 +47,9 @@ namespace xpx_chain_sdk {
             case TransactionType::Unsuccessful_End_Batch_Execution: return "Unsuccessful End Batch Execution";
             case TransactionType::End_Batch_Execution_Single:       return "End Batch Execution Single";
             case TransactionType::Synchronization_Single:           return "Synchronization Single";
+            case TransactionType::Stream_Start:                     return "Stream Start";
+            case TransactionType::Stream_Finish:                    return "Stream Finish";
+            case TransactionType::Stream_Payment:                   return "Stream Payment";
             default: break;
         }
 
@@ -93,6 +96,9 @@ namespace xpx_chain_sdk {
             case TransactionType::Unsuccessful_End_Batch_Execution: return 1;
             case TransactionType::End_Batch_Execution_Single:       return 1;
             case TransactionType::Synchronization_Single:           return 1;
+            case TransactionType::Stream_Start:                     return 1;
+            case TransactionType::Stream_Finish:                    return 1;
+            case TransactionType::Stream_Payment:                   return 1;
             default: break;
         }
 

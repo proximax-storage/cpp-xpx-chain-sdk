@@ -26,7 +26,7 @@ namespace xpx_chain_sdk {
 	}
 
     template<typename TBase>
-    Amount TDataModificationTransaction<TBase>::feedbackFeeAmount() const
+    const Amount& TDataModificationTransaction<TBase>::feedbackFeeAmount() const
     {
         return feedbackFeeAmount_;
     }

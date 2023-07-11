@@ -382,6 +382,29 @@ namespace xpx_chain_sdk::internal::json::dto {
 			Field<STR_LITERAL("metaFilesSizeBytes"), uint64_t>,
 			Field<STR_LITERAL("proofOfExecutionVerificationInformation"), std::array<uint8_t, 32>>>;
 
+    template<typename TStreamStartTransaction>
+    using TStreamStartTransactionDto = VariadicStruct<
+            TStreamStartTransaction,
+            Field<STR_LITERAL("driveKey"), std::string>,
+            Field<STR_LITERAL("expectedUploadSize"), Uint64>,
+            Field<STR_LITERAL("feedbackFeeAmount"), Uint64>,
+            Field<STR_LITERAL("folderName"), std::string>>;
+
+    template<typename TStreamFinishTransaction>
+    using TStreamFinishTransactionDto = VariadicStruct<
+            TStreamFinishTransaction,
+            Field<STR_LITERAL("driveKey"), std::string>,
+            Field<STR_LITERAL("streamId"), std::string>,
+            Field<STR_LITERAL("actualUploadSize"), Uint64>,
+            Field<STR_LITERAL("streamStructureCdi"), std::string>>;
+
+    template<typename TStreamPaymentTransaction>
+    using TStreamPaymentTransactionDto = VariadicStruct<
+            TStreamPaymentTransaction,
+            Field<STR_LITERAL("driveKey"), std::string>,
+            Field<STR_LITERAL("streamId"), std::string>,
+            Field<STR_LITERAL("additionalUploadSize"), Uint64>>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -486,4 +509,13 @@ namespace xpx_chain_sdk::internal::json::dto {
 
         using SuccessfulEndBatchExecutionTransactionDto = TSuccessfulEndBatchExecutionTransactionDto<UnsuccessfulEndBatchExecutionTransactionDto>;
         using EmbeddedSuccessfulEndBatchExecutionTransactionDto = TSuccessfulEndBatchExecutionTransactionDto<EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>;
+
+        using StreamStartTransactionDto = TStreamStartTransactionDto<TransactionDto>;
+        using EmbeddedStreamStartTransactionDto = TStreamStartTransactionDto<EmbeddedTransactionDto>;
+
+        using StreamFinishTransactionDto = TStreamFinishTransactionDto<TransactionDto>;
+        using EmbeddedStreamFinishTransactionDto = TStreamFinishTransactionDto<EmbeddedTransactionDto>;
+
+        using StreamPaymentTransactionDto = TStreamPaymentTransactionDto<TransactionDto>;
+        using EmbeddedStreamPaymentTransactionDto = TStreamPaymentTransactionDto<EmbeddedTransactionDto>;
 	}

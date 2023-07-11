@@ -552,6 +552,51 @@ namespace xpx_chain_sdk {
                     dto.template value<"automaticExecutionsNumber"_>());
         }
 
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        StreamStartTransactionImpl,
+                        EmbeddedStreamStartTransactionImpl>>
+        std::unique_ptr<TImpl> CreateStreamStartTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"expectedUploadSizeMegabytes"_>(),
+                    dto.template value<"folderNameSize"_>(),
+                    dto.template value<"feedbackFeeAmount"_>(),
+                    dto.template value<"folderName"_>());
+        }
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        StreamFinishTransactionImpl,
+                        EmbeddedStreamFinishTransactionImpl>>
+        std::unique_ptr<TImpl> CreateStreamFinishTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"streamId"_>(),
+                    dto.template value<"actualUploadSize"_>(),
+                    dto.template value<"streamStructureCdi"_>());
+        }
+
+        template<
+                typename TDto,
+                typename TImpl = std::conditional_t<std::is_base_of_v<TransactionDTO, TDto>,
+                        StreamPaymentTransactionImpl,
+                        EmbeddedStreamPaymentTransactionImpl>>
+        std::unique_ptr<TImpl> CreateStreamPaymentTransaction(const TDto& dto, RawBuffer binaryData)
+        {
+            return CreateTransaction<TImpl>(
+                    dto, binaryData,
+                    dto.template value<"driveKey"_>(),
+                    dto.template value<"streamId"_>(),
+                    dto.template value<"additionalUploadSize"_>());
+        }
+
 		bool ReadEmbeddedTransactions(RawBuffer data, EmbeddedTransactions& embeddedTransactions)
 		{
 			EmbeddedTransactionDTO header;
@@ -897,6 +942,39 @@ namespace xpx_chain_sdk {
 
                         if (result) {
                             embeddedTransaction = CreateReplicatorOffboardingTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Stream_Start:
+                    {
+                        EmbeddedStreamStartTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateStreamStartTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Stream_Finish:
+                    {
+                        EmbeddedStreamFinishTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateStreamFinishTransaction(dto, RawBuffer{});
+                        }
+
+                        break;
+                    }
+                case TransactionType::Stream_Payment:
+                    {
+                        EmbeddedStreamPaymentTransactionDTO dto;
+                        result = Parser::Read(dto, data, startPos);
+
+                        if (result) {
+                            embeddedTransaction = CreateStreamPaymentTransaction(dto, RawBuffer{});
                         }
 
                         break;
@@ -1332,6 +1410,42 @@ namespace xpx_chain_sdk {
 
                 if (binaryData.size() == dto.value<"size"_>()) {
                     transaction = CreateReplicatorOffboardingTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Stream_Start:
+            {
+                StreamStartTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateStreamStartTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Stream_Finish:
+            {
+                StreamFinishTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateStreamFinishTransaction(dto, binaryData);
+                }
+
+                break;
+            }
+        case TransactionType::Stream_Payment:
+            {
+                StreamPaymentTransactionDTO dto;
+                parseResult = Parser::Read(dto, data);
+                RawBuffer binaryData(data.data(), parseResult.processedSize());
+
+                if (binaryData.size() == dto.value<"size"_>()) {
+                    transaction = CreateStreamPaymentTransaction(dto, binaryData);
                 }
 
                 break;

@@ -509,6 +509,42 @@ namespace xpx_chain_sdk::internal::json::dto {
                 break;
             }
 
+            case TransactionType::Stream_Start: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), StreamStartTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<StreamStartTransaction, StreamStartTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<StreamStartTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Stream_Finish: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), StreamFinishTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<StreamFinishTransaction, StreamFinishTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<StreamFinishTransaction>(transaction);
+                break;
+            }
+
+            case TransactionType::Stream_Payment: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), StreamPaymentTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                auto transaction = fromDto<StreamPaymentTransaction, StreamPaymentTransactionDto>(t_dto.value<"transaction"_>());
+                result = std::make_shared<StreamPaymentTransaction>(transaction);
+                break;
+            }
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -2351,6 +2387,47 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		return transaction;
 	}
+
+    template<>
+    StreamStartTransaction fromDto<StreamStartTransaction, StreamStartTransactionDto>(const StreamStartTransactionDto& dto) {
+        StreamStartTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.expectedUploadSize = dto.value<"expectedUploadSize"_>();
+        transaction.feedbackFeeAmount = dto.value<"feedbackFeeAmount"_>();
+        transaction.folderName = dto.value<"folderName"_>();
+
+        return transaction;
+    }
+
+    template<>
+    StreamFinishTransaction fromDto<StreamFinishTransaction, StreamFinishTransactionDto>(const StreamFinishTransactionDto& dto) {
+        StreamFinishTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.streamId = dto.value<"streamId"_>();
+        transaction.actualUploadSizeMegabytes = dto.value<"actualUploadSize"_>();
+        transaction.streamStructureCdi = dto.value<"streamStructureCdi"_>();
+
+        return transaction;
+    }
+
+    template<>
+    StreamPaymentTransaction fromDto<StreamPaymentTransaction, StreamPaymentTransactionDto>(const StreamPaymentTransactionDto& dto) {
+        StreamPaymentTransaction transaction;
+
+        EXTRACT_TRANSACTION(transaction, dto)
+
+        transaction.driveKey = dto.value<"driveKey"_>();
+        transaction.streamId = dto.value<"streamId"_>();
+        transaction.additionalUploadSizeMegabytes = dto.value<"additionalUploadSize"_>();
+
+        return transaction;
+    }
 
 	template<>
 	AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto) {

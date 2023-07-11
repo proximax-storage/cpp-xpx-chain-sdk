@@ -34,6 +34,9 @@
 #include <xpxchaincpp/model/transaction/deploy_contract_transaction.h>
 #include <xpxchaincpp/model/transaction/manual_call_transaction.h>
 #include <xpxchaincpp/model/transaction/automatic_execution_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_start_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_finish_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_payment_transaction.h>
 
 #include <utility>
 using namespace xpx_chain_sdk;
@@ -141,6 +144,15 @@ namespace xpx_chain_sdk { namespace internal {
 
     using AutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<AutomaticExecutionsPaymentTransaction>;
     using EmbeddedAutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<EmbeddedAutomaticExecutionsPaymentTransaction>;
+
+    using StreamStartTransactionImpl = TTransactionImpl<StreamStartTransaction>;
+    using EmbeddedStreamStartTransactionImpl = TTransactionImpl<EmbeddedStreamStartTransaction>;
+
+    using StreamFinishTransactionImpl = TTransactionImpl<StreamFinishTransaction>;
+    using EmbeddedStreamFinishTransactionImpl = TTransactionImpl<EmbeddedStreamFinishTransaction>;
+
+    using StreamPaymentTransactionImpl = TTransactionImpl<StreamPaymentTransaction>;
+    using EmbeddedStreamPaymentTransactionImpl = TTransactionImpl<EmbeddedStreamPaymentTransaction>;
 
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransactionImpl(AccountLinkTransactionAction action,
@@ -516,4 +528,40 @@ namespace xpx_chain_sdk { namespace internal {
                                                     const std::optional<Key>& signer = std::nullopt,
                                                     const std::optional<Signature>& signature = std::nullopt,
                                                     const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransactionImpl(const Key &driveKey,
+                                     const uint64_t expectedUploadSizeMegabytes,
+                                     const uint16_t folderNameSize,
+                                     const Amount &feedbackFeeAmount,
+                                     const std::vector<uint8_t>& folderName,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId,
+                                     const std::optional<Key> &signer = std::nullopt,
+                                     const std::optional<Signature> &signature = std::nullopt,
+                                     const std::optional<TransactionInfo> &info = std::nullopt);
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransactionImpl(const Key& driveKey,
+                                      const Hash256& streamId,
+                                      const uint64_t actualUploadSizeMegabytes,
+                                      const Hash256& streamStructureCdi,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId,
+                                      const std::optional<Key> &signer = std::nullopt,
+                                      const std::optional<Signature> &signature = std::nullopt,
+                                      const std::optional<TransactionInfo> &info = std::nullopt);
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransactionImpl(const Key &driveKey,
+                                       const Hash256 &streamId,
+                                       const uint64_t additionalUploadSizeMegabytes,
+                                       std::optional<Amount> maxFee,
+                                       std::optional<NetworkDuration> deadline,
+                                       std::optional<NetworkIdentifier> networkId,
+                                       const std::optional<Key> &signer = std::nullopt,
+                                       const std::optional<Signature> &signature = std::nullopt,
+                                       const std::optional<TransactionInfo> &info = std::nullopt);
 }}
