@@ -1093,6 +1093,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         activeDataModification.dataModification.actualUploadSize = dto.value<"actualUploadSize"_>();
         activeDataModification.dataModification.folderName = dto.value<"folderName"_>();
         activeDataModification.dataModification.readyForApproval = dto.value<"readyForApproval"_>();
+        activeDataModification.dataModification.isStream = dto.value<"isStream"_>();
 
         return activeDataModification;
     }

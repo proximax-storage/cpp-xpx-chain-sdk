@@ -23,7 +23,8 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("expectedUploadSize"), Uint64 >,
             Field<STR_LITERAL("actualUploadSize"), Uint64 >,
             Field<STR_LITERAL("folderName"), std::string >,
-            Field<STR_LITERAL("readyForApproval"), bool > >;
+            Field<STR_LITERAL("readyForApproval"), bool >,
+            Field<STR_LITERAL("isStream"), bool > >;
 
     using CompletedDataModificationDto = VariadicStruct<
             Field<STR_LITERAL("id"), std::string>,

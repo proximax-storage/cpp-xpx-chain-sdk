@@ -18,6 +18,7 @@ namespace xpx_chain_sdk {
         uint64_t actualUploadSize;
         std::string folderName;
         bool readyForApproval;
+        bool isStream;
     };
 
     class ActiveDataModification {
