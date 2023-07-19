@@ -67,7 +67,7 @@ std::string _performHTTPRequest_internal(
 	http::read(stream, buffer, response);
 
 	if (response.result() == http::status::found) {
-#if BOOST_VERSION >= 108200
+#if BOOST_VERSION >= 108100
         auto path = response.at("Location");
 #else
         auto path = response.at("Location").to_string();
