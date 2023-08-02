@@ -126,7 +126,7 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
         std::map<std::string, std::map<notifierId, Notifier<TransactionStatusNotification>>> _statusNotifiers;
         std::map<std::string, std::map<notifierId, Notifier<SignerInfoNotification>>> _cosignatureNotifiers;
         std::map<std::string, std::map<notifierId, Notifier<DriveStateNotification>>> _driveStateNotifiers;
-        std::function<void(const std::string& message, int code)> _errorsCallback;
+        std::function<void(const std::string& message, int code)> _connectionCallback;
         std::string _uid;
         bool _isConnectionInProgress;
     };

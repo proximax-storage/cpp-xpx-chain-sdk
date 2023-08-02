@@ -53,6 +53,7 @@ namespace xpx_chain_sdk {
                 }
 
                 _tasks.clear();
+                _connectionCallback("", 0);
             };
 
             auto receiverCallback = [this](const auto& json) {
@@ -68,7 +69,7 @@ namespace xpx_chain_sdk {
 
                     _isConnectionInProgress = false;
                     _tasks.clear();
-                    _errorsCallback(errorMessage, errorCode.value());
+                    _connectionCallback(errorMessage, errorCode.value());
                 }
             };
 
@@ -449,7 +450,7 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::connect(std::function<void(const std::string& message, int code)> callback) {
-        _errorsCallback = callback;
+        _connectionCallback = callback;
         run();
     }
 }
