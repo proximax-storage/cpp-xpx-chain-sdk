@@ -22,7 +22,7 @@ public:
         _blockchain         = std::make_shared<BlockchainService>(config, _context);
         _mosaic             = std::make_shared<MosaicService>(config, _context);
         _namespace          = std::make_shared<NamespaceService>(config, _context);
-        _notification       = std::make_shared<NotificationService>(_config, _context);
+        _notification       = std::make_shared<NotificationService>(_config);
         _network            = std::make_shared<NetworkService>(config, _context);
         _liquidityProvider  = std::make_shared<LiquidityProviderService>(config, _context);
         _transaction        = std::make_shared<TransactionService>(config, _context);

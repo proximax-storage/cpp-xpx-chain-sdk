@@ -33,9 +33,7 @@ namespace xpx_chain_sdk {
 
 class NotificationService : public std::enable_shared_from_this<NotificationService> {
     public:
-        NotificationService(
-                const Config& config,
-                std::shared_ptr<internal::network::Context> context);
+        NotificationService(const Config& config);
         ~NotificationService();
 
     void addBlockNotifiers(const std::vector<Notifier<Block>>& notifiers,
@@ -110,11 +108,9 @@ class NotificationService : public std::enable_shared_from_this<NotificationServ
 
     private:
         const Config& _config;
-        std::shared_ptr<internal::network::Context> _context;
         std::shared_ptr<internal::network::WsClient> _wsClient;
         std::shared_ptr<internal::SubscriptionManager> _subscriptionManager;
         std::shared_ptr<boost::asio::io_context> _io_context;
-        std::shared_ptr<boost::asio::strand<boost::asio::io_context::executor_type>> _strand;
         std::deque<std::function<void()>> _tasks;
         std::thread _mainWorker;
         std::map<notifierId, Notifier<Block>> _blockNotifiers;

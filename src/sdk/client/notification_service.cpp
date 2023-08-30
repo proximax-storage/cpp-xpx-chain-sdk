@@ -22,15 +22,12 @@ using xpx_chain_sdk::internal::json::dto::from_json;
 
 namespace xpx_chain_sdk {
 
-    NotificationService::NotificationService(
-            const Config& config,
-            std::shared_ptr<internal::network::Context> context):
+    NotificationService::NotificationService(const Config& config)
+        :
             _config(config),
-            _context(context),
             _wsClient(nullptr),
             _subscriptionManager(nullptr),
             _io_context(std::make_shared<boost::asio::io_context>()),
-            _strand(std::make_shared<boost::asio::strand<boost::asio::io_context::executor_type>>(boost::asio::make_strand(_io_context->get_executor()))),
             _tasks(),
             _mainWorker(),
             _isConnectionInProgress(false) {
@@ -41,7 +38,7 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::run() {
-        boost::asio::post(*_strand, [this] {
+        boost::asio::post(*_io_context, [this] {
             auto connectionCallback = [this](const auto& json) {
                 Uid uid = from_json<Uid, UidDto>(json);
                 _uid = uid.value;
@@ -74,7 +71,7 @@ namespace xpx_chain_sdk {
             };
 
             _isConnectionInProgress = true;
-            _wsClient = std::make_shared<internal::network::WsClient>(_config, _context, _strand, connectionCallback, receiverCallback, errorCallback);
+            _wsClient = std::make_shared<internal::network::WsClient>(_config, _io_context, connectionCallback, receiverCallback, errorCallback);
             _subscriptionManager = std::make_shared<internal::SubscriptionManager>(_wsClient);
             _wsClient->connect();
         });
@@ -83,7 +80,7 @@ namespace xpx_chain_sdk {
     }
 
     void NotificationService::runTask(std::function<void()> task) {
-        boost::asio::post(*_strand, [pThis = shared_from_this(), task] {
+        boost::asio::post(*_io_context, [pThis = shared_from_this(), task] {
             if (task) {
                 if (pThis->_isConnectionInProgress) {
                     pThis->_tasks.emplace_back(task);
@@ -99,7 +96,7 @@ namespace xpx_chain_sdk {
             return;
         }
 
-        boost::asio::post(*_strand, [this] {
+        boost::asio::post(*_io_context, [this] {
             if (_wsClient->isConnected()) {
                 _subscriptionManager->unsubscribe(_uid, internal::pathBlock, [](){}, [](auto){});
 
