@@ -38,7 +38,7 @@ namespace xpx_chain_sdk::internal::network {
 
         ~WsClient();
 
-        void connect(uint64_t onResolveHostTimeoutSec = 30);
+        void connect();
         void disconnect();
         void send(const std::string& json, std::function<void()> onSuccess,
                   std::function<void(boost::beast::error_code errorCode)> onError);
@@ -48,8 +48,8 @@ namespace xpx_chain_sdk::internal::network {
         void doWrite();
         void onResolve(
                 boost::beast::error_code errorCode,
-                const boost::asio::ip::tcp::resolver::results_type& resultsType,
-                uint64_t onResolveHostTimeoutSec);
+                const boost::asio::ip::tcp::resolver::results_type& resultsType);
+
         void onConnect(
                 boost::beast::error_code errorCode,
                 const boost::asio::ip::tcp::resolver::results_type::endpoint_type& endpointType);

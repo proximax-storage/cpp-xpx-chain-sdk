@@ -28,14 +28,14 @@ namespace xpx_chain_sdk::internal::network {
 
     }
 
-    void WsClient::connect(uint64_t onResolveHostTimeoutSec) {
-        boost::asio::post(*_io_context, [pThis = shared_from_this(), onResolveHostTimeoutSec] {
+    void WsClient::connect() {
+        boost::asio::post(*_io_context, [pThis = shared_from_this()] {
             pThis->_resolver.async_resolve(pThis->_config.nodeAddress,
                                            pThis->_config.port,
-                                           boost::asio::bind_executor(*pThis->_io_context, [pThis, onResolveHostTimeoutSec] (
+                                           boost::asio::bind_executor(*pThis->_io_context, [pThis] (
                                                    boost::beast::error_code errorCode,
                                                    const boost::asio::ip::tcp::resolver::results_type &resultsType) {
-                                               pThis->onResolve(errorCode, resultsType, onResolveHostTimeoutSec);
+                                               pThis->onResolve(errorCode, resultsType);
                                            }));
         });
     }
@@ -109,13 +109,12 @@ namespace xpx_chain_sdk::internal::network {
 
     void WsClient::onResolve(
             boost::beast::error_code errorCode,
-            const boost::asio::ip::tcp::resolver::results_type& resultsType,
-            uint64_t onResolveHostTimeoutSec) {
+            const boost::asio::ip::tcp::resolver::results_type& resultsType) {
         if (errorCode) {
             return _errorCallback(errorCode);
         }
 
-        boost::beast::get_lowest_layer(_ws).expires_after(std::chrono::seconds(onResolveHostTimeoutSec));
+        boost::beast::get_lowest_layer(_ws).expires_after(std::chrono::seconds(_config.wsOptions.resolveHostTimeoutSecSec));
         boost::beast::get_lowest_layer(_ws).async_connect(
                 resultsType, boost::asio::bind_executor(*_io_context, [pThis = shared_from_this()] (auto ec, const auto& et) {
                     pThis->onConnect(ec, et);
@@ -133,14 +132,14 @@ namespace xpx_chain_sdk::internal::network {
         // the websocket stream has its own timeout system.
         boost::beast::get_lowest_layer(_ws).expires_never();
 
-        // Set suggested timeout settings for the websocket
-        _ws.set_option(boost::beast::websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
-
-        const std::string host = _config.nodeAddress + ":" + _config.port;
-
-        std::cout << "websocket: connection established: " << host << std::endl;
+        boost::beast::websocket::stream_base::timeout options{};
+        options.handshake_timeout = _config.wsOptions.handshakeTimeoutSec;
+        options.idle_timeout = _config.wsOptions.idleTimeoutSec;
+        options.keep_alive_pings = _config.wsOptions.keepAlivePings;
+        _ws.set_option(options);
 
         // Perform the websocket handshake
+        const std::string host = _config.nodeAddress + ":" + _config.port;
         _ws.async_handshake(host, _config.baseWsPath, boost::asio::bind_executor(*_io_context, [pThis = shared_from_this()](auto ec) {
             pThis->onHandshake(ec);
         }));
@@ -150,6 +149,7 @@ namespace xpx_chain_sdk::internal::network {
         if (errorCode) {
             return _errorCallback(errorCode);
         } else {
+            std::cout << "websocket: connection established: " << _config.nodeAddress << ":" << _config.port << std::endl;
             _ws.async_read(
                     *_buffer,
                     boost::asio::bind_executor(*_io_context, [pThis = shared_from_this()] (
