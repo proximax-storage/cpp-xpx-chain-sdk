@@ -8,8 +8,8 @@ Official ProximaX Sirius Blockchain SDK Library in C++.
 ## Prerequisites ##
 
 * C++ compliler with C++17 support
-* CMake 3.8 or higher
-* [Conan](https://conan.io)
+* CMake 3.9 or higher
+* Boost 1.71.0 or higher
 
 ## Common notes ##
 
@@ -22,20 +22,10 @@ Following variables can be used to control build process:
 ## Update submodules
 
 ```shell
-git submodule update --init --recursive --remote 
+git submodule update --init --recursive
 ```
 
 ## Building on Linux ##
-
-### Update conan
-```shell
-pip install conan --upgrade
-```
-
-### Update conancenter
-```shell
-conan remote add conancenter https://center.conan.io
-```
 
 Prepare build with following instructions:
 
