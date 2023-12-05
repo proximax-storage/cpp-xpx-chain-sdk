@@ -17,13 +17,26 @@
 #include <xpxchaincpp/model/transaction/register_namespace_transaction.h>
 #include <xpxchaincpp/model/transaction/secret_lock_transaction.h>
 #include <xpxchaincpp/model/transaction/secret_proof_transaction.h>
+#include <xpxchaincpp/model/transaction/storage_payment_transaction.h>
 #include <xpxchaincpp/model/transaction/transfer_transaction.h>
 #include <xpxchaincpp/model/transaction/prepare_bc_drive_transaction.h>
+#include <xpxchaincpp/model/transaction/create_liquidity_provider_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_rate_change_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_transaction.h>
 #include <xpxchaincpp/model/transaction/download_transaction.h>
+#include <xpxchaincpp/model/transaction/download_payment_transaction.h>
+#include <xpxchaincpp/model/transaction/drive_closure_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_approval_transaction.h>
 #include <xpxchaincpp/model/transaction/data_modification_cancel_transaction.h>
+#include <xpxchaincpp/model/transaction/finish_download_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/replicator_offboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/deploy_contract_transaction.h>
+#include <xpxchaincpp/model/transaction/manual_call_transaction.h>
+#include <xpxchaincpp/model/transaction/automatic_execution_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_start_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_finish_transaction.h>
+#include <xpxchaincpp/model/transaction/stream_payment_transaction.h>
 
 #include <utility>
 using namespace xpx_chain_sdk;
@@ -80,12 +93,21 @@ namespace xpx_chain_sdk { namespace internal {
 	
 	using SecretProofTransactionImpl = TTransactionImpl<SecretProofTransaction>;
 	using EmbeddedSecretProofTransactionImpl = TTransactionImpl<EmbeddedSecretProofTransaction>;
-	
+
+    using StoragePaymentTransactionImpl = TTransactionImpl<StoragePaymentTransaction>;
+    using EmbeddedStoragePaymentTransactionImpl = TTransactionImpl<EmbeddedStoragePaymentTransaction>;
+
 	using TransferTransactionImpl = TTransactionImpl<TransferTransaction>;
 	using EmbeddedTransferTransactionImpl = TTransactionImpl<EmbeddedTransferTransaction>;
 
 	using PrepareBcDriveTransactionImpl = TTransactionImpl<PrepareBcDriveTransaction>;
 	using EmbeddedPrepareBcDriveTransactionImpl = TTransactionImpl<EmbeddedPrepareBcDriveTransaction>;
+
+    using CreateLiquidityProviderTransactionImpl = TTransactionImpl<CreateLiquidityProviderTransaction>;
+    using EmbeddedCreateLiquidityProviderTransactionImpl = TTransactionImpl<EmbeddedCreateLiquidityProviderTransaction>;
+
+    using ManualRateChangeTransactionImpl = TTransactionImpl<ManualRateChangeTransaction>;
+    using EmbeddedManualRateChangeTransactionImpl = TTransactionImpl<EmbeddedManualRateChangeTransaction>;
 
 	using DataModificationTransactionImpl = TTransactionImpl<DataModificationTransaction>;
 	using EmbeddedDataModificationTransactionImpl = TTransactionImpl<EmbeddedDataModificationTransaction>;
@@ -93,17 +115,45 @@ namespace xpx_chain_sdk { namespace internal {
 	using DownloadTransactionImpl = TTransactionImpl<DownloadTransaction>;
 	using EmbeddedDownloadTransactionImpl = TTransactionImpl<EmbeddedDownloadTransaction>;
 
+    using DownloadPaymentTransactionImpl = TTransactionImpl<DownloadPaymentTransaction>;
+    using EmbeddedDownloadPaymentTransactionImpl = TTransactionImpl<EmbeddedDownloadPaymentTransaction>;
+
+    using DriveClosureTransactionImpl = TTransactionImpl<DriveClosureTransaction>;
+    using EmbeddedDriveClosureTransactionImpl = TTransactionImpl<EmbeddedDriveClosureTransaction>;
+
 	using DataModificationApprovalTransactionImpl = TTransactionImpl<DataModificationApprovalTransaction>;
 	using EmbeddedDataModificationApprovalTransactionImpl = TTransactionImpl<EmbeddedDataModificationApprovalTransaction>;
 
 	using DataModificationCancelTransactionImpl = TTransactionImpl<DataModificationCancelTransaction>;
 	using EmbeddedDataModificationCancelTransactionImpl = TTransactionImpl<EmbeddedDataModificationCancelTransaction>;
 
+    using FinishDownloadTransactionImpl = TTransactionImpl<FinishDownloadTransaction>;
+    using EmbeddedFinishDownloadTransactionImpl = TTransactionImpl<EmbeddedFinishDownloadTransaction>;
+
 	using ReplicatorOnboardingTransactionImpl = TTransactionImpl<ReplicatorOnboardingTransaction>;
 	using EmbeddedReplicatorOnboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOnboardingTransaction>;
-	
-	
-	
+
+    using ReplicatorOffboardingTransactionImpl = TTransactionImpl<ReplicatorOffboardingTransaction>;
+    using EmbeddedReplicatorOffboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOffboardingTransaction>;
+
+    using DeployContractTransactionImpl = TTransactionImpl<DeployContractTransaction>;
+    using EmbeddedDeployContractTransactionImpl = TTransactionImpl<EmbeddedDeployContractTransaction>;
+
+    using ManualCallTransactionImpl = TTransactionImpl<ManualCallTransaction>;
+    using EmbeddedManualCallTransactionImpl = TTransactionImpl<EmbeddedManualCallTransaction>;
+
+    using AutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<AutomaticExecutionsPaymentTransaction>;
+    using EmbeddedAutomaticExecutionsPaymentTransactionImpl = TTransactionImpl<EmbeddedAutomaticExecutionsPaymentTransaction>;
+
+    using StreamStartTransactionImpl = TTransactionImpl<StreamStartTransaction>;
+    using EmbeddedStreamStartTransactionImpl = TTransactionImpl<EmbeddedStreamStartTransaction>;
+
+    using StreamFinishTransactionImpl = TTransactionImpl<StreamFinishTransaction>;
+    using EmbeddedStreamFinishTransactionImpl = TTransactionImpl<EmbeddedStreamFinishTransaction>;
+
+    using StreamPaymentTransactionImpl = TTransactionImpl<StreamPaymentTransaction>;
+    using EmbeddedStreamPaymentTransactionImpl = TTransactionImpl<EmbeddedStreamPaymentTransaction>;
+
 	std::unique_ptr<AccountLinkTransaction>
 	CreateAccountLinkTransactionImpl(AccountLinkTransactionAction action,
 	                                 const Key& remoteAccountKey,
@@ -192,7 +242,6 @@ namespace xpx_chain_sdk { namespace internal {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransactionImpl(uint32_t mosaicNonce,
 	                                      MosaicId mosaicId,
-	                                      MosaicFlags flags,
 	                                      MosaicProperties mosaicProperties,
 	                                      std::optional<Amount> maxFee,
 	                                      std::optional<NetworkDuration> deadline,
@@ -255,7 +304,17 @@ namespace xpx_chain_sdk { namespace internal {
 	                                 const std::optional<Key>& signer = std::nullopt,
 	                                 const std::optional<Signature>& signature = std::nullopt,
 	                                 const std::optional<TransactionInfo>& info = std::nullopt);
-	
+
+    std::unique_ptr<StoragePaymentTransaction>
+    CreateStoragePaymentTransactionImpl(const Key& driveKey,
+                                        const Amount& storageUnits,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
 	                              MosaicContainer mosaics,
@@ -280,29 +339,62 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<PrepareBcDriveTransaction>
 	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
-	                              uint16_t replicatorCount,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+                                        const Amount& verificationFeeAmount,
+                                        uint16_t replicatorCount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransactionImpl(const MosaicId providerMosaicId,
+                                                 const Amount currencyDeposit,
+                                                 const Amount initialMosaicsMinting,
+                                                 const uint32_t slashingPeriod,
+                                                 const uint16_t windowSize,
+                                                 const Key& slashingAccount,
+                                                 const uint32_t alpha,
+                                                 const uint32_t beta,
+                                                 std::optional<Amount> maxFee,
+                                                 std::optional<NetworkDuration> deadline,
+                                                 std::optional<NetworkIdentifier> networkId,
+                                                 const std::optional<Key>& signer = std::nullopt,
+                                                 const std::optional<Signature>& signature = std::nullopt,
+                                                 const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransactionImpl(const MosaicId providerMosaicId,
+                                          const bool currencyBalanceIncrease,
+                                          const Amount currencyBalanceChange,
+                                          const bool mosaicBalanceIncrease,
+                                          const Amount mosaicBalanceChange,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer = std::nullopt,
+                                          const std::optional<Signature>& signature = std::nullopt,
+                                          const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationTransaction>
-	CreateDataModificationTransactionImpl(const Key& driveKey,
-	                              const Hash256& downloadDataCdi,
-	                              uint64_t uploadSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+    CreateDataModificationTransactionImpl(const Key& driveKey,
+                                          const Hash256& downloadDataCdi,
+                                          uint64_t uploadSize,
+                                          const Amount& feedbackFeeAmount,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer = std::nullopt,
+                                          const std::optional<Signature>& signature = std::nullopt,
+                                          const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransactionImpl(const Key& driveKey,
-	                              uint64_t downloadSize,
-	                              const Amount& transactionFee,
+                                  uint64_t downloadSize,
+                                  const Amount& feedbackFeeAmount,
+                                  uint16_t listOfPublicKeysSize,
+                                  const std::vector<Key>& listOfPublicKeys,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,
@@ -310,18 +402,48 @@ namespace xpx_chain_sdk { namespace internal {
 	                              const std::optional<Signature>& signature = std::nullopt,
 	                              const std::optional<TransactionInfo>& info = std::nullopt);
 
+   std::unique_ptr<DownloadPaymentTransaction>
+   CreateDownloadPaymentTransactionImpl(const Hash256& downloadChannelId,
+                                        uint64_t downloadSize,
+                                        const Amount& feedbackFeeAmount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
+
+   std::unique_ptr<DriveClosureTransaction>
+   CreateDriveClosureTransactionImpl(const Key& driveKey,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId,
+                                     const std::optional<Key>& signer = std::nullopt,
+                                     const std::optional<Signature>& signature = std::nullopt,
+                                     const std::optional<TransactionInfo>& info = std::nullopt);
+
 	std::unique_ptr<DataModificationApprovalTransaction>
-	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
-	                              const Hash256& dataModificationId,
-	                              const Hash256& fileStructureCdi,
-	                              uint64_t fileStructureSize,
-	                              uint64_t usedDriveSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+    CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
+                                                  const Hash256& dataModificationId,
+                                                  const Hash256& fileStructureCdi,
+                                                  uint8_t modificationStatus,
+                                                  uint64_t fileStructureSizeBytes,
+                                                  uint64_t metaFilesSizeBytes,
+                                                  uint64_t usedDriveSizeBytes,
+                                                  uint8_t judgingKeysCount,
+                                                  uint8_t overlappingKeysCount,
+                                                  uint8_t judgedKeysCount,
+                                                  uint16_t opinionElementCount,
+                                                  const std::vector<Key>& publicKeys,
+                                                  const std::vector<Signature>& signatures,
+                                                  const std::vector<uint8_t>& presentOpinions,
+                                                  const std::vector<uint64_t>& opinions,
+                                                  std::optional<Amount> maxFee,
+                                                  std::optional<NetworkDuration> deadline,
+                                                  std::optional<NetworkIdentifier> networkId,
+                                                  const std::optional<Key>& signer = std::nullopt,
+                                                  const std::optional<Signature>& signature = std::nullopt,
+                                                  const std::optional<TransactionInfo>& info = std::nullopt);
 
 	std::unique_ptr<DataModificationCancelTransaction>
 	CreateDataModificationCancelTransactionImpl(const Key& driveKey,
@@ -333,12 +455,113 @@ namespace xpx_chain_sdk { namespace internal {
 	                              const std::optional<Signature>& signature = std::nullopt,
 	                              const std::optional<TransactionInfo>& info = std::nullopt);
 
+   std::unique_ptr<FinishDownloadTransaction>
+   CreateFinishDownloadTransactionImpl(const Hash256& downloadChannelId,
+                                       const Amount& feedbackFeeAmount,
+                                       std::optional<Amount> maxFee,
+                                       std::optional<NetworkDuration> deadline,
+                                       std::optional<NetworkIdentifier> networkId,
+                                       const std::optional<Key>& signer = std::nullopt,
+                                       const std::optional<Signature>& signature = std::nullopt,
+                                       const std::optional<TransactionInfo>& info = std::nullopt);
+
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer = std::nullopt,
-	                              const std::optional<Signature>& signature = std::nullopt,
-	                              const std::optional<TransactionInfo>& info = std::nullopt);
+    CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId,
+                                              const std::optional<Key>& signer = std::nullopt,
+                                              const std::optional<Signature>& signature = std::nullopt,
+                                              const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransactionImpl(const Key& driveKey,
+                                               std::optional<Amount> maxFee,
+                                               std::optional<NetworkDuration> deadline,
+                                               std::optional<NetworkIdentifier> networkId,
+                                               const std::optional<Key>& signer = std::nullopt,
+                                               const std::optional<Signature>& signature = std::nullopt,
+                                               const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransactionImpl(const Key& driveKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        MosaicContainer servicePayments,
+                                        const std::string& automaticExecutionsFileName,
+                                        const std::string& automaticExecutionsFunctionName,
+                                        const Amount& automaticExecutionsCallPayment,
+                                        const Amount& automaticDownloadCallPayment,
+                                        uint32_t automaticExecutionsNumber,
+                                        const Key& assignee,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer = std::nullopt,
+                                        const std::optional<Signature>& signature = std::nullopt,
+                                        const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransactionImpl(const Key& contractKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    MosaicContainer servicePayments,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId,
+                                    const std::optional<Key>& signer = std::nullopt,
+                                    const std::optional<Signature>& signature = std::nullopt,
+                                    const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
+                                                    uint32_t automaticExecutionsNumber,
+                                                    std::optional<Amount> maxFee,
+                                                    std::optional<NetworkDuration> deadline,
+                                                    std::optional<NetworkIdentifier> networkId,
+                                                    const std::optional<Key>& signer = std::nullopt,
+                                                    const std::optional<Signature>& signature = std::nullopt,
+                                                    const std::optional<TransactionInfo>& info = std::nullopt);
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransactionImpl(const Key &driveKey,
+                                     const uint64_t expectedUploadSizeMegabytes,
+                                     const uint16_t folderNameSize,
+                                     const Amount &feedbackFeeAmount,
+                                     const std::vector<uint8_t>& folderName,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId,
+                                     const std::optional<Key> &signer = std::nullopt,
+                                     const std::optional<Signature> &signature = std::nullopt,
+                                     const std::optional<TransactionInfo> &info = std::nullopt);
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransactionImpl(const Key& driveKey,
+                                      const Hash256& streamId,
+                                      const uint64_t actualUploadSizeMegabytes,
+                                      const Hash256& streamStructureCdi,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId,
+                                      const std::optional<Key> &signer = std::nullopt,
+                                      const std::optional<Signature> &signature = std::nullopt,
+                                      const std::optional<TransactionInfo> &info = std::nullopt);
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransactionImpl(const Key &driveKey,
+                                       const Hash256 &streamId,
+                                       const uint64_t additionalUploadSizeMegabytes,
+                                       std::optional<Amount> maxFee,
+                                       std::optional<NetworkDuration> deadline,
+                                       std::optional<NetworkIdentifier> networkId,
+                                       const std::optional<Key> &signer = std::nullopt,
+                                       const std::optional<Signature> &signature = std::nullopt,
+                                       const std::optional<TransactionInfo> &info = std::nullopt);
 }}

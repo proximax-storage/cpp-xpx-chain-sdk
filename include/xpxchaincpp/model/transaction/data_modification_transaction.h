@@ -26,11 +26,13 @@ namespace xpx_chain_sdk {
 				const Key& driveKey,
 				const Hash256& downloadDataCdi,
 				uint64_t uploadSize,
+                const Amount& feedbackFeeAmount,
 		        TArgs&&... args):
 			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
 			driveKey_(driveKey),
 			downloadDataCdi_(downloadDataCdi),
-			uploadSize_(uploadSize)
+			uploadSize_(uploadSize),
+            feedbackFeeAmount_(feedbackFeeAmount)
 		{ }
 
 		/// Returns drive key.
@@ -42,10 +44,14 @@ namespace xpx_chain_sdk {
 		/// Returns upload size.
 		uint64_t uploadSize() const;
 
+        /// Returns amount of XPXs to transfer to the drive.
+        const Amount& feedbackFeeAmount() const;
+
 	private:
 		Key driveKey_;
 		Hash256 downloadDataCdi_;
 		uint64_t uploadSize_;
+        Amount feedbackFeeAmount_;
 	};
 
 	extern template class TDataModificationTransaction<Transaction>;
@@ -58,21 +64,23 @@ namespace xpx_chain_sdk {
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<DataModificationTransaction>
-	CreateDataModificationTransaction(const Key& driveKey,
-	                          const Hash256& downloadDataCdi,
-	                          uint64_t uploadSize,
-	                          std::optional<Amount> maxFee = std::nullopt,
-	                          std::optional<NetworkDuration> deadline = std::nullopt,
-	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateDataModificationTransaction(const Key& driveKey,
+                                      const Hash256& downloadDataCdi,
+                                      uint64_t uploadSize,
+                                      const Amount& feedbackFeeAmount,
+                                      std::optional<Amount> maxFee = std::nullopt,
+                                      std::optional<NetworkDuration> deadline = std::nullopt,
+                                      std::optional<NetworkIdentifier> networkId = std::nullopt);
 
 
 	/// Creates data modification transaction.
 	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedDataModificationTransaction>
-	CreateEmbeddedDataModificationTransaction(const Key& driveKey,
-	                                  const Hash256& downloadDataCdi,
-	                                  uint64_t uploadSize,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateEmbeddedDataModificationTransaction(const Key& driveKey,
+                                              const Hash256& downloadDataCdi,
+                                              uint64_t uploadSize,
+                                              const Amount& feedbackFeeAmount,
+                                              const Key& signer,
+                                              std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

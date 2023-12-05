@@ -26,5 +26,5 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	constexpr size_t Embedded_Tx_Type_Start = 38;    // 2 bytes
 	
 	constexpr size_t Aggregate_Tx_Payload_Size_Start = 120; // 4 bytes
-	constexpr size_t Aggregate_Tx_Payload_Start = 124;
+	constexpr size_t Aggregate_Tx_Payload_Start = 126;
 }}}

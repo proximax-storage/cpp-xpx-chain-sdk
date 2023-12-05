@@ -30,8 +30,7 @@ namespace xpx_chain_sdk {
 		None = 0x00,
 		Supply_Mutable = 0x01,
 		Transferable = 0x02,
-		Levy_Mutable = 0x04,
-		All = 0x07
+		All = 0x03
 	};
 	
 	XPX_CHAIN_SDK_BITWISE_ENUM(MosaicFlags);

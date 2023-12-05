@@ -8,8 +8,8 @@ Official ProximaX Sirius Blockchain SDK Library in C++.
 ## Prerequisites ##
 
 * C++ compliler with C++17 support
-* CMake 3.8 or higher
-* [Conan](https://conan.io)
+* CMake 3.9 or higher
+* Boost 1.71.0 or higher
 
 ## Common notes ##
 
@@ -19,7 +19,13 @@ Following variables can be used to control build process:
 * XPX_CHAIN_SDK_BUILD_EXAMPLES - set to ON if you want to build the example programs (default - OFF)
 * other well-known CMake variables (CMAKE_INSTALL_PREFIX, CMAKE_BUILD_TYPE, etc.)
 
-## Building ##
+## Update submodules
+
+```shell
+git submodule update --init --recursive
+```
+
+## Building on Linux ##
 
 Prepare build with following instructions:
 
@@ -36,12 +42,28 @@ make -j 4
 make install
 ```
 
-### Building with Visual Studio ###
+## Building on Windows ##
 
-You can open _cpp-xpx-chain-sdk.sln_ file with VS and build from its GUI or use Microsoft Build Engine:
+### Install CMake ###
+Download and install the latest CMake from https://cmake.org/download/ using the Windows x64 Installer.  
+Make sure to select the option to add CMake bin directory to PATH in system variables.
+
+### Install Conan ###
+Download and install Conan from https://conan.io/downloads.html  
+Add C:\Program Files\Conan\conan to PATH in system variables.
+
+### Install MinGW-W64 ###
+If you do not have MinGW-W64 installed, download the 12.1.0 MSVCRT runtime version from here https://winlibs.com/  
+Extract the zip file to your C: drive, then add C:\mingw64\bin to PATH in system variables.
+
+### Build ###
+Run cmd as an administrator and go to the root directory of cpp-xpx-chain-sdk, then do the following:
+
 ```
-msbuild.exe /p:Configuration=Release ALL_BUILD.vcxproj
-msbuild.exe INSTALL.vcxproj
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+mingw32-make -j 6
 ```
 
 ## Usage ##

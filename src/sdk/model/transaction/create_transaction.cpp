@@ -207,16 +207,15 @@ namespace xpx_chain_sdk { namespace internal {
 		void InitMosaicDefinitionTransactionDTO(TDto& dto,
 		                                        uint32_t mosaicNonce,
 		                                        MosaicId mosaicId,
-		                                        MosaicFlags flags,
 		                                        const MosaicProperties& mosaicProperties,
 		                                        TArgs&&... args)
 		{
-			dto.template set<"nonce"_>(mosaicNonce);
+			dto.template set<"mosaicNonce"_>(mosaicNonce);
 			dto.template set<"mosaicId"_>(mosaicId);
 			dto.template set<"optionalPropertiesCount"_>(mosaicProperties.size() - 2);
-			dto.template set<"flags"_>(flags);// TODO:(mosaicProperties.flags());
+			dto.template set<"flags"_>(mosaicProperties.flags());
 			dto.template set<"divisibility"_>(mosaicProperties.divisibility());
-			
+
 			std::for_each(mosaicProperties.optionalBegin(), mosaicProperties.end(), [&dto](const auto& property) {
 				dto.template value<"optionalProperties"_>().push_back(MosaicPropertyDTO{ property.id, property.value });
 			});
@@ -294,7 +293,23 @@ namespace xpx_chain_sdk { namespace internal {
 			
 			InitTransactionDTO(dto, TransactionType::Secret_Proof, std::forward<TArgs>(args)...);
 		}
-		
+
+        template<typename TDto, typename... TArgs>
+        void InitStoragePaymentTransactionDTO(TDto& dto,
+                                              const Key& driveKey,
+                                              const Amount& storageUnits,
+                                              TArgs&&... args)
+        {
+            if (driveKey.empty()) {
+                XPX_CHAIN_SDK_THROW(transaction_error, "empty drive key in storage payment transaction");
+            }
+
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"storageUnits"_>(storageUnits);
+
+            InitTransactionDTO(dto, TransactionType::Storage_Payment, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
 		void InitTransferTransactionDTO(TDto& dto,
 		                                const Address& recipient,
@@ -312,7 +327,7 @@ namespace xpx_chain_sdk { namespace internal {
 			
 			std::vector<MosaicDTO> dtoMosaics;
 			for (const auto& mosaic: mosaics) {
-				dtoMosaics.push_back(MosaicDTO{ mosaic.id, mosaic.amount });
+				dtoMosaics.emplace_back( mosaic.id, mosaic.amount );
 			}
 			
 			dto.template set<"recipient"_>(recipient.binary());
@@ -443,7 +458,7 @@ namespace xpx_chain_sdk { namespace internal {
 						EmbeddedMosaicDefinitionTransactionDTO dto;
 						
 						InitMosaicDefinitionTransactionDTO(
-							dto, tx->mosaicNonce(), tx->mosaicId(), tx -> flags(), tx->mosaicProperties(),
+							dto, tx->mosaicNonce(), tx->mosaicId(), tx->mosaicProperties(),
 							tx->signer().publicKey(), tx->networkId());
 						
 						AppendDtoData(dto, payload);
@@ -537,27 +552,73 @@ namespace xpx_chain_sdk { namespace internal {
 		}
 
 		template<typename TDto, typename... TArgs>
-		void InitPrepareBcDriveTransactionDTO(TDto& dto,
-										uint64_t driveSize,
-										uint16_t replicatorCount,
-		                                TArgs&&... args)
+        void InitPrepareBcDriveTransactionDTO(TDto& dto,
+                                              uint64_t driveSize,
+                                              const Amount& verificationFeeAmount,
+                                              uint16_t replicatorCount,
+                                              TArgs&&... args)
 		{
 			dto.template set<"driveSize"_>(driveSize);
+			dto.template set<"verificationFeeAmount"_>(verificationFeeAmount);
 			dto.template set<"replicatorCount"_>(replicatorCount);
 
 			InitTransactionDTO(dto, TransactionType::Prepare_Bc_Drive, std::forward<TArgs>(args)...);
 		}
 
+        template<typename TDto, typename... TArgs>
+        void InitCreateLiquidityProviderTransactionDTO(TDto& dto,
+                                                       const MosaicId providerMosaicId,
+                                                       const Amount currencyDeposit,
+                                                       const Amount initialMosaicsMinting,
+                                                       const uint32_t slashingPeriod,
+                                                       const uint16_t windowSize,
+                                                       const Key& slashingAccount,
+                                                       const uint32_t alpha,
+                                                       const uint32_t beta,
+                                                       TArgs&&... args)
+        {
+            dto.template set<"providerMosaicId"_>(providerMosaicId);
+            dto.template set<"currencyDeposit"_>(currencyDeposit);
+            dto.template set<"initialMosaicsMinting"_>(initialMosaicsMinting);
+            dto.template set<"slashingPeriod"_>(slashingPeriod);
+            dto.template set<"windowSize"_>(windowSize);
+            dto.template set<"slashingAccount"_>(slashingAccount);
+            dto.template set<"alpha"_>(alpha);
+            dto.template set<"beta"_>(beta);
+
+            InitTransactionDTO(dto, TransactionType::Create_Liquidity_Provider, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitManualRateChangeTransactionDTO(TDto& dto,
+                                                const MosaicId providerMosaicId,
+                                                const bool currencyBalanceIncrease,
+                                                const Amount currencyBalanceChange,
+                                                const bool mosaicBalanceIncrease,
+                                                const Amount mosaicBalanceChange,
+                                                TArgs&&... args)
+        {
+            dto.template set<"providerMosaicId"_>(providerMosaicId);
+            dto.template set<"currencyBalanceIncrease"_>(currencyBalanceIncrease);
+            dto.template set<"currencyBalanceChange"_>(currencyBalanceChange);
+            dto.template set<"mosaicBalanceIncrease"_>(mosaicBalanceIncrease);
+            dto.template set<"mosaicBalanceChange"_>(mosaicBalanceChange);
+
+            InitTransactionDTO(dto, TransactionType::Manual_Rate_Change, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
-		void InitDataModificationTransactionDTO(TDto& dto,
-										const Key& driveKey,
-										const Hash256& downloadDataCdi,
-										uint64_t uploadSize,
-		                                TArgs&&... args)
+        void InitDataModificationTransactionDTO(TDto& dto,
+                                                const Key& driveKey,
+                                                const Hash256& downloadDataCdi,
+                                                uint64_t uploadSize,
+                                                const Amount& feedbackFeeAmount,
+                                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"downloadDataCdi"_>(downloadDataCdi);
 			dto.template set<"uploadSize"_>(uploadSize);
+			dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
 
 			InitTransactionDTO(dto, TransactionType::Data_Modification, std::forward<TArgs>(args)...);
 		}
@@ -566,30 +627,94 @@ namespace xpx_chain_sdk { namespace internal {
 		void InitDownloadTransactionDTO(TDto& dto,
 										const Key& driveKey,
 										uint64_t downloadSize,
-										const Amount& transactionFee,
+										const Amount& feedbackFeeAmount,
+                                        uint16_t listOfPublicKeysSize,
+                                        const std::vector<Key>& listOfPublicKeys,
 		                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"downloadSize"_>(downloadSize);
-			dto.template set<"transactionFee"_>(transactionFee);
+			dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+			dto.template set<"listOfPublicKeysSize"_>(listOfPublicKeysSize);
+			dto.template set<"listOfPublicKeys"_>(listOfPublicKeys);
+            dto.template isSet<"listOfPublicKeys"_>() = true;
 
 			InitTransactionDTO(dto, TransactionType::Download, std::forward<TArgs>(args)...);
 		}
 
+        template<typename TDto, typename... TArgs>
+        void InitDownloadPaymentTransactionDTO(TDto& dto,
+                                               const Hash256& downloadChannelId,
+                                               uint64_t downloadSize,
+                                               const Amount& feedbackFeeAmount,
+                                               TArgs&&... args)
+        {
+            if (downloadChannelId.empty()) {
+                XPX_CHAIN_SDK_THROW(transaction_error, "empty download channel id in download payment transaction");
+            }
+
+            dto.template set<"downloadChannelId"_>(downloadChannelId);
+            dto.template set<"downloadSize"_>(downloadSize);
+            dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+
+            InitTransactionDTO(dto, TransactionType::Download_Payment, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitDriveClosureTransactionDTO(TDto& dto,
+                                            const Key& driveKey,
+                                            TArgs&&... args)
+        {
+            if (driveKey.empty()) {
+                XPX_CHAIN_SDK_THROW(transaction_error, "empty drive key in drive closure transaction");
+            }
+
+            dto.template set<"driveKey"_>(driveKey);
+
+            InitTransactionDTO(dto, TransactionType::Drive_Closure, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
 		void InitDataModificationApprovalTransactionDTO(TDto& dto,
-										const Key& driveKey,
-										const Hash256& dataModificationId,
-										const Hash256& fileStructureCdi,
-										uint64_t fileStructureSize,
-										uint64_t usedDriveSize,
-		                                TArgs&&... args)
+                                                        const Key& driveKey,
+                                                        const Hash256& dataModificationId,
+                                                        const Hash256& fileStructureCdi,
+                                                        uint8_t modificationStatus,
+                                                        uint64_t fileStructureSizeBytes,
+                                                        uint64_t metaFilesSizeBytes,
+                                                        uint64_t usedDriveSizeBytes,
+                                                        uint8_t judgingKeysCount,
+                                                        uint8_t overlappingKeysCount,
+                                                        uint8_t judgedKeysCount,
+                                                        uint16_t opinionElementCount,
+                                                        const std::vector<Key>& publicKeys,
+                                                        const std::vector<Signature>& signatures,
+                                                        const std::vector<uint8_t>& presentOpinions,
+                                                        const std::vector<uint64_t>& opinions,
+		                                                TArgs&&... args)
 		{
 			dto.template set<"driveKey"_>(driveKey);
 			dto.template set<"dataModificationId"_>(dataModificationId);
 			dto.template set<"fileStructureCdi"_>(fileStructureCdi);
-			dto.template set<"fileStructureSize"_>(fileStructureSize);
-			dto.template set<"usedDriveSize"_>(usedDriveSize);
+			dto.template set<"modificationStatus"_>(modificationStatus);
+			dto.template set<"fileStructureSizeBytes"_>(fileStructureSizeBytes);
+			dto.template set<"metaFilesSizeBytes"_>(metaFilesSizeBytes);
+			dto.template set<"usedDriveSizeBytes"_>(usedDriveSizeBytes);
+			dto.template set<"judgingKeysCount"_>(judgingKeysCount);
+			dto.template set<"overlappingKeysCount"_>(overlappingKeysCount);
+			dto.template set<"judgedKeysCount"_>(judgedKeysCount);
+			dto.template set<"opinionElementCount"_>(opinionElementCount);
+			dto.template set<"publicKeys"_>(publicKeys);
+            dto.template isSet<"publicKeys"_>() = true;
+
+			dto.template set<"signatures"_>(signatures);
+            dto.template isSet<"signatures"_>() = true;
+
+			dto.template set<"presentOpinions"_>(presentOpinions);
+            dto.template isSet<"presentOpinions"_>() = true;
+
+			dto.template set<"opinions"_>(opinions);
+            dto.template isSet<"opinions"_>() = true;
 
 			InitTransactionDTO(dto, TransactionType::Data_Modification_Approval, std::forward<TArgs>(args)...);
 		}
@@ -606,15 +731,177 @@ namespace xpx_chain_sdk { namespace internal {
 			InitTransactionDTO(dto, TransactionType::Data_Modification_Cancel, std::forward<TArgs>(args)...);
 		}
 
+        template<typename TDto, typename... TArgs>
+        void InitFinishDownloadTransactionDTO(TDto& dto,
+                                              const Hash256& downloadChannelId,
+                                              const Amount& feedbackFeeAmount,
+                                              TArgs&&... args)
+        {
+            if (downloadChannelId.empty()) {
+                XPX_CHAIN_SDK_THROW(transaction_error, "empty download channel id in finish download transaction");
+            }
+
+            dto.template set<"downloadChannelId"_>(downloadChannelId);
+            dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+
+            InitTransactionDTO(dto, TransactionType::Finish_Download, std::forward<TArgs>(args)...);
+        }
+
 		template<typename TDto, typename... TArgs>
-		void InitReplicatorOnboardingTransactionDTO(TDto& dto,
-										const Amount& capacity,
-		                                TArgs&&... args)
+        void InitReplicatorOnboardingTransactionDTO(TDto& dto,
+                                                    const Amount& capacity,
+                                                    TArgs&&... args)
 		{
 			dto.template set<"capacity"_>(capacity);
 
 			InitTransactionDTO(dto, TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...);
 		}
+
+        template<typename TDto, typename... TArgs>
+        void InitReplicatorOffboardingTransactionDTO(TDto& dto,
+                                                     const Key& driveKey,
+                                                     TArgs&&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+
+            InitTransactionDTO(dto, TransactionType::Replicator_Offboarding, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitDeployContractTransactionDTO(TDto& dto,
+                                              const Key& driveKey,
+                                              const std::string& fileName,
+                                              const std::string& functionName,
+                                              const std::vector<uint8_t>& actualArguments,
+                                              const Amount& executionCallPayment,
+                                              const Amount& downloadCallPayment,
+                                              const MosaicContainer& servicePayments,
+                                              const std::string& automaticExecutionsFileName,
+                                              const std::string& automaticExecutionsFunctionName,
+                                              const Amount& automaticExecutionsCallPayment,
+                                              const Amount& automaticDownloadCallPayment,
+                                              uint32_t automaticExecutionsNumber,
+                                              const Key& assignee,
+                                              TArgs&&... args)
+        {
+            std::vector<MosaicDTO> dtoServicePayments;
+            for (const auto& servicePayment: servicePayments) {
+                dtoServicePayments.emplace_back( servicePayment.id, servicePayment.amount );
+            }
+
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"fileNameSize"_>(fileName.size());
+            dto.template set<"fileName"_>(fileName);
+            dto.template set<"functionNameSize"_>(functionName.size());
+            dto.template set<"functionName"_>(functionName);
+            dto.template set<"actualArgumentsSize"_>(actualArguments.size());
+            dto.template set<"actualArguments"_>(actualArguments);
+            dto.template set<"executionCallPayment"_>(executionCallPayment);
+            dto.template set<"downloadCallPayment"_>(downloadCallPayment);
+            dto.template set<"servicePaymentsCount"_>(servicePayments.size());
+            dto.template set<"servicePayments"_>(std::move(dtoServicePayments));
+            dto.template set<"automaticExecutionsFileNameSize"_>(automaticExecutionsFileName.size());
+            dto.template set<"automaticExecutionsFileName"_>(automaticExecutionsFileName);
+            dto.template set<"automaticExecutionsFunctionNameSize"_>(automaticExecutionsFunctionName.size());
+            dto.template set<"automaticExecutionsFunctionName"_>(automaticExecutionsFunctionName);
+            dto.template set<"automaticExecutionsCallPayment"_>(automaticExecutionsCallPayment);
+            dto.template set<"automaticDownloadCallPayment"_>(automaticDownloadCallPayment);
+            dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
+            dto.template set<"assignee"_>(assignee);
+
+            InitTransactionDTO(dto, TransactionType::Deploy_Contract, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitManualCallTransactionDTO(TDto& dto,
+                                          const Key& contractKey,
+                                          const std::string& fileName,
+                                          const std::string& functionName,
+                                          const std::vector<uint8_t>& actualArguments,
+                                          const Amount& executionCallPayment,
+                                          const Amount& downloadCallPayment,
+                                          const MosaicContainer& servicePayments,
+                                          TArgs&&... args)
+        {
+            std::vector<MosaicDTO> dtoServicePayments;
+            for (const auto& servicePayment: servicePayments) {
+                dtoServicePayments.emplace_back( servicePayment.id, servicePayment.amount );
+            }
+
+            dto.template set<"contractKey"_>(contractKey);
+            dto.template set<"fileNameSize"_>(fileName.size());
+            dto.template set<"fileName"_>(fileName);
+            dto.template set<"functionNameSize"_>(functionName.size());
+            dto.template set<"functionName"_>(functionName);
+            dto.template set<"actualArgumentsSize"_>(actualArguments.size());
+            dto.template set<"actualArguments"_>(actualArguments);
+            dto.template set<"executionCallPayment"_>(executionCallPayment);
+            dto.template set<"downloadCallPayment"_>(downloadCallPayment);
+            dto.template set<"servicePaymentsCount"_>(servicePayments.size());
+            dto.template set<"servicePayments"_>(std::move(dtoServicePayments));
+
+            InitTransactionDTO(dto, TransactionType::Manual_Call, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitAutomaticExecutionsPaymentTransactionDTO(TDto& dto,
+                                                          const Key& contractKey,
+                                                          uint32_t automaticExecutionsNumber,
+                                                          TArgs&&... args)
+        {
+            dto.template set<"contractKey"_>(contractKey);
+            dto.template set<"automaticExecutionsNumber"_>(automaticExecutionsNumber);
+
+            InitTransactionDTO(dto, TransactionType::Automatic_Executions_Payment, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamStartTransactionDTO(TDto &dto,
+                                           const Key &driveKey,
+                                           const uint64_t expectedUploadSizeMegabytes,
+                                           const uint16_t folderNameSize,
+                                           const Amount &feedbackFeeAmount,
+                                           const std::vector<uint8_t>& folderName,
+                                           TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"expectedUploadSizeMegabytes"_>(expectedUploadSizeMegabytes);
+            dto.template set<"folderNameSize"_>(folderNameSize);
+            dto.template set<"feedbackFeeAmount"_>(feedbackFeeAmount);
+            dto.template set<"folderName"_>(folderName);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Start, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamFinishTransactionDTO(TDto &dto,
+                                            const Key &driveKey,
+                                            const Hash256 &streamId,
+                                            const uint64_t actualUploadSizeMegabytes,
+                                            const Hash256 &streamStructureCdi,
+                                            TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"streamId"_>(streamId);
+            dto.template set<"actualUploadSize"_>(actualUploadSizeMegabytes);
+            dto.template set<"streamStructureCdi"_>(streamStructureCdi);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Finish, std::forward<TArgs>(args)...);
+        }
+
+        template<typename TDto, typename... TArgs>
+        void InitStreamPaymentTransactionDTO(TDto &dto,
+                                             const Key &driveKey,
+                                             const Hash256 &streamId,
+                                             const uint64_t additionalUploadSizeMegabytes,
+                                             TArgs &&... args)
+        {
+            dto.template set<"driveKey"_>(driveKey);
+            dto.template set<"streamId"_>(streamId);
+            dto.template set<"additionalUploadSize"_>(additionalUploadSizeMegabytes);
+
+            InitTransactionDTO(dto, TransactionType::Stream_Payment, std::forward<TArgs>(args)...);
+        }
 	}
 	
 	
@@ -774,7 +1061,6 @@ namespace xpx_chain_sdk { namespace internal {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransactionImpl(uint32_t mosaicNonce,
 	                                      MosaicId mosaicId,
-	                                      MosaicFlags flags,
 	                                      MosaicProperties mosaicProperties,
 	                                      std::optional<Amount> maxFee,
 	                                      std::optional<NetworkDuration> deadline,
@@ -785,10 +1071,10 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		MosaicDefinitionTransactionDTO dto;
 		InitMosaicDefinitionTransactionDTO(
-			dto, mosaicNonce, mosaicId, flags, mosaicProperties, maxFee, deadline, networkId, signer, signature);
+			dto, mosaicNonce, mosaicId, mosaicProperties, maxFee, deadline, networkId, signer, signature);
 			
 		return CreateTransaction<MosaicDefinitionTransactionImpl>(
-			dto, signer, signature, info, mosaicNonce, mosaicId, flags, std::move(mosaicProperties));
+			dto, signer, signature, info, mosaicNonce, mosaicId, std::move(mosaicProperties));
 	}
 	
 	std::unique_ptr<MosaicSupplyChangeTransaction>
@@ -890,7 +1176,25 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<SecretProofTransactionImpl>(
 			dto, signer, signature, info, secretHashAlgorithm, secretHash, secret);
 	}
-	
+
+    std::unique_ptr<StoragePaymentTransaction>
+    CreateStoragePaymentTransactionImpl(const Key& driveKey,
+                                        const Amount& storageUnits,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer,
+                                        const std::optional<Signature>& signature,
+                                        const std::optional<TransactionInfo>& info)
+    {
+        StoragePaymentTransactionDTO dto;
+        InitStoragePaymentTransactionDTO(
+                dto, driveKey, storageUnits,  maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StoragePaymentTransaction>(
+                dto, signer, signature, info, driveKey, storageUnits);
+    }
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransactionImpl(const Address& recipient,
 	                              MosaicContainer mosaics,
@@ -932,46 +1236,99 @@ namespace xpx_chain_sdk { namespace internal {
 	}
 
 	std::unique_ptr<PrepareBcDriveTransaction>
-	CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
-	                              uint16_t replicatorCount,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreatePrepareBcDriveTransactionImpl(uint64_t driveSize,
+                                        const Amount& verificationFeeAmount,
+                                        uint16_t replicatorCount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer,
+                                        const std::optional<Signature>& signature,
+                                        const std::optional<TransactionInfo>& info)
 	{
 		PrepareBcDriveTransactionDTO dto;
 		InitPrepareBcDriveTransactionDTO(
-			dto, driveSize, replicatorCount, maxFee, deadline, networkId, signer, signature);
+			dto, driveSize, verificationFeeAmount, replicatorCount, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<PrepareBcDriveTransactionImpl>(
-			dto, signer, signature, info, driveSize, replicatorCount);
+			dto, signer, signature, info, driveSize, verificationFeeAmount, replicatorCount);
 	}
 
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransactionImpl(const MosaicId providerMosaicId,
+                                                 const Amount currencyDeposit,
+                                                 const Amount initialMosaicsMinting,
+                                                 const uint32_t slashingPeriod,
+                                                 const uint16_t windowSize,
+                                                 const Key& slashingAccount,
+                                                 const uint32_t alpha,
+                                                 const uint32_t beta,
+                                                 std::optional<Amount> maxFee,
+                                                 std::optional<NetworkDuration> deadline,
+                                                 std::optional<NetworkIdentifier> networkId,
+                                                 const std::optional<Key>& signer,
+                                                 const std::optional<Signature>& signature,
+                                                 const std::optional<TransactionInfo>& info)
+    {
+        CreateLiquidityProviderTransactionDTO dto;
+        InitCreateLiquidityProviderTransactionDTO(
+                dto, providerMosaicId, currencyDeposit, initialMosaicsMinting, slashingPeriod,
+                windowSize, slashingAccount, alpha, beta, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<CreateLiquidityProviderTransactionImpl>(
+                dto, signer, signature, info, providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                slashingPeriod, windowSize, slashingAccount, alpha, beta);
+    }
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransactionImpl(const MosaicId providerMosaicId,
+                                          const bool currencyBalanceIncrease,
+                                          const Amount currencyBalanceChange,
+                                          const bool mosaicBalanceIncrease,
+                                          const Amount mosaicBalanceChange,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer,
+                                          const std::optional<Signature>& signature,
+                                          const std::optional<TransactionInfo>& info)
+    {
+        ManualRateChangeTransactionDTO dto;
+        InitManualRateChangeTransactionDTO(
+                dto, providerMosaicId, currencyBalanceIncrease, currencyBalanceChange,
+                mosaicBalanceIncrease, mosaicBalanceChange, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<ManualRateChangeTransactionImpl>(
+                dto, signer, signature, info, providerMosaicId, currencyBalanceIncrease,
+                currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange);
+    }
+
 	std::unique_ptr<DataModificationTransaction>
-	CreateDataModificationTransactionImpl(const Key& driveKey,
-	                              const Hash256& downloadDataCdi,
-	                              uint64_t uploadSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateDataModificationTransactionImpl(const Key& driveKey,
+                                          const Hash256& downloadDataCdi,
+                                          uint64_t uploadSize,
+                                          const Amount& feedbackFeeAmount,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId,
+                                          const std::optional<Key>& signer,
+                                          const std::optional<Signature>& signature,
+                                          const std::optional<TransactionInfo>& info)
 	{
 		DataModificationTransactionDTO dto;
 		InitDataModificationTransactionDTO(
-			dto, driveKey, downloadDataCdi, uploadSize, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, downloadDataCdi, uploadSize, feedbackFeeAmount, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<DataModificationTransactionImpl>(
-			dto, signer, signature, info, driveKey, downloadDataCdi, uploadSize);
+			dto, signer, signature, info, driveKey, downloadDataCdi, uploadSize, feedbackFeeAmount);
 	}
 
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransactionImpl(const Key& driveKey,
-	                              uint64_t downloadSize,
-	                              const Amount& transactionFee,
+                                  uint64_t downloadSize,
+                                  const Amount& feedbackFeeAmount,
+                                  uint16_t listOfPublicKeysSize,
+                                  const std::vector<Key>& listOfPublicKeys,
 	                              std::optional<Amount> maxFee,
 	                              std::optional<NetworkDuration> deadline,
 	                              std::optional<NetworkIdentifier> networkId,
@@ -981,31 +1338,81 @@ namespace xpx_chain_sdk { namespace internal {
 	{
 		DownloadTransactionDTO dto;
 		InitDownloadTransactionDTO(
-			dto, driveKey, downloadSize, transactionFee, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, maxFee, deadline, networkId, signer, signature);
 
 		return CreateTransaction<DownloadTransactionImpl>(
-			dto, signer, signature, info, driveKey, downloadSize, transactionFee);
+			dto, signer, signature, info, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys);
 	}
 
+    std::unique_ptr<DownloadPaymentTransaction>
+    CreateDownloadPaymentTransactionImpl(const Hash256& downloadChannelId,
+                                         uint64_t downloadSize,
+                                         const Amount& feedbackFeeAmount,
+                                         std::optional<Amount> maxFee,
+                                         std::optional<NetworkDuration> deadline,
+                                         std::optional<NetworkIdentifier> networkId,
+                                         const std::optional<Key>& signer,
+                                         const std::optional<Signature>& signature,
+                                         const std::optional<TransactionInfo>& info)
+    {
+        DownloadPaymentTransactionDTO dto;
+        InitDownloadPaymentTransactionDTO(
+                dto, downloadChannelId, downloadSize, feedbackFeeAmount, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<DownloadPaymentTransactionImpl>(
+                dto, signer, signature, info, downloadChannelId, downloadSize, feedbackFeeAmount);
+    }
+
+    std::unique_ptr<DriveClosureTransaction>
+    CreateDriveClosureTransactionImpl(const Key& driveKey,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId,
+                                      const std::optional<Key>& signer,
+                                      const std::optional<Signature>& signature,
+                                      const std::optional<TransactionInfo>& info)
+    {
+        DriveClosureTransactionDTO dto;
+        InitDriveClosureTransactionDTO(
+                dto, driveKey, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<DriveClosureTransactionImpl>(
+                dto, signer, signature, info, driveKey);
+    }
+
 	std::unique_ptr<DataModificationApprovalTransaction>
-	CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
-	                              const Hash256& dataModificationId,
-	                              const Hash256& fileStructureCdi,
-	                              uint64_t fileStructureSize,
-	                              uint64_t usedDriveSize,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateDataModificationApprovalTransactionImpl(const Key& driveKey,
+                                                  const Hash256& dataModificationId,
+                                                  const Hash256& fileStructureCdi,
+                                                  uint8_t modificationStatus,
+                                                  uint64_t fileStructureSizeBytes,
+                                                  uint64_t metaFilesSizeBytes,
+                                                  uint64_t usedDriveSizeBytes,
+                                                  uint8_t judgingKeysCount,
+                                                  uint8_t overlappingKeysCount,
+                                                  uint8_t judgedKeysCount,
+                                                  uint16_t opinionElementCount,
+                                                  const std::vector<Key>& publicKeys,
+                                                  const std::vector<Signature>& signatures,
+                                                  const std::vector<uint8_t>& presentOpinions,
+                                                  const std::vector<uint64_t>& opinions,
+                                                  std::optional<Amount> maxFee,
+                                                  std::optional<NetworkDuration> deadline,
+                                                  std::optional<NetworkIdentifier> networkId,
+                                                  const std::optional<Key>& signer,
+                                                  const std::optional<Signature>& signature,
+                                                  const std::optional<TransactionInfo>& info)
 	{
 		DataModificationApprovalTransactionDTO dto;
 		InitDataModificationApprovalTransactionDTO(
-			dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId, signer, signature);
+			dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+            overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, maxFee,
+            deadline, networkId, signer, signature);
 
 		return CreateTransaction<DataModificationApprovalTransactionImpl>(
-			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+			dto, signer, signature, info, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes,
+            metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount, overlappingKeysCount, judgedKeysCount, opinionElementCount,
+            publicKeys, signatures, presentOpinions, opinions);
 	}
 
 	std::unique_ptr<DataModificationCancelTransaction>
@@ -1026,14 +1433,32 @@ namespace xpx_chain_sdk { namespace internal {
 			dto, signer, signature, info, driveKey, dataModificationId);
 	}
 
+    std::unique_ptr<FinishDownloadTransaction>
+    CreateFinishDownloadTransactionImpl(const Hash256& downloadChannelId,
+                                        const Amount& feedbackFeeAmount,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer,
+                                        const std::optional<Signature>& signature,
+                                        const std::optional<TransactionInfo>& info)
+    {
+        FinishDownloadTransactionDTO dto;
+        InitFinishDownloadTransactionDTO(
+                dto, downloadChannelId, feedbackFeeAmount, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<FinishDownloadTransactionImpl>(
+                dto, signer, signature, info, downloadChannelId, feedbackFeeAmount);
+    }
+
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
-	                              std::optional<Amount> maxFee,
-	                              std::optional<NetworkDuration> deadline,
-	                              std::optional<NetworkIdentifier> networkId,
-	                              const std::optional<Key>& signer,
-	                              const std::optional<Signature>& signature,
-	                              const std::optional<TransactionInfo>& info)
+    CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId,
+                                              const std::optional<Key>& signer,
+                                              const std::optional<Signature>& signature,
+                                              const std::optional<TransactionInfo>& info)
 	{
 		ReplicatorOnboardingTransactionDTO dto;
 		InitReplicatorOnboardingTransactionDTO(
@@ -1042,6 +1467,209 @@ namespace xpx_chain_sdk { namespace internal {
 		return CreateTransaction<ReplicatorOnboardingTransactionImpl>(
 			dto, signer, signature, info, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransactionImpl(const Key& driveKey,
+                                               std::optional<Amount> maxFee,
+                                               std::optional<NetworkDuration> deadline,
+                                               std::optional<NetworkIdentifier> networkId,
+                                               const std::optional<Key>& signer,
+                                               const std::optional<Signature>& signature,
+                                               const std::optional<TransactionInfo>& info)
+    {
+        ReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(
+                dto, driveKey, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<ReplicatorOffboardingTransactionImpl>(
+                dto, signer, signature, info, driveKey);
+    }
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransactionImpl(const Key& driveKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        MosaicContainer servicePayments,
+                                        const std::string& automaticExecutionsFileName,
+                                        const std::string& automaticExecutionsFunctionName,
+                                        const Amount& automaticExecutionsCallPayment,
+                                        const Amount& automaticDownloadCallPayment,
+                                        uint32_t automaticExecutionsNumber,
+                                        const Key& assignee,
+                                        std::optional<Amount> maxFee,
+                                        std::optional<NetworkDuration> deadline,
+                                        std::optional<NetworkIdentifier> networkId,
+                                        const std::optional<Key>& signer,
+                                        const std::optional<Signature>& signature,
+                                        const std::optional<TransactionInfo>& info)
+    {
+        DeployContractTransactionDTO dto;
+        InitDeployContractTransactionDTO(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee,
+                maxFee,
+                deadline,
+                networkId,
+                signer,
+                signature);
+
+        return CreateTransaction<DeployContractTransactionImpl>(
+                dto,
+                signer,
+                signature,
+                info,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee);
+    }
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransactionImpl(const Key& contractKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    MosaicContainer servicePayments,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId,
+                                    const std::optional<Key>& signer,
+                                    const std::optional<Signature>& signature,
+                                    const std::optional<TransactionInfo>& info)
+    {
+        ManualCallTransactionDTO dto;
+        InitManualCallTransactionDTO(
+                dto,
+                contractKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                maxFee,
+                deadline,
+                networkId,
+                signer,
+                signature);
+
+        return CreateTransaction<ManualCallTransactionImpl>(
+                dto,
+                signer,
+                signature,
+                info,
+                contractKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments);
+    }
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransactionImpl(const Key& contractKey,
+                                                    uint32_t automaticExecutionsNumber,
+                                                    std::optional<Amount> maxFee,
+                                                    std::optional<NetworkDuration> deadline,
+                                                    std::optional<NetworkIdentifier> networkId,
+                                                    const std::optional<Key>& signer,
+                                                    const std::optional<Signature>& signature,
+                                                    const std::optional<TransactionInfo>& info)
+    {
+        AutomaticExecutionsPaymentTransactionDTO dto;
+        InitAutomaticExecutionsPaymentTransactionDTO(
+                dto, contractKey, automaticExecutionsNumber, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<AutomaticExecutionsPaymentTransactionImpl>(
+                dto, signer, signature, info, contractKey, automaticExecutionsNumber);
+    }
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransactionImpl(const Key &driveKey,
+                                     const uint64_t expectedUploadSizeMegabytes,
+                                     const uint16_t folderNameSize,
+                                     const Amount &feedbackFeeAmount,
+                                     const std::vector<uint8_t>& folderName,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId,
+                                     const std::optional<Key> &signer,
+                                     const std::optional<Signature> &signature,
+                                     const std::optional<TransactionInfo> &info)
+    {
+        StreamStartTransactionDTO dto;
+        InitStreamStartTransactionDTO(
+                dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamStartTransactionImpl>(
+                dto, signer, signature, info, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName);
+    }
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransactionImpl(const Key &driveKey,
+                                      const Hash256 &streamId,
+                                      const uint64_t actualUploadSizeMegabytes,
+                                      const Hash256 &streamStructureCdi,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId,
+                                      const std::optional<Key> &signer,
+                                      const std::optional<Signature> &signature,
+                                      const std::optional<TransactionInfo> &info)
+    {
+        StreamFinishTransactionDTO dto;
+        InitStreamFinishTransactionDTO(
+                dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamFinishTransactionImpl>(
+                dto, signer, signature, info, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi);
+    }
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransactionImpl(const Key &driveKey,
+                                       const Hash256 &streamId,
+                                       const uint64_t additionalUploadSizeMegabytes,
+                                       std::optional<Amount> maxFee,
+                                       std::optional<NetworkDuration> deadline,
+                                       std::optional<NetworkIdentifier> networkId,
+                                       const std::optional<Key> &signer,
+                                       const std::optional<Signature> &signature,
+                                       const std::optional<TransactionInfo> &info)
+    {
+        StreamPaymentTransactionDTO dto;
+        InitStreamPaymentTransactionDTO(
+                dto, driveKey, streamId, additionalUploadSizeMegabytes, maxFee, deadline, networkId, signer, signature);
+
+        return CreateTransaction<StreamPaymentTransactionImpl>(
+                dto, signer, signature, info, driveKey, streamId, additionalUploadSizeMegabytes);
+    }
 }}
 
 
@@ -1232,29 +1860,28 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<MosaicDefinitionTransaction>
 	CreateMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                  MosaicId mosaicId,
-	                                  MosaicFlags flags,
 	                                  MosaicProperties mosaicProperties,
 	                                  std::optional<Amount> maxFee,
 	                                  std::optional<NetworkDuration> deadline,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateMosaicDefinitionTransactionImpl(
-			mosaicNonce, mosaicId, flags, std::move(mosaicProperties), maxFee, deadline, networkId);
+			mosaicNonce, mosaicId, std::move(mosaicProperties), maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedMosaicDefinitionTransaction>
 	CreateEmbeddedMosaicDefinitionTransaction(uint32_t mosaicNonce,
 	                                          MosaicId mosaicId,
-	                                          MosaicFlags flags,
+                                              Amount mosaicSupply,
 	                                          MosaicProperties mosaicProperties,
 	                                          const Key& signer,
 	                                          std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedMosaicDefinitionTransactionDTO dto;
-		InitMosaicDefinitionTransactionDTO(dto, mosaicNonce, mosaicId, flags, mosaicProperties, signer, networkId);
+		InitMosaicDefinitionTransactionDTO(dto, mosaicNonce, mosaicId, mosaicProperties, signer, networkId);
 
 		return CreateTransaction<EmbeddedMosaicDefinitionTransactionImpl>(
-			dto, mosaicNonce, mosaicId, flags, std::move(mosaicProperties));
+			dto, mosaicNonce, mosaicId, std::move(mosaicProperties));
 	}
 
 	std::unique_ptr<MosaicSupplyChangeTransaction>
@@ -1412,6 +2039,27 @@ namespace xpx_chain_sdk {
 		return CreateTransaction<EmbeddedSecretProofTransactionImpl>(dto, secretHashAlgorithm, secretHash, secret);
 	}
 
+    std::unique_ptr<StoragePaymentTransaction>
+    CreateStoragePaymentTransaction(const Key& driveKey,
+                                    const Amount& storageUnits,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStoragePaymentTransactionImpl(driveKey, storageUnits, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStoragePaymentTransaction>
+    CreateEmbeddedStoragePaymentTransaction(const Key& driveKey,
+                                            const Amount& storageUnits,
+                                            const Key& signer,
+                                            std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStoragePaymentTransactionDTO dto;
+        InitStoragePaymentTransactionDTO(dto, driveKey, storageUnits, signer, networkId);
+        return CreateTransaction<EmbeddedStoragePaymentTransactionImpl>(dto, driveKey, storageUnits);
+    }
+
 	std::unique_ptr<TransferTransaction>
 	CreateTransferTransaction(const Address& recipient,
 	                          MosaicContainer mosaics,
@@ -1456,136 +2104,524 @@ namespace xpx_chain_sdk {
 	}
 
 	std::unique_ptr<PrepareBcDriveTransaction>
-	CreatePrepareBcDriveTransaction(uint64_t driveSize,
-	                          uint16_t replicatorCount,
-	                          std::optional<Amount> maxFee,
-	                          std::optional<NetworkDuration> deadline,
-	                          std::optional<NetworkIdentifier> networkId)
+    CreatePrepareBcDriveTransaction(uint64_t driveSize,
+                                    const Amount& verificationFeeAmount,
+                                    uint16_t replicatorCount,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
 	{
-		return CreatePrepareBcDriveTransactionImpl(driveSize, replicatorCount, maxFee, deadline, networkId);
+		return CreatePrepareBcDriveTransactionImpl(driveSize, verificationFeeAmount, replicatorCount, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedPrepareBcDriveTransaction>
-	CreateEmbeddedPrepareBcDriveTransaction(uint64_t driveSize,
-	                                  uint16_t replicatorCount,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId)
+    CreateEmbeddedPrepareBcDriveTransaction(uint64_t driveSize,
+                                            const Amount& verificationFeeAmount,
+                                            uint16_t replicatorCount,
+                                            const Key& signer,
+                                            std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedPrepareBcDriveTransactionDTO dto;
-		InitPrepareBcDriveTransactionDTO(dto, driveSize, replicatorCount, signer, networkId);
-		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, replicatorCount);
+		InitPrepareBcDriveTransactionDTO(dto, driveSize, verificationFeeAmount, replicatorCount, signer, networkId);
+		return CreateTransaction<EmbeddedPrepareBcDriveTransactionImpl>(dto, driveSize, verificationFeeAmount, replicatorCount);
 	}
 
+    std::unique_ptr<CreateLiquidityProviderTransaction>
+    CreateCreateLiquidityProviderTransaction(const MosaicId providerMosaicId,
+                                             const Amount currencyDeposit,
+                                             const Amount initialMosaicsMinting,
+                                             const uint32_t slashingPeriod,
+                                             const uint16_t windowSize,
+                                             const Key& slashingAccount,
+                                             const uint32_t alpha,
+                                             const uint32_t beta,
+                                             std::optional<Amount> maxFee,
+                                             std::optional<NetworkDuration> deadline,
+                                             std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateCreateLiquidityProviderTransactionImpl(providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                                                            slashingPeriod, windowSize, slashingAccount, alpha, beta, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedCreateLiquidityProviderTransaction>
+    CreateEmbeddedCreateLiquidityProviderTransaction(const MosaicId providerMosaicId,
+                                                     const Amount currencyDeposit,
+                                                     const Amount initialMosaicsMinting,
+                                                     const uint32_t slashingPeriod,
+                                                     const uint16_t windowSize,
+                                                     const Key& slashingAccount,
+                                                     const uint32_t alpha,
+                                                     const uint32_t beta,
+                                                     const Key& signer,
+                                                     std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedCreateLiquidityProviderTransactionDTO dto;
+        InitCreateLiquidityProviderTransactionDTO(dto, providerMosaicId, currencyDeposit, initialMosaicsMinting,
+                                                  slashingPeriod, windowSize, slashingAccount, alpha, beta, signer, networkId);
+        return CreateTransaction<EmbeddedCreateLiquidityProviderTransactionImpl>(dto, providerMosaicId, currencyDeposit,
+                                                                                 initialMosaicsMinting, slashingPeriod, windowSize, slashingAccount, alpha, beta);
+    }
+
+    std::unique_ptr<ManualRateChangeTransaction>
+    CreateManualRateChangeTransaction(const MosaicId providerMosaicId,
+                                      const bool currencyBalanceIncrease,
+                                      const Amount currencyBalanceChange,
+                                      const bool mosaicBalanceIncrease,
+                                      const Amount mosaicBalanceChange,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateManualRateChangeTransactionImpl(providerMosaicId, currencyBalanceIncrease,
+                                                     currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedManualRateChangeTransaction>
+    CreateEmbeddedManualRateChangeTransaction(const MosaicId providerMosaicId,
+                                              const bool currencyBalanceIncrease,
+                                              const Amount currencyBalanceChange,
+                                              const bool mosaicBalanceIncrease,
+                                              const Amount mosaicBalanceChange,
+                                              const Key& signer,
+                                              std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedManualRateChangeTransactionDTO dto;
+        InitManualRateChangeTransactionDTO(dto, providerMosaicId, currencyBalanceIncrease, currencyBalanceChange,
+                                           mosaicBalanceIncrease, mosaicBalanceChange, signer, networkId);
+
+        return CreateTransaction<EmbeddedManualRateChangeTransactionImpl>(dto, providerMosaicId, currencyBalanceIncrease,
+                                                                          currencyBalanceChange, mosaicBalanceIncrease, mosaicBalanceChange);
+    }
+
 	std::unique_ptr<DataModificationTransaction>
-	CreateDataModificationTransaction(const Key& driveKey,
-	                          const Hash256& downloadDataCdi,
-	                          uint64_t uploadSize,
-	                          std::optional<Amount> maxFee,
-	                          std::optional<NetworkDuration> deadline,
-	                          std::optional<NetworkIdentifier> networkId)
+    CreateDataModificationTransaction(const Key& driveKey,
+                                      const Hash256& downloadDataCdi,
+                                      uint64_t uploadSize,
+                                      const Amount& feedbackFeeAmount,
+                                      std::optional<Amount> maxFee,
+                                      std::optional<NetworkDuration> deadline,
+                                      std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDataModificationTransactionImpl(driveKey, downloadDataCdi, uploadSize, maxFee, deadline, networkId);
+		return CreateDataModificationTransactionImpl(driveKey, downloadDataCdi, uploadSize, feedbackFeeAmount, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDataModificationTransaction>
-	CreateEmbeddedDataModificationTransaction(const Key& driveKey,
-	                                  const Hash256& downloadDataCdi,
-	                                  uint64_t uploadSize,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId)
+    CreateEmbeddedDataModificationTransaction(const Key& driveKey,
+                                              const Hash256& downloadDataCdi,
+                                              uint64_t uploadSize,
+                                              const Amount& feedbackFeeAmount,
+                                              const Key& signer,
+                                              std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDataModificationTransactionDTO dto;
-		InitDataModificationTransactionDTO(dto, driveKey, downloadDataCdi, uploadSize, signer, networkId);
-		return CreateTransaction<EmbeddedDataModificationTransactionImpl>(dto, driveKey, downloadDataCdi, uploadSize);
+		InitDataModificationTransactionDTO(dto, driveKey, downloadDataCdi, uploadSize, feedbackFeeAmount, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationTransactionImpl>(dto, driveKey, downloadDataCdi, uploadSize, feedbackFeeAmount);
 	}
 
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransaction(const Key& driveKey,
-	                          uint64_t downloadSize,
-	                          const Amount& transactionFee,
+                              uint64_t downloadSize,
+                              const Amount& feedbackFeeAmount,
+                              uint16_t listOfPublicKeysSize,
+                              const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee,
 	                          std::optional<NetworkDuration> deadline,
 	                          std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDownloadTransactionImpl(driveKey, downloadSize, transactionFee, maxFee, deadline, networkId);
+		return CreateDownloadTransactionImpl(driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDownloadTransaction>
 	CreateEmbeddedDownloadTransaction(const Key& driveKey,
 	                                  uint64_t downloadSize,
-	                                  const Amount& transactionFee,
+	                                  const Amount& feedbackFeeAmount,
+                                      uint16_t listOfPublicKeysSize,
+                                      const std::vector<Key>& listOfPublicKeys,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDownloadTransactionDTO dto;
-		InitDownloadTransactionDTO(dto, driveKey, downloadSize, transactionFee, signer, networkId);
-		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, transactionFee);
+		InitDownloadTransactionDTO(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys, signer, networkId);
+		return CreateTransaction<EmbeddedDownloadTransactionImpl>(dto, driveKey, downloadSize, feedbackFeeAmount, listOfPublicKeysSize, listOfPublicKeys);
 	}
 
+    std::unique_ptr<DownloadPaymentTransaction>
+    CreateDownloadPaymentTransaction(const Hash256& downloadChannelId,
+                                     uint64_t downloadSize,
+                                     const Amount& feedbackFeeAmount,
+                                     std::optional<Amount> maxFee,
+                                     std::optional<NetworkDuration> deadline,
+                                     std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateDownloadPaymentTransactionImpl(downloadChannelId, downloadSize, feedbackFeeAmount, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedDownloadPaymentTransaction>
+    CreateEmbeddedDownloadPaymentTransaction(const Hash256& downloadChannelId,
+                                             uint64_t downloadSize,
+                                             const Amount& feedbackFeeAmount,
+                                             const Key& signer,
+                                             std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedDownloadPaymentTransactionDTO dto;
+        InitDownloadPaymentTransactionDTO(dto, downloadChannelId, downloadSize, feedbackFeeAmount, signer, networkId);
+        return CreateTransaction<EmbeddedDownloadPaymentTransactionImpl>(dto, downloadChannelId, downloadSize, feedbackFeeAmount);
+    }
+
+    std::unique_ptr<DriveClosureTransaction>
+    CreateDriveClosureTransaction(const Key& driveKey,
+                                  std::optional<Amount> maxFee,
+                                  std::optional<NetworkDuration> deadline,
+                                  std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateDriveClosureTransactionImpl(driveKey, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedDriveClosureTransaction>
+    CreateEmbeddedDriveClosureTransaction(const Key& driveKey,
+                                          const Key& signer,
+                                          std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedDriveClosureTransactionDTO dto;
+        InitDriveClosureTransactionDTO(dto, driveKey, signer, networkId);
+        return CreateTransaction<EmbeddedDriveClosureTransactionImpl>(dto, driveKey);
+    }
+
 	std::unique_ptr<DataModificationApprovalTransaction>
-	CreateDataModificationApprovalTransaction(const Key& driveKey,
-	                          const Hash256& dataModificationId,
-	                          const Hash256& fileStructureCdi,
-	                          uint64_t fileStructureSize,
-	                          uint64_t usedDriveSize,
-	                          std::optional<Amount> maxFee,
-	                          std::optional<NetworkDuration> deadline,
-	                          std::optional<NetworkIdentifier> networkId)
+    CreateDataModificationApprovalTransaction(const Key& driveKey,
+                                              const Hash256& dataModificationId,
+                                              const Hash256& fileStructureCdi,
+                                              uint8_t modificationStatus,
+                                              uint64_t fileStructureSizeBytes,
+                                              uint64_t metaFilesSizeBytes,
+                                              uint64_t usedDriveSizeBytes,
+                                              uint8_t judgingKeysCount,
+                                              uint8_t overlappingKeysCount,
+                                              uint8_t judgedKeysCount,
+                                              uint16_t opinionElementCount,
+                                              const std::vector<Key>& publicKeys,
+                                              const std::vector<Signature>& signatures,
+                                              const std::vector<uint8_t>& presentOpinions,
+                                              const std::vector<uint64_t>& opinions,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId)
 	{
-		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, maxFee, deadline, networkId);
+		return CreateDataModificationApprovalTransactionImpl(driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+                                                             overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions,
+                                                             maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDataModificationApprovalTransaction>
-	CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
-	                                  const Hash256& dataModificationId,
-	                                  const Hash256& fileStructureCdi,
-	                                  uint64_t fileStructureSize,
-	                                  uint64_t usedDriveSize,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId)
+    CreateEmbeddedDataModificationApprovalTransaction(const Key& driveKey,
+                                                      const Hash256& dataModificationId,
+                                                      const Hash256& fileStructureCdi,
+                                                      uint8_t modificationStatus,
+                                                      uint64_t fileStructureSizeBytes,
+                                                      uint64_t metaFilesSizeBytes,
+                                                      uint64_t usedDriveSizeBytes,
+                                                      uint8_t judgingKeysCount,
+                                                      uint8_t overlappingKeysCount,
+                                                      uint8_t judgedKeysCount,
+                                                      uint16_t opinionElementCount,
+                                                      const std::vector<Key>& publicKeys,
+                                                      const std::vector<Signature>& signatures,
+                                                      const std::vector<uint8_t>& presentOpinions,
+                                                      const std::vector<uint64_t>& opinions,
+                                                      const Key& signer,
+                                                      std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDataModificationApprovalTransactionDTO dto;
-		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize, signer, networkId);
-		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, fileStructureSize, usedDriveSize);
+		InitDataModificationApprovalTransactionDTO(dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+                                                   overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions, signer, networkId);
+		return CreateTransaction<EmbeddedDataModificationApprovalTransactionImpl>(dto, driveKey, dataModificationId, fileStructureCdi, modificationStatus, fileStructureSizeBytes, metaFilesSizeBytes, usedDriveSizeBytes, judgingKeysCount,
+                                                                                  overlappingKeysCount, judgedKeysCount, opinionElementCount, publicKeys, signatures, presentOpinions, opinions);
 	}
 
 	std::unique_ptr<DataModificationCancelTransaction>
-	CreateDataModificationCancelTransaction(const Key& driveKey,
-	                          const Hash256& dataModificationId,
-	                          std::optional<Amount> maxFee,
-	                          std::optional<NetworkDuration> deadline,
-	                          std::optional<NetworkIdentifier> networkId)
+    CreateDataModificationCancelTransaction(const Key& driveKey,
+                                            const Hash256& dataModificationId,
+                                            std::optional<Amount> maxFee,
+                                            std::optional<NetworkDuration> deadline,
+                                            std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateDataModificationCancelTransactionImpl(driveKey, dataModificationId, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedDataModificationCancelTransaction>
-	CreateEmbeddedDataModificationCancelTransaction(const Key& driveKey,
-	                                  const Hash256& dataModificationId,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId)
+    CreateEmbeddedDataModificationCancelTransaction(const Key& driveKey,
+                                                    const Hash256& dataModificationId,
+                                                    const Key& signer,
+                                                    std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedDataModificationCancelTransactionDTO dto;
 		InitDataModificationCancelTransactionDTO(dto, driveKey, dataModificationId, signer, networkId);
 		return CreateTransaction<EmbeddedDataModificationCancelTransactionImpl>(dto, driveKey, dataModificationId);
 	}
 
+    std::unique_ptr<FinishDownloadTransaction>
+    CreateFinishDownloadTransaction(const Hash256& downloadChannelId,
+                                    const Amount& feedbackFeeAmount,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateFinishDownloadTransactionImpl(downloadChannelId, feedbackFeeAmount, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedFinishDownloadTransaction>
+    CreateEmbeddedFinishDownloadTransaction(const Hash256& downloadChannelId,
+                                            const Amount& feedbackFeeAmount,
+                                            const Key& signer,
+                                            std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedFinishDownloadTransactionDTO dto;
+        InitFinishDownloadTransactionDTO(dto, downloadChannelId, feedbackFeeAmount, signer, networkId);
+        return CreateTransaction<EmbeddedFinishDownloadTransactionImpl>(dto, downloadChannelId, feedbackFeeAmount);
+    }
+
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransaction(const Amount& capacity,
-	                          std::optional<Amount> maxFee,
-	                          std::optional<NetworkDuration> deadline,
-	                          std::optional<NetworkIdentifier> networkId)
+    CreateReplicatorOnboardingTransaction(const Amount& capacity,
+                                          std::optional<Amount> maxFee,
+                                          std::optional<NetworkDuration> deadline,
+                                          std::optional<NetworkIdentifier> networkId)
 	{
 		return CreateReplicatorOnboardingTransactionImpl(capacity, maxFee, deadline, networkId);
 	}
 
 	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
-	CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
-	                                  const Key& signer,
-	                                  std::optional<NetworkIdentifier> networkId)
+    CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
+                                                  const Key& signer,
+                                                  std::optional<NetworkIdentifier> networkId)
 	{
 		EmbeddedReplicatorOnboardingTransactionDTO dto;
 		InitReplicatorOnboardingTransactionDTO(dto, capacity, signer, networkId);
 		return CreateTransaction<EmbeddedReplicatorOnboardingTransactionImpl>(dto, capacity);
 	}
+
+    std::unique_ptr<ReplicatorOffboardingTransaction>
+    CreateReplicatorOffboardingTransaction(const Key& driveKey,
+                                           std::optional<Amount> maxFee,
+                                           std::optional<NetworkDuration> deadline,
+                                           std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateReplicatorOffboardingTransactionImpl(driveKey, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedReplicatorOffboardingTransaction>
+    CreateEmbeddedReplicatorOffboardingTransaction(const Key& driveKey,
+                                                   const Key& signer,
+                                                   std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedReplicatorOffboardingTransactionDTO dto;
+        InitReplicatorOffboardingTransactionDTO(dto, driveKey, signer, networkId);
+        return CreateTransaction<EmbeddedReplicatorOffboardingTransactionImpl>(dto, driveKey);
+    }
+
+    std::unique_ptr<DeployContractTransaction>
+    CreateDeployContractTransaction(const Key& driveKey,
+                                    const std::string& fileName,
+                                    const std::string& functionName,
+                                    const std::vector<uint8_t>& actualArguments,
+                                    const Amount& executionCallPayment,
+                                    const Amount& downloadCallPayment,
+                                    MosaicContainer servicePayments,
+                                    const std::string& automaticExecutionsFileName,
+                                    const std::string& automaticExecutionsFunctionName,
+                                    const Amount& automaticExecutionsCallPayment,
+                                    const Amount& automaticDownloadCallPayment,
+                                    uint32_t automaticExecutionsNumber,
+                                    const Key& assignee,
+                                    std::optional<Amount> maxFee,
+                                    std::optional<NetworkDuration> deadline,
+                                    std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateDeployContractTransactionImpl(
+                driveKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments,
+                automaticExecutionsFileName, automaticExecutionsFunctionName, automaticExecutionsCallPayment, automaticDownloadCallPayment,
+                automaticExecutionsNumber, assignee, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedDeployContractTransaction>
+    CreateEmbeddedDeployContractTransaction(const Key& driveKey,
+                                            const std::string& fileName,
+                                            const std::string& functionName,
+                                            const std::vector<uint8_t>& actualArguments,
+                                            const Amount& executionCallPayment,
+                                            const Amount& downloadCallPayment,
+                                            MosaicContainer servicePayments,
+                                            const std::string& automaticExecutionsFileName,
+                                            const std::string& automaticExecutionsFunctionName,
+                                            const Amount& automaticExecutionsCallPayment,
+                                            const Amount& automaticDownloadCallPayment,
+                                            uint32_t automaticExecutionsNumber,
+                                            const Key& assignee,
+                                            const Key& signer,
+                                            std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedDeployContractTransactionDTO dto;
+        InitDeployContractTransactionDTO(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee,
+                signer,
+                networkId);
+        return CreateTransaction<EmbeddedDeployContractTransactionImpl>(
+                dto,
+                driveKey,
+                fileName,
+                functionName,
+                actualArguments,
+                executionCallPayment,
+                downloadCallPayment,
+                servicePayments,
+                automaticExecutionsFileName,
+                automaticExecutionsFunctionName,
+                automaticExecutionsCallPayment,
+                automaticDownloadCallPayment,
+                automaticExecutionsNumber,
+                assignee);
+    }
+
+    std::unique_ptr<ManualCallTransaction>
+    CreateManualCallTransaction(const Key& contractKey,
+                                const std::string& fileName,
+                                const std::string& functionName,
+                                const std::vector<uint8_t>& actualArguments,
+                                const Amount& executionCallPayment,
+                                const Amount& downloadCallPayment,
+                                MosaicContainer servicePayments,
+                                std::optional<Amount> maxFee,
+                                std::optional<NetworkDuration> deadline,
+                                std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateManualCallTransactionImpl(
+                contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedManualCallTransaction>
+    CreateEmbeddedManualCallTransaction(const Key& contractKey,
+                                        const std::string& fileName,
+                                        const std::string& functionName,
+                                        const std::vector<uint8_t>& actualArguments,
+                                        const Amount& executionCallPayment,
+                                        const Amount& downloadCallPayment,
+                                        MosaicContainer servicePayments,
+                                        const Key& signer,
+                                        std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedManualCallTransactionDTO dto;
+        InitManualCallTransactionDTO(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments, signer, networkId);
+        return CreateTransaction<EmbeddedManualCallTransactionImpl>(
+                dto, contractKey, fileName, functionName, actualArguments, executionCallPayment, downloadCallPayment, servicePayments);
+    }
+
+    std::unique_ptr<AutomaticExecutionsPaymentTransaction>
+    CreateAutomaticExecutionsPaymentTransaction(const Key& contractKey,
+                                                uint32_t automaticExecutionsNumber,
+                                                std::optional<Amount> maxFee,
+                                                std::optional<NetworkDuration> deadline,
+                                                std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateAutomaticExecutionsPaymentTransactionImpl(contractKey, automaticExecutionsNumber, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedAutomaticExecutionsPaymentTransaction>
+    CreateEmbeddedAutomaticExecutionsPaymentTransaction(const Key& contractKey,
+                                                        uint32_t automaticExecutionsNumber,
+                                                        const Key& signer,
+                                                        std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedAutomaticExecutionsPaymentTransactionDTO dto;
+        InitAutomaticExecutionsPaymentTransactionDTO(dto, contractKey, automaticExecutionsNumber, signer, networkId);
+        return CreateTransaction<EmbeddedAutomaticExecutionsPaymentTransactionImpl>(dto, contractKey, automaticExecutionsNumber);
+    }
+
+
+    std::unique_ptr<StreamStartTransaction>
+    CreateStreamStartTransaction(const Key &driveKey,
+                                 const uint64_t expectedUploadSizeMegabytes,
+                                 const uint16_t folderNameSize,
+                                 const Amount &feedbackFeeAmount,
+                                 const std::vector<uint8_t>& folderName,
+                                 std::optional<Amount> maxFee,
+                                 std::optional<NetworkDuration> deadline,
+                                 std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamStartTransactionImpl(driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamStartTransaction>
+    CreateEmbeddedStreamStartTransaction(const Key &driveKey,
+                                         const uint64_t expectedUploadSizeMegabytes,
+                                         const uint16_t folderNameSize,
+                                         const Amount &feedbackFeeAmount,
+                                         const std::vector<uint8_t>& folderName,
+                                         const Key &signer,
+                                         std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamStartTransactionDTO dto;
+        InitStreamStartTransactionDTO(dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName, signer, networkId);
+        return CreateTransaction<EmbeddedStreamStartTransactionImpl>(dto, driveKey, expectedUploadSizeMegabytes, folderNameSize, feedbackFeeAmount, folderName);
+    }
+
+    std::unique_ptr<StreamFinishTransaction>
+    CreateStreamFinishTransaction(const Key& driveKey,
+                                  const Hash256& streamId,
+                                  const uint64_t actualUploadSizeMegabytes,
+                                  const Hash256& streamStructureCdi,
+                                  std::optional<Amount> maxFee,
+                                  std::optional<NetworkDuration> deadline,
+                                  std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamFinishTransactionImpl(driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamFinishTransaction>
+    CreateEmbeddedStreamFinishTransaction(const Key& driveKey,
+                                          const Hash256& streamId,
+                                          const uint64_t actualUploadSizeMegabytes,
+                                          const Hash256& streamStructureCdi,
+                                          const Key &signer,
+                                          std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamFinishTransactionDTO dto;
+        InitStreamFinishTransactionDTO(dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi, signer, networkId);
+        return CreateTransaction<EmbeddedStreamFinishTransactionImpl>(dto, driveKey, streamId, actualUploadSizeMegabytes, streamStructureCdi);
+    }
+
+    std::unique_ptr<StreamPaymentTransaction>
+    CreateStreamPaymentTransaction(const Key &driveKey,
+                                   const Hash256 &streamId,
+                                   const uint64_t additionalUploadSizeMegabytes,
+                                   std::optional<Amount> maxFee,
+                                   std::optional<NetworkDuration> deadline,
+                                   std::optional<NetworkIdentifier> networkId)
+    {
+        return CreateStreamPaymentTransactionImpl(driveKey, streamId, additionalUploadSizeMegabytes, maxFee, deadline, networkId);
+    }
+
+    std::unique_ptr<EmbeddedStreamPaymentTransaction>
+    CreateEmbeddedStreamPaymentTransaction(const Key &driveKey,
+                                           const Hash256 &streamId,
+                                           const uint64_t additionalUploadSizeMegabytes,
+                                           const Key &signer,
+                                           std::optional<NetworkIdentifier> networkId)
+    {
+        EmbeddedStreamPaymentTransactionDTO dto;
+        InitStreamPaymentTransactionDTO(dto, driveKey, streamId, additionalUploadSizeMegabytes, signer, networkId);
+        return CreateTransaction<EmbeddedStreamPaymentTransactionImpl>(dto, driveKey, streamId, additionalUploadSizeMegabytes);
+    }
 }

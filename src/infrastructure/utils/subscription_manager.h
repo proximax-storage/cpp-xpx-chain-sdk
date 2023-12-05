@@ -29,10 +29,10 @@ namespace xpx_chain_sdk::internal {
         ~SubscriptionManager() = default;
 
     public:
-        void subscribe(const std::string& uid, const std::string& path);
-        void subscribe(const std::string& uid, const std::string& path, const Address& address);
-        void unsubscribe(const std::string& uid, const std::string& path);
-        void unsubscribe(const std::string& uid, const std::string& path, const Address& address);
+        void subscribe(const std::string& uid, const std::string& path, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+        void subscribe(const std::string& uid, const std::string& path, const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+        void unsubscribe(const std::string& uid, const std::string& path, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
+        void unsubscribe(const std::string& uid, const std::string& path, const Address& address, std::function<void()> onSuccess, std::function<void(boost::beast::error_code errorCode)> onError);
 
     private:
         static std::string createJson(const std::string &uid, const std::string &path, const std::string& type) ;

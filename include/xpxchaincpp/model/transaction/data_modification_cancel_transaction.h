@@ -26,7 +26,7 @@ namespace xpx_chain_sdk {
 				const Key& driveKey,
 				const Hash256& dataModificationId,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification_Approval, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Data_Modification_Cancel, std::forward<TArgs>(args)...),
 			driveKey_(driveKey),
 			dataModificationId_(dataModificationId)
 		{ }

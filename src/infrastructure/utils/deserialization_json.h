@@ -7,7 +7,10 @@
 
 #include <infrastructure/json/parser.h>
 #include <infrastructure/json/dto/block_dto.h>
+#include <infrastructure/json/dto/drives_page_dto.h>
 #include <infrastructure/json/dto/drive_state_notification_dto.h>
+#include <infrastructure/json/dto/download_channels_page_dto.h>
+#include <infrastructure/json/dto/replicators_page_dto.h>
 #include <infrastructure/json/dto/mosaic_dto.h>
 #include <infrastructure/json/dto/namespace_dto.h>
 #include <infrastructure/json/dto/height.h>
@@ -25,7 +28,12 @@
 #include <infrastructure/json/dto/transaction_notification_dto.h>
 #include <infrastructure/json/dto/transaction_status_notification_dto.h>
 #include <infrastructure/json/dto/uid_dto.h>
+#include <infrastructure/json/dto/liquidity_provider_dto.h>
+#include <infrastructure/json/dto/liquidity_providers_page_dto.h>
 #include <infrastructure/json/dto/meta_dto.h>
+#include <infrastructure/json/dto/storage_dto.h>
+#include <infrastructure/json/dto/error_message_dto.h>
+#include <infrastructure/json/dto/supercontract_v2_dto.h>
 
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/blockchain/score.h>
@@ -46,6 +54,7 @@
 #include <xpxchaincpp/model/network/network_config.h>
 #include <xpxchaincpp/model/network/network_info.h>
 #include <xpxchaincpp/model/network/network_version.h>
+#include <xpxchaincpp/model/supercontract_v2/supercontract.h>
 #include <xpxchaincpp/model/transaction_simple/transaction.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_status.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_info.h>
@@ -54,6 +63,10 @@
 #include <xpxchaincpp/model/notification/signer_info_notification.h>
 #include <xpxchaincpp/model/notification/transaction_notification.h>
 #include <xpxchaincpp/model/notification/transaction_status_notification.h>
+#include <xpxchaincpp/model/storage/drives_page.h>
+#include <xpxchaincpp/model/storage/download_channels_page.h>
+#include <xpxchaincpp/model/storage/replicators_page.h>
+#include <xpxchaincpp/model/liquidity_provider/liquidity_providers_page.h>
 #include <sdk/model/notification/websocket_uid.h>
 #include <sdk/model/notification/websocket_meta.h>
 
@@ -62,6 +75,7 @@
 #include <xpxchaincpp/exceptions.h>
 #include <xpxchaincpp/model/account/multiple_account_info.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_container.h>
+#include "xpxchaincpp/client.h"
 
 
 using namespace xpx_chain_sdk::transactions_info;
@@ -182,6 +196,93 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
         template<>
         NetworkInfo fromDto<NetworkInfo, NetworkInfoDto> (const NetworkInfoDto& dto);
 
+        template<>
+        DriveData fromDto<DriveData, DriveDataDto>(const DriveDataDto &dto);
+
+        template<>
+        Drive fromDto<Drive, DriveDto>(const DriveDto &dto);
+
+        template<>
+        DriveInfo fromDto<DriveInfo, DriveInfoDto>(const DriveInfoDto &dto);
+
+        template<>
+        xpx_chain_sdk::drives_page::Pagination fromDto<xpx_chain_sdk::drives_page::Pagination, dto::drives_page::PaginationDto>(const dto::drives_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::drives_page::DrivesPage fromDto<xpx_chain_sdk::drives_page::DrivesPage, drives_page::DrivesPageDto>(const drives_page::DrivesPageDto &dto);
+
+        template<>
+        ActiveDataModification fromDto<ActiveDataModification, ActiveDataModificationDto>(const ActiveDataModificationDto &dto);
+
+        template<>
+        CompletedDataModification fromDto<CompletedDataModification, CompletedDataModificationDto>(const CompletedDataModificationDto &dto);
+
+        template<>
+        ConfirmedUsedSize fromDto<ConfirmedUsedSize, ConfirmedUsedSizeDto>(const ConfirmedUsedSizeDto &dto);
+
+        template<>
+        Shard fromDto<Shard, ShardDto>(const ShardDto &dto);
+
+        template<>
+        Verification fromDto<Verification, VerificationDto>(const VerificationDto &dto);
+
+        template<>
+        DownloadShard fromDto<DownloadShard, DownloadShardDto>(const DownloadShardDto &dto);
+
+        template<>
+        DataModificationShard fromDto<DataModificationShard, DataModificationShardDto>(const DataModificationShardDto &dto);
+
+        template<>
+        Replicator fromDto<Replicator, ReplicatorDto>(const ReplicatorDto &dto);
+
+        template<>
+        ReplicatorData fromDto<ReplicatorData, ReplicatorDataDto>(const ReplicatorDataDto &dto);
+
+        template<>
+        UploadInfo fromDto<UploadInfo, UploadInfoDto>(const UploadInfoDto &dto);
+
+        template<>
+        xpx_chain_sdk::replicators_page::Pagination fromDto<xpx_chain_sdk::replicators_page::Pagination, dto::replicators_page::PaginationDto>(const dto::replicators_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::replicators_page::ReplicatorsPage fromDto<xpx_chain_sdk::replicators_page::ReplicatorsPage, replicators_page::ReplicatorsPageDto>(const replicators_page::ReplicatorsPageDto &dto);
+
+        template<>
+        DownloadChannel fromDto<DownloadChannel, DownloadChannelDto>(const DownloadChannelDto &dto);
+
+        template<>
+        DownloadChannelData fromDto<DownloadChannelData, DownloadChannelDataDto>(const DownloadChannelDataDto &dto);
+
+        template<>
+        CumulativePayment fromDto<CumulativePayment, CumulativePaymentDto>(const CumulativePaymentDto &dto);
+
+        template<>
+        xpx_chain_sdk::download_channels_page::Pagination fromDto<xpx_chain_sdk::download_channels_page::Pagination, dto::download_channels_page::PaginationDto>(const dto::download_channels_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::download_channels_page::DownloadChannelsPage fromDto<xpx_chain_sdk::download_channels_page::DownloadChannelsPage, download_channels_page::DownloadChannelsPageDto>(const download_channels_page::DownloadChannelsPageDto &dto);
+
+        template<>
+        RateData fromDto<RateData, RateDataDto>(const RateDataDto &dto);
+
+        template<>
+        TurnoverData fromDto<TurnoverData, TurnoverDataDto>(const TurnoverDataDto &dto);
+
+        template<>
+        LiquidityProviderData fromDto<LiquidityProviderData, LiquidityProviderDataDto>(const LiquidityProviderDataDto &dto);
+
+        template<>
+        LiquidityProvider fromDto<LiquidityProvider, LiquidityProviderDto>(const LiquidityProviderDto &dto);
+
+        template<>
+        MultipleLiquidityProviders fromDto<MultipleLiquidityProviders , MultipleLiquidityProvidersDto>(const MultipleLiquidityProvidersDto &dto);
+
+        template<>
+        xpx_chain_sdk::liquidity_providers_page::Pagination fromDto<xpx_chain_sdk::liquidity_providers_page::Pagination, dto::liquidity_providers_page::PaginationDto>(const dto::liquidity_providers_page::PaginationDto &dto);
+
+        template<>
+        xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage fromDto<xpx_chain_sdk::liquidity_providers_page::LiquidityProvidersPage, liquidity_providers_page::LiquidityProvidersPageDto>(const liquidity_providers_page::LiquidityProvidersPageDto &dto);
+
         /// Transaction Meta
 
         template<>
@@ -197,6 +298,12 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		MultipleTransactionStatus fromDto<MultipleTransactionStatus, MultipleTransactionStatusDto>(const MultipleTransactionStatusDto& dto);
 
         /// Transactions
+        template<>
+        xpx_chain_sdk::transactions_page::TransactionsPage fromDto<xpx_chain_sdk::transactions_page::TransactionsPage, dto::transactions_page::TransactionsPageDto>(const dto::transactions_page::TransactionsPageDto& dto);
+
+        template<>
+        xpx_chain_sdk::transactions_page::Pagination fromDto<xpx_chain_sdk::transactions_page::Pagination, dto::transactions_page::PaginationDto>(const dto::transactions_page::PaginationDto &dto);
+
         template<>
 		Cosignature fromDto<Cosignature, CosignatureDto>(const CosignatureDto& dto);
 
@@ -246,6 +353,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		SecretProofTransaction fromDto<SecretProofTransaction, SecretProofTransactionDto >(const SecretProofTransactionDto & dto);
 
+        template<>
+        StoragePaymentTransaction fromDto<StoragePaymentTransaction, StoragePaymentTransactionDto >(const StoragePaymentTransactionDto & dto);
+
 		template<>
 		TransferTransaction fromDto<TransferTransaction, TransferTransactionDto >(const TransferTransactionDto & dto);
 
@@ -261,11 +371,23 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		PrepareBcDriveTransaction fromDto<PrepareBcDriveTransaction, PrepareBcDriveTransactionDto >(const PrepareBcDriveTransactionDto & dto);
 
+        template<>
+        CreateLiquidityProviderTransaction fromDto<CreateLiquidityProviderTransaction, CreateLiquidityProviderTransactionDto >(const CreateLiquidityProviderTransactionDto & dto);
+
+        template<>
+        ManualRateChangeTransaction fromDto<ManualRateChangeTransaction, ManualRateChangeTransactionDto >(const ManualRateChangeTransactionDto & dto);
+
 		template<>
 		DataModificationTransaction fromDto<DataModificationTransaction, DataModificationTransactionDto >(const DataModificationTransactionDto & dto);
 
 		template<>
 		DownloadTransaction fromDto<DownloadTransaction, DownloadTransactionDto >(const DownloadTransactionDto & dto);
+
+        template<>
+        DownloadPaymentTransaction fromDto<DownloadPaymentTransaction, DownloadPaymentTransactionDto >(const DownloadPaymentTransactionDto & dto);
+
+        template<>
+        DriveClosureTransaction fromDto<DriveClosureTransaction, DriveClosureTransactionDto >(const DriveClosureTransactionDto & dto);
 
 		template<>
 		DataModificationApprovalTransaction fromDto<DataModificationApprovalTransaction, DataModificationApprovalTransactionDto >(const DataModificationApprovalTransactionDto & dto);
@@ -273,10 +395,37 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		DataModificationCancelTransaction fromDto<DataModificationCancelTransaction, DataModificationCancelTransactionDto >(const DataModificationCancelTransactionDto & dto);
 
-		template<>
+        template<>
+        FinishDownloadTransaction fromDto<FinishDownloadTransaction, FinishDownloadTransactionDto >(const FinishDownloadTransactionDto & dto);
+
+        template<>
 		ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto);
 
-		/// Account Property Transactions
+        template<>
+        ReplicatorOffboardingTransaction fromDto<ReplicatorOffboardingTransaction, ReplicatorOffboardingTransactionDto >(const ReplicatorOffboardingTransactionDto & dto);
+
+        /// Utils
+        template<>
+        ErrorMessage fromDto<ErrorMessage, ErrorMessageDto >(const ErrorMessageDto & dto);
+
+        /// Supercontract V2
+
+        template<>
+        DeployContractTransaction fromDto<DeployContractTransaction, DeployContractTransactionDto>(const DeployContractTransactionDto& dto);
+
+        template<>
+        ManualCallTransaction fromDto<ManualCallTransaction, ManualCallTransactionDto>(const ManualCallTransactionDto& dto);
+
+        template<>
+        AutomaticExecutionsPaymentTransaction fromDto<AutomaticExecutionsPaymentTransaction, AutomaticExecutionsPaymentTransactionDto>(const AutomaticExecutionsPaymentTransactionDto& dto);
+
+        template<>
+        SuccessfulEndBatchExecutionTransaction fromDto<SuccessfulEndBatchExecutionTransaction, SuccessfulEndBatchExecutionTransactionDto>(const SuccessfulEndBatchExecutionTransactionDto& dto);
+
+        template<>
+        UnsuccessfulEndBatchExecutionTransaction fromDto<UnsuccessfulEndBatchExecutionTransaction, UnsuccessfulEndBatchExecutionTransactionDto>(const UnsuccessfulEndBatchExecutionTransactionDto& dto);
+
+        /// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
 
@@ -285,6 +434,17 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		AccountAddressPropertyTransaction fromDto<AccountAddressPropertyTransaction, AccountAddressPropertyTransactionDto >(const AccountAddressPropertyTransactionDto & dto);
+
+        /// Streaming
+
+        template<>
+        StreamStartTransaction fromDto<StreamStartTransaction, StreamStartTransactionDto >(const StreamStartTransactionDto & dto);
+
+        template<>
+        StreamFinishTransaction fromDto<StreamFinishTransaction, StreamFinishTransactionDto >(const StreamFinishTransactionDto & dto);
+
+        template<>
+        StreamPaymentTransaction fromDto<StreamPaymentTransaction, StreamPaymentTransactionDto >(const StreamPaymentTransactionDto & dto);
 
 		/// Embedded Transactions
 
@@ -312,6 +472,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		EmbeddedSecretProofTransaction fromDto<EmbeddedSecretProofTransaction, EmbeddedSecretProofTransactionDto >(const EmbeddedSecretProofTransactionDto & dto);
 
+        template<>
+        EmbeddedStoragePaymentTransaction fromDto<EmbeddedStoragePaymentTransaction, EmbeddedStoragePaymentTransactionDto >(const EmbeddedStoragePaymentTransactionDto & dto);
+
 		template<>
 		EmbeddedTransferTransaction fromDto<EmbeddedTransferTransaction, EmbeddedTransferTransactionDto >(const EmbeddedTransferTransactionDto & dto);
 
@@ -327,13 +490,25 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		EmbeddedPrepareBcDriveTransaction fromDto<EmbeddedPrepareBcDriveTransaction, EmbeddedPrepareBcDriveTransactionDto >(const EmbeddedPrepareBcDriveTransactionDto & dto);
 
+        template<>
+        EmbeddedCreateLiquidityProviderTransaction fromDto<EmbeddedCreateLiquidityProviderTransaction, EmbeddedCreateLiquidityProviderTransactionDto >(const EmbeddedCreateLiquidityProviderTransactionDto & dto);
+
+        template<>
+        EmbeddedManualRateChangeTransaction fromDto<EmbeddedManualRateChangeTransaction, EmbeddedManualRateChangeTransactionDto >(const EmbeddedManualRateChangeTransactionDto & dto);
+
 		template<>
 		EmbeddedDataModificationTransaction fromDto<EmbeddedDataModificationTransaction, EmbeddedDataModificationTransactionDto >(const EmbeddedDataModificationTransactionDto & dto);
 
 		template<>
 		EmbeddedDownloadTransaction fromDto<EmbeddedDownloadTransaction, EmbeddedDownloadTransactionDto >(const EmbeddedDownloadTransactionDto & dto);
 
-		template<>
+        template<>
+        EmbeddedDownloadPaymentTransaction fromDto<EmbeddedDownloadPaymentTransaction, EmbeddedDownloadPaymentTransactionDto >(const EmbeddedDownloadPaymentTransactionDto & dto);
+
+        template<>
+        EmbeddedDriveClosureTransaction fromDto<EmbeddedDriveClosureTransaction, EmbeddedDriveClosureTransactionDto >(const EmbeddedDriveClosureTransactionDto & dto);
+
+        template<>
 		EmbeddedDataModificationApprovalTransaction fromDto<EmbeddedDataModificationApprovalTransaction, EmbeddedDataModificationApprovalTransactionDto >(const EmbeddedDataModificationApprovalTransactionDto & dto);
 
 		template<>
@@ -342,7 +517,13 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		EmbeddedReplicatorOnboardingTransaction fromDto<EmbeddedReplicatorOnboardingTransaction, EmbeddedReplicatorOnboardingTransactionDto >(const EmbeddedReplicatorOnboardingTransactionDto & dto);
 
-		/// Account Property Transactions
+        template<>
+        EmbeddedReplicatorOffboardingTransaction fromDto<EmbeddedReplicatorOffboardingTransaction, EmbeddedReplicatorOffboardingTransactionDto >(const EmbeddedReplicatorOffboardingTransactionDto & dto);
+
+        template<>
+        EmbeddedFinishDownloadTransaction fromDto<EmbeddedFinishDownloadTransaction, EmbeddedFinishDownloadTransactionDto >(const EmbeddedFinishDownloadTransactionDto & dto);
+
+        /// Account Property Transactions
 		template<>
 		EmbeddedAccountTransactionPropertyTransaction fromDto<EmbeddedAccountTransactionPropertyTransaction, EmbeddedAccountTransactionPropertyTransactionDto >(const EmbeddedAccountTransactionPropertyTransactionDto & dto);
 
@@ -351,6 +532,43 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedAccountAddressPropertyTransaction fromDto<EmbeddedAccountAddressPropertyTransaction, EmbeddedAccountAddressPropertyTransactionDto >(const EmbeddedAccountAddressPropertyTransactionDto & dto);
+
+        /// Streaming
+
+        template<>
+        EmbeddedStreamStartTransaction fromDto<EmbeddedStreamStartTransaction, EmbeddedStreamStartTransactionDto >(const EmbeddedStreamStartTransactionDto & dto);
+
+        template<>
+        EmbeddedStreamFinishTransaction fromDto<EmbeddedStreamFinishTransaction, EmbeddedStreamFinishTransactionDto >(const EmbeddedStreamFinishTransactionDto & dto);
+
+        template<>
+        EmbeddedStreamPaymentTransaction fromDto<EmbeddedStreamPaymentTransaction, EmbeddedStreamPaymentTransactionDto >(const EmbeddedStreamPaymentTransactionDto & dto);
+
+		/// Supercontract V2
+
+		template<>
+		EmbeddedDeployContractTransaction fromDto<EmbeddedDeployContractTransaction, EmbeddedDeployContractTransactionDto>(const EmbeddedDeployContractTransactionDto& dto);
+
+		template<>
+		EmbeddedManualCallTransaction fromDto<EmbeddedManualCallTransaction, EmbeddedManualCallTransactionDto>(const EmbeddedManualCallTransactionDto& dto);
+
+		template<>
+		EmbeddedAutomaticExecutionsPaymentTransaction fromDto<EmbeddedAutomaticExecutionsPaymentTransaction, EmbeddedAutomaticExecutionsPaymentTransactionDto>(const EmbeddedAutomaticExecutionsPaymentTransactionDto& dto);
+
+		template<>
+		EmbeddedSuccessfulEndBatchExecutionTransaction fromDto<EmbeddedSuccessfulEndBatchExecutionTransaction, EmbeddedSuccessfulEndBatchExecutionTransactionDto>(const EmbeddedSuccessfulEndBatchExecutionTransactionDto& dto);
+
+		template<>
+		EmbeddedUnsuccessfulEndBatchExecutionTransaction fromDto<EmbeddedUnsuccessfulEndBatchExecutionTransaction, EmbeddedUnsuccessfulEndBatchExecutionTransactionDto>(const EmbeddedUnsuccessfulEndBatchExecutionTransactionDto& dto);
+
+        template<>
+        ExtendedCallDigest fromDto<ExtendedCallDigest, ExtendedCallDigestDto>(const ExtendedCallDigestDto& dto);
+
+        template<>
+        Opinion fromDto<Opinion, OpinionDto>(const OpinionDto& dto);
+
+        template<>
+        SuperContractV2 fromDto<SuperContractV2, SuperContractV2Dto> (const SuperContractV2Dto& dto);
 	}
 }
 }

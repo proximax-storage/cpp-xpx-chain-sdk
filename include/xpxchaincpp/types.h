@@ -31,7 +31,7 @@ namespace xpx_chain_sdk {
 	
 	using MosaicId = uint64_t;
 	using Amount = uint64_t;
-	
+
 	using BlockDuration = uint64_t;
 	constexpr BlockDuration Eternal_Duration = 0;
 	
@@ -40,11 +40,13 @@ namespace xpx_chain_sdk {
 	
 	/// Blockchain network identifier.
 	enum class NetworkIdentifier: uint8_t {
-		Unknown = 0x00,
+		Zero = 0,
 		Mijin = 0x60,
 		Mijin_Test = 0x90,
-		Public = 0x68,
-		Public_Test = 0x98
+		Private = 0xC8,
+		Private_Test = 0xB0,
+		Public = 0xB8,
+		Public_Test = 0xA8
 	};
 	
 	template<typename... TArgs>

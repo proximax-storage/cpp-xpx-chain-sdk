@@ -23,7 +23,7 @@ namespace xpx_chain_sdk {
 	
 	PrivateKey::PrivateKey(const supplier<uint8_t>& generator)
 	{
-		std::generate_n(key_.begin(), (long int) key_.end(), generator);
+		std::generate_n(key_.begin(), (long int) *(key_.end()), generator);
 	}
 	
 	PrivateKey::PrivateKey(PrivateKey&& rhs) noexcept: PrivateKey(rhs.key_.data(), rhs.key_.size())
