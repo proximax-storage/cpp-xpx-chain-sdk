@@ -405,6 +405,9 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("streamId"), std::string>,
             Field<STR_LITERAL("additionalUploadSize"), Uint64>>;
 
+    template<typename TBase>
+    using TAddDbrbProcessTransactionDto = VariadicStruct<TBase>;
+
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
 
@@ -518,4 +521,6 @@ namespace xpx_chain_sdk::internal::json::dto {
 
         using StreamPaymentTransactionDto = TStreamPaymentTransactionDto<TransactionDto>;
         using EmbeddedStreamPaymentTransactionDto = TStreamPaymentTransactionDto<EmbeddedTransactionDto>;
+
+        using AddDbrbProcessTransactionDto = TAddDbrbProcessTransactionDto<TransactionDto>;
 	}
