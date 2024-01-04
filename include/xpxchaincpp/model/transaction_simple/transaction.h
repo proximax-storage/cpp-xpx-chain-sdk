@@ -439,6 +439,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
         uint64_t additionalUploadSizeMegabytes;
     };
 
+    template<typename TBase>
+    class TAddDbrbProcessTransaction : public TBase {};
+
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
 
@@ -549,6 +552,8 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using StreamPaymentTransaction = TStreamPaymentTransaction <Transaction>;
     using EmbeddedStreamPaymentTransaction = TStreamPaymentTransaction<EmbeddedTransaction>;
+
+    using AddDbrbProcessTransaction = TAddDbrbProcessTransaction <Transaction>;
 }}
 
 

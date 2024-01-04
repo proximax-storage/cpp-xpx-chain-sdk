@@ -545,6 +545,20 @@ namespace xpx_chain_sdk::internal::json::dto {
                 break;
             }
 
+            case TransactionType::Add_Dbrb_Process: {
+                VariadicStruct<Field<STR_LITERAL("transaction"), AddDbrbProcessTransactionDto> > t_dto;
+                auto err = Parser::Read(t_dto, jsonStr);
+                if (!err) {
+                    XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+                }
+
+                AddDbrbProcessTransaction transaction;
+                EXTRACT_TRANSACTION(transaction, t_dto.value<"transaction"_>())
+                result = std::make_shared<AddDbrbProcessTransaction>(transaction);
+
+                break;
+            }
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
