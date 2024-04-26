@@ -242,6 +242,17 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+		Key nodeBootKey;
+		Hash256 message;
+		Signature messageSignature;
+
+    };
+
+    template<typename TBase>
+    class TReplicatorsCleanupTransaction: public TBase {
+    public:
+		uint16_t replicatorCount;
+		std::vector<Key> replicatorKeys;
 
     };
 
@@ -310,6 +321,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using ReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction <Transaction>;
+    using EmbeddedReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction<EmbeddedTransaction>;
 }}
 
 

@@ -363,6 +363,18 @@ namespace xpx_chain_sdk::internal::json::dto {
 				break;
 			}
 
+			case TransactionType::Replicators_Cleanup: {
+				VariadicStruct<Field<STR_LITERAL("transaction"), ReplicatorsCleanupTransactionDto> > t_dto;
+				auto err = Parser::Read(t_dto, jsonStr);
+				if (!err) {
+					XPX_CHAIN_SDK_THROW_1(serialization_error, "Cannot parse JSON. Error with:", err.invalidField());
+				}
+
+				auto transaction = fromDto<ReplicatorsCleanupTransaction, ReplicatorsCleanupTransactionDto>(t_dto.value<"transaction"_>());
+				result = std::make_shared<ReplicatorsCleanupTransaction>(transaction);
+				break;
+			}
+
 			case TransactionType::Unknown: {
 				XPX_CHAIN_SDK_THROW(serialization_error, "Transaction type unknown");
 			}
@@ -1434,9 +1446,25 @@ namespace xpx_chain_sdk::internal::json::dto {
 		EXTRACT_TRANSACTION(transaction, dto)
 
 		transaction.capacity = dto.value<"capacity"_>();
+		transaction.nodeBootKey = dto.value<"nodeBootKey"_>();
+		transaction.message = dto.value<"message"_>();
+		transaction.messageSignature = dto.value<"messageSignature"_>();
 
 		return transaction;
 	}
+
+	template<>
+	ReplicatorsCleanupTransaction fromDto<ReplicatorsCleanupTransaction, ReplicatorsCleanupTransactionDto >(const ReplicatorsCleanupTransactionDto & dto) {
+		ReplicatorsCleanupTransaction transaction;
+
+		EXTRACT_TRANSACTION(transaction, dto)
+
+		transaction.replicatorCount = dto.value<"replicatorCount"_>();
+		transaction.replicatorKeys = dto.value<"replicatorKeys"_>();
+
+		return transaction;
+	}
+
     template<>
     Uid fromDto<Uid, UidDto>(const UidDto &dto) {
         return { dto.value<"uid"_>() };

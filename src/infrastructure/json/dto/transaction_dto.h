@@ -240,7 +240,16 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("capacity"),				Amount>>;
+				Field<STR_LITERAL("capacity"),				Amount>,
+				Field<STR_LITERAL("nodeBootKey"),			Key>,
+				Field<STR_LITERAL("message"),				Hash256>,
+				Field<STR_LITERAL("messageSignature"),		Signature>>;
+
+		template<typename TBase>
+		using TReplicatorsCleanupTransactionDto = VariadicStruct<
+				TBase,
+				Field<STR_LITERAL("replicatorCount"),		uint16_t>,
+				Field<STR_LITERAL("replicatorKeys"),		std::vector<Key>>>;
 
 		using AccountLinkTransactionDto = TAccountLinkTransactionDto<TransactionDto>;
 		using EmbeddedAccountLinkTransactionDto = TAccountLinkTransactionDto<EmbeddedTransactionDto>;
@@ -310,4 +319,7 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using ReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<TransactionDto>;
 		using EmbeddedReplicatorOnboardingTransactionDto = TReplicatorOnboardingTransactionDto<EmbeddedTransactionDto>;
+
+		using ReplicatorsCleanupTransactionDto = TReplicatorsCleanupTransactionDto<TransactionDto>;
+		using EmbeddedReplicatorsCleanupTransactionDto = TReplicatorsCleanupTransactionDto<EmbeddedTransactionDto>;
 	}

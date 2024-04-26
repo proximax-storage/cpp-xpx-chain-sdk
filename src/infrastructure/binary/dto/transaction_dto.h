@@ -188,7 +188,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TPrepareBcDriveTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("driveSize"),			uint64_t>,
+		Field<STR_LITERAL("driveSize"),				uint64_t>,
 		Field<STR_LITERAL("replicatorCount"),		uint16_t>>;
 	
 	template<typename TBase>
@@ -223,7 +223,16 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("capacity"),				Amount>>;
+		Field<STR_LITERAL("capacity"),				Amount>,
+		Field<STR_LITERAL("nodeBootKey"),			Key>,
+		Field<STR_LITERAL("message"),				Hash256>,
+		Field<STR_LITERAL("messageSignature"),		Signature>>;
+
+	template<typename TBase>
+	using TReplicatorsCleanupTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("replicatorCount"),		uint16_t>,
+		Field<STR_LITERAL("replicatorKeys"),		std::vector<Key>, desc::VariableSize<STR_LITERAL("replicatorCount")>>>;
 
 	using AccountLinkTransactionDTO = TAccountLinkTransactionDTO<TransactionDTO>;
 	using EmbeddedAccountLinkTransactionDTO = TAccountLinkTransactionDTO<EmbeddedTransactionDTO>;
@@ -284,4 +293,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
 	using ReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<TransactionDTO>;
 	using EmbeddedReplicatorOnboardingTransactionDTO = TReplicatorOnboardingTransactionDTO<EmbeddedTransactionDTO>;
+
+	using ReplicatorsCleanupTransactionDTO = TReplicatorsCleanupTransactionDTO<TransactionDTO>;
+	using EmbeddedReplicatorsCleanupTransactionDTO = TReplicatorsCleanupTransactionDTO<EmbeddedTransactionDTO>;
 }}}

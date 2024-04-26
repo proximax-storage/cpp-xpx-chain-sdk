@@ -276,6 +276,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 		template<>
 		ReplicatorOnboardingTransaction fromDto<ReplicatorOnboardingTransaction, ReplicatorOnboardingTransactionDto >(const ReplicatorOnboardingTransactionDto & dto);
 
+		template<>
+		ReplicatorsCleanupTransaction fromDto<ReplicatorsCleanupTransaction, ReplicatorsCleanupTransactionDto >(const ReplicatorsCleanupTransactionDto & dto);
+
 		/// Account Property Transactions
 		template<>
 		AccountTransactionPropertyTransaction fromDto<AccountTransactionPropertyTransaction, AccountTransactionPropertyTransactionDto >(const AccountTransactionPropertyTransactionDto & dto);
@@ -341,6 +344,9 @@ namespace xpx_chain_sdk { namespace  internal { namespace json {
 
 		template<>
 		EmbeddedReplicatorOnboardingTransaction fromDto<EmbeddedReplicatorOnboardingTransaction, EmbeddedReplicatorOnboardingTransactionDto >(const EmbeddedReplicatorOnboardingTransactionDto & dto);
+
+		template<>
+		EmbeddedReplicatorsCleanupTransaction fromDto<EmbeddedReplicatorsCleanupTransaction, EmbeddedReplicatorsCleanupTransactionDto >(const EmbeddedReplicatorsCleanupTransactionDto & dto);
 
 		/// Account Property Transactions
 		template<>
