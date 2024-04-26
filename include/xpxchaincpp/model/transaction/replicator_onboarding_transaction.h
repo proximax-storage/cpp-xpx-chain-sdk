@@ -20,20 +20,38 @@ namespace xpx_chain_sdk {
 	template<typename TBase>
 	class TReplicatorOnboardingTransaction: public TBase {
 	public:
-		/// Creates onboarding transaction.
+		/// Creates replicator onboarding transaction.
 		template<typename... TArgs>
 		explicit TReplicatorOnboardingTransaction(
 				const Amount& capacity,
+				const Key& nodeBootKey,
+				const Hash256& message,
+				const Signature& messageSignature,
 		        TArgs&&... args):
 			TBase(TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...),
-			capacity_(capacity)
+			capacity_(capacity),
+			nodeBootKey_(nodeBootKey),
+			message_(message),
+			messageSignature_(messageSignature)
 		{ }
 
 		/// Returns capacity that the replicator is willing to contribute (Megabytes).
 		const Amount& capacity() const;
 
+		/// The boot public key of the node where the replicator will be running.
+		const Key& nodeBootKey() const;
+
+		/// A random message to be signed by the node's boot private key.
+		const Hash256& message() const;
+
+		/// The message signature.
+		const Signature& messageSignature() const;
+
 	private:
 		Amount capacity_;
+		Key nodeBootKey_;
+		Hash256 message_;
+		Signature messageSignature_;
 	};
 
 	extern template class TReplicatorOnboardingTransaction<Transaction>;
@@ -43,20 +61,22 @@ namespace xpx_chain_sdk {
 	using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
 
 	/// Creates replicator onboarding transaction.
-	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-    CreateReplicatorOnboardingTransaction(const Amount& capacity,
-                                          std::optional<Amount> maxFee = std::nullopt,
-                                          std::optional<NetworkDuration> deadline = std::nullopt,
-                                          std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateReplicatorOnboardingTransaction(const Amount& capacity,const Key& nodeBootKey,
+		const Hash256& message,
+		const Signature& messageSignature,
+		std::optional<Amount> maxFee = std::nullopt,
+		std::optional<NetworkDuration> deadline = std::nullopt,
+		std::optional<NetworkIdentifier> networkId = std::nullopt);
 
 
 	/// Creates replicator onboarding transaction.
-	/// \note Throws \c transaction_error if mosaics or message have invalid size.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
-    CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,
-                                                  const Key& signer,
-                                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
+    CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,const Key& nodeBootKey,
+		const Hash256& message,
+		const Signature& messageSignature,
+		const Key& signer,
+		std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

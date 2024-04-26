@@ -282,7 +282,16 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 	template<typename TBase>
 	using TReplicatorOnboardingTransactionDTO = VariadicStruct<
 		TBase,
-		Field<STR_LITERAL("capacity"), Amount>>;
+		Field<STR_LITERAL("capacity"), 				Amount>,
+		Field<STR_LITERAL("nodeBootKey"),			Key>,
+		Field<STR_LITERAL("message"),				Hash256>,
+		Field<STR_LITERAL("messageSignature"),		Signature>>;
+
+	template<typename TBase>
+	using TReplicatorsCleanupTransactionDTO = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("replicatorCount"),		uint16_t>,
+		Field<STR_LITERAL("replicatorKeys"),		std::vector<Key>, desc::VariableSize<STR_LITERAL("replicatorCount")>>>;
 
     template<typename TBase>
         using TReplicatorOffboardingTransactionDTO = VariadicStruct<
@@ -455,4 +464,7 @@ namespace xpx_chain_sdk { namespace internal { namespace binary {
 
     using StreamPaymentTransactionDTO = TStreamPaymentTransactionDTO<TransactionDTO>;
     using EmbeddedStreamPaymentTransactionDTO = TStreamPaymentTransactionDTO<EmbeddedTransactionDTO>;
+
+	using ReplicatorsCleanupTransactionDTO = TReplicatorsCleanupTransactionDTO<TransactionDTO>;
+	using EmbeddedReplicatorsCleanupTransactionDTO = TReplicatorsCleanupTransactionDTO<EmbeddedTransactionDTO>;
 }}}

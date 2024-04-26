@@ -305,6 +305,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TReplicatorOnboardingTransaction: public TBase {
     public:
 		Amount capacity;
+		Key nodeBootKey;
+		Hash256 message;
+		Signature messageSignature;
     };
 
     template<typename TBase>
@@ -421,6 +424,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::string folderName;
 
     };
+
+    template<typename TBase>
+    class TReplicatorsCleanupTransaction: public TBase {
+    public:
+		uint16_t replicatorCount;
+		std::vector<Key> replicatorKeys;
+	};
 
     template<typename TBase>
     class TStreamFinishTransaction : public TBase {
@@ -554,6 +564,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
     using EmbeddedStreamPaymentTransaction = TStreamPaymentTransaction<EmbeddedTransaction>;
 
     using AddDbrbProcessTransaction = TAddDbrbProcessTransaction <Transaction>;
+
+    using ReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction <Transaction>;
+    using EmbeddedReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction<EmbeddedTransaction>;
 }}
 
 

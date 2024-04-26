@@ -37,6 +37,7 @@
 #include <xpxchaincpp/model/transaction/stream_start_transaction.h>
 #include <xpxchaincpp/model/transaction/stream_finish_transaction.h>
 #include <xpxchaincpp/model/transaction/stream_payment_transaction.h>
+#include <xpxchaincpp/model/transaction/replicators_cleanup_transaction.h>
 
 #include <utility>
 using namespace xpx_chain_sdk;
@@ -132,6 +133,9 @@ namespace xpx_chain_sdk { namespace internal {
 
 	using ReplicatorOnboardingTransactionImpl = TTransactionImpl<ReplicatorOnboardingTransaction>;
 	using EmbeddedReplicatorOnboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOnboardingTransaction>;
+
+	using ReplicatorsCleanupTransactionImpl = TTransactionImpl<ReplicatorsCleanupTransaction>;
+	using EmbeddedReplicatorsCleanupTransactionImpl = TTransactionImpl<EmbeddedReplicatorsCleanupTransaction>;
 
     using ReplicatorOffboardingTransactionImpl = TTransactionImpl<ReplicatorOffboardingTransaction>;
     using EmbeddedReplicatorOffboardingTransactionImpl = TTransactionImpl<EmbeddedReplicatorOffboardingTransaction>;
@@ -467,6 +471,18 @@ namespace xpx_chain_sdk { namespace internal {
 
 	std::unique_ptr<ReplicatorOnboardingTransaction>
     CreateReplicatorOnboardingTransactionImpl(const Amount& capacity,
+                                              const Key& nodeBootKey,
+                                              const Hash256& message,
+                                              const Signature& messageSignature,
+                                              std::optional<Amount> maxFee,
+                                              std::optional<NetworkDuration> deadline,
+                                              std::optional<NetworkIdentifier> networkId,
+                                              const std::optional<Key>& signer = std::nullopt,
+                                              const std::optional<Signature>& signature = std::nullopt,
+                                              const std::optional<TransactionInfo>& info = std::nullopt);
+
+	std::unique_ptr<ReplicatorsCleanupTransaction>
+	CreateReplicatorsCleanupTransactionImpl(const std::vector<Key>& replicatorKeys,
                                               std::optional<Amount> maxFee,
                                               std::optional<NetworkDuration> deadline,
                                               std::optional<NetworkIdentifier> networkId,

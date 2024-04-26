@@ -52,7 +52,8 @@ namespace xpx_chain_sdk {
         Stream_Start = 0x4166,
         Stream_Finish = 0x4266,
         Stream_Payment = 0x4366,
-        Add_Dbrb_Process  = 0x416C
+        Add_Dbrb_Process  = 0x416C,
+		Replicators_Cleanup = 0x4062,
     };
 	
 	/// Returns transaction name by \a type.

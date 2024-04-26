@@ -50,6 +50,7 @@ namespace xpx_chain_sdk {
             case TransactionType::Stream_Start:                     return "Stream Start";
             case TransactionType::Stream_Finish:                    return "Stream Finish";
             case TransactionType::Stream_Payment:                   return "Stream Payment";
+			case TransactionType::Replicators_Cleanup:				return "Replicators Cleanup";
             default: break;
         }
 
@@ -87,7 +88,7 @@ namespace xpx_chain_sdk {
             case TransactionType::Create_Liquidity_Provider:	return 1;
             case TransactionType::Manual_Rate_Change:		    return 1;
             case TransactionType::Finish_Download:      		return 1;
-            case TransactionType::Replicator_Onboarding:		return 1;
+            case TransactionType::Replicator_Onboarding:		return 2;
             case TransactionType::Replicator_Offboarding:		return 1;
             case TransactionType::Deploy_Contract:                  return 1;
             case TransactionType::Manual_Call:                      return 1;
@@ -99,6 +100,7 @@ namespace xpx_chain_sdk {
             case TransactionType::Stream_Start:                     return 1;
             case TransactionType::Stream_Finish:                    return 1;
             case TransactionType::Stream_Payment:                   return 1;
+			case TransactionType::Replicators_Cleanup:				return 1;
             default: break;
         }
 

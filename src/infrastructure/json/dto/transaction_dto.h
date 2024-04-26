@@ -324,7 +324,10 @@ namespace xpx_chain_sdk::internal::json::dto {
 		template<typename TBase>
 		using TReplicatorOnboardingTransactionDto = VariadicStruct<
 				TBase,
-				Field<STR_LITERAL("capacity"), Uint64>>;
+				Field<STR_LITERAL("capacity"), 				Uint64>,
+				Field<STR_LITERAL("nodeBootKey"),			Key>,
+				Field<STR_LITERAL("message"),				Hash256>,
+				Field<STR_LITERAL("messageSignature"),		Signature>>;
 
         template<typename TBase>
         using TReplicatorOffboardingTransactionDto = VariadicStruct<
@@ -404,6 +407,12 @@ namespace xpx_chain_sdk::internal::json::dto {
             Field<STR_LITERAL("driveKey"), std::string>,
             Field<STR_LITERAL("streamId"), std::string>,
             Field<STR_LITERAL("additionalUploadSize"), Uint64>>;
+
+	template<typename TBase>
+	using TReplicatorsCleanupTransactionDto = VariadicStruct<
+		TBase,
+		Field<STR_LITERAL("replicatorCount"),	uint16_t>,
+		Field<STR_LITERAL("replicatorKeys"),	std::vector<Key>>>;
 
     template<typename TBase>
     using TAddDbrbProcessTransactionDto = VariadicStruct<TBase>;
@@ -523,4 +532,7 @@ namespace xpx_chain_sdk::internal::json::dto {
         using EmbeddedStreamPaymentTransactionDto = TStreamPaymentTransactionDto<EmbeddedTransactionDto>;
 
         using AddDbrbProcessTransactionDto = TAddDbrbProcessTransactionDto<TransactionDto>;
+
+		using ReplicatorsCleanupTransactionDto = TReplicatorsCleanupTransactionDto<TransactionDto>;
+		using EmbeddedReplicatorsCleanupTransactionDto = TReplicatorsCleanupTransactionDto<EmbeddedTransactionDto>;
 	}

@@ -40,6 +40,7 @@
 #include <xpxchaincpp/model/transaction/finish_download_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_onboarding_transaction.h>
 #include <xpxchaincpp/model/transaction/replicator_offboarding_transaction.h>
+#include <xpxchaincpp/model/transaction/replicators_cleanup_transaction.h>
 #include <xpxchaincpp/model/transaction/transaction_signing.h>
 #include <xpxchaincpp/model/transaction/deploy_contract_transaction.h>
 #include <xpxchaincpp/model/transaction/manual_call_transaction.h>

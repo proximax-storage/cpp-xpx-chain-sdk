@@ -13,6 +13,24 @@ namespace xpx_chain_sdk {
 		return capacity_;
 	}
 
+	template<typename TBase>
+	const Key& TReplicatorOnboardingTransaction<TBase>::nodeBootKey() const
+	{
+		return nodeBootKey_;
+	}
+
+	template<typename TBase>
+	const Hash256& TReplicatorOnboardingTransaction<TBase>::message() const
+	{
+		return message_;
+	}
+
+	template<typename TBase>
+	const Signature& TReplicatorOnboardingTransaction<TBase>::messageSignature() const
+	{
+		return messageSignature_;
+	}
+
 	template class TReplicatorOnboardingTransaction<Transaction>;
 	template class TReplicatorOnboardingTransaction<EmbeddedTransaction>;
 }
