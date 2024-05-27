@@ -136,6 +136,8 @@ namespace xpx_chain_sdk {
             }
         });
 
+        boost::asio::post(*_io_context, [this] { _io_context->stop(); });
+
         _mainWorker.join();
     }
 
