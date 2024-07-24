@@ -14,7 +14,7 @@
 namespace xpx_chain_sdk {
 	
 	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Mijin_Test;
-	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::milliseconds(1459468800ll * 1000));
+	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::milliseconds(1459468800000));
 	
 	constexpr uint32_t Block_Avg_Fee_Multiplier = 20;
 	
