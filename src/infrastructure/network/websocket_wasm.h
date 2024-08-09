@@ -1,28 +1,21 @@
 /**
-*** Copyright 2021 ProximaX Limited. All rights reserved.
+*** Copyright 2024 ProximaX Limited. All rights reserved.
 *** Use of this source code is governed by the Apache 2.0
 *** license that can be found in the LICENSE file.
 **/
 #pragma once
 
-#ifdef __EMSCRIPTEN__
-#include "websocket_wasm.h"
-#else
-
 #include <xpxchaincpp/config.h>
 #include <boost/beast/core.hpp>
-#include <boost/beast/websocket.hpp>
-#include <boost/asio/strand.hpp>
-#include <boost/asio/streambuf.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <cstdlib>
 #include <deque>
 #include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
+
+#include <emscripten/emscripten.h>
+#include <emscripten/websocket.h>
 
 namespace xpx_chain_sdk::internal::network {
 
@@ -31,7 +24,11 @@ namespace xpx_chain_sdk::internal::network {
     using Callback = std::function<void(const std::string& json)>;
     using ErrorCallback = std::function<void(const boost::beast::error_code& errorCode)>;
 
-    class WsClient : public std::enable_shared_from_this<WsClient> {
+    class WsClient : public std::enable_shared_from_this<WsClient>
+    {
+        EMSCRIPTEN_WEBSOCKET_T  m_ws = 0;
+        std::string             m_wsUrl;
+
     public:
         WsClient(
             const Config& config,
@@ -48,32 +45,28 @@ namespace xpx_chain_sdk::internal::network {
                   std::function<void(boost::beast::error_code errorCode)> onError);
         bool isConnected() const;
 
-    private:
-        void doWrite();
-        void onResolve(
-                boost::beast::error_code errorCode,
-                const boost::asio::ip::tcp::resolver::results_type& resultsType);
+        void onError( boost::beast::error_code errorCode )
+        {
+            _io_context->post( [this,errorCode=errorCode] { _errorCallback(errorCode); } );
+        }
 
-        void onConnect(
-                boost::beast::error_code errorCode,
-                const boost::asio::ip::tcp::resolver::results_type::endpoint_type& endpointType);
-        void onHandshake(boost::beast::error_code errorCode);
-        void onRead(boost::beast::error_code errorCode);
-        void readNext();
-        void onClose(boost::beast::error_code errorCode);
+        void onMessage( const std::string& json )
+        {
+            _io_context->post( [this,json=json] {_receiverCallback(json); } );
+        }
+
+        void onConnectionUid( const std::string& json )
+        {
+            _io_context->post( [this,json=json] { _connectionCallback(json); } );
+        }
 
     private:
         const Config& _config;
-        std::shared_ptr<boost::asio::streambuf> _buffer;
-        std::deque<std::pair<std::string, std::pair<std::function<void()>, std::function<void(boost::beast::error_code errorCode)>>>> _outgoingQueue;
+        // std::deque<std::pair<std::string, std::pair<std::function<void()>, std::function<void(boost::beast::error_code errorCode)>>>> _outgoingQueue;
         std::shared_ptr<boost::asio::io_context> _io_context;
         std::function<void()> _postponedDisconnect;
-        boost::asio::ip::tcp::resolver _resolver;
-        boost::beast::websocket::stream<boost::beast::tcp_stream> _ws;
         Callback _connectionCallback;
         Callback _receiverCallback;
         ErrorCallback _errorCallback;
     };
 }
-
-#endif // #else __EMSCRIPTEN__

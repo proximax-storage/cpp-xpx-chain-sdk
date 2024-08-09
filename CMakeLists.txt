@@ -12,17 +12,29 @@ endif()
 option(XPX_CHAIN_SDK_BUILD_STATIC "Build static version of XPX-CHAIN SDK library." OFF)
 option(XPX_CHAIN_SDK_BUILD_TESTS "Build XPX-CHAIN SDK tests." OFF)
 option(XPX_CHAIN_SDK_BUILD_EXAMPLES "Build XPX-CHAIN SDK examples." OFF)
-option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+
+if (EMSCRIPTEN)
+    option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." ON)
+else()
+    option(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS "Enable WebSockets API." OFF)
+endif()
 
 include(CMakeGlobalFunctions.cmake)
 
-if (APPLE)
-	set(CMAKE_VERBOSE_MAKEFILE ON)
+if (APPLE OR EMSCRIPTEN)
+        set(CMAKE_VERBOSE_MAKEFILE ON)
 	set(BOOST_INCLUDE_DIR "/usr/local/include")
 	set(BOOST_LIB_DIR "/usr/local/lib")
-	set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
-	set(OPENSSL_LIBRARIES "/usr/local/opt/openssl/lib")
-else()
+
+        if (EMSCRIPTEN)	#	set(OPENSSL_ROOT_DIR "/opt/local/opt/openssl")
+                set(OPENSSL_ROOT_DIR     "/opt/homebrew/opt/openssl")
+                set(OPENSSL_INCLUDE_DIR  "/opt/homebrew/opt/openssl/include")
+                set(OPENSSL_LIBRARIES    "/opt/homebrew/opt/openssl/lib")
+                set(OPENSSL_SSL_LIBRARY "/opt/homebrew/opt/openssl/lib/libssl.dylib")
+                set(OPENSSL_CRYPTO_LIBRARY "/opt/homebrew/opt/openssl/lib/libcrypto.dylib")
+        else()
+		set(OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
+        endif()
 endif()
 
 find_package(Threads REQUIRED)
@@ -108,21 +120,21 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${sources})
 #-----------------------------------------------------------------------------
 
 if (XPX_CHAIN_SDK_BUILD_STATIC)
-	add_library(xpxchaincpp STATIC "")
-	set_target_properties(xpxchaincpp PROPERTIES
-		OUTPUT_NAME "xpxchaincpp-static")
+    add_library(xpxchaincpp STATIC "")
+    set_target_properties(xpxchaincpp PROPERTIES
+            OUTPUT_NAME "xpxchaincpp-static")
 else()
 
-	add_library(xpxchaincpp SHARED "")
+    add_library(xpxchaincpp SHARED "")
 
-	set_target_properties(xpxchaincpp PROPERTIES
-		VERSION ${PROJECT_VERSION}
-		SOVERSION ${PROJECT_VERSION_MAJOR})
+    set_target_properties(xpxchaincpp PROPERTIES
+                VERSION ${PROJECT_VERSION}
+                SOVERSION ${PROJECT_VERSION_MAJOR})
 
-	if (MSVC)
-		set_target_properties(xpxchaincpp PROPERTIES
-			WINDOWS_EXPORT_ALL_SYMBOLS ON)
-	endif()
+                if (MSVC)
+                    set_target_properties(xpxchaincpp PROPERTIES
+                        WINDOWS_EXPORT_ALL_SYMBOLS ON)
+                endif()
 endif()
 
 include(GNUInstallDirs)
@@ -213,7 +225,7 @@ install(FILES
 # tests
 #-----------------------------------------------------------------------------
 
-if (APPLE)
+if (APPLE OR EMSCRIPTEN)
 else()
 
     if (XPX_CHAIN_SDK_BUILD_TESTS)

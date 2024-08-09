@@ -4,6 +4,8 @@
 *** license that can be found in the LICENSE file.
 **/
 
+#ifndef __EMSCRIPTEN__
+
 #include "websocket.h"
 
 namespace xpx_chain_sdk::internal::network {
@@ -202,3 +204,5 @@ namespace xpx_chain_sdk::internal::network {
                 }));
     }
 }
+
+#endif // #ifndef __EMSCRIPTEN__
