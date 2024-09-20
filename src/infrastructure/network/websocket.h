@@ -54,9 +54,7 @@ namespace xpx_chain_sdk::internal::network {
                 boost::beast::error_code errorCode,
                 const boost::asio::ip::tcp::resolver::results_type& resultsType);
 
-        void onConnect(
-                boost::beast::error_code errorCode,
-                const boost::asio::ip::tcp::resolver::results_type::endpoint_type& endpointType);
+        void onConnect(boost::beast::error_code errorCode);
         void onHandshake(boost::beast::error_code errorCode);
         void onRead(boost::beast::error_code errorCode);
         void readNext();

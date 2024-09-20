@@ -118,14 +118,12 @@ namespace xpx_chain_sdk::internal::network {
 
         boost::beast::get_lowest_layer(_ws).expires_after(std::chrono::seconds(_config.wsOptions.resolveHostTimeoutSecSec));
         boost::beast::get_lowest_layer(_ws).async_connect(
-                resultsType, boost::asio::bind_executor(*_io_context, [pThis = shared_from_this()] (auto ec, const auto& et) {
-                    pThis->onConnect(ec, et);
+                resultsType, boost::asio::bind_executor(*_io_context, [pThis = shared_from_this()] (auto ec, const auto&) {
+                    pThis->onConnect(ec);
                 }));
     }
 
-    void WsClient::onConnect(
-            boost::beast::error_code errorCode,
-            const boost::asio::ip::tcp::resolver::results_type::endpoint_type&) {
+    void WsClient::onConnect(boost::beast::error_code errorCode) {
         if (errorCode) {
             return _errorCallback(errorCode);
         }
