@@ -61,6 +61,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/CheckFeatures.cmake)
 check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=assignment-of-read-only-member")
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
