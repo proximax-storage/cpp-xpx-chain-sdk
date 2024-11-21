@@ -152,6 +152,9 @@ target_include_directories(xpxchaincpp
 		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+target_compile_options(xpxchaincpp PRIVATE -Wno-error=assignment-of-member)
+target_compile_options(xpxchaincpp PRIVATE -Wno-deprecated-declarations)
+
 if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
     target_compile_definitions(xpxchaincpp PRIVATE XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
 endif()
