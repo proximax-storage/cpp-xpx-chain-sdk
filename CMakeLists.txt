@@ -61,7 +61,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/CheckFeatures.cmake)
 check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=assignment-of-read-only-member")
+# suppress errors & warnings from rapidjson
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=cast-qual")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=class-memaccess")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=write-const-variable")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -154,12 +158,6 @@ target_include_directories(xpxchaincpp
 	PRIVATE
 		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-# suppress errors & warnings from rapidjson
-add_subdirectory(include/rapidjson)
-target_compile_options(xpxchaincpp PRIVATE -Wno-error=cast-qual)
-target_compile_options(xpxchaincpp PRIVATE -Wno-error=class-memaccess)
-target_compile_options(xpxchaincpp PRIVATE -Wno-deprecated-declarations)
 
 if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
     target_compile_definitions(xpxchaincpp PRIVATE XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
