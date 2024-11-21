@@ -153,6 +153,9 @@ target_include_directories(xpxchaincpp
 		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# suppress errors & warnings from rapidjson
+add_subdirectory(include/rapidjson)
+target_compile_options(xpxchaincpp PRIVATE -Wno-error=cast-qual)
 target_compile_options(xpxchaincpp PRIVATE -Wno-error=class-memaccess)
 target_compile_options(xpxchaincpp PRIVATE -Wno-deprecated-declarations)
 
