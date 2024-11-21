@@ -51,6 +51,7 @@ if (WIN32)
     add_definitions(-D_WIN32_WINNT=0x0601)
 else()
     add_compile_options(-w)
+	add_compile_options(-Wno-error=class-memaccess)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -152,7 +153,7 @@ target_include_directories(xpxchaincpp
 		include/rapidjson/include/
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-target_compile_options(xpxchaincpp PRIVATE -Wno-error=assignment-of-member)
+target_compile_options(xpxchaincpp PRIVATE -Wno-error=class-memaccess)
 target_compile_options(xpxchaincpp PRIVATE -Wno-deprecated-declarations)
 
 if(XPX_CHAIN_SDK_ENABLE_WEBSOCKETS)
