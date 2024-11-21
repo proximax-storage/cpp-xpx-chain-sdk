@@ -61,6 +61,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(cmake/CheckFeatures.cmake)
 check_string_literal_operator_template(HAVE_STRING_LITERAL_OPERATOR_TEMPLATE)
 
+# Fix rapidjson for gcc 14
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/include/rapidjson/include/rapidjson/document.h CONTENTS)
+string(REPLACE "const SizeType length;" "SizeType length;" CONTENTS "${CONTENTS}")
+file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/include/rapidjson/include/rapidjson/document.h "${CONTENTS}")
+
 # suppress errors & warnings from rapidjson
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
 
