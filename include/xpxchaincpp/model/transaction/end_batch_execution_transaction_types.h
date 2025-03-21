@@ -40,7 +40,7 @@ namespace xpx_chain_sdk {
 	struct Opinion {
 		Hash256 publicKey;
 		Hash256 signature;
-		std::vector<RawProofOfExecution> poEx;
+        RawProofOfExecution poEx;
 		std::vector<CallPayment> callPayments;
 	};
 }

@@ -4,6 +4,8 @@
 *** license that can be found in the LICENSE file.
 **/
 #include "deserialization_json.h"
+#include <iostream>
+#include <fstream>
 
 using namespace xpx_chain_sdk::internal::json;
 using namespace xpx_chain_sdk::internal::json::dto;
@@ -2126,17 +2128,15 @@ namespace xpx_chain_sdk::internal::json::dto {
                 dto.value<"publicKey"_>(),
                 dto.value<"signature"_>()
         };
-
-        for(auto& poExDto : dto.value<"poEx"_>()) {
-            RawProofOfExecution poEx{
-                    poExDto.value<"startBatchId"_>(),
-                    poExDto.value<"T"_>(),
-                    poExDto.value<"R"_>(),
-                    poExDto.value<"F"_>(),
-                    poExDto.value<"K"_>()
-            };
-            result.poEx.push_back(poEx);
-        }
+        auto& poex = dto.value<"poEx"_>();
+        RawProofOfExecution execution {
+            poex.value<"startBatchId"_>(),
+            poex.value<"T"_>(),
+            poex.value<"R"_>(),
+            poex.value<"F"_>(),
+            poex.value<"K"_>()
+        };
+        result.poEx = execution;
 
         for(auto& callPaymentDto : dto.value<"callPayments"_>()) {
             CallPayment callPayment{

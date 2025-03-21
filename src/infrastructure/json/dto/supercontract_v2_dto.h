@@ -57,8 +57,8 @@ namespace xpx_chain_sdk::internal::json::dto {
 
     using ProofOfExecutionDto = VariadicStruct<
         Field<STR_LITERAL("startBatchId"), Uint64 >,
-        Field<STR_LITERAL("T"), std::array<uint8_t, 32> >,
-        Field<STR_LITERAL("R"), std::array<uint8_t, 32> >
+        Field<STR_LITERAL("T"), std::string>,
+        Field<STR_LITERAL("R"), std::string>
     >;
 
     using ExecutorInfoDto = VariadicStruct<

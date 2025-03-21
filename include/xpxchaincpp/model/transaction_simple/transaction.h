@@ -369,10 +369,10 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class RawProofOfExecution {
     public:
         uint64_t startBatchId;
-        std::array<uint8_t, 32> T;
-        std::array<uint8_t, 32> R;
-        std::array<uint8_t, 32> F;
-        std::array<uint8_t, 32> K;
+        std::string T;
+        std::string R;
+        std::string F;
+        std::string K;
     };
 
     class CallPayment {
@@ -384,7 +384,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
     struct Opinion {
         std::string publicKey;
         std::string signature;
-        std::vector<RawProofOfExecution> poEx;
+        RawProofOfExecution poEx;
         std::vector<CallPayment> callPayments;
     };
 
@@ -404,7 +404,7 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::string storageHash;
         uint64_t usedSizeBytes;
         uint64_t metaFilesSizeBytes;
-        std::array<uint8_t, 32> proofOfExecutionVerificationInformation;
+        std::string proofOfExecutionVerificationInformation;
     };
 
     template<typename TBase>

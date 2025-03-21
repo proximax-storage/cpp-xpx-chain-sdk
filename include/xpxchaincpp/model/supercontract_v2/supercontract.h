@@ -5,6 +5,7 @@
 **/
 #pragma once
 
+#include <optional>
 #include <xpxchaincpp/types.h>
 
 #include <map>
@@ -58,8 +59,8 @@ namespace xpx_chain_sdk {
 
     struct ProofOfExecution {
         uint64_t startBatchId = 0;
-        std::array<uint8_t, 32> T;
-        std::array<uint8_t, 32> R;
+        std::string T;
+        std::string R;
     };
 
     struct ExecutorInfo {

@@ -70,19 +70,19 @@ namespace xpx_chain_sdk::internal::json::dto {
 
 		using RawProofOfExecutionDto = VariadicStruct<
                 Field<STR_LITERAL("startBatchId"), Uint64>,
-                Field<STR_LITERAL("T"), std::array<uint8_t, 32>>,
-                Field<STR_LITERAL("R"), std::array<uint8_t, 32>>,
-                Field<STR_LITERAL("F"), std::array<uint8_t, 32>>,
-                Field<STR_LITERAL("K"), std::array<uint8_t, 32>>>;
+                Field<STR_LITERAL("T"), std::string>,
+                Field<STR_LITERAL("R"), std::string>,
+                Field<STR_LITERAL("F"), std::string>,
+                Field<STR_LITERAL("K"), std::string>>;
 
         using CallPaymentDto = VariadicStruct<
-                Field<STR_LITERAL("executionPayment"), Amount>,
-                Field<STR_LITERAL("downloadPayment"), Amount>>;
+                Field<STR_LITERAL("executionPayment"), Uint64>,
+                Field<STR_LITERAL("downloadPayment"), Uint64>>;
 
 		using OpinionDto = VariadicStruct<
 				Field<STR_LITERAL("publicKey"), std::string>,
 				Field<STR_LITERAL("signature"), std::string>,
-				Field<STR_LITERAL("poEx"), std::vector<RawProofOfExecutionDto>>,
+                Field<STR_LITERAL("poEx"), RawProofOfExecutionDto>,
 				Field<STR_LITERAL("callPayments"), std::vector<CallPaymentDto>>>;
 
 
@@ -372,18 +372,18 @@ namespace xpx_chain_sdk::internal::json::dto {
     using TUnsuccessfulEndBatchExecutionTransactionDto = VariadicStruct<
             TBase,
             Field<STR_LITERAL("contractKey"), std::string>,
-            Field<STR_LITERAL("batchId"), uint64_t>,
-            Field<STR_LITERAL("automaticExecutionsNextBlockToCheck"), std::string>,
+            Field<STR_LITERAL("batchId"), Uint64>,
+            Field<STR_LITERAL("automaticExecutionsNextBlockToCheck"), Uint64>,
             Field<STR_LITERAL("callDigests"), std::vector<ExtendedCallDigestDto>>,
             Field<STR_LITERAL("opinions"), std::vector<OpinionDto>>>;
 
-	template<typename TUnsuccessfulEndBatchExecutionTransaction>
+    template<typename TUnsuccessfulEndBatchExecutionTransaction>
 	using TSuccessfulEndBatchExecutionTransactionDto = VariadicStruct<
             TUnsuccessfulEndBatchExecutionTransaction,
-			Field<STR_LITERAL("storageHash"), std::string>,
-			Field<STR_LITERAL("usedSizeBytes"), uint64_t>,
-			Field<STR_LITERAL("metaFilesSizeBytes"), uint64_t>,
-			Field<STR_LITERAL("proofOfExecutionVerificationInformation"), std::array<uint8_t, 32>>>;
+            Field<STR_LITERAL("storageHash"), std::string>,
+            Field<STR_LITERAL("usedSizeBytes"), Uint64>,
+            Field<STR_LITERAL("metaFilesSizeBytes"), Uint64>,
+            Field<STR_LITERAL("proofOfExecutionVerificationInformation"), std::string>>;
 
     template<typename TStreamStartTransaction>
     using TStreamStartTransactionDto = VariadicStruct<
