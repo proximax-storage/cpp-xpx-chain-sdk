@@ -11,8 +11,10 @@
 #include <xpxchaincpp/client/namespace_service.h>
 #include <xpxchaincpp/client/notification_service.h>
 #include <xpxchaincpp/client/account_service.h>
+#include <xpxchaincpp/client/liquidity_provider_service.h>
 #include <xpxchaincpp/client/network_service.h>
 #include <xpxchaincpp/client/transaction_service.h>
+#include <xpxchaincpp/client/storage_service.h>
 
 #include <memory>
 
@@ -20,12 +22,26 @@
 #include <xpxchaincpp/client/blockchain_service.h>
 
 namespace xpx_chain_sdk {
+    class ErrorMessage  {
+    public:
+        std::string code;
+        std::string message;
+    };
+
 	class InvalidRequest : public std::runtime_error {
 	public:
-		explicit InvalidRequest(uint16_t code);
+		explicit InvalidRequest(const std::string& errorMessage, uint16_t code);
+
+    public:
+        int getHttpErrorCode() const;
+        ErrorMessage getErrorMessage() const;
 
 	private:
 		static std::string getErrorMessage(uint16_t code);
+
+    private:
+        const int httpErrorCode;
+        const std::string errorMessage;
 	};
 
 	class InvalidJson : public std::runtime_error {
@@ -35,15 +51,18 @@ namespace xpx_chain_sdk {
 
 	class IClient {
 	public:
+        virtual const Config& getConfig() const = 0;
         virtual std::shared_ptr<AccountService> account() const = 0;
         virtual std::shared_ptr<BlockchainService> blockchain() const = 0;
         virtual std::shared_ptr<MosaicService> mosaics() const = 0;
         virtual std::shared_ptr<NamespaceService> namespaces() const = 0;
         virtual std::shared_ptr<NotificationService> notifications() const = 0;
         virtual std::shared_ptr<NetworkService> network() const = 0;
+        virtual std::shared_ptr<LiquidityProviderService> liquidityProvider() const = 0;
         virtual std::shared_ptr<TransactionService> transactions() const = 0;
+        virtual std::shared_ptr<StorageService> storage() const = 0;
         virtual ~IClient() = default;
 	};
 
-	std::shared_ptr<IClient> getClient(std::shared_ptr<Config> config);
+	std::shared_ptr<IClient> getClient(const Config& config);
 }

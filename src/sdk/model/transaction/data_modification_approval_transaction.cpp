@@ -25,17 +25,77 @@ namespace xpx_chain_sdk {
 		return fileStructureCdi_;
 	}
 
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::modificationStatus() const
+    {
+        return modificationStatus_;
+    }
+
 	template<typename TBase>
-	uint64_t TDataModificationApprovalTransaction<TBase>::fileStructureSize() const
+	uint64_t TDataModificationApprovalTransaction<TBase>::fileStructureSizeBytes() const
 	{
 		return fileStructureSize_;
 	}
 
+    template<typename TBase>
+    uint64_t TDataModificationApprovalTransaction<TBase>::metaFilesSizeBytes() const
+    {
+        return metaFilesSize_;
+    }
+
 	template<typename TBase>
-	uint64_t TDataModificationApprovalTransaction<TBase>::usedDriveSize() const
+	uint64_t TDataModificationApprovalTransaction<TBase>::usedDriveSizeBytes() const
 	{
 		return usedDriveSize_;
 	}
+
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::judgingKeysCount() const
+    {
+        return judgingKeysCount_;
+    }
+
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::overlappingKeysCount() const
+    {
+        return overlappingKeysCount_;
+    }
+
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::judgedKeysCount() const
+    {
+        return judgedKeysCount_;
+    }
+
+    template<typename TBase>
+    uint8_t TDataModificationApprovalTransaction<TBase>::opinionElementCount() const
+    {
+        return opinionElementCount_;
+    }
+
+    template<typename TBase>
+    std::vector<Key> TDataModificationApprovalTransaction<TBase>::publicKeys() const
+    {
+        return publicKeys_;
+    }
+
+    template<typename TBase>
+    std::vector<Signature> TDataModificationApprovalTransaction<TBase>::signatures() const
+    {
+        return signatures_;
+    }
+
+    template<typename TBase>
+    std::vector<uint8_t> TDataModificationApprovalTransaction<TBase>::presentOpinions() const
+    {
+        return presentOpinions_;
+    }
+
+    template<typename TBase>
+    std::vector<uint64_t> TDataModificationApprovalTransaction<TBase>::opinions() const
+    {
+        return opinions_;
+    }
 
 	template class TDataModificationApprovalTransaction<Transaction>;
 	template class TDataModificationApprovalTransaction<EmbeddedTransaction>;

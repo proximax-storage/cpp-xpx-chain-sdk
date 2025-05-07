@@ -7,7 +7,6 @@
 #pragma once
 
 #include <xpxchaincpp/config.h>
-#include <xpxchaincpp/client/blockchain_service.h>
 #include <xpxchaincpp/model/blockchain/storage_info.h>
 #include <xpxchaincpp/model/blockchain/block.h>
 #include <xpxchaincpp/model/transaction_simple/transaction_container.h>
@@ -29,7 +28,7 @@ namespace xpx_chain_sdk {
 	class BlockchainService {
 	public:
 		BlockchainService(
-				std::shared_ptr<Config> config,
+				const Config& config,
 				std::shared_ptr<internal::network::Context> context);
 		~BlockchainService() = default;
 
@@ -41,7 +40,7 @@ namespace xpx_chain_sdk {
 
 
 	private:
-		std::shared_ptr<Config> _config;
+		const Config& _config;
 		std::shared_ptr<Context> _context;
 	};
 

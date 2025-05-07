@@ -24,7 +24,7 @@ using internal::json::dto::MosaicNamesDto;
 using internal::json::dto::MultipleMosaicInfoDto;
 
 MosaicService::MosaicService(
-        std::shared_ptr<Config> config,
+        const Config& config,
         std::shared_ptr<internal::network::Context> context
 ):
         _config(config),

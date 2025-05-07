@@ -29,7 +29,7 @@ namespace xpx_chain_sdk {
     class NamespaceService {
     public:
         NamespaceService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
         ~NamespaceService() = default;
 
@@ -40,7 +40,7 @@ namespace xpx_chain_sdk {
         NamespaceNames getNamespaceNames(const std::vector<std::string> & namespaceIds);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
     };
 }

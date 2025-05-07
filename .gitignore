@@ -2,3 +2,6 @@ build/
 cmake-build-debug/
 
 .idea
+/CMakeLists.txt.user
+/CMakeSettings.json
+.vs/

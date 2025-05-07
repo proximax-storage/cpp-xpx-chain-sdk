@@ -7,16 +7,17 @@
 
 #include <string>
 #include <string_view>
+#include <cstdint>
 
 namespace xpx_chain_sdk {
 	
 	/// Result code for read operation.
-	enum class ReadResultCode: uint8_t {
+	enum class ReadResultCode : uint8_t {
 		Success,
 		Not_Enough_Data,
 		Failure
 	};
-	
+
 	/// Read result.
 	class ReadResult {
 	public:

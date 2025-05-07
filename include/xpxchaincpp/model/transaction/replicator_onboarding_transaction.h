@@ -28,14 +28,14 @@ namespace xpx_chain_sdk {
 				const Hash256& message,
 				const Signature& messageSignature,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Replicator_Onboarding, std::forward<TArgs>(args)...),
 			capacity_(capacity),
 			nodeBootKey_(nodeBootKey),
 			message_(message),
 			messageSignature_(messageSignature)
 		{ }
 
-		/// Returns capacity that the replicator is willing to contribute.
+		/// Returns capacity that the replicator is willing to contribute (Megabytes).
 		const Amount& capacity() const;
 
 		/// The boot public key of the node where the replicator will be running.
@@ -63,9 +63,7 @@ namespace xpx_chain_sdk {
 	/// Creates replicator onboarding transaction.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<ReplicatorOnboardingTransaction>
-	CreateReplicatorOnboardingTransaction(
-		const Amount& capacity,
-		const Key& nodeBootKey,
+    CreateReplicatorOnboardingTransaction(const Amount& capacity,const Key& nodeBootKey,
 		const Hash256& message,
 		const Signature& messageSignature,
 		std::optional<Amount> maxFee = std::nullopt,
@@ -76,9 +74,7 @@ namespace xpx_chain_sdk {
 	/// Creates replicator onboarding transaction.
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<EmbeddedReplicatorOnboardingTransaction>
-	CreateEmbeddedReplicatorOnboardingTransaction(
-		const Amount& capacity,
-		const Key& nodeBootKey,
+    CreateEmbeddedReplicatorOnboardingTransaction(const Amount& capacity,const Key& nodeBootKey,
 		const Hash256& message,
 		const Signature& messageSignature,
 		const Key& signer,

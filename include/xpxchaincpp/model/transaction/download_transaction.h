@@ -25,12 +25,16 @@ namespace xpx_chain_sdk {
 		explicit TDownloadTransaction(
 				const Key& driveKey,
 				uint64_t downloadSize,
-				const Amount& transactionFee,
+				const Amount& feedbackFeeAmount,
+				const uint16_t& listOfPublicKeysSize,
+                const std::vector<Key>& listOfPublicKeys,
 		        TArgs&&... args):
-			TBase(TransactionType::Data_Modification, std::forward<TArgs>(args)...),
+			TBase(TransactionType::Download, std::forward<TArgs>(args)...),
 			driveKey_(driveKey),
 			downloadSize_(downloadSize),
-			transactionFee_(transactionFee)
+            feedbackFeeAmount_(feedbackFeeAmount),
+            listOfPublicKeysSize_(listOfPublicKeysSize),
+            listOfPublicKeys_(listOfPublicKeys)
 		{ }
 
 		/// Returns drive key.
@@ -39,13 +43,21 @@ namespace xpx_chain_sdk {
 		/// Returns download size.
 		uint64_t downloadSize() const;
 
-		/// Returns transaction fee.
-		const Amount& transactionFee() const;
+		/// Returns XPXs to lock for future payment for.
+		const Amount& feedbackFeeAmount() const;
+
+        /// Returns size of the list of public keys.
+        uint16_t listOfPublicKeysSize() const;
+
+        /// Returns list of public keys.
+        std::vector<Key> listOfPublicKeys() const;
 
 	private:
 		Key driveKey_;
 		uint64_t downloadSize_;
-		Amount transactionFee_;
+		Amount feedbackFeeAmount_;
+        uint16_t listOfPublicKeysSize_;
+        std::vector<Key> listOfPublicKeys_;
 	};
 
 	extern template class TDownloadTransaction<Transaction>;
@@ -59,8 +71,10 @@ namespace xpx_chain_sdk {
 	/// \note Optional transaction parameters are initialized using \c Config if not set explicitly.
 	std::unique_ptr<DownloadTransaction>
 	CreateDownloadTransaction(const Key& driveKey,
-	                          uint64_t downloadSize,
-	                          const Amount& transactionFee,
+                              uint64_t downloadSize,
+                              const Amount& feedbackFeeAmount,
+                              uint16_t listOfPublicKeysSize,
+                              const std::vector<Key>& listOfPublicKeys,
 	                          std::optional<Amount> maxFee = std::nullopt,
 	                          std::optional<NetworkDuration> deadline = std::nullopt,
 	                          std::optional<NetworkIdentifier> networkId = std::nullopt);
@@ -72,7 +86,9 @@ namespace xpx_chain_sdk {
 	std::unique_ptr<EmbeddedDownloadTransaction>
 	CreateEmbeddedDownloadTransaction(const Key& driveKey,
 	                                  uint64_t downloadSize,
-	                                  const Amount& transactionFee,
+                                      const Amount& feedbackFeeAmount,
+                                      const uint16_t& listOfPublicKeysSize,
+                                      const std::vector<Key>& listOfPublicKeys,
 	                                  const Key& signer,
 	                                  std::optional<NetworkIdentifier> networkId = std::nullopt);
 }

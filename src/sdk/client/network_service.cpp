@@ -17,7 +17,7 @@ using xpx_chain_sdk::internal::json::dto::from_json;
 
 static uint64_t getBlockchainHeight(
         std::shared_ptr<internal::network::Context> context,
-        std::shared_ptr<Config> _config) {
+        const Config& _config) {
     RequestParamsBuilder builder(_config);
     builder.setPath("chain/height");
     builder.setMethod(internal::network::HTTPRequestMethod::GET);
@@ -28,7 +28,7 @@ static uint64_t getBlockchainHeight(
 }
 
 NetworkService::NetworkService(
-        std::shared_ptr<Config> config,
+        const Config& config,
         std::shared_ptr<internal::network::Context> context
 ):_config(config), _context(context) {}
 

@@ -14,7 +14,7 @@
 namespace xpx_chain_sdk {
 	
 	constexpr NetworkIdentifier Network_Id = NetworkIdentifier::Mijin_Test;
-	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::milliseconds(1459468800ll * 1000));
+	constexpr std::chrono::system_clock::time_point Network_Epoch(std::chrono::milliseconds(1459468800000));
 	
 	constexpr uint32_t Block_Avg_Fee_Multiplier = 20;
 	
@@ -59,6 +59,16 @@ namespace xpx_chain_sdk {
 		bool useSSL = false;
 		std::string basePath = "/";
         std::string baseWsPath = "/ws";
+
+        struct WebsocketOptions
+        {
+            uint64_t resolveHostTimeoutSecSec = 60;
+            std::chrono::seconds handshakeTimeoutSec = std::chrono::seconds(60);
+            std::chrono::seconds idleTimeoutSec = std::chrono::seconds(600);
+            bool keepAlivePings = true;
+        };
+
+        WebsocketOptions wsOptions;
 	};
 	
 	/// Returns SDK config.

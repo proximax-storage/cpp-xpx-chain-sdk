@@ -18,7 +18,6 @@ namespace xpx_chain_sdk {
         TransactionType type;
         int64_t maxFee;
         int64_t deadline;
-        std::string hash;
     };
 
     class TransactionMeta {

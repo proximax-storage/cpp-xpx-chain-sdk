@@ -25,7 +25,7 @@ namespace xpx_chain_sdk {
 	class NetworkService {
     public:
         NetworkService(
-                std::shared_ptr<Config> config,
+                const Config& config,
                 std::shared_ptr<internal::network::Context> context);
         ~NetworkService() = default;
 
@@ -36,7 +36,7 @@ namespace xpx_chain_sdk {
         NetworkVersion getNetworkVersionAtHeight(uint64_t height);
 
     private:
-        std::shared_ptr<Config> _config;
+        const Config& _config;
         std::shared_ptr<internal::network::Context> _context;
     };
 }

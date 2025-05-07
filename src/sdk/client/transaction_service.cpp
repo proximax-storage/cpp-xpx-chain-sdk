@@ -23,7 +23,7 @@ namespace xpx_chain_sdk {
 	using internal::json::dto::MultipleTransactionStatusDto;
 
 	TransactionService::TransactionService(
-			std::shared_ptr<Config> config,
+			const Config& config,
 			std::shared_ptr<internal::network::Context> context) :_config(config), _context(context) {}
 
 	std::shared_ptr<transactions_info::BasicTransaction> TransactionService::getTransactionInfo(TransactionGroup group, const std::string &id) {
@@ -100,8 +100,6 @@ namespace xpx_chain_sdk {
 		std::string payloadStr = bytes_to_string(payload);
 		requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::cout << requestJson << std::endl;
-
 		std::string path = "transactions";
 
 		RequestParamsBuilder builder(_config);
@@ -109,55 +107,42 @@ namespace xpx_chain_sdk {
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			std::cout << e.what() << std::endl;
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+
 		return true;
 	}
 
 	bool TransactionService::announceAggregateBoundedTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+        requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::string path = "transaction/partial";
+		std::string path = "transactions/partial";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+        
 		return true;
 	}
 
 	bool TransactionService::announceCosignatureTransaction(const std::vector<uint8_t > &payload) {
 		std::string requestJson;
 		std::string payloadStr = bytes_to_string(payload);
-		requestJson = "{\"payload\":" + payloadStr + "}";
+        requestJson = R"({"payload":")" + payloadStr + "\"}";
 
-		std::string path = "transaction/cosignature";
+		std::string path = "transactions/cosignature";
 
 		RequestParamsBuilder builder(_config);
         builder.setPath(path);
         builder.setMethod(internal::network::HTTPRequestMethod::PUT);
         builder.setRequestBody(requestJson);
 
-		try {
-			internal::network::performHTTPRequest(_context, builder.getRequestParams());
-		}
-		catch(std::exception& e) {
-			throw e;
-		}
+        internal::network::performHTTPRequest(_context, builder.getRequestParams());
+        
 		return true;
 	}
 

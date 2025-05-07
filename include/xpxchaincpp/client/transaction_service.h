@@ -25,7 +25,7 @@ namespace xpx_chain_sdk {
 	class TransactionService {
 	public:
 		TransactionService(
-				std::shared_ptr<Config> config,
+				const Config& config,
 				std::shared_ptr<internal::network::Context> context);
 		~TransactionService() = default;
 
@@ -43,7 +43,7 @@ namespace xpx_chain_sdk {
         static TransactionGroup transactionGroupFromString(const std::string& group) ;
 
 	private:
-		std::shared_ptr<Config> _config;
+		const Config& _config;
 		std::shared_ptr<internal::network::Context> _context;
 	};
 }

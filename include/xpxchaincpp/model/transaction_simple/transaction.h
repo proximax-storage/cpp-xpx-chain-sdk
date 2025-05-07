@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #include <xpxchaincpp/types.h>
 #include <xpxchaincpp/model/transaction/account_link_transaction_types.h>
 #include "xpxchaincpp/model/transaction/account_property_transaction_types.h"
@@ -103,12 +103,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
     template<typename TBase>
     class TMosaicDefinitionTransaction : public TBase {
     public:
-        uint32_t nonce;
-        MosaicId mosaicId;
-        uint8_t optionalPropertiesCount;
-        MosaicFlags flags;
-        uint8_t divisibility;
-        std::vector<MosaicProperty> optionalProperties;
+        uint32_t mosaicNonce;
+        MosaicId mosaicId;;
+        std::vector<MosaicProperty> properties;
     };
 
     template<typename TBase>
@@ -147,6 +144,13 @@ namespace xpx_chain_sdk { namespace transactions_info {
         std::string  secret;
         uint16_t proofSize;
         std::vector<uint8_t> proof;
+    };
+
+    template<typename TBase>
+    class TStoragePaymentTransaction: public TBase {
+    public:
+        std::string driveKey;
+        Amount storageUnits;
     };
 
     class TransferTransactionMessage {
@@ -197,44 +201,103 @@ namespace xpx_chain_sdk { namespace transactions_info {
     class TPrepareBcDriveTransaction: public TBase {
     public:
 		uint64_t driveSize;
+		Amount verificationFeeAmount;
         uint16_t replicatorCount;
-
     };
 
     template<typename TBase>
     class TDataModificationTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 downloadDataCdi;
+		std::string driveKey;
+		std::string downloadDataCdi;
 		uint64_t uploadSize;
+        Amount feedbackFeeAmount;
 
     };
 
     template<typename TBase>
     class TDownloadTransaction: public TBase {
     public:
-		Key driveKey;
+		std::string driveKey;
 		uint64_t downloadSize;
-		Amount transactionFee;
+		Amount feedbackFeeAmount;
+        std::vector<std::string> listOfPublicKeys;
+
+    };
+
+    template<typename TBase>
+    class TDownloadPaymentTransaction: public TBase {
+    public:
+        std::string downloadChannelId;
+        uint64_t downloadSize;
+        Amount feedbackFeeAmount;
+
+    };
+
+    template<typename TBase>
+    class TDriveClosureTransaction: public TBase {
+    public:
+        std::string driveKey;
 
     };
 
     template<typename TBase>
     class TDataModificationApprovalTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 dataModificationId;
-		Hash256 fileStructureCdi;
-		uint64_t fileStructureSize;
-		uint64_t usedDriveSize;
-
+        std::string driveKey;
+        std::string dataModificationId;
+        std::string fileStructureCdi;
+        uint8_t modificationStatus;
+        uint64_t fileStructureSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        uint64_t usedDriveSizeBytes;
+        uint8_t judgingKeysCount;
+        uint8_t overlappingKeysCount;
+        uint8_t judgedKeysCount;
+        std::vector<std::string> publicKeys;
+        std::vector<std::string> signatures;
+        std::vector<uint8_t> presentOpinions;
+        std::vector<uint64_t> opinions;
     };
 
     template<typename TBase>
     class TDataModificationCancelTransaction: public TBase {
     public:
-		Key driveKey;
-		Hash256 dataModificationId;
+		std::string driveKey;
+		std::string dataModificationId;
+
+    };
+
+    template<typename TBase>
+    class TCreateLiquidityProviderTransaction: public TBase {
+    public:
+        MosaicId providerMosaicId;
+        Amount currencyDeposit;
+        Amount initialMosaicsMinting;
+        uint32_t slashingPeriod;
+        uint16_t windowSize;
+        std::string slashingAccount;
+        uint32_t alpha;
+        uint32_t beta;
+
+    };
+
+    template<typename TBase>
+    class TManualRateChangeTransaction: public TBase {
+    public:
+        MosaicId providerMosaicId;
+        bool currencyBalanceIncrease;
+        Amount currencyBalanceChange;
+        bool mosaicBalanceIncrease;
+        Amount mosaicBalanceChange;
+
+    };
+
+    template<typename TBase>
+    class TFinishDownloadTransaction: public TBase {
+    public:
+        std::string downloadChannelId;
+        Amount feedbackFeeAmount;
 
     };
 
@@ -245,6 +308,120 @@ namespace xpx_chain_sdk { namespace transactions_info {
 		Key nodeBootKey;
 		Hash256 message;
 		Signature messageSignature;
+    };
+
+    template<typename TBase>
+    class TDeployContractTransaction: public TBase {
+    public:
+        std::string driveKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<Mosaic> servicePayments;
+        uint16_t automaticExecutionsFileNameSize;
+        std::string automaticExecutionsFileName;
+        uint16_t automaticExecutionsFunctionNameSize;
+        std::string automaticExecutionsFunctionName;
+        Amount automaticExecutionsCallPayment;
+        Amount automaticDownloadCallPayment;
+        uint32_t automaticExecutionsNumber;
+        std::string assignee;
+    };
+
+    template<typename TBase>
+    class TManualCallTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint16_t fileNameSize;
+        std::string fileName;
+        uint16_t functionNameSize;
+        std::string functionName;
+        uint16_t actualArgumentsSize;
+        std::vector<uint8_t> actualArguments;
+        Amount executionCallPayment;
+        Amount downloadCallPayment;
+        uint8_t servicePaymentsCount;
+        std::vector<Mosaic> servicePayments;
+    };
+
+    template<typename TBase>
+    class TAutomaticExecutionsPaymentTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint32_t automaticExecutionsNumber;
+    };
+
+    class ExtendedCallDigest {
+    public:
+        std::string callId;
+        bool manual;
+        uint64_t block;
+        int16_t status;
+        std::string releasedTransactionHash;
+    };
+
+    class RawProofOfExecution {
+    public:
+        uint64_t startBatchId;
+        std::string T;
+        std::string R;
+        std::string F;
+        std::string K;
+    };
+
+    class CallPayment {
+    public:
+        Amount executionPayment;
+        Amount downloadPayment;
+    };
+
+    struct Opinion {
+        std::string publicKey;
+        std::string signature;
+        RawProofOfExecution poEx;
+        std::vector<CallPayment> callPayments;
+    };
+
+    template<typename TBase>
+    class TUnsuccessfulEndBatchExecutionTransaction: public TBase {
+    public:
+        std::string contractKey;
+        uint64_t batchId;
+        std::string automaticExecutionsNextBlockToCheck;
+        std::vector<ExtendedCallDigest> callDigests;
+        std::vector<Opinion> opinions;
+    };
+
+    template<typename TUnsuccessfulEndBatchExecutionTransaction>
+    class TSuccessfulEndBatchExecutionTransaction: public TUnsuccessfulEndBatchExecutionTransaction {
+    public:
+        std::string storageHash;
+        uint64_t usedSizeBytes;
+        uint64_t metaFilesSizeBytes;
+        std::string proofOfExecutionVerificationInformation;
+    };
+
+    template<typename TBase>
+    class TReplicatorOffboardingTransaction: public TBase {
+    public:
+        std::string driveKey;
+
+    };
+
+    template<typename TBase>
+    class TStreamStartTransaction : public TBase {
+    public:
+        std::string driveKey;
+        uint64_t expectedUploadSize;
+        uint16_t folderNameSize;
+        Amount feedbackFeeAmount;
+        std::string folderName;
 
     };
 
@@ -253,8 +430,27 @@ namespace xpx_chain_sdk { namespace transactions_info {
     public:
 		uint16_t replicatorCount;
 		std::vector<Key> replicatorKeys;
+	};
 
+    template<typename TBase>
+    class TStreamFinishTransaction : public TBase {
+    public:
+        std::string driveKey;
+        std::string streamId;
+        uint64_t actualUploadSizeMegabytes;
+        std::string streamStructureCdi;
     };
+
+    template<typename TBase>
+    class TStreamPaymentTransaction : public TBase {
+    public:
+        std::string driveKey;
+        std::string streamId;
+        uint64_t additionalUploadSizeMegabytes;
+    };
+
+    template<typename TBase>
+    class TAddDbrbProcessTransaction : public TBase {};
 
     using AccountLinkTransaction  = TAccountLinkTransaction<Transaction>;
     using EmbeddedAccountLinkTransaction  = TAccountLinkTransaction<EmbeddedTransaction>;
@@ -279,6 +475,9 @@ namespace xpx_chain_sdk { namespace transactions_info {
 
     using SecretProofTransaction  = TSecretProofTransaction<Transaction >;
     using EmbeddedSecretProofTransaction  = TSecretProofTransaction<EmbeddedTransaction >;
+
+    using StoragePaymentTransaction  = TStoragePaymentTransaction<Transaction >;
+    using EmbeddedStoragePaymentTransaction  = TStoragePaymentTransaction<EmbeddedTransaction >;
 
     using TransferTransaction  = TTransferTransaction <Transaction>;
     using EmbeddedTransferTransaction  = TTransferTransaction<EmbeddedTransaction >;
@@ -307,11 +506,23 @@ namespace xpx_chain_sdk { namespace transactions_info {
     using PrepareBcDriveTransaction = TPrepareBcDriveTransaction <Transaction>;
     using EmbeddedPrepareBcDriveTransaction = TPrepareBcDriveTransaction<EmbeddedTransaction>;
 
+    using CreateLiquidityProviderTransaction = TCreateLiquidityProviderTransaction <Transaction>;
+    using EmbeddedCreateLiquidityProviderTransaction = TCreateLiquidityProviderTransaction<EmbeddedTransaction>;
+
+    using ManualRateChangeTransaction = TManualRateChangeTransaction <Transaction>;
+    using EmbeddedManualRateChangeTransaction = TManualRateChangeTransaction<EmbeddedTransaction>;
+
     using DataModificationTransaction = TDataModificationTransaction <Transaction>;
     using EmbeddedDataModificationTransaction = TDataModificationTransaction<EmbeddedTransaction>;
 
     using DownloadTransaction = TDownloadTransaction <Transaction>;
     using EmbeddedDownloadTransaction = TDownloadTransaction<EmbeddedTransaction>;
+
+    using DownloadPaymentTransaction = TDownloadPaymentTransaction <Transaction>;
+    using EmbeddedDownloadPaymentTransaction = TDownloadPaymentTransaction<EmbeddedTransaction>;
+
+    using DriveClosureTransaction = TDriveClosureTransaction <Transaction>;
+    using EmbeddedDriveClosureTransaction = TDriveClosureTransaction<EmbeddedTransaction>;
 
     using DataModificationApprovalTransaction = TDataModificationApprovalTransaction <Transaction>;
     using EmbeddedDataModificationApprovalTransaction = TDataModificationApprovalTransaction<EmbeddedTransaction>;
@@ -319,8 +530,40 @@ namespace xpx_chain_sdk { namespace transactions_info {
     using DataModificationCancelTransaction = TDataModificationCancelTransaction <Transaction>;
     using EmbeddedDataModificationCancelTransaction = TDataModificationCancelTransaction<EmbeddedTransaction>;
 
+    using FinishDownloadTransaction = TFinishDownloadTransaction <Transaction>;
+    using EmbeddedFinishDownloadTransaction = TFinishDownloadTransaction<EmbeddedTransaction>;
+
     using ReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction <Transaction>;
     using EmbeddedReplicatorOnboardingTransaction = TReplicatorOnboardingTransaction<EmbeddedTransaction>;
+
+    using ReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction <Transaction>;
+    using EmbeddedReplicatorOffboardingTransaction = TReplicatorOffboardingTransaction<EmbeddedTransaction>;
+
+    using DeployContractTransaction = TDeployContractTransaction <Transaction>;
+    using EmbeddedDeployContractTransaction = TDeployContractTransaction<EmbeddedTransaction>;
+
+    using ManualCallTransaction = TManualCallTransaction <Transaction>;
+    using EmbeddedManualCallTransaction = TManualCallTransaction<EmbeddedTransaction>;
+
+    using AutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction <Transaction>;
+    using EmbeddedAutomaticExecutionsPaymentTransaction = TAutomaticExecutionsPaymentTransaction<EmbeddedTransaction>;
+
+    using UnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction <Transaction>;
+    using EmbeddedUnsuccessfulEndBatchExecutionTransaction = TUnsuccessfulEndBatchExecutionTransaction<EmbeddedTransaction>;
+
+    using SuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction <UnsuccessfulEndBatchExecutionTransaction>;
+    using EmbeddedSuccessfulEndBatchExecutionTransaction = TSuccessfulEndBatchExecutionTransaction<EmbeddedUnsuccessfulEndBatchExecutionTransaction>;
+
+    using StreamStartTransaction = TStreamStartTransaction <Transaction>;
+    using EmbeddedStreamStartTransaction = TStreamStartTransaction<EmbeddedTransaction>;
+
+    using StreamFinishTransaction = TStreamFinishTransaction <Transaction>;
+    using EmbeddedStreamFinishTransaction = TStreamFinishTransaction<EmbeddedTransaction>;
+
+    using StreamPaymentTransaction = TStreamPaymentTransaction <Transaction>;
+    using EmbeddedStreamPaymentTransaction = TStreamPaymentTransaction<EmbeddedTransaction>;
+
+    using AddDbrbProcessTransaction = TAddDbrbProcessTransaction <Transaction>;
 
     using ReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction <Transaction>;
     using EmbeddedReplicatorsCleanupTransaction = TReplicatorsCleanupTransaction<EmbeddedTransaction>;

@@ -24,7 +24,7 @@ using internal::json::dto::StorageInfoDto;
 
 
 BlockchainService::BlockchainService(
-	std::shared_ptr<Config> config,
+	const Config& config,
 	std::shared_ptr<internal::network::Context> context
 ) :
 	_config(config),

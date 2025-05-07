@@ -39,13 +39,13 @@ namespace xpx_chain_sdk { namespace internal {
 
 		if (transaction->type() != TransactionType::Aggregate_Complete &&
 			transaction->type() != TransactionType::Aggregate_Bonded) {
-			return RawBuffer(data.data() + Tx_Signed_Data_Start, data.size() - Tx_Signed_Data_Start);
+			return { data.data() + Tx_Signed_Data_Start, data.size() - Tx_Signed_Data_Start };
 		} else {
 			auto aggregateTx = dynamic_cast<const AggregateTransaction*>(transaction);
 			assert(data.size() >= aggregateTx->payloadSize() + Aggregate_Tx_Payload_Start);
 
 			size_t cosignaturesSize = data.size() - (aggregateTx->payloadSize() + Aggregate_Tx_Payload_Start);
-			return RawBuffer(data.data() + Tx_Signed_Data_Start, data.size() - Tx_Signed_Data_Start - cosignaturesSize);
+			return { data.data() + Tx_Signed_Data_Start, data.size() - Tx_Signed_Data_Start - cosignaturesSize };
 		}
 	}
 

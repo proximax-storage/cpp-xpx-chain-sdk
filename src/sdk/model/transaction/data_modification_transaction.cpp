@@ -25,6 +25,12 @@ namespace xpx_chain_sdk {
 		return uploadSize_;
 	}
 
+    template<typename TBase>
+    const Amount& TDataModificationTransaction<TBase>::feedbackFeeAmount() const
+    {
+        return feedbackFeeAmount_;
+    }
+
 	template class TDataModificationTransaction<Transaction>;
 	template class TDataModificationTransaction<EmbeddedTransaction>;
 }
